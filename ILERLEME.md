@@ -3,7 +3,7 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 7 tamamlandı — menü kitabı formatına dönüştürüldü, commit bekliyor. Bekleyen: QR adresi kararı, organizasyon içeriği, font kararı, eksik fotoğraflar
+**Güncel aşama:** Aşama 7 tamamlandı — menü kitabı **canlıda**. Bekleyen: QR adresi kararı, organizasyon içeriği, font kararı, eksik fotoğraflar
 **Son güncelleme:** 2026-08-27 17:30
 
 ### Genel Durum
@@ -16,7 +16,7 @@
 | 4 | RTL (Arapça) desteği | **Tamamlandı** (Aşama 3 içinde) |
 | 5 | Ana seçim ekranı + organizasyon | **Tamamlandı** |
 | 6 | Vercel'de canlıya alma | **Tamamlandı** |
-| 7 | Menü kitabı — yatay kaydırma | **Tamamlandı** (commit bekliyor) |
+| 7 | Menü kitabı — yatay kaydırma | **Tamamlandı** |
 
 ### Aşama 1 Adımları
 
@@ -1179,6 +1179,6 @@ Gösterge olarak sadece sayfa numarası kullanıldı ("3 / 7"). İkonlu/noktalı
 
 **Karar bekleyen (önceki aşamalardan):** organizasyon içeriği · Arapça çevirilerin kontrolü · 24 ürünün fotoğrafı · 4 teyit edilmemiş fiyat · font kararı · QR adresi (kök mü `/tr` mi)
 
-**Sıradaki adım:** Commit + push → otomatik Vercel dağıtımı. Ve bekleyen içerik kararları.
+**Sıradaki adım:** Canlıya alındı (`f3dcd35`, Vercel build 20 sn, durum READY). Bekleyen içerik kararları.
 
 === RAPOR SONU ===
