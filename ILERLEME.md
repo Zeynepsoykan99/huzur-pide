@@ -69,3 +69,34 @@ Alınan kararlar:
 - Kök dizindeki mevcut boş `huzur pide` dosyasına dokunulmadı; git takibine de alınmadı
 Sıradaki adım: Adım 2 — 4 adet bayrak SVG dosyasının (`tr.svg`, `en.svg`, `ae.svg`, `ru.svg`) `assets/flags/` altında oluşturulması. Hepsi 3:2 oranında, viewBox ile ölçeklenebilir, dış bağımlılıksız.
 === RAPOR SONU ===
+
+---
+
+## 2026-08-27 10:20
+
+=== RAPOR BAŞLANGICI ===
+Adım: 2 — Bayrak SVG'leri
+Yapılanlar:
+- `assets/flags/` altında 4 adet bayrak SVG'si oluşturuldu: `tr.svg`, `gb.svg`, `ae.svg`, `ru.svg`
+- Her bayrak kendi resmi en-boy oranında ve resmi renk kodlarıyla çizildi
+- Tümü `viewBox` tabanlı, sabit `width`/`height` niteliği yok; CSS ile serbestçe ölçeklenebiliyor
+- Her dosyaya `role="img"`, Türkçe `aria-label` ve `<title>` eklendi (ekran okuyucu desteği)
+- Yerel bir HTTP sunucusu (`python -m http.server 8765`) ayağa kaldırılıp bayraklar Playwright ile tarayıcıda hem 80px hem 24px yükseklikte render edilerek görsel olarak doğrulandı
+- Doğrulama sonrası geçici önizleme dosyaları silindi; `.gitignore`'a geçici test çıktıları eklendi
+Oluşturulan/Değiştirilen dosyalar:
+- `assets/flags/tr.svg` (yeni)
+- `assets/flags/gb.svg` (yeni)
+- `assets/flags/ae.svg` (yeni)
+- `assets/flags/ru.svg` (yeni)
+- `.gitignore` (güncellendi)
+- `ILERLEME.md` (güncellendi)
+Alınan kararlar:
+- **Dosya adları ISO 3166 ülke kodu ile:** `tr`, `gb`, `ae`, `ru`. Plandaki `en.svg` yerine `gb.svg` kullanıldı; dosya bir *ülkeyi* temsil ediyor, dili değil. Dil kodu (`en`) ile ülke kodu (`gb`) ayrımı ileride dil mantığı yazılırken karışıklığı önleyecek.
+- **Her bayrak resmi oranında bırakıldı**, ortak bir orana zorlanmadı: `tr` 3:2, `gb` 1:2, `ae` 2:1, `ru` 3:2. Bayrağı esnetmek hem yanlış hem de saygısız olurdu.
+- Farklı oranlar buton içinde metin hizasını bozmasın diye Adım 4'te **sabit genişlikte (48px) bir "slot"** kullanılacak; bayrak bu slotun içinde ortalanacak, yüksekliği sabitlenecek. Böylece en geniş bayrak (Union Jack) slotu doldururken diğerleri ortalanmış duracak, metinler aynı hizada kalacak.
+- **Türk bayrağı resmi ölçülere göre çizildi:** dış daire r=200 @ (425,400), iç daire r=160 @ (535,400), yıldız çevrel yarıçapı 100 @ (683,400), bir ucu hilale (sola) bakacak şekilde döndürülmüş.
+- **Union Jack'in çapraz kolları** `clipPath` ile doğru şekilde "counterchanged" (aynalı kaydırmalı) çizildi; basitleştirilmiş simetrik versiyon kullanılmadı.
+- Toplam boyut 4 dosya için ~1.6 KB. Dış servise (flagcdn, emoji vb.) hiçbir bağımlılık yok; uygulama tamamen çevrimdışı da çalışır.
+- Bayraklarda beyaz alanlar var (RU, GB, AE); sütlü kahve buton zemini üzerinde kenarları kaybolmasın diye Adım 4'te bayraklara ince bir kenarlık (ring) eklenecek.
+Sıradaki adım: Adım 3 — `index.html` iskeleti: Tailwind Play CDN kurulumu, inline `tailwind.config` ile renk paleti tanımı, Google Fonts başlık fontu, mobile-first sayfa düzeni ve "Huzur Pide" logo/başlık alanı.
+=== RAPOR SONU ===

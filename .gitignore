@@ -15,3 +15,8 @@ dist/
 
 # Log
 *.log
+
+# Gecici onizleme / test ciktilari
+.playwright-mcp/
+_preview.html
+/*.png

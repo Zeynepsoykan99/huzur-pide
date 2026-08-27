@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30" role="img" aria-label="Birleşik Krallık bayrağı">
+  <title>United Kingdom</title>
+  <clipPath id="gb-diag">
+    <path d="M30 15h30v15zv15H30zH0V15zV0h30z"/>
+  </clipPath>
+  <rect width="60" height="30" fill="#012169"/>
+  <path d="M0 0 60 30M60 0 0 30" stroke="#FFFFFF" stroke-width="6"/>
+  <path d="M0 0 60 30M60 0 0 30" clip-path="url(#gb-diag)" stroke="#C8102E" stroke-width="4"/>
+  <path d="M30 0v30M0 15h60" stroke="#FFFFFF" stroke-width="10"/>
+  <path d="M30 0v30M0 15h60" stroke="#C8102E" stroke-width="6"/>
+</svg>
