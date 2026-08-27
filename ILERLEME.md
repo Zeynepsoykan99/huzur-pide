@@ -3,14 +3,14 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 1 — Frontend / Tasarım (dil seçim ekranı)
-**Son güncelleme:** 2026-08-27 10:26
+**Güncel aşama:** Aşama 1 tamamlandı — sıradaki: Aşama 2 (menü sayfaları tasarımı)
+**Son güncelleme:** 2026-08-27 10:31
 
 ### Genel Durum
 
 | Aşama | Konu | Durum |
 |---|---|---|
-| 1 | Dil seçim ekranı tasarımı | Devam ediyor (4/5 adım) |
+| 1 | Dil seçim ekranı tasarımı | **Tamamlandı** (5/5 adım) |
 | 2 | Menü sayfaları tasarımı | Başlanmadı |
 | 3 | Dil değiştirme mantığı + menü verisi | Başlanmadı |
 | 4 | RTL (Arapça) desteğinin devreye alınması | Başlanmadı |
@@ -21,7 +21,7 @@
 - [x] Adım 2 — Bayrak SVG'leri
 - [x] Adım 3 — index.html iskeleti ve genel layout
 - [x] Adım 4 — Dil butonları ve etkileşim durumları
-- [ ] Adım 5 — RTL hazırlığı, erişilebilirlik ve doğrulama
+- [x] Adım 5 — RTL hazırlığı, erişilebilirlik ve doğrulama
 
 ### Teknoloji ve Kararlar
 
@@ -30,6 +30,17 @@
 - Arapça için Birleşik Arap Emirlikleri bayrağı
 - Başlık fontu Google Fonts üzerinden
 - Mobile-first; RTL'e hazır yapı (logical property'ler)
+
+### Aşama 1 Çıktısı
+
+`index.html` — tek sayfalık dil seçim ekranı. Dört dil butonu (Türkçe, English,
+العربية, Русский), yerel bayrak SVG'leri, bej/sütlü kahve palet, mobile-first
+düzen, RTL'e hazır yapı. Henüz işlevsellik yok; butonlar tıklanabilir ama bir
+şey yapmıyor — bu bilinçli, Aşama 3'te bağlanacak.
+
+Açmak için: proje klasöründe `python -m http.server 8765` çalıştırıp
+tarayıcıda `http://127.0.0.1:8765` adresine gidin. (Dosyayı doğrudan çift
+tıklayarak da açabilirsiniz; Tailwind CDN için internet bağlantısı gerekir.)
 
 ### Renk Paleti
 
@@ -169,4 +180,39 @@ Alınan kararlar:
 - **Ok işareti `<img>` değil inline `<svg>`.** 4 buton için 4 ayrı ağ isteği yerine tek satır işaretleme; ayrıca `currentColor` kullandığı için hover'da metinle birlikte renk değiştirebiliyor.
 - **Yön bağımlı hiçbir utility kullanılmadı.** `px`, `gap`, `text-start` gibi yönden bağımsız sınıflar tercih edildi; `ml`/`mr`/`left`/`right` hiç geçmiyor. Adım 5'te `dir="rtl"` denendiğinde satırın kendiliğinden aynalanmasının nedeni bu.
 Sıradaki adım: Adım 5 — RTL doğrulaması (`dir="rtl"` ile düzenin aynalanmasının test edilmesi ve okun yön değiştirmesi), erişilebilirlik kontrolü (`aria` nitelikleri, kontrast, klavye sırası) ve üç çözünürlükte son doğrulama.
+=== RAPOR SONU ===
+
+---
+
+## 2026-08-27 10:31
+
+=== RAPOR BAŞLANGICI ===
+Adım: 5 — RTL hazırlığı, erişilebilirlik ve doğrulama
+Yapılanlar:
+- **RTL testi:** Tarayıcıda `<html dir="rtl">` verilerek düzenin aynalanması test edildi. Bayraklar sağa, oklar sola geçti, metinler sağa yaslandı — hiçbir CSS düzeltmesi gerekmedi. Tek eksik okun yönüydü, o da düzeltildi.
+- Ok yönü CSS değişkeni üzerinden kurgulandı: `.lang-arrow` üzerinde `transform: scaleX(var(--arrow-flip)) translateX(var(--arrow-shift))`, `[dir="rtl"]` altında `--arrow-flip: -1`. Kural şu an LTR olduğu için etkisiz bekliyor, `dir` değiştiği anda devreye girecek.
+- `#language-list`'e `role="group"` ve `aria-labelledby="lang-heading"` eklendi; buton grubu ekran okuyucuda "Dil Seçiniz" başlığıyla ilişkilendirildi
+- **Kontrast ölçümü** tarayıcıda WCAG formülüyle hesaplandı:
+  - metin / buton (normal): **4.77:1** — AA geçer
+  - metin / buton (hover): **3.55:1** — 20px/600 "büyük metin" sınıfında, AA geçer
+  - metin / buton (active): 2.65:1 — **başarısızdı, düzeltildi** (aşağıya bakınız)
+  - metin / sayfa arka planı: **9.83:1** — AAA geçer
+  - alt metin / sayfa: **5.51:1** — AA geçer
+- Etiket puntosu her ekran boyutunda 20px/600'e sabitlendi
+- Doğrulanan diğer noktalar: buton yüksekliği tam 56px, yatay taşma yok, sekme sırası dört butonu doğru sırayla geziyor, erişilebilir isimler doğru ("Türkçe", "English", "العربية", "Русский"), konsolda hata yok
+- Son görsel doğrulama 390x844 (telefon), 768x1024 (tablet) ve 1280x800 (masaüstü) çözünürlüklerinde yapıldı
+Oluşturulan/Değiştirilen dosyalar:
+- `index.html` (güncellendi)
+- `ILERLEME.md` (güncellendi)
+Alınan kararlar:
+- **Active durumunda renk yerine hareket kullanıldı.** Basılma efekti `latte-600` (#96745A) ile veriliyordu; ölçüm bu kombinasyonun 2.65:1 kontrast verdiğini, yani basılı tutulduğu sürece metnin okunaksız hale geldiğini gösterdi. Active artık `latte-500`'de kalıp `scale-[0.985]` ile hafifçe küçülüyor ve gölgesi azalıyor. Dokunsal geri bildirim korundu, kontrast 3.55:1'e çıktı. Renk paletinde bir tonu kaybetmedik — `latte-600` kenarlıkta kullanılmaya devam ediyor.
+- **Etiket puntosu 20px'e sabitlendi** (önce mobilde 18px, `sm`'den sonra 20px idi). İki nedeni var: WCAG'ın "büyük metin" eşiği 14pt/18.66px kalın; 18px bu eşiğin hemen altında kaldığı için hover durumu dar bir masaüstü penceresinde teknik olarak başarısız oluyordu. İkincisi, restoran menüsü çoğunlukla loş ışıkta ve her yaştan müşteri tarafından okunuyor — 20px zaten daha iyi bir tercih.
+- **RTL için ayrı bir stil dosyası veya `rtl:` varyantı gerekmedi.** Adım 3 ve 4'te yön bağımlı utility kullanmama kararı burada karşılığını verdi: `dir` niteliğini değiştirmek düzeni tek başına aynalıyor. Aşama 3'te yazılacak JS'in tek yapması gereken `<html>` üzerindeki `lang` ve `dir` niteliklerini butonun `data-lang` / `data-dir` değerlerinden okuyup ayarlamak.
+- **Ok yönü Tailwind'in `rtl:` varyantı yerine CSS değişkeniyle çözüldü.** `rtl:` varyantı işe yarardı ama hover kaymasıyla birlikte dört ayrı sınıf kombinasyonu gerekiyordu (`rtl:-translate-x-1` vb.). Değişken yaklaşımı tek transform ifadesiyle hem yönü hem kaymayı yönetiyor; `scaleX` önce yazıldığı için koordinat sistemi terslendiğinde kayma da kendiliğinden doğru yöne gidiyor.
+- **Otomatik bir erişilebilirlik denetim aracı (axe vb.) kurulmadı.** Sayfada dört buton ve bir başlık var; kontrast, odak görünürlüğü, dokunma hedefi, erişilebilir isim ve sekme sırası tek tek elle ölçüldü. Bu ölçekte bir araç kurmak fayda getirmezdi. Menü sayfaları eklendiğinde tekrar değerlendirilmeli.
+Bu aşamada bilinçli olarak YAPILMAYANLAR:
+- Butonlara tıklama davranışı bağlanmadı — istendiği gibi yalnızca tasarım yapıldı
+- `dir="rtl"` uygulanmadı, sadece altyapısı kuruldu
+- Tailwind CDN'den gerçek build'e geçilmedi; canlıya çıkmadan önce yapılmalı
+Sıradaki adım: Aşama 2 — menü sayfalarının tasarımı (kategori listesi, ürün kartları, fiyat gösterimi, geri dönüş ve dil değiştirme kontrolü). Bu aşamanın planı yeni bir onayla başlayacak.
 === RAPOR SONU ===

@@ -48,7 +48,8 @@
                ring-1 ring-latte-600/25
                outline-none transition duration-200 ease-out
                hover:-translate-y-0.5 hover:bg-latte-500 hover:shadow-lg hover:shadow-cocoa-900/20
-               active:translate-y-0 active:bg-latte-600 active:shadow-sm active:duration-75
+               active:translate-y-0 active:scale-[0.985] active:bg-latte-500
+               active:shadow-sm active:ring-latte-600/60 active:duration-75
                focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[3px]
                focus-visible:outline-cocoa-900;
       }
@@ -68,22 +69,35 @@
       }
 
       .lang-name {
-        @apply flex-1 text-lg font-semibold leading-tight text-cocoa-900 sm:text-xl;
+        @apply flex-1 text-xl font-semibold leading-tight text-cocoa-900;
       }
 
       /* Arap alfabesi ayni punto degerinde latin harflerden kucuk
          gorunur; bu yuzden biraz buyutulur. */
       .lang-name[lang="ar"] {
-        @apply text-xl leading-snug sm:text-2xl;
+        @apply text-2xl leading-snug;
       }
 
       .lang-arrow {
         @apply h-5 w-5 shrink-0 text-cocoa-900/45
                transition-transform duration-200 ease-out;
+        --arrow-flip: 1;
+        --arrow-shift: 0rem;
+        /* scaleX once yazilir: RTL'de koordinat sistemi terslendigi icin
+           sonraki translateX de kendiliginden sola kayar. Tailwind'in
+           translate-x-* utility'si fiziksel yonlu oldugu icin kullanilmadi. */
+        transform: scaleX(var(--arrow-flip)) translateX(var(--arrow-shift));
+      }
+
+      /* RTL hazirligi: <html dir="rtl"> verildiginde ok kendiliginden
+         sola doner. Su an LTR oldugu icin bu kural etkisiz bekliyor. */
+      [dir="rtl"] .lang-arrow {
+        --arrow-flip: -1;
       }
 
       .lang-btn:hover .lang-arrow {
-        @apply translate-x-1 text-cocoa-900/70;
+        @apply text-cocoa-900/70;
+        --arrow-shift: 0.25rem;
       }
     }
   </style>
@@ -126,7 +140,7 @@
 
     <!-- Dil secimi. Butonlar Adim 4'te eklenecek. -->
     <main class="mt-10 sm:mt-12">
-      <h2 class="text-center text-xs font-semibold uppercase tracking-[0.18em] text-cocoa-700">
+      <h2 id="lang-heading" class="text-center text-xs font-semibold uppercase tracking-[0.18em] text-cocoa-700">
         Dil Seçiniz
       </h2>
       <p class="mt-1.5 text-center text-xs text-cocoa-700/70">
@@ -144,7 +158,7 @@
           text-start), bu yuzden <html dir="rtl"> yapildiginda satir
           kendiliginden aynalanir: bayrak saga, ok sola gecer.
       -->
-      <div id="language-list"
+      <div id="language-list" role="group" aria-labelledby="lang-heading"
            class="mt-6 grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4">
 
         <button type="button" data-lang="tr" data-dir="ltr" class="lang-btn">
