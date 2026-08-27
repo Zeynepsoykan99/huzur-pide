@@ -293,6 +293,15 @@
     @apply py-4 pe-4 align-middle;
   }
 
+  /* Cok fiyatli tabloda gorsel telefonda daraliyor (80 -> 56px). Tek fiyatli
+     sayfalarda satiri gorsel ile ad paylasiyor, burada ise ad ayrica uc fiyat
+     sutunuyla da paylasmak zorunda: 390px'te ada 110px kaliyordu ve Arapca
+     adlar bes satira kadar sariyordu. md ustunde yer bol, 208px'e donuyor. */
+  .pide-tablo .urun-gorsel,
+  .pide-tablo .urun-gorsel-yer-tutucu {
+    @apply w-14 md:w-52;
+  }
+
   /* --- Dil degistirme kontrolu (menu sayfalari) ---
      Dort secenek 390px'te sigmali: bayrak kucuk, ic bosluk dar, punto 12px.
      Dokunma hedefi min-h-9 (36px) ile korunuyor. */

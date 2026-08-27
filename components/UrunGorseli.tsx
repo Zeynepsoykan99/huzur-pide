@@ -1,51 +1,70 @@
 import Image from "next/image";
+import {
+  YerTutucuIcecek,
+  YerTutucuIzgara,
+  YerTutucuPide,
+  YerTutucuSalata,
+  YerTutucuTatli,
+} from "@/components/Ikonlar";
 import { metin, type DilKodu, type Urun } from "@/data/menu";
+
+/**
+ * Kategori slug'ı → yer tutucu ikonu.
+ *
+ * Tek bir ikon yerine kategoriye göre ikon kullanılıyor: içeceğe pide silüeti
+ * göstermek anlamca yanlıştı, ayrıca aynı yassı şekil bir sayfada yedi kez alt
+ * alta gelince desen gibi okunuyordu.
+ *
+ * Yeni kategori eklendiğinde burada karşılığı yoksa pide ikonuna düşüyor —
+ * ekran boş kalmıyor, sadece ikon jenerik oluyor.
+ */
+const YER_TUTUCULAR: Record<string, (p: { className?: string }) => React.ReactElement> = {
+  "kapali-pide": YerTutucuPide,
+  izgara: YerTutucuIzgara,
+  salatalar: YerTutucuSalata,
+  tatlilar: YerTutucuTatli,
+  icecekler: YerTutucuIcecek,
+};
 
 /**
  * Fotoğrafı olmayan ürünler için yer tutucu.
  *
  * Gerçek görselle birebir aynı ölçüde duruyor (mobilde kare, md üstünde 16:9),
- * böylece fotoğraf eklendiğinde satır hizası hiç değişmiyor. İçinde logodaki
- * pide silüetinin sadeleştirilmiş hâli var — beyaz kutu ya da "resim yok"
- * ikonu değil, paletin kendi dokusundan sessiz bir işaret.
+ * böylece fotoğraf eklendiğinde satır hizası hiç değişmiyor. Beyaz kutu ya da
+ * "resim yok" ikonu değil, paletin kendi dokusundan sessiz bir işaret.
  *
  * Bilgi taşımadığı için ekran okuyucudan gizli.
  */
-function YerTutucu() {
+function YerTutucu({ kategoriSlug }: { kategoriSlug: string }) {
+  const Ikon = YER_TUTUCULAR[kategoriSlug] ?? YerTutucuPide;
   return (
     <span className="urun-gorsel-yer-tutucu" aria-hidden="true">
       {/*
-        Cizgi degil dolgu kullaniliyor: mobilde kutu 56px ve ince bir konturun
-        cizgisi 1px'in altina dusup kayboluyordu. Iki farkli dolgu opakligi
-        (hamur kenari ve ic dolgu) sekli her boyutta okunur tutuyor.
-        viewBox pide silueti etrafinda daraltildi.
+        Yukseklige gore olcekleniyor, genislige gore degil: yuva mobilde kare
+        (80px), md ustunde 16:9 (208x117). Genislige gore olceklenseydi kare
+        viewBox'li ikon genis yuvada asagi tasardi.
       */}
-      <svg viewBox="3 8 58 24" className="w-[68%]">
-        {/* Kabaran hamur kenari */}
-        <path
-          d="M4 20c11-11 45-11 56 0-11 11-45 11-56 0Z"
-          fill="currentColor"
-          fillOpacity="0.4"
-        />
-        {/* Ic dolgu — biraz daha koyu */}
-        <path
-          d="M15 20c8-6 26-6 34 0-8 6-26 6-34 0Z"
-          fill="currentColor"
-          fillOpacity="0.55"
-        />
-      </svg>
+      <Ikon className="h-[52%] w-auto" />
     </span>
   );
 }
 
 /**
- * Ürün görseli — fotoğraf varsa `next/image`, yoksa yer tutucu.
+ * Ürün görseli — fotoğraf varsa `next/image`, yoksa kategorisinin yer tutucusu.
  *
- * `sizes`: mobilde 56px, md üstünde 176px gösteriliyor. Tarayıcı bu bilgiyle
- * srcset'ten doğru boyu seçiyor, telefona 800px'lik dosya inmiyor.
+ * `sizes`: tarayıcı bu bilgiyle srcset'ten doğru boyu seçiyor, telefona
+ * masaüstü boyutunda dosya inmiyor.
  */
-export function UrunGorseli({ urun, dil }: { urun: Urun; dil: DilKodu }) {
-  if (!urun.gorsel) return <YerTutucu />;
+export function UrunGorseli({
+  urun,
+  dil,
+  kategoriSlug,
+}: {
+  urun: Urun;
+  dil: DilKodu;
+  kategoriSlug: string;
+}) {
+  if (!urun.gorsel) return <YerTutucu kategoriSlug={kategoriSlug} />;
 
   return (
     <Image

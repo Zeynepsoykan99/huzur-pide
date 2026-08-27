@@ -48,10 +48,12 @@ function TekFiyatliSatir({
   urun,
   dil,
   sonTarafta,
+  kategoriSlug,
 }: {
   urun: Urun;
   dil: DilKodu;
   sonTarafta: boolean;
+  kategoriSlug: string;
 }) {
   const fiyat = urun.fiyatlar[0];
   const icerik = icerikMetni(urun, dil);
@@ -59,7 +61,7 @@ function TekFiyatliSatir({
   return (
     <li className="urun-satir">
       <span className={`gorsel-yuvasi ${sonTarafta ? "md:order-last" : ""}`}>
-        <UrunGorseli urun={urun} dil={dil} />
+        <UrunGorseli urun={urun} dil={dil} kategoriSlug={kategoriSlug} />
       </span>
 
       <div className="urun-govde">
@@ -92,7 +94,10 @@ function CokFiyatliTablo({ sayfa, dil }: { sayfa: MenuSayfasi; dil: DilKodu }) {
         {metin(kategori.ad, dil)} — {ui("hamurBoyunaGoreFiyatlar", dil)}
       </caption>
       <colgroup>
-        <col className="w-20 md:w-52" />
+        {/* Telefonda 56px, md ustunde 208px: cok fiyatli tabloda ad sutunu
+            uc fiyat sutunuyla yeri paylastigi icin 390px'te 110px'e kadar
+            dusuyordu ve Arapca/Ingilizce/Rusca adlar 3-5 satira sariyordu. */}
+        <col className="w-14 md:w-52" />
         <col />
         {kategori.sutunlar.map((s) => (
           <col key={s.kod} />
@@ -117,7 +122,7 @@ function CokFiyatliTablo({ sayfa, dil }: { sayfa: MenuSayfasi; dil: DilKodu }) {
         {urunler.map((urun) => (
           <tr key={urun.id}>
             <td className="pide-gorsel-hucre">
-              <UrunGorseli urun={urun} dil={dil} />
+              <UrunGorseli urun={urun} dil={dil} kategoriSlug={kategori.slug} />
             </td>
             <th scope="row" className="pide-ad-hucre">
               <div className="ayrac-satir">
@@ -178,6 +183,7 @@ function Yaprak({ sayfa, dil }: { sayfa: MenuSayfasi; dil: DilKodu }) {
                 urun={urun}
                 dil={dil}
                 sonTarafta={(sayfa.no + i) % 2 === 1}
+                kategoriSlug={sayfa.kategori.slug}
               />
             ))}
           </ul>

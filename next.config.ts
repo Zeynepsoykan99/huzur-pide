@@ -14,8 +14,8 @@ const nextConfig: NextConfig = {
       },
       // Bolunen kategorilerin eski adresleri ilk sayfalarina gidiyor;
       // daha once paylasilmis linkler calismaya devam ediyor.
-      // salatalar / tatlilar / icecekler tek sayfa oldugu icin slug'lari
-      // degismedi, onlara yonlendirme gerekmiyor.
+      // salatalar ve tatlilar tek sayfa oldugu icin slug'lari degismedi,
+      // onlara yonlendirme gerekmiyor.
       {
         source: "/:dil/menu/kapali-pide",
         destination: "/:dil/menu/kapali-pide-1",
@@ -24,6 +24,13 @@ const nextConfig: NextConfig = {
       {
         source: "/:dil/menu/izgara",
         destination: "/:dil/menu/izgara-1",
+        permanent: false,
+      },
+      {
+        // Icecekler tek sayfaydi, 4+3 olarak bolundu: eski adres artik
+        // bir sayfa degil, ilk sayfasina gidiyor.
+        source: "/:dil/menu/icecekler",
+        destination: "/:dil/menu/icecekler-1",
         permanent: false,
       },
     ];

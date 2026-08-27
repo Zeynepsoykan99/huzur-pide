@@ -393,7 +393,7 @@ export const MENU: Kategori[] = [
       ar: "المشويات",
       ru: "Блюда на гриле",
     },
-    sayfaBolumleri: [7, 7],
+    sayfaBolumleri: [5, 5, 4],
     sutunlar: TEK_SUTUN,
     urunler: [
       { id: "et-izgara-kg", ad: {
@@ -717,7 +717,7 @@ export const MENU: Kategori[] = [
   {
     slug: "icecekler",
     ad: { tr: "İçecekler", en: "Drinks", ar: "المشروبات", ru: "Напитки" },
-    sayfaBolumleri: [7],
+    sayfaBolumleri: [4, 3],
     sutunlar: TEK_SUTUN,
     // Bu kategorinin içeriği huzurpide.com.tr/menu adresinden alındı.
     urunler: [

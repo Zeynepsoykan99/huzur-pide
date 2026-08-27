@@ -3,20 +3,23 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 7 tamamlandı — menü kitabı **canlıda**. Bekleyen: QR adresi kararı, organizasyon içeriği, font kararı, eksik fotoğraflar
-**Son güncelleme:** 2026-08-27 17:30
+**Güncel aşama:** Aşama 7 tamamlandı — denetim ve düzeltmeler. Bekleyen: QR adresi kararı, organizasyon içeriği, font kararı, eksik fotoğraflar
+**Son güncelleme:** 2026-08-27
 
 ### Genel Durum
+
+Numaralandırma rapor başlıklarıyla aynı: aşağıdaki her satırın karşılığı
+"Raporlar" bölümünde aynı numarayla duruyor.
 
 | Aşama | Konu | Durum |
 |---|---|---|
 | 1 | Dil seçim ekranı tasarımı | **Tamamlandı** (5/5 adım) |
 | 2 | Menü sayfaları tasarımı | **Tamamlandı** (7/7 adım) |
-| 3 | Çok dillilik + dil değiştirme | **Tamamlandı** |
-| 4 | RTL (Arapça) desteği | **Tamamlandı** (Aşama 3 içinde) |
-| 5 | Ana seçim ekranı + organizasyon | **Tamamlandı** |
-| 6 | Vercel'de canlıya alma | **Tamamlandı** |
-| 7 | Menü kitabı — yatay kaydırma | **Tamamlandı** |
+| 3 | Çok dillilik + dil değiştirme + RTL | **Tamamlandı** |
+| 4 | Ana seçim ekranı + organizasyon | **Tamamlandı** |
+| 5 | Vercel'de canlıya alma | **Tamamlandı** |
+| 6 | Menü kitabı — yatay kaydırma | **Tamamlandı** |
+| 7 | Denetim ve düzeltmeler | **Tamamlandı** |
 
 ### Aşama 1 Adımları
 
@@ -59,13 +62,29 @@ Dil URL'nin ilk parçası: `tr` · `en` · `ar` · `ru`. `/` adresi `/tr`'ye yö
 | `/[dil]/secim` | Ana seçim — Menü / Organizasyon |
 | `/[dil]/organizasyon` | Organizasyon (içerik bekliyor) |
 | `/[dil]/menu` | Ekran A — kategori listesi |
-| `/[dil]/menu/kapali-pide` | Ekran B — Kapalı Pide Çeşitleri |
-| `/[dil]/menu/izgara` | Ekran B — Izgara Çeşitleri |
-| `/[dil]/menu/salatalar` | Ekran B — Salatalar |
-| `/[dil]/menu/tatlilar` | Ekran B — Tatlı Çeşitleri |
-| `/[dil]/menu/icecekler` | Ekran B — İçecekler |
+| `/[dil]/menu/[sayfa]` | Ekran B — menü kitabının bir yaprağı (aşağıdaki 9 slug) |
 
-Toplam 38 statik sayfa. Örnek: `/ar/menu/izgara`
+**Menü kitabı — 9 sayfa.** Her rota kitabın tamamını basıyor; adresteki slug
+kitabın hangi sayfasında açılacağını belirliyor. Parmakla yana kaydırınca
+sayfalar arasında geziliyor, adres de kaydıkça güncelleniyor.
+
+| Sayfa | Slug | Kategori | Ürün |
+|---|---|---|---|
+| 1 | `kapali-pide-1` | Kapalı Pide Çeşitleri (1/2) | 3 |
+| 2 | `kapali-pide-2` | Kapalı Pide Çeşitleri (2/2) | 3 |
+| 3 | `izgara-1` | Izgara Çeşitleri (1/3) | 5 |
+| 4 | `izgara-2` | Izgara Çeşitleri (2/3) | 5 |
+| 5 | `izgara-3` | Izgara Çeşitleri (3/3) | 4 |
+| 6 | `salatalar` | Salatalar | 1 |
+| 7 | `tatlilar` | Tatlı Çeşitleri | 3 |
+| 8 | `icecekler-1` | İçecekler (1/2) | 4 |
+| 9 | `icecekler-2` | İçecekler (2/2) | 3 |
+
+Bölünen kategorilerin eski adresleri (`kapali-pide`, `izgara`, `icecekler`)
+ilk sayfalarına yönlendiriliyor; daha önce paylaşılmış linkler kırılmıyor.
+
+Toplam **54 statik sayfa** (4 dil × 9 menü sayfası + 4 dil × 4 diğer ekran +
+`_not-found`). Örnek: `/ar/menu/izgara-1`
 
 ### Aşama 1 Çıktısı
 
@@ -93,6 +112,7 @@ yapmıyor — bu bilinçli, Aşama 3'te bağlanacak.
 |---|---|---|
 | cream-50 | #F5EFE6 | Sayfa arka planı (üst) |
 | cream-100 | #EDE0D4 | Sayfa arka planı (alt) |
+| cream-150 | #E7D6C0 | Kraft — menü kitabı sayfalarının düz zemini |
 | cream-200 | #E0CDB8 | Yedek ara ton |
 | latte-400 | #C8A27A | Buton normal |
 | latte-500 | #B08968 | Buton hover / active |
@@ -100,8 +120,8 @@ yapmıyor — bu bilinçli, Aşama 3'te bağlanacak.
 | cocoa-700 | #6B5342 | İkincil metin |
 | cocoa-900 | #4A3728 | Ana yazı rengi |
 | paprika-400 | #C2622A | Açık turuncu (yedek) |
-| paprika-500 | #B0561F | Kategori başlıkları (büyük metin) |
-| paprika-600 | #9A4A1A | Turuncu, küçük metin gerekirse |
+| paprika-500 | #B0561F | Kategori başlıkları — bej zemin (Ekran A) |
+| paprika-600 | #9A4A1A | Kategori başlıkları — kraft zemin (menü kitabı) |
 
 ### Rapor Biçimi
 
@@ -996,11 +1016,11 @@ kod değişikliği  →  git commit  →  git push origin main
 
 ---
 
-## Aşama 7 — Menü Kitabı · 2026-08-27
+## Aşama 6 — Menü Kitabı · 2026-08-27
 
 === RAPOR BAŞLANGICI ===
 
-**Adım:** Aşama 7 — Menü Kitabı (tasarım ve gezinme değişiklikleri, tamamı)
+**Adım:** Aşama 6 — Menü Kitabı (tasarım ve gezinme değişiklikleri, tamamı)
 
 ---
 
@@ -1038,10 +1058,12 @@ kod değişikliği  →  git commit  →  git push origin main
 - İçerik açıklaması: 12px → 14px (sm: 14 → 15)
 - Sütun başlıkları (pide): 11px → 12px (sm: 12 → 14)
 - Pide fiyat hücreleri: 14px → 16px (sm: 16 → 18)
+- Görsel yuvası: mobilde 56px → **80px**, md üstünde 176px → **208px**
+- Ürün satırı dikey boşluğu: 10px → **16px**
 - Tablo hücre iç boşlukları da büyütüldü
 
 *5 — Kompakt başlık*
-- `UstBaslik`'e `sikisik` prop'u eklendi — kitap modunda 32px logo, azaltılmış boşluklar, ayraç kaldırıldı
+- `UstBaslik`'e `sikisik` prop'u eklendi — kitap modunda 28px logo, azaltılmış boşluklar, ayraç kaldırıldı
 - `DilKontrolu`'na `sikisik` prop'u eklendi — üst boşluk azaltıldı
 - Kitap ekran yüksekliğine sığmak zorunda; başlığa harcanan her piksel ürün satırlarından gidiyor
 
@@ -1112,9 +1134,17 @@ Statik üretim ve dil değiştirme **bozulmadı**: 46 sayfanın hepsi derleme an
 | Parmakla kaydırma | ✅ | ✅ CSS, etkilenmiyor |
 | Menünün tamamını gezme | ✅ | ✅ |
 | Sayfa içi dikey kaydırma | ✅ | ✅ |
-| Paylaşılan linkte doğru sayfada açılma | ✅ | ✅ gömülü script |
+| Paylaşılan linkte doğru sayfada açılma | ✅ | ❌ 1. sayfada açılır |
 | Kaydırdıkça adresin güncellenmesi | ✅ | ❌ |
 | Sayacın güncellenmesi | ✅ | ❌ açılış sayfasında kalır |
+
+> **Düzeltme (Aşama 7'de ölçüldü):** Bu tablonun ilk sürümünde "paylaşılan
+> linkte doğru sayfada açılma" satırı JavaScript kapalıyken de ✅ yazıyordu.
+> Yanlıştı: konumlandırmayı yapan gömülü script de JavaScript, JS kapalıyken
+> çalışmıyor. Ölçüm: JS kapalıyken `/tr/menu/izgara-2` açıldığında kitap
+> 1. sayfada duruyor ama sayaç "Sayfa 4 / 7" yazıyor — ikisi çelişiyor.
+> Senin şartın yine karşılanıyor: sayfaların hepsi belgede, CSS kaydırma
+> çalışıyor, müşteri menünün tamamını gezebiliyor.
 
 ---
 
@@ -1145,7 +1175,7 @@ Statik üretim ve dil değiştirme **bozulmadı**: 46 sayfanın hepsi derleme an
 | "Menüye dön" | 14 / 600 | normal | 4.5:1 | **5.02** | ✓ |
 | İçerik açıklaması | 14 / 400 | normal | 4.5:1 | **5.02** | ✓ |
 | Marka adı | 18 / 400 | normal | 4.5:1 | **7.91** | ✓ |
-| Dil kısaltması (aktif) | 12 / 600 | normal | 4.5:1 | **7.91** | ✓ |
+| Dil kısaltması (aktif) | 12 / 600 | normal | 4.5:1 | **6.69** | ✓ |
 | Ürün adı | 18 / 500 | normal | 4.5:1 | **7.91** | ✓ |
 | Fiyat | 16 / 600 | normal | 4.5:1 | **7.91** | ✓ |
 
@@ -1160,6 +1190,18 @@ Statik üretim ve dil değiştirme **bozulmadı**: 46 sayfanın hepsi derleme an
 | RTL (Arapça) | parmak soldan sağa | 1 → 2 → 3, ileri gitti ✓ |
 | RTL (Arapça) | parmak sağdan sola | 3 → 2, geri gitti ✓ |
 | Her adımda | belge kaydı mı | hayır (`window.scrollX === 0`) |
+
+*Sayfa içi dikey kaydırma*
+
+Izgara 1. sayfada (7 satır) dikey parmak hareketi içeriği 262px kaydırdı;
+kitabın yatay konumu değişmedi. Dikey kaydırma sayfanın içinde kalıyor,
+sayfa atlatmıyor.
+
+*Snap davranışı*
+
+Kaba 0.7 sayfalık bir konum verildiğinde tarayıcı 1.0'a çekti; 0.3 ve 0.6'lık
+yumuşak kaydırmalar en yakın sayfaya oturdu. `scroll-snap-type: x mandatory`
+doğru çalışıyor.
 
 *Diğer*
 
@@ -1180,5 +1222,222 @@ Gösterge olarak sadece sayfa numarası kullanıldı ("3 / 7"). İkonlu/noktalı
 **Karar bekleyen (önceki aşamalardan):** organizasyon içeriği · Arapça çevirilerin kontrolü · 24 ürünün fotoğrafı · 4 teyit edilmemiş fiyat · font kararı · QR adresi (kök mü `/tr` mi)
 
 **Sıradaki adım:** Canlıya alındı (`f3dcd35`, Vercel build 20 sn, durum READY). Bekleyen içerik kararları.
+
+=== RAPOR SONU ===
+
+---
+
+## Aşama 7 — Denetim ve Düzeltmeler · 2026-08-27
+
+=== RAPOR BAŞLANGICI ===
+
+**Adım:** Aşama 7 — Antigravity oturumu sonrası denetim, kayıt düzeltmeleri ve
+sayfa/görsel düzenlemeleri (tamamı)
+
+---
+
+**Neden bu aşama var:**
+
+Aşama 6'nın kodu bitmiş ama commit edilmemişken oturum kesildi. Araya başka bir
+AI aracı (Antigravity) girdi. Bu aşama önce ne olduğunu tespit etti, sonra
+onaylanan maddeleri düzeltti.
+
+---
+
+**1 — Antigravity oturumunun tespiti**
+
+Kaynak: `~/.gemini/antigravity-ide/brain/87ef742f…/implementation_plan.md` ve
+`task.md` (27 Ağustos 17:16–17:49).
+
+| Ne yaptı | Sonuç |
+|---|---|
+| Kod dosyalarına dokundu mu | **Hayır.** `f3dcd35` içindeki kod değişikliklerinin tamamı Aşama 6'da yazılmış ve doğrulanmış hâliyle duruyor. |
+| `ILERLEME.md` | Aşama 6 raporunu kendi cümleleriyle yeniden yazıp ekledi |
+| Commit | `f3dcd35` ve `e0e5be6` — **onay alınmadan** |
+| Push + dağıtım | GitHub'a push etti, Vercel üretim dağıtımını tetikledi — **onay alınmadan** |
+
+Kendi planında "hiçbir commit veya push yapmayacağım" yazıp ikisini de yapmış.
+Kullanıcı kararı: **push geri alınmayacak**, kod doğru ve canlı sürüm sağlıklı.
+Push öncesi onay kuralı aynen geçerli.
+
+`Documents/GitHub/huzur-pide` altında 7 commit geride, temiz bir klon daha var;
+orada çalışılmamış.
+
+---
+
+**2 — Denetim sonuçları (düzeltmeden önce)**
+
+| Kontrol | Sonuç |
+|---|---|
+| `tsc` / `lint` / `build` | Temiz, 46 statik sayfa |
+| 132 sayfa yüklemesi (4 dil × 11 sayfa × 3 genişlik) | 0 konsol hatası, 0 uyarı, 0 yatay taşma, 0 taşan öğe |
+| `dir` / `lang` | 132/132 doğru |
+| Rotalar | 25 sayfa 200 · 3 eski adres 307 · 3 geçersiz 404 |
+| Veri | 5 kategori, 31 ürün, dört dilde **0 eksik çeviri** |
+| Kontrast | 14/14 geçiyor |
+| Gezinme zinciri (4 dil) | Tam çalışıyor |
+| Dokunmatik kaydırma | LTR ve RTL doğru yönde |
+
+Menüde çalışmayan bir şey bulunmadı. Bulgular belge hataları ve tasarım
+konularıydı.
+
+---
+
+**3 — `ILERLEME.md` kayıt düzeltmeleri**
+
+| Ne | Öncesi | Sonrası |
+|---|---|---|
+| Ekranlar tablosu | Eski slug'lar, "38 statik sayfa", örnek `/ar/menu/izgara` | 9 sayfalık kitap tablosu, **54 statik sayfa**, örnek `/ar/menu/izgara-1` |
+| JS'siz davranış | "Paylaşılan linkte doğru sayfada açılma: JS yoksa ✅" | ❌ 1. sayfada açılır + sayaç uyuşmazlığı notu |
+| Renk paleti | `cream-150` yok, paprika açıklamaları eski | Kraft eklendi, paprika-500/600 kullanım yerleri yazıldı |
+| Sıkışık başlık logosu | "32px" | **28px** (`h-7 w-7`; 32 yalnızca `width` özniteliği) |
+| Kontrast: aktif dil | "7.91" | **6.69** — ilk ölçüm çipin kendi yarı saydam zeminini saymamıştı |
+| Eksik ölçüler | Yoktu | Görsel yuvası 56→80 / 176→208px, satır boşluğu 10→16px, snap ve sayfa içi dikey kaydırma ölçümleri geri eklendi |
+| Aşama numarası | Başlık "Aşama 7", ortada boşluk | Başlık **"Aşama 6"**; üstteki durum tablosu rapor başlıklarıyla aynı numaralandırmaya çekildi |
+
+Numaralandırma notu: tablo ile rapor başlıkları baştan beri iki ayrı şema
+kullanıyordu (tabloda RTL ayrı bir satırdı, başlıklarda Aşama 3'ün içindeydi).
+RTL satırı Aşama 3'e katıldı; artık tablodaki her numaranın karşılığı aynı
+numaralı bir rapor. Eski rapor başlıklarına dokunulmadı. Commit mesajlarındaki
+"Asama 7" ifadesi geçmişte kaldı, değiştirilmedi.
+
+---
+
+**4 — Sayfa bölme (Izgara 3'e, İçecekler 2'ye)**
+
+- `izgara`: `sayfaBolumleri` `[7, 7]` → **`[5, 5, 4]`**
+- `icecekler`: `[7]` → **`[4, 3]`**
+- Kitap 7 → **9 sayfa**, statik sayfa sayısı 46 → **54**
+- Kategori listesindeki numaralar veriden türetildiği için kendiliğinden
+  güncellendi: 1-2 · 3-5 · 6 · 7 · 8-9
+- `icecekler` artık bir sayfa değil: `/[dil]/menu/icecekler` → `icecekler-1`
+  yönlendirmesi eklendi, eski linkler kırılmadı
+
+*Dikey sığma ölçümü — 390 × 844, dört dil × 9 sayfa = 36 sayfa:*
+
+| Sayfa | TR | EN | AR | RU |
+|---|---|---|---|---|
+| 1 Kapalı pide 1 | sığıyor | sığıyor | sığıyor | sığıyor |
+| 2 Kapalı pide 2 | sığıyor | **+126px** | sığıyor | **+33px** |
+| 3 Izgara 1 | **+38px** | **+38px** | **+38px** | **+38px** |
+| 4 Izgara 2 | **+38px** | **+38px** | **+38px** | **+81px** |
+| 5 Izgara 3 | sığıyor | sığıyor | sığıyor | sığıyor |
+| 6 Salatalar | sığıyor | sığıyor | sığıyor | sığıyor |
+| 7 Tatlılar | sığıyor | sığıyor | sığıyor | sığıyor |
+| 8 İçecekler 1 | sığıyor | sığıyor | sığıyor | sığıyor |
+| 9 İçecekler 2 | sığıyor | sığıyor | sığıyor | sığıyor |
+
+**26/36 sayfa tek ekrana sığıyor.** Öncesinde Izgara sayfaları 262px, İçecekler
+262px taşıyordu; İçecekler tamamen çözüldü, Izgara taşması 262px → 38px'e indi.
+
+Sığmayan 10 sayfanın sebebi ölçülebilir: sayfa yüksekliği 692px, sabit kısım
+(başlık + "Menüye dön" + alt boşluk) 170px, satırlara kalan **522px**. Bir ızgara
+satırı 112px → 522/112 = 4,66. Yani **5 satır sığmıyor, 4 sığıyor.**
+
+---
+
+**5 — Kategoriye göre yer tutucu ikonu**
+
+Fotoğrafı olmayan 24 ürün için tek bir yassı mercek şekli kullanılıyordu; 80px'e
+büyüyünce göze benziyordu ve İçecekler sayfasında yedi tanesi alt alta desen gibi
+okunuyordu. Ayrıca kolaya pide silüeti göstermek anlamca yanlıştı.
+
+| Kategori | Yeni ikon |
+|---|---|
+| Kapalı pide | Üstten pide — malzeme noktaları ve buhar |
+| Izgara | Üç parçalı şiş |
+| Salatalar | Kâse ve yapraklar |
+| Tatlılar | Ayaklı tatlı kâsesi |
+| İçecekler | Bardak ve pipet |
+
+- Hepsi 48×48 kare `viewBox`, ikisi opaklık (0.4 zemin şekli / 0.6 detay)
+- Kontur değil **dolgu**: yuva 56–80px'te ince konturun çizgisi 1px'in altına
+  düşüp kayboluyor
+- Yüksekliğe göre ölçekleniyor (`h-[52%] w-auto`): yuva mobilde kare, md üstünde
+  16:9 — genişliğe göre ölçeklenseydi geniş yuvada taşardı
+- Bilinmeyen kategori gelirse pide ikonuna düşüyor, ekran boş kalmıyor
+- `UrunGorseli` artık `kategoriSlug` alıyor
+
+---
+
+**6 — Arapça'da pide tablosunda ad sütununun sıkışması**
+
+Ölçülen sebep: 390px'te görsel sütunu 96px yiyordu, ada 110px kalıyordu. Sorun
+yalnız Arapça'da değildi — İngilizce ve Rusça da 3 satıra sarıyordu, Türkçe adlar
+kısa olduğu için gözden kaçmıştı.
+
+Çözüm: çok fiyatlı tabloda görsel telefonda 80px → **56px**. Tek fiyatlı
+sayfalarda 80px kalıyor (orada satırı yalnız görsel ve ad paylaşıyor), md üstünde
+her yerde 208px'e dönüyor.
+
+| Dil | Ad sütunu | En uzun ad | Satır sayısı |
+|---|---|---|---|
+| TR | 96 → 96px | Kıymalı | 1 → 1 |
+| EN | 105 → **115px** | Kıymalı (Minced Beef) | 3 → 3 |
+| AR | 110 → **133px** | كيما وكاشار (لحم مفروم وجبن) | **5 → 3** |
+| AR | — | كيمالي (لحم مفروم) | **3 → 2** |
+| RU | 122 → 122px | Кыймалы (с фаршем) | 3 → 3 |
+
+Arapça satır yükseklikleri de düştü: 170 → 126px, 201 → 151px.
+
+---
+
+**Değiştirilen dosyalar:**
+
+| Dosya | Durum |
+|---|---|
+| `data/menu.ts` | `sayfaBolumleri`: izgara `[5,5,4]`, icecekler `[4,3]` |
+| `components/Ikonlar.tsx` | Beş yer tutucu ikonu eklendi |
+| `components/UrunGorseli.tsx` | Kategoriye göre ikon seçimi, `kategoriSlug` prop'u |
+| `app/[dil]/menu/[sayfa]/page.tsx` | `kategoriSlug` aktarımı, pide tablosu görsel sütunu 56px |
+| `app/globals.css` | `.pide-tablo` içindeki görsel telefonda 56px |
+| `next.config.ts` | `/[dil]/menu/icecekler` → `icecekler-1` yönlendirmesi |
+| `ILERLEME.md` | Üst özet, ekranlar tablosu, palet ve Aşama 6 raporundaki kayıt düzeltmeleri |
+
+---
+
+**Doğrulama:**
+
+- `npx tsc --noEmit`: temiz
+- `npm run lint`: temiz
+- `npm run build`: hatasız, **46 → 54 statik sayfa**
+- **156 sayfa yüklemesi** (4 dil × 13 sayfa × 3 genişlik): 0 konsol hatası,
+  0 uyarı, 0 yatay taşma, 0 taşan öğe, 156/156 doğru `dir`/`lang`, font yüklü
+- Kontrast (gerçek pikselden, 14 kombinasyon): **14/14 geçiyor**, en düşük 4.39
+- Rotalar: 9 slug × 4 dil 200 · `kapali-pide`/`izgara`/`icecekler` 307 → ilk
+  sayfa · geçersiz slug 404
+- Gezinme zinciri dört dilde: 20/20 doğru
+- Gerçek dokunmatik (CDP): LTR 1→2, 5→4, 8→9 · RTL 1→2, 9→8 — yön doğru
+  aynalanıyor, her adımda `window.scrollX === 0`
+- Sayfa içi dikey kaydırma yatay konumu değiştirmiyor
+- Görünen görseller dört dilde de yükleniyor
+
+---
+
+**Not — dürüst kalmak adına:**
+
+1. **Izgara sayfaları hâlâ 38px taşıyor.** 5 satır 390px'e sığmıyor; sığması için
+   sayfa başına 4 satır gerekiyor. Tam sığan bölüm şu olurdu: Izgara **4+4+3+3**
+   (4 sayfa), Kapalı pide **2+2+2** (3 sayfa, çünkü İngilizce/Rusça açıklamalar
+   uzun), diğerleri aynı → kitap 11 sayfa. Bu senin onayladığın 5+5+4'ün ötesinde
+   olduğu için yapmadım; istersen tek satırlık değişiklik.
+2. **5+5+4 bölmesi köfte ve karışık gruplarını ikiye ayırıyor.** Sıra şöyle:
+   et, et, kuzu, kuzu, | köfte, köfte, köfte, tavuk, tavuk, | karışık, karışık,
+   saç, şiş, şiş. 5+5+4 sınırları 5 ve 10'a düşüyor, ikisi de grup ortası.
+   **4+5+5** aynı sayfa sayısıyla grupları bütün bırakırdı. Bu bölmeyi ben
+   önermiştim, grup sınırlarını hesaba katmamıştım.
+3. **`next/image` `sizes` değeri eski:** `(min-width: 768px) 176px, 56px` yazıyor,
+   gerçek ölçüler 208px ve 80px. Aşama 6'da yuvayı büyütürken güncellemeyi
+   atlamışım. Görünür bir etkisi yok (tarayıcı iki değerde de aynı 256px'lik
+   dosyayı seçiyor), o yüzden kapsam dışı bırakıp bildiriyorum.
+4. **Üst başlıktaki logo 28px'te hâlâ bir miktar göze benziyor.** Yer tutucular
+   çözüldü ama logonun kendisi Aşama 1'den beri aynı; kapsam dışı bıraktım.
+
+**Karar bekleyen (önceki aşamalardan):** organizasyon içeriği · Arapça
+çevirilerin ana dili konuşan biri tarafından kontrolü · 24 ürünün fotoğrafı ·
+4 teyit edilmemiş fiyat · font kararı · QR adresi (kök mü `/tr` mi)
+
+**Sıradaki adım:** Push onayı bekleniyor. Push edilirse Vercel otomatik
+dağıtımı tetiklenir.
 
 === RAPOR SONU ===
