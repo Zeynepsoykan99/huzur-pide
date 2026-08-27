@@ -1,0 +1,40 @@
+/* ---------------------------------------------------------------
+   Huzur Pide — Tailwind'in kapsamadigi tabani detaylar.
+   Tailwind CDN yuklendikten SONRA okunur, bu yuzden burada yazilan
+   kurallar utility siniflarini gecersiz kilabilir; sadece gercekten
+   gerekli olanlar tutulur.
+   --------------------------------------------------------------- */
+
+/* Mobilde butona dokunurken beliren mavi/gri parlamayi kaldirir;
+   kendi :active durumumuz zaten geri bildirim veriyor. */
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* iOS'ta yatay tasma ve sayfanin yatay kaymasi engellenir. */
+body {
+  overflow-x: hidden;
+  text-rendering: optimizeLegibility;
+}
+
+/* Tam ekran yuksekligi: dvh destegi olmayan eski tarayicilar icin
+   vh'ye dusen bir yedek. Tailwind'in min-h-dvh'si uzerine binmez,
+   sadece o desteklenmiyorsa devreye girer. */
+@supports not (height: 1dvh) {
+  .min-h-dvh {
+    min-height: 100vh;
+  }
+}
+
+/* Hareket azaltma tercihini isletim sisteminden okur.
+   Vestibuler rahatsizligi olan kullanicilar icin animasyonlari kapatir. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

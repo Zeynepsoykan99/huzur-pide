@@ -4,13 +4,13 @@
 
 **Proje:** Huzur Pide dijital menü uygulaması
 **Güncel aşama:** Aşama 1 — Frontend / Tasarım (dil seçim ekranı)
-**Son güncelleme:** 2026-08-27 10:15
+**Son güncelleme:** 2026-08-27 10:23
 
 ### Genel Durum
 
 | Aşama | Konu | Durum |
 |---|---|---|
-| 1 | Dil seçim ekranı tasarımı | Devam ediyor (1/5 adım) |
+| 1 | Dil seçim ekranı tasarımı | Devam ediyor (3/5 adım) |
 | 2 | Menü sayfaları tasarımı | Başlanmadı |
 | 3 | Dil değiştirme mantığı + menü verisi | Başlanmadı |
 | 4 | RTL (Arapça) desteğinin devreye alınması | Başlanmadı |
@@ -18,8 +18,8 @@
 ### Aşama 1 Adımları
 
 - [x] Adım 1 — Proje iskeleti
-- [ ] Adım 2 — Bayrak SVG'leri
-- [ ] Adım 3 — index.html iskeleti ve genel layout
+- [x] Adım 2 — Bayrak SVG'leri
+- [x] Adım 3 — index.html iskeleti ve genel layout
 - [ ] Adım 4 — Dil butonları ve etkileşim durumları
 - [ ] Adım 5 — RTL hazırlığı, erişilebilirlik ve doğrulama
 
@@ -99,4 +99,40 @@ Alınan kararlar:
 - Toplam boyut 4 dosya için ~1.6 KB. Dış servise (flagcdn, emoji vb.) hiçbir bağımlılık yok; uygulama tamamen çevrimdışı da çalışır.
 - Bayraklarda beyaz alanlar var (RU, GB, AE); sütlü kahve buton zemini üzerinde kenarları kaybolmasın diye Adım 4'te bayraklara ince bir kenarlık (ring) eklenecek.
 Sıradaki adım: Adım 3 — `index.html` iskeleti: Tailwind Play CDN kurulumu, inline `tailwind.config` ile renk paleti tanımı, Google Fonts başlık fontu, mobile-first sayfa düzeni ve "Huzur Pide" logo/başlık alanı.
+=== RAPOR SONU ===
+
+---
+
+## 2026-08-27 10:23
+
+=== RAPOR BAŞLANGICI ===
+Adım: 3 — index.html iskeleti ve genel layout
+Yapılanlar:
+- `index.html` oluşturuldu: `<!DOCTYPE html>`, `<html lang="tr" dir="ltr">`, UTF-8, `viewport-fit=cover`'lı viewport meta'sı, `theme-color`, açıklama meta'sı
+- Tailwind Play CDN eklendi ve inline `tailwind.config` ile projenin renk paleti (`cream`, `latte`, `cocoa`) ve font aileleri (`display`, `body`) tanımlandı
+- Google Fonts'tan **Marcellus** başlık fontu `preconnect` + `display=swap` ile bağlandı
+- Sayfa iskeleti kuruldu: `header` (logo + başlık + ayraç + slogan), `main` (dil seçimi başlığı + boş `#language-list` konteyneri), `footer`
+- "Dil Seçiniz" başlığının altına dört dildeki karşılıkları eklendi; her biri kendi `lang` niteliğiyle, Arapça olan ayrıca `dir="rtl"` ile işaretlendi
+- `assets/logo.svg` çizildi: sütlü kahve halka içinde, kertikli hamur kenarı, malzemesi ve buharı olan pide silüeti
+- `assets/favicon.svg` çizildi: koyu kahve yuvarlak köşeli kare üzerinde sadeleştirilmiş pide, sekme ikonu için
+- `assets/css/custom.css` oluşturuldu: dokunma parlaması kapatma, yatay taşma engeli, `dvh` yedeği ve `prefers-reduced-motion` desteği
+- Sayfa 390x844 (iPhone) çözünürlüğünde tarayıcıda açılıp doğrulandı; konsolda hata yok
+Oluşturulan/Değiştirilen dosyalar:
+- `index.html` (yeni)
+- `assets/logo.svg` (yeni)
+- `assets/favicon.svg` (yeni)
+- `assets/css/custom.css` (yeni)
+- `ILERLEME.md` (güncellendi)
+Alınan kararlar:
+- **Palet Tailwind config'e isimlendirilmiş renk olarak taşındı** (`bg-cream-50`, `bg-latte-400`, `text-cocoa-900`). Sınıf isimleri hex kodlarıyla dolmuyor, ileride bir tonu değiştirmek tek satırlık iş oluyor. Paletin ara tonları da (`cream-200`, `latte-600`, `cocoa-700`) şimdiden tanımlandı.
+- **Arka plan düz renk değil, `cream-50` → `cream-100` dikey gradyan.** Tek bir bej düz ve cansız duruyordu; çok hafif bir geçiş sayfaya derinlik veriyor ama hâlâ istenen bej aralığının içinde.
+- **Başlık fontu Marcellus:** sıcak, klasik bir serif. Gövde metni bilinçli olarak sistem fontlarında bırakıldı — mobilde anında render olur, ikinci bir font indirmeyi beklemez. Menü uygulamasında okunabilirlik ve hız gövde için karakterden önemli.
+- **`min-h-dvh` kullanıldı** (`min-h-screen` değil). Mobil tarayıcılarda adres çubuğu görünüp kaybolurken `100vh` sayfayı kaydırıyor; `dvh` bunu çözüyor. Eski tarayıcılar için `custom.css` içinde `@supports` ile `vh` yedeği bırakıldı.
+- **Genişlik kademeli sınırlandı:** mobilde `max-w-md`, `sm:max-w-lg`, `lg:max-w-xl`. Menü tabletlerde ve masaüstünde ekranın tamamına yayılıp seyrelmiyor, ortada okunaklı bir sütun olarak kalıyor.
+- **`#language-list` boş bir konteyner olarak şimdiden konuldu**, `flex flex-col gap-3` ile. Adım 4'te butonlar buraya girecek; ileride JS ile dinamik üretilecekse de bağlanacağı kanca hazır.
+- **Logo başta "göz" gibi okunuyordu**; hamur kenarı inceltilip üzerine kertikler, dolgunun üzerine malzeme noktaları ve üste buhar eklenerek net bir pide silüetine dönüştürüldü ve tarayıcıda tekrar doğrulandı.
+- `<img>` etiketlerine `width`/`height` verildi — sayfa yüklenirken layout kayması (CLS) olmuyor.
+- Logo dekoratif olduğu için `alt=""` + `aria-hidden="true"`; hemen altındaki `<h1>` zaten aynı bilgiyi veriyor, ekran okuyucu iki kez okumasın diye.
+- Konsoldaki tek uyarı Tailwind CDN'in "üretimde kullanma" uyarısı; bu aşama için beklenen ve kabul edilmiş bir durum, canlıya çıkmadan önce Tailwind CLI build'ine geçilecek.
+Sıradaki adım: Adım 4 — Dört dil butonunun tasarımı: sabit genişlikli bayrak slotu, dil adının kendi dilinde yazımı, hover/active/focus durumları, mobilde dikey liste ve masaüstünde 2x2 grid düzeni.
 === RAPOR SONU ===

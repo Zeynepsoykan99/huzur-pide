@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none" role="img" aria-label="Huzur Pide logosu">
+  <title>Huzur Pide</title>
+
+  <circle cx="50" cy="50" r="46" stroke="#C8A27A" stroke-width="1.75"/>
+
+  <!-- Kabaran hamur kenari: iki ucu sivri pide silueti -->
+  <path d="M9 53.5C23 34 77 34 91 53.5 77 68 23 68 9 53.5Z"
+        fill="#C8A27A" stroke="#96745A" stroke-width="2.25" stroke-linejoin="round"/>
+
+  <!-- Ic dolgu: ince bir kenar birakacak kadar genis -->
+  <path d="M19.5 53C31.5 40 68.5 40 80.5 53 68.5 63 31.5 63 19.5 53Z" fill="#6B5342"/>
+
+  <!-- Dolgu uzerinde susam / malzeme -->
+  <g fill="#EDE0D4" fill-opacity=".8">
+    <circle cx="36" cy="50.5" r="2"/>
+    <circle cx="50.5" cy="54.5" r="2.4"/>
+    <circle cx="63" cy="49" r="1.8"/>
+  </g>
+
+  <!-- Hamur kenarindaki kertikler -->
+  <g stroke="#96745A" stroke-width="1.9" stroke-linecap="round" stroke-opacity=".75">
+    <path d="M27 44.5 25.5 41M39 40.5 38 37M51 39V35.5M63 40.5 64 37M75 44.5 76.5 41"/>
+  </g>
+
+  <!-- Sicak firindan cikan buhar -->
+  <g stroke="#C8A27A" stroke-width="2" stroke-linecap="round" stroke-opacity=".65">
+    <path d="M40 29c-2.5-3 2.5-5 0-8M50 26c-2.5-3 2.5-5.5 0-8.5M60 29c-2.5-3 2.5-5 0-8"/>
+  </g>
+</svg>
