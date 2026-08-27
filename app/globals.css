@@ -193,25 +193,27 @@
 
   /* --- Ekran B: urun satirlari --- */
 
-  /* Gorsel yuvasi. Mobilde her satirda 3.5rem genisliginde duruyor —
-     gorseli olmayan urunlerde bos kaliyor ki adlar ayni hizada bassin.
-     md ve ustunde bos yuvalar kapaniyor, dolu olanlar buyuyor. */
+  /* Gorsel yuvasi. Her satirda ayni genislikte — fotografi olmayan urunde
+     yer tutucu duruyor, bos kalmiyor. Sabit genislik sayesinde butun urun
+     adlari ayni hizada basliyor ve fotograf eklendiginde duzen degismiyor. */
   .gorsel-yuvasi {
-    @apply w-14 shrink-0;
-  }
-
-  .gorsel-yuvasi-bos {
-    @apply md:w-0;
-  }
-
-  .gorsel-yuvasi-dolu {
-    @apply md:w-44;
+    @apply w-14 shrink-0 md:w-44;
   }
 
   /* Mobilde kare kirpilmis kucuk gorsel, md ustunde 16:9 tam gorsel. */
   .urun-gorsel {
     @apply aspect-square w-14 rounded-lg object-cover
            ring-1 ring-cocoa-900/15 shadow-sm shadow-cocoa-900/15
+           md:aspect-video md:w-44;
+  }
+
+  /* Fotografi olmayan urunler icin yer tutucu. Gorselle birebir ayni olcu:
+     fotograf eklendiginde satir hizasi degismiyor. Golge YOK — yer tutucu
+     one cikmamali, sadece bosluk dolduruyor. */
+  .urun-gorsel-yer-tutucu {
+    @apply flex aspect-square w-14 items-center justify-center rounded-lg
+           bg-cream-200/70 text-latte-600/60
+           ring-1 ring-latte-600/20 ring-inset
            md:aspect-video md:w-44;
   }
 

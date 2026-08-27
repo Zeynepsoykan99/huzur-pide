@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { UstBaslik } from "@/components/UstBaslik";
+import { UrunGorseli } from "@/components/UrunGorseli";
 import {
   MENU,
   fiyatYaz,
@@ -31,31 +31,11 @@ export async function generateMetadata({
 }
 
 /* ---------------------------------------------------------------------------
-   Ürün görseli
-
-   Mobilde 3.5rem'lik kare bir küçük görsel, md ve üstünde 11rem'lik 16:9.
-   `sizes` sayesinde telefona 800px'lik dosya inmiyor.
-   --------------------------------------------------------------------------- */
-function UrunGorseli({ urun }: { urun: Urun }) {
-  if (!urun.gorsel) return null;
-  return (
-    <Image
-      src={urun.gorsel.src}
-      alt={metin(urun.gorsel.alt, DIL)}
-      width={urun.gorsel.genislik}
-      height={urun.gorsel.yukseklik}
-      sizes="(min-width: 768px) 176px, 56px"
-      className="urun-gorsel"
-    />
-  );
-}
-
-/* ---------------------------------------------------------------------------
    Tek fiyatlı kategoriler:  [görsel] Ad ................. 500 ₺
 
-   Görsel yuvası her satırda var — görseli olmayan üründe boş kalıyor ki bütün
-   adlar aynı hizada başlasın. md ve üstünde boş yuvalar kapanıyor, dolu olanlar
-   büyüyor ve sırayla bir başta bir sonda duruyor.
+   Görsel yuvası her satırda aynı genişlikte: fotoğrafı olan ürün fotoğrafını,
+   olmayan yer tutucusunu gösteriyor. md ve üstünde yuva büyüyor ve sırayla bir
+   başta bir sonda duruyor.
 
    Taraf değiştirmek için `order` kullanılıyor, `ml/mr` değil: `order` yazma
    yönüne göre çalıştığından dir="rtl" verildiğinde alternasyon da kendiliğinden
@@ -65,17 +45,8 @@ function TekFiyatliSatir({ urun, sonTarafta }: { urun: Urun; sonTarafta: boolean
   const fiyat = urun.fiyatlar[0];
   return (
     <li className="urun-satir">
-      <span
-        className={[
-          "gorsel-yuvasi",
-          urun.gorsel ? "gorsel-yuvasi-dolu" : "gorsel-yuvasi-bos",
-          urun.gorsel && sonTarafta ? "md:order-last" : "",
-        ]
-          .filter(Boolean)
-          .join(" ")}
-        aria-hidden={urun.gorsel ? undefined : true}
-      >
-        <UrunGorseli urun={urun} />
+      <span className={`gorsel-yuvasi ${sonTarafta ? "md:order-last" : ""}`}>
+        <UrunGorseli urun={urun} dil={DIL} />
       </span>
 
       <div className="urun-govde">
@@ -92,15 +63,13 @@ function TekFiyatliSatir({ urun, sonTarafta }: { urun: Urun; sonTarafta: boolean
 }
 
 function TekFiyatliListe({ kategori }: { kategori: Kategori }) {
-  // Alternasyon sayacı: yalnızca görseli OLAN ürünler sayılıyor, aradaki
-  // görselsiz ürünler sırayı bozmasın diye dizi indeksi kullanılmıyor.
-  let gorselSirasi = 0;
+  // Artık her satırda görsel alanı var (fotoğraf ya da yer tutucu), bu yüzden
+  // alternasyon doğrudan sıra numarasından geliyor.
   return (
     <ul className="mt-7">
-      {kategori.urunler.map((urun) => {
-        const sonTarafta = urun.gorsel ? gorselSirasi++ % 2 === 1 : false;
-        return <TekFiyatliSatir key={urun.id} urun={urun} sonTarafta={sonTarafta} />;
-      })}
+      {kategori.urunler.map((urun, i) => (
+        <TekFiyatliSatir key={urun.id} urun={urun} sonTarafta={i % 2 === 1} />
+      ))}
     </ul>
   );
 }
@@ -148,7 +117,7 @@ function CokFiyatliTablo({ kategori }: { kategori: Kategori }) {
         {kategori.urunler.map((urun) => (
           <tr key={urun.id}>
             <td className="pide-gorsel-hucre">
-              <UrunGorseli urun={urun} />
+              <UrunGorseli urun={urun} dil={DIL} />
             </td>
             <th scope="row" className="pide-ad-hucre">
               <div className="ayrac-satir">

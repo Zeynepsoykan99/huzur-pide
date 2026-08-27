@@ -52,23 +52,40 @@ export type Fiyat = {
   dogrulandi: boolean;
 };
 
+export type Gorsel = {
+  /** public/ altındaki yol. */
+  src: string;
+  /** Görselin ekran okuyucuya okunacak açıklaması. */
+  alt: Cevrilebilir;
+  genislik: number;
+  yukseklik: number;
+};
+
 export type Urun = {
   /** Kategori içinde tekil, URL ve React key olarak kullanılır. */
   id: string;
   ad: Cevrilebilir;
+  /**
+   * Kısa içerik/malzeme açıklaması. Tek satır, malzeme sıralaması.
+   *
+   * Türkçe metin burada duruyor ama TÜRKÇE EKRANDA GÖSTERİLMİYOR — yerel
+   * müşteri ürünü zaten tanıyor. Açıklama yalnızca en/ar/ru için render
+   * ediliyor; Türkçe alan çevirilerin kaynağı ve işletmenin onayladığı metin.
+   *
+   * `null` = bu ürüne açıklama gerekmiyor (Kola, Fanta, Su).
+   */
+  icerik: Cevrilebilir | null;
   fiyatlar: Fiyat[];
   /**
    * Ürün görseli. Yalnızca elimizde gerçekten o ürüne ait bir fotoğraf varsa
    * doldurulur; benzer bir ürünün fotoğrafı kullanılmaz.
+   *
+   * Alan ZORUNLU ve `null` olabilir — opsiyonel değil. Böylece fotoğrafı
+   * olmayan her ürün veri dosyasında `gorsel: null,` satırıyla açıkça
+   * görünüyor; fotoğraf gelince o satırı doldurmak yetiyor, hangi ürünün
+   * eksik olduğunu aramak gerekmiyor. `gorselsizUrunler()` de bunu listeler.
    */
-  gorsel?: {
-    /** public/ altındaki yol. */
-    src: string;
-    /** Görselin ekran okuyucuya okunacak açıklaması. */
-    alt: Cevrilebilir;
-    genislik: number;
-    yukseklik: number;
-  };
+  gorsel: Gorsel | null;
 };
 
 export type Kategori = {
@@ -121,6 +138,7 @@ export const MENU: Kategori[] = [
       {
         id: "kiymali",
         ad: { tr: "Kıymalı" },
+        icerik: { tr: "Dana kıyma, soğan, domates, biber, maydanoz" },
         fiyatlar: [
           // 1 Hamur fiyatı işletmeyle teyit edilmedi.
           { sutun: "hamur1", tutar: 200, dogrulandi: false },
@@ -137,6 +155,7 @@ export const MENU: Kategori[] = [
       {
         id: "kasarli",
         ad: { tr: "Kaşarlı" },
+        icerik: { tr: "Kaşar peyniri" },
         fiyatlar: [
           // 1 Hamur ve Düble fiyatları işletmeyle teyit edilmedi.
           { sutun: "hamur1", tutar: 200, dogrulandi: false },
@@ -144,28 +163,34 @@ export const MENU: Kategori[] = [
           { sutun: "duble", tutar: 400, dogrulandi: false },
         ],
         // Sitede "Peynirli Pide" görseli var ama o farklı bir ürün; kullanılmadı.
+              gorsel: null,
       },
       {
         id: "sucuklu",
         ad: { tr: "Sucuklu" },
+        icerik: { tr: "Dilimlenmiş sucuk, kaşar peyniri" },
         fiyatlar: [
           { sutun: "hamur1", tutar: 200, dogrulandi: true },
           { sutun: "hamur15", tutar: 300, dogrulandi: true },
           { sutun: "duble", tutar: 400, dogrulandi: true },
         ],
+              gorsel: null,
       },
       {
         id: "kiyma-kasar",
         ad: { tr: "Kıyma & Kaşar" },
+        icerik: { tr: "Dana kıyma, kaşar peyniri" },
         fiyatlar: [
           { sutun: "hamur1", tutar: 220, dogrulandi: true },
           { sutun: "hamur15", tutar: 330, dogrulandi: true },
           { sutun: "duble", tutar: 440, dogrulandi: true },
         ],
+              gorsel: null,
       },
       {
         id: "karisik",
         ad: { tr: "Karışık" },
+        icerik: { tr: "Dana kıyma, sucuk, kaşar peyniri" },
         fiyatlar: [
           { sutun: "hamur1", tutar: 240, dogrulandi: true },
           { sutun: "hamur15", tutar: 350, dogrulandi: true },
@@ -181,12 +206,14 @@ export const MENU: Kategori[] = [
       {
         id: "lahmacun",
         ad: { tr: "Lahmacun" },
+        icerik: { tr: "İnce hamur, dana kıyma, soğan, domates, biber, maydanoz" },
         fiyatlar: [
           { sutun: "hamur1", tutar: 100, dogrulandi: true },
           // Lahmacun'un 1,5 Hamur ve Düble karşılığı yok.
           { sutun: "hamur15", tutar: null, dogrulandi: true },
           { sutun: "duble", tutar: null, dogrulandi: true },
         ],
+              gorsel: null,
       },
     ],
   },
@@ -198,14 +225,15 @@ export const MENU: Kategori[] = [
     sayfaNo: "3-4",
     sutunlar: TEK_SUTUN,
     urunler: [
-      { id: "et-izgara-kg", ad: { tr: "Et Izgara 1 KG" }, fiyatlar: tek(1500) },
-      { id: "et-izgara-porsiyon", ad: { tr: "Et Izgara Porsiyon" }, fiyatlar: tek(500) },
-      { id: "kuzu-izgara-kg", ad: { tr: "Kuzu Izgara 1 KG" }, fiyatlar: tek(1700) },
-      { id: "kuzu-izgara-porsiyon", ad: { tr: "Kuzu Izgara Porsiyon" }, fiyatlar: tek(550) },
-      { id: "kofte-izgara-kg", ad: { tr: "Köfte Izgara 1 KG" }, fiyatlar: tek(1300) },
+      { id: "et-izgara-kg", ad: { tr: "Et Izgara 1 KG" }, icerik: { tr: "Izgarada dana eti" }, fiyatlar: tek(1500), gorsel: null },
+      { id: "et-izgara-porsiyon", ad: { tr: "Et Izgara Porsiyon" }, icerik: { tr: "Izgarada dana eti" }, fiyatlar: tek(500), gorsel: null },
+      { id: "kuzu-izgara-kg", ad: { tr: "Kuzu Izgara 1 KG" }, icerik: { tr: "Izgarada kuzu eti" }, fiyatlar: tek(1700), gorsel: null },
+      { id: "kuzu-izgara-porsiyon", ad: { tr: "Kuzu Izgara Porsiyon" }, icerik: { tr: "Izgarada kuzu eti" }, fiyatlar: tek(550), gorsel: null },
+      { id: "kofte-izgara-kg", ad: { tr: "Köfte Izgara 1 KG" }, icerik: { tr: "Izgarada dana kıymalı köfte" }, fiyatlar: tek(1300), gorsel: null },
       {
         id: "kofte-izgara-porsiyon",
         ad: { tr: "Köfte Izgara Porsiyon (6 adet köfte)" },
+        icerik: { tr: "Izgarada dana kıymalı köfte, 6 adet" },
         fiyatlar: tek(400),
         gorsel: {
           src: "/urunler/kofte-izgara.webp",
@@ -217,18 +245,23 @@ export const MENU: Kategori[] = [
       {
         id: "kofte-izgara-bucuk-porsiyon",
         ad: { tr: "Köfte Izgara 1,5 Porsiyon (8-9 adet)" },
+        icerik: { tr: "Izgarada dana kıymalı köfte, 8-9 adet" },
         fiyatlar: tek(500),
+              gorsel: null,
       },
-      { id: "tavuk-izgara-kg", ad: { tr: "Tavuk Izgara 1 KG" }, fiyatlar: tek(700) },
-      { id: "tavuk-porsiyon", ad: { tr: "Tavuk Porsiyon" }, fiyatlar: tek(350) },
+      { id: "tavuk-izgara-kg", ad: { tr: "Tavuk Izgara 1 KG" }, icerik: { tr: "Izgarada tavuk eti" }, fiyatlar: tek(700), gorsel: null },
+      { id: "tavuk-porsiyon", ad: { tr: "Tavuk Porsiyon" }, icerik: { tr: "Izgarada tavuk eti" }, fiyatlar: tek(350), gorsel: null },
       {
         id: "karisik-izgara-kg",
         ad: { tr: "Karışık Izgara 1 KG" },
+        icerik: { tr: "Izgarada dana eti, kuzu eti, köfte ve tavuk" },
         fiyatlar: tek(1700),
+              gorsel: null,
       },
       {
         id: "karisik-izgara-porsiyon",
         ad: { tr: "Karışık Izgara Porsiyon" },
+        icerik: { tr: "Izgarada dana eti, kuzu eti, köfte ve tavuk" },
         fiyatlar: tek(600),
         gorsel: {
           src: "/urunler/karisik-izgara.webp",
@@ -237,10 +270,11 @@ export const MENU: Kategori[] = [
           yukseklik: 450,
         },
       },
-      { id: "sac-kavurma", ad: { tr: "Saç Kavurma" }, fiyatlar: tek(500) },
+      { id: "sac-kavurma", ad: { tr: "Saç Kavurma" }, icerik: { tr: "Sacda kavrulmuş dana eti, biber, domates, soğan" }, fiyatlar: tek(500), gorsel: null },
       {
         id: "et-sis",
         ad: { tr: "Et Şiş" },
+        icerik: { tr: "Şişe dizilmiş dana eti, ızgarada" },
         fiyatlar: tek(500),
         gorsel: {
           src: "/urunler/et-sis.webp",
@@ -249,7 +283,7 @@ export const MENU: Kategori[] = [
           yukseklik: 450,
         },
       },
-      { id: "tavuk-sis", ad: { tr: "Tavuk Şiş" }, fiyatlar: tek(300) },
+      { id: "tavuk-sis", ad: { tr: "Tavuk Şiş" }, icerik: { tr: "Şişe dizilmiş tavuk eti, ızgarada" }, fiyatlar: tek(300), gorsel: null },
     ],
   },
 
@@ -259,7 +293,7 @@ export const MENU: Kategori[] = [
     ad: { tr: "Salatalar" },
     sayfaNo: "5",
     sutunlar: TEK_SUTUN,
-    urunler: [{ id: "coban-salata", ad: { tr: "Çoban Salata" }, fiyatlar: tek(100) }],
+    urunler: [{ id: "coban-salata", ad: { tr: "Çoban Salata" }, icerik: { tr: "Domates, salatalık, soğan, yeşil biber, maydanoz, zeytinyağı" }, fiyatlar: tek(100), gorsel: null }],
   },
 
   /* ---------------------------------------------------------------- 4 */
@@ -269,10 +303,11 @@ export const MENU: Kategori[] = [
     sayfaNo: "6",
     sutunlar: TEK_SUTUN,
     urunler: [
-      { id: "kunefe", ad: { tr: "Künefe" }, fiyatlar: tek(200) },
+      { id: "kunefe", ad: { tr: "Künefe" }, icerik: { tr: "Kadayıf, tel peynir, şerbet, üzerine antep fıstığı" }, fiyatlar: tek(200), gorsel: null },
       {
         id: "sutlac",
         ad: { tr: "Sütlaç" },
+        icerik: { tr: "Süt, pirinç, şeker, fırında" },
         fiyatlar: tek(170),
         gorsel: {
           src: "/urunler/sutlac.webp",
@@ -284,6 +319,7 @@ export const MENU: Kategori[] = [
       {
         id: "kabak-tatlisi",
         ad: { tr: "Kabak Tatlısı" },
+        icerik: { tr: "Balkabağı, şeker, üzerine ceviz" },
         // Fiyat işletmeyle teyit edilmedi.
         fiyatlar: tek(150, false),
         gorsel: {
@@ -304,13 +340,13 @@ export const MENU: Kategori[] = [
     sutunlar: TEK_SUTUN,
     // Bu kategorinin içeriği huzurpide.com.tr/menu adresinden alındı.
     urunler: [
-      { id: "kola", ad: { tr: "Kola" }, fiyatlar: tek(80) },
-      { id: "fanta", ad: { tr: "Fanta" }, fiyatlar: tek(80) },
-      { id: "soda", ad: { tr: "Soda" }, fiyatlar: tek(40) },
-      { id: "ayran", ad: { tr: "Ayran" }, fiyatlar: tek(50) },
-      { id: "komposto", ad: { tr: "Komposto" }, fiyatlar: tek(80) },
-      { id: "meyveli-soda", ad: { tr: "Meyveli Soda" }, fiyatlar: tek(40) },
-      { id: "su", ad: { tr: "Su" }, fiyatlar: tek(10) },
+      { id: "kola", ad: { tr: "Kola" }, icerik: null, fiyatlar: tek(80), gorsel: null },
+      { id: "fanta", ad: { tr: "Fanta" }, icerik: null, fiyatlar: tek(80), gorsel: null },
+      { id: "soda", ad: { tr: "Soda" }, icerik: { tr: "Maden suyu" }, fiyatlar: tek(40), gorsel: null },
+      { id: "ayran", ad: { tr: "Ayran" }, icerik: { tr: "Yoğurt, su, tuz" }, fiyatlar: tek(50), gorsel: null },
+      { id: "komposto", ad: { tr: "Komposto" }, icerik: { tr: "Kaynatılmış meyve ve şerbeti" }, fiyatlar: tek(80), gorsel: null },
+      { id: "meyveli-soda", ad: { tr: "Meyveli Soda" }, icerik: { tr: "Meyve aromalı maden suyu" }, fiyatlar: tek(40), gorsel: null },
+      { id: "su", ad: { tr: "Su" }, icerik: null, fiyatlar: tek(10), gorsel: null },
     ],
   },
 ];
@@ -386,4 +422,20 @@ export function eksikCeviriler(dil: Exclude<DilKodu, "tr">): string[] {
     }
   }
   return eksik;
+}
+
+/**
+ * Fotoğrafı henüz olmayan ürünleri listeler. Ekranda yer tutucu gösteriliyor;
+ * fotoğraf geldiğinde ilgili ürünün `gorsel: null` satırını doldurmak yeterli.
+ */
+export function gorselsizUrunler(): { kategori: string; urunId: string; urun: string }[] {
+  const sonuc: { kategori: string; urunId: string; urun: string }[] = [];
+  for (const kategori of MENU) {
+    for (const urun of kategori.urunler) {
+      if (urun.gorsel === null) {
+        sonuc.push({ kategori: kategori.slug, urunId: urun.id, urun: urun.ad.tr });
+      }
+    }
+  }
+  return sonuc;
 }
