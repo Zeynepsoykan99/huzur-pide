@@ -130,4 +130,149 @@
     @apply text-cocoa-900/70;
     --arrow-shift: 0.25rem;
   }
+
+  /* ======================================================================
+     Menu sayfalari
+     ====================================================================== */
+
+  /* Her menu sayfasinin ortak govde genisligi. QR menu telefondan
+     acilacagi icin taban 28rem; buyuk ekranda okunakli bir sutun olarak
+     kaliyor, sayfaya yayilmiyor. */
+  .menu-sayfa {
+    @apply mx-auto w-full max-w-md px-5 pb-16 sm:max-w-lg sm:px-6 lg:max-w-2xl;
+  }
+
+  /* --- Noktali ayracli satir (hem icindekiler hem fiyat satirlari) ---
+     .nokta bos bir eleman; icine sifir genislikli bosluk konarak metin
+     temel cizgisi kazaniyor, boylece items-baseline ile ad ve deger
+     satirina tam oturuyor. */
+  /* items-baseline-last: urun adi iki satira tastiginda noktalar ve fiyat
+     adin SON satirinin hizasina oturuyor. Duz items-baseline olsaydi fiyat
+     ilk satirin yanina, yani adin ortasina denk gelirdi. */
+  .ayrac-satir {
+    @apply flex items-baseline-last gap-2;
+  }
+
+  /* self-baseline VERILMEZ: kapsayicidan items-baseline-last miras alsin,
+     yoksa ad iki satira tastiginda noktalar ilk satirda kalirdi. */
+  .nokta {
+    @apply min-w-6 flex-1 -translate-y-[0.22em]
+           border-b-2 border-dotted border-cocoa-900/30;
+  }
+
+  .nokta::before {
+    content: "\200B"; /* zero-width space */
+  }
+
+  /* --- Ekran A: icindekiler --- */
+  /* Not: Tailwind v4'te @apply yalnizca gercek utility'lerle calisiyor,
+     baska bir bilesen sinifi (.ayrac-satir) uygulanamiyor — bu yuzden
+     hizalama kurallari burada tekrar yaziliyor. */
+  .icindekiler-satir {
+    @apply flex items-baseline-last gap-2
+           w-full rounded-xl px-3 py-3.5 text-start
+           outline-hidden transition-colors duration-150
+           hover:bg-cream-200/50
+           focus-visible:outline-solid focus-visible:outline-2
+           focus-visible:outline-offset-2 focus-visible:outline-cocoa-900;
+  }
+
+  /* 24px (WCAG'in "buyuk metin" esigi) bilincli bir secim: paprika-500 bu
+     puntonun altinda normal metin sayiliyor ve 4.5:1 esigini geciremiyordu
+     (satir hover'inda 3.54:1'e kadar dusuyor). 24px'te esik 3:1 oluyor ve
+     rahat geciliyor. Fontu koyulastirmak da bir secenekti ama Marcellus'un
+     tek agirligi var, tarayici sahte kalin uretirdi. */
+  .icindekiler-ad {
+    @apply font-display text-2xl leading-snug text-paprika-500;
+  }
+
+  .icindekiler-sayfa {
+    @apply shrink-0 text-base font-semibold whitespace-nowrap tabular-nums
+           text-cocoa-700 sm:text-lg;
+  }
+
+  /* --- Ekran B: urun satirlari --- */
+
+  /* Gorsel yuvasi. Mobilde her satirda 3.5rem genisliginde duruyor —
+     gorseli olmayan urunlerde bos kaliyor ki adlar ayni hizada bassin.
+     md ve ustunde bos yuvalar kapaniyor, dolu olanlar buyuyor. */
+  .gorsel-yuvasi {
+    @apply w-14 shrink-0;
+  }
+
+  .gorsel-yuvasi-bos {
+    @apply md:w-0;
+  }
+
+  .gorsel-yuvasi-dolu {
+    @apply md:w-44;
+  }
+
+  /* Mobilde kare kirpilmis kucuk gorsel, md ustunde 16:9 tam gorsel. */
+  .urun-gorsel {
+    @apply aspect-square w-14 rounded-lg object-cover
+           ring-1 ring-cocoa-900/15 shadow-sm shadow-cocoa-900/15
+           md:aspect-video md:w-44;
+  }
+
+  .urun-satir {
+    @apply flex items-center gap-3 py-2.5 md:gap-5 md:py-3;
+  }
+
+  .urun-govde {
+    @apply min-w-0 flex-1;
+  }
+
+  .urun-ad {
+    @apply text-base leading-snug font-medium text-cocoa-900 sm:text-lg;
+  }
+
+  .urun-fiyat {
+    @apply shrink-0 text-sm font-semibold whitespace-nowrap tabular-nums
+           text-cocoa-900 sm:text-base;
+  }
+
+  /* Fiyati teyit edilmemis kalem: gorsel olarak ayirt edilmiyor (musteri
+     icin fiyat fiyattir), sadece isaretleniyor ki admin panelinde ve
+     testlerde bulunabilsin. */
+  .urun-fiyat[data-dogrulandi="false"] {
+    @apply text-cocoa-900;
+  }
+
+  /* --- Cok fiyatli kategori (kapali pideler) ---
+     Gercek bir <table>: veri zaten tablo (urun x hamur boyu -> fiyat).
+     Tablo sutunlari kendiliginden hizalandigi icin baslik satiri ile fiyat
+     hucreleri piksel piksel ustuste oturuyor; ayrica <th scope="col">
+     sayesinde ekran okuyucu her hucrenin hangi sutuna ait oldugunu
+     kendiliginden soyluyor. dir="rtl" verildiginde tablo da aynalanir. */
+  .pide-tablo {
+    @apply w-full border-collapse;
+  }
+
+  /* ps-* fiyat hucreleriyle ayni: basliklar da hucreler de ayni ic bosluga
+     sahip olsun ki dar sutunlarda birbirine yapismasinlar. */
+  .pide-sutun-basligi {
+    @apply border-b border-latte-400/60 pb-1.5 ps-2 text-end
+           text-[0.6875rem] leading-tight font-semibold tracking-wide
+           text-cocoa-700 uppercase sm:ps-3 sm:text-xs;
+  }
+
+  /* whitespace-nowrap: dar ekranda sutun sikistiginda "400" ile "TL"nin
+     alt alta dusmesini engeller. Ad sutunu zaten esnek, o sarabilir. */
+  .pide-hucre {
+    @apply py-2.5 ps-2 text-end align-middle text-sm font-semibold
+           whitespace-nowrap tabular-nums text-cocoa-900 sm:ps-3 sm:text-base;
+  }
+
+  .pide-hucre-bos {
+    @apply text-cocoa-700/40;
+  }
+
+  .pide-ad-hucre {
+    @apply py-2.5 align-middle;
+  }
+
+  .pide-gorsel-hucre {
+    @apply py-2.5 pe-3 align-middle;
+  }
 }

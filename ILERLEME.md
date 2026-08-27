@@ -3,15 +3,15 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 2 — Menü sayfaları (3/7 adım)
-**Son güncelleme:** 2026-08-27 11:50
+**Güncel aşama:** Aşama 2 tamamlandı — sıradaki: Aşama 3 (dil mantığı + çeviriler)
+**Son güncelleme:** 2026-08-27 12:15
 
 ### Genel Durum
 
 | Aşama | Konu | Durum |
 |---|---|---|
 | 1 | Dil seçim ekranı tasarımı | **Tamamlandı** (5/5 adım) |
-| 2 | Menü sayfaları tasarımı | Devam ediyor (3/7 adım) |
+| 2 | Menü sayfaları tasarımı | **Tamamlandı** (7/7 adım) |
 | 3 | Dil değiştirme mantığı + menü verisi | Başlanmadı |
 | 4 | RTL (Arapça) desteğinin devreye alınması | Başlanmadı |
 
@@ -28,14 +28,26 @@
 - [x] Adım 0 — Next.js'e geçiş
 - [x] Adım 1 — GitHub
 - [x] Adım 2 — Veri modeli
-- [ ] Adım 3 — Ekran A: Kategori listesi
-- [ ] Adım 4 — Ekran B: Kategori sayfaları
-- [ ] Adım 5 — Görseller
-- [ ] Adım 6 — Doğrulama
+- [x] Adım 3 — Ekran A: Kategori listesi
+- [x] Adım 4 — Ekran B: Kategori sayfaları
+- [x] Adım 5 — Görseller
+- [x] Adım 6 — Doğrulama
 
 ### Depo
 
 https://github.com/Zeynepsoykan99/huzur-pide (private, dal: `main`)
+
+### Ekranlar
+
+| Yol | Ekran |
+|---|---|
+| `/` | Dil seçimi (Aşama 1) |
+| `/menu` | Ekran A — kategori listesi |
+| `/menu/kapali-pide` | Ekran B — Kapalı Pide Çeşitleri |
+| `/menu/izgara` | Ekran B — Izgara Çeşitleri |
+| `/menu/salatalar` | Ekran B — Salatalar |
+| `/menu/tatlilar` | Ekran B — Tatlı Çeşitleri |
+| `/menu/icecekler` | Ekran B — İçecekler |
 
 ### Aşama 1 Çıktısı
 
@@ -75,10 +87,11 @@ yapmıyor — bu bilinçli, Aşama 3'te bağlanacak.
 
 ### Rapor Biçimi
 
-Aşama 1 raporları sonradan **tek birleşik rapor** hâlinde toplandı. Aşama 2 için
-Zeynep tekrar **adım adım rapor** istedi; bu aşamanın raporları her adım sonunda
-ayrı blok olarak ekleniyor. Aşama sonunda istenirse yine tek rapora toplanabilir.
-Her durumda özet bölümü güncellenir, önceki raporların üzerine yazılmaz.
+**Aşama başına tek birleşik rapor.** İş tamamen bitmeden rapor yazılmaz, adımlar
+arasında ara durum mesajı verilmez. Aşama bitince yukarıdaki özet güncellenir ve
+dosyanın sonuna o aşamanın tek raporu eklenir; önceki raporların üzerine yazılmaz.
+İstisna: plan onayı, GitHub push onayı, eksik/belirsiz içerik ve engel durumları —
+bunlarda çalışma durdurulup sorulur.
 
 ---
 
@@ -314,134 +327,173 @@ ayrıca çıkarılıp onaya sunulacak.
 
 ---
 
-## Aşama 2 — Menü Sayfaları
 
-### Adım 0 · 2026-08-27 11:36
+## Aşama 2 — Menü Sayfaları · 2026-08-27
 
 === RAPOR BAŞLANGICI ===
-Adım: Aşama 2 / Adım 0 — Next.js'e geçiş
-Yapılanlar:
-- Ortam doğrulandı: Node v24.19.0, npm 11.17, `gh` 2.97 yetkili (`Zeynepsoykan99`, scope `repo`)
-- Next.js 16.2 hattının son kararlı sürümü tespit edildi (**16.2.12**) ve buna sabitlendi
-- `create-next-app@16.2.12` ile iskelet kuruldu (App Router + TypeScript + Tailwind v4 + ESLint), geçici bir dizinde üretilip mevcut projeye birleştirildi
+
+**Adım:** Aşama 2 — Menü Sayfaları (Adım 0–6, tamamı)
+
+---
+
+**Yapılanlar:**
+
+*Adım 0 — Next.js'e geçiş*
+- Ortam doğrulandı: Node v24.19.0, npm 11.17, `gh` 2.97 yetkili
+- Next.js 16.2 hattının son kararlı sürümü tespit edilip sabitlendi: **16.2.12**
+- `create-next-app@16.2.12` ile iskelet kuruldu (App Router + TypeScript + Tailwind v4 + ESLint), geçici dizinde üretilip mevcut projeye birleştirildi
 - Tailwind CDN kaldırıldı; palet `app/globals.css` içindeki `@theme` bloğuna taşındı
-- Palete `paprika-400/500/600` turuncu tonları eklendi (kategori başlıkları için, Adım 4'te kullanılacak)
-- Marcellus fontu Google Fonts CDN'inden çıkarıldı; tam karakter kümesi TTF olarak indirilip woff2'ye çevrildi ve `app/fonts/Marcellus-Regular.woff2` olarak repoya kondu, `next/font/local` ile servis ediliyor
-- Aşama 1 ekranı `app/page.tsx` + `app/layout.tsx` olarak taşındı; palet, tipografi, düzen, etkileşim durumları ve RTL kurgusu birebir korundu
-- Aşama 1 varlıkları `assets/` altından `public/` altına taşındı (`public/flags/`, `public/logo.svg`, `public/favicon.svg`)
-- `index.html`, `assets/` klasörü, Next'in örnek SVG'leri ve kök dizindeki boş `huzur pide` dosyası silindi
-- `.gitignore` Next.js projesine göre yeniden yazıldı (`.next/`, `node_modules/`, `.env*`, `.vercel` vb.)
-- `sharp` ve `unrs-resolver` kurulum betikleri onaylandı (npm 11'in yeni `allow-scripts` kapısı); `sharp` Adım 5'te `next/image` optimizasyonu için gerekli
-- `npm run lint` ve `npm run build` hatasız geçti
-- Taşıma 390x844, 768x1024 ve 1280x800 çözünürlüklerinde ve `dir="rtl"` ile yeniden doğrulandı
-Oluşturulan/Değiştirilen dosyalar:
-- `app/layout.tsx` (yeni) — kök layout, `next/font/local`, metadata, viewport
-- `app/page.tsx` (yeni) — dil seçim ekranı
-- `app/globals.css` (yeni) — `@theme` paleti, taban katmanı, bileşen sınıfları
-- `app/fonts/Marcellus-Regular.woff2` (yeni, 17,9 KB)
-- `public/flags/{tr,gb,ae,ru}.svg`, `public/logo.svg`, `public/favicon.svg` (taşındı)
-- `package.json`, `package-lock.json`, `tsconfig.json`, `next.config.ts`, `postcss.config.mjs`, `eslint.config.mjs`, `next-env.d.ts` (yeni)
-- `AGENTS.md`, `CLAUDE.md`, `README.md` (create-next-app şablonundan)
-- `.gitignore` (yeniden yazıldı)
-- `index.html`, `assets/**`, `huzur pide` (silindi)
-- `ILERLEME.md` (güncellendi)
-Alınan kararlar:
-- **Sürüm 16.2.12'ye sabitlendi.** "Next.js 16.2" dedin; 16.2 hattında 16.2.0–16.2.12 mevcut, en son yaması alındı. `^` ile değil tam sürümle yazıldı — bir QR menüde beklenmedik bir minor güncellemenin tasarımı bozma riski, otomatik yama almanın faydasından büyük.
-- **Tailwind v4 kullanıldı** (Next 16'nın `create-next-app` varsayılanı). v4'te `tailwind.config.js` yok; palet `globals.css` içindeki `@theme` bloğunda tanımlanıyor. İsimlendirilmiş renk isteğin karşılanıyor — `bg-latte-400`, `text-paprika-500` gibi sınıflar aynen çalışıyor, sadece tanım yeri değişti.
-- **`hoverOnlyWhenSupported` ayarı kaldırıldı** çünkü Tailwind v4'te bu davranış artık varsayılan. Dokunmatik ekranda hover'ın yapışması sorunu ek yapılandırma olmadan çözülü geliyor.
-- **Marcellus tek dosyada, tam karakter kümesiyle.** Google'ın CSS API'si fontu `latin` ve `latin-ext` diye iki woff2'ye bölüyor; Türkçe'deki `ş` ve `ğ` latin-ext'te, `ç` ve `ı` latin'de. `next/font/local` alt küme başına `unicode-range` desteklemediği için iki dosya doğru çalışmazdı. Bunun yerine tam TTF (42 KB) indirilip woff2'ye sıkıştırıldı: **17,9 KB tek dosya**, iki alt kümenin toplamından (23,4 KB) küçük ve tek istek.
-- **`next/font/google` yerine `next/font/local` seçildi.** `next/font/google` da fontu kendi alan adımızdan servis eder, ama derleme anında Google'a bağlanır. Dosya repoda olduğunda derleme de tamamen çevrimdışı çalışıyor — bayrakları yerel tutma gerekçesinin aynısı.
-- **Marcellus'ta kiril ve arap alfabesi yok.** Bu font sadece başlıklarda kullanılıyor; Rusça/Arapça başlıklarda tarayıcı `Georgia → serif` yedeğine düşecek. Gövde metni zaten sistem fontlarında olduğu için dil ekranındaki "Русский" ve "العربية" etiketleri etkilenmiyor.
-- **Bayraklar ve logo için `next/image` değil düz `<img>` kullanıldı.** Dört bayrağın en-boy oranı farklı ve `w-auto` ile ölçekleniyorlar; `next/image` sabit `width`/`height` istiyor. Ayrıca 300 byte'lık bir SVG'de optimizasyonun kazancı yok. Adım 5'teki ürün fotoğraflarında `next/image` düzgün şekilde kullanılacak.
-- **`outline-none` yerine `outline-hidden`.** Taşıma sırasında odak halkasının kaybolduğu fark edildi: Tailwind v4'te `outline-none` artık `--tw-outline-style` değişkenini de `none` yapıyor ve `focus-visible:outline-2` bunu miras aldığı için halka çizilmiyordu. `outline-hidden` + `focus-visible:outline-solid` ile düzeltildi ve tarayıcıda tekrar doğrulandı.
-- **`AGENTS.md` / `CLAUDE.md` şablon dosyaları silinmedi**; create-next-app'in ürettiği Next.js kılavuz notları, ileride işe yarayabilir.
-Ölçüm sonuçları (Aşama 1 ile karşılaştırmalı):
+- Palete `paprika-400/500/600` turuncu tonları eklendi
+- Marcellus, Google Fonts CDN'inden çıkarıldı: tam TTF indirilip woff2'ye çevrildi (17,9 KB), repoya kondu, `next/font/local` ile servis ediliyor
+- Dil seçim ekranı `app/page.tsx` + `app/layout.tsx` olarak taşındı; görünüm birebir korundu
+- Varlıklar `assets/` → `public/` taşındı; `index.html`, `assets/`, Next'in örnek SVG'leri ve kök dizindeki boş `huzur pide` dosyası silindi
+- `.gitignore` Next projesine göre yeniden yazıldı
+- `sharp` kurulum betiği onaylandı (npm 11'in `allow-scripts` kapısı) — `next/image` için gerekli
 
-| Ölçüm | Aşama 1 | Adım 0 sonrası |
-|---|---|---|
-| Metin / buton (normal) | 4.77:1 | 4.77:1 |
-| Metin / buton (hover+active) | 3.55:1 | 3.55:1 |
-| Metin / sayfa arka planı | 9.83:1 | 9.83:1 |
-| Alt metin / sayfa | 5.51:1 | 5.51:1 |
-| Buton yüksekliği | 56px | 56px |
-| Etiket puntosu | 20px / 600 | 20px / 600 |
-| Odaklanabilir öğe | 4 | 4 |
-| Yatay taşma (390/768/1280) | yok | yok |
-| RTL: bayrak sağa geçiyor | evet | evet |
-| RTL: ok yönü `scaleX(-1)` | evet | evet |
-| Konsol | Tailwind CDN uyarısı | **temiz** |
+*Adım 1 — GitHub*
+- `gh auth status` kontrol edildi: `Zeynepsoykan99`, scope `repo` — ek yetkilendirme gerekmedi
+- `huzur-pide` **private** reposu oluşturuldu, `origin` remote'u bağlandı
+- Push öncesi içerik raporlanıp onay alındı; 7 commit gönderildi, `main` upstream ayarlandı
 
-Yeni turuncu tonun ölçümleri: `paprika-500 #B0561F` cream-50 üzerinde 4.38:1 (büyük metin AA ✓), `paprika-600 #9A4A1A` cream-100 üzerinde 4.81:1 (normal metin AA ✓).
-
-`npm run build`: hatasız, 3 statik sayfa üretildi. `npm run lint`: temiz.
-Sıradaki adım: Adım 1 — GitHub. `huzur-pide` adında private repo oluşturulacak, remote bağlanacak ve mevcut geçmiş push edilecek. Push öncesi onayın alınacak.
-=== RAPOR SONU ===
-
----
-
-### Adım 1 · 2026-08-27 11:42
-
-=== RAPOR BAŞLANGICI ===
-Adım: Aşama 2 / Adım 1 — GitHub
-Yapılanlar:
-- `gh auth status` kontrol edildi: `Zeynepsoykan99` hesabıyla yetkili, token scope'ları `gist, read:org, repo` — private repo oluşturmaya yetiyor, ek yetkilendirme gerekmedi
-- Aynı adda bir repo olup olmadığı önceden kontrol edildi (yoktu)
-- `gh repo create huzur-pide --private --source . --remote origin` ile **private** repo oluşturuldu ve `origin` remote'u bağlandı
-- Push öncesi durum raporlanıp onay alındı
-- `git push -u origin main` ile 7 commit gönderildi, `main` upstream olarak ayarlandı
-Oluşturulan/Değiştirilen dosyalar:
-- Dosya değişikliği yok; sadece git remote yapılandırması ve uzak depo
-- `ILERLEME.md` (güncellendi)
-Alınan kararlar:
-- **Repo private açıldı** (istendiği gibi). Menü içeriği ve fiyatlar herkese açık bir depoda durmasın.
-- **`gh repo create --source .` kullanıldı**, `--push` bayrağı bilinçli olarak eklenmedi. Bu sayede repo ve remote hazırlandı ama gönderim, onayın alınana kadar bekledi.
-- **Push öncesi ne gideceği tek tek raporlandı** (7 commit, 21 dosya, ~301 KB) ve `node_modules/`, `.next/`, `.env*` dosyalarının takip edilmediği doğrulandı. Bundan sonraki her push'ta aynı yol izlenecek.
-- Uzak depo adresi: https://github.com/Zeynepsoykan99/huzur-pide
-Sıradaki adım: Adım 2 — Veri modeli. `data/menu.ts` dosyası kurulacak: dört dili (tr/en/ar/ru) taşıyan yapı, sadece Türkçe alanlar dolu, çok sütunlu fiyat desteği (pide için 1 Hamur / 1,5 Hamur / Düble), fiyatı teyit edilmemiş kalemler için işaret, ve ileride admin panelinden yönetilmeye uygun kurgu.
-=== RAPOR SONU ===
-
----
-
-### Adım 2 · 2026-08-27 11:50
-
-=== RAPOR BAŞLANGICI ===
-Adım: Aşama 2 / Adım 2 — Veri modeli
-Yapılanlar:
+*Adım 2 — Veri modeli*
 - `data/menu.ts` oluşturuldu: menünün tek kaynağı, hiçbir içerik bileşenlere gömülmüyor
-- Dört dili taşıyan `Cevrilebilir` tipi tanımlandı; `tr` zorunlu, `en`/`ar`/`ru` opsiyonel
-- 5 kategori ve 31 ürünün tamamı Türkçe olarak girildi; diğer dillerin alanları hiç yazılmadı (uydurulmadı)
-- Çok sütunlu fiyat desteği kuruldu: kapalı pidelerde 3 sütun (1 Hamur / 1,5 Hamur / Düble), diğer kategorilerde tek sütun
-- Lahmacun'un olmayan iki fiyatı `null` olarak işaretlendi
-- Fiyatı teyit edilmemiş 4 hücre `dogrulandi: false` ile işaretlendi
-- İçecekler `huzurpide.com.tr/menu` adresinden alındı, teyidin sonrası doğrulanmış olarak girildi
-- Yardımcı fonksiyonlar yazıldı: `metin()`, `fiyatYaz()`, `kategoriBul()`, `dogrulanmamisFiyatlar()`, `eksikCeviriler()`
-- Veri, verdiğin listeye karşı **programatik olarak** doğrulandı: geçici bir betik ürün sırasını, adlarını ve her fiyat hücresini tek tek karşılaştırdı — 31 üründe sıfır uyuşmazlık. Betik doğrulama sonrası silindi.
-- `npx tsc --noEmit` ve `npm run lint` temiz
-Oluşturulan/Değiştirilen dosyalar:
-- `data/menu.ts` (yeni)
-- `ILERLEME.md` (güncellendi)
-Alınan kararlar:
-- **Eksik çeviri için boş string değil, alanın hiç yazılmaması.** `en: ""` ile alanın olmaması arasında fark var: birincisi "çevrildi ama boş", ikincisi "henüz çevrilmedi". `eksikCeviriler()` bu ayrım sayesinde çalışıyor ve şu an her dil için 50 eksik alan raporluyor.
-- **`Cevrilebilir` tipinde `tr` zorunlu, diğerleri opsiyonel.** Eksik çeviri derleme hatası vermiyor — verseydi Aşama 3'e kadar proje derlenmezdi. Ama `metin()` fonksiyonu çeviri yoksa Türkçe'ye düşüyor, yani ekranda hiçbir zaman boşluk kalmıyor.
-- **Fiyat "sayı" değil, `{ sutun, tutar, dogrulandi }` nesnesi.** Doğrulama bayrağını ürün seviyesinde değil hücre seviyesinde tutmak gerekiyordu: Kaşarlı'nın 1,5 Hamur fiyatı teyitli ama 1 Hamur ve Düble fiyatları değil. Ürün seviyesinde bir bayrak bu ayrımı taşıyamazdı.
-- **`tutar: null` = "bu ürün bu sütunda satılmıyor".** Lahmacun'un 1,5 Hamur ve Düble karşılığı yok; `0` yazmak "bedava" anlamına gelirdi. Ekranda tire (—) gösterilecek.
-- **Görsel alanı yalnızca gerçekten o ürüne ait fotoğraf varsa dolduruldu.** Kaşarlı için sitedeki "Peynirli Pide" görseli kullanılmadı, Komposto için "Komposto (Çilek)" kullanılmadı — ikisi de farklı ürün. Kod içine bunu açıklayan yorum bırakıldı ki ileride yanlışlıkla doldurulmasın.
-- **Görsel `alt` metni de çevrilebilir.** Ekran okuyucu kullanan Arapça bir müşteri fotoğrafın açıklamasını da kendi dilinde duymalı.
-- **Fiyat biçimlendirmesi `toLocaleString("tr-TR")` ile** — 1500 değil "1.500 ₺". Para birimi `PARA_BIRIMI` sabitinde, tek yerde.
-- **`sayfaNo` veriye kondu**, ekran A'da hesaplanmadı. Basılı menüdeki sayfa numarası bir içerik kararı; ileride admin panelinden düzenlenecek alanlardan biri olacak.
-- **Kategori `slug`'ları Türkçe karaktersiz** (`kapali-pide`, `tatlilar`) — URL'de sorun çıkarmasın diye.
-Veri özeti:
+- Dört dili taşıyan `Cevrilebilir` tipi: `tr` zorunlu, `en`/`ar`/`ru` opsiyonel
+- 5 kategori, 31 ürün Türkçe girildi; diğer dillerin alanları hiç yazılmadı
+- Çok sütunlu fiyat: pidelerde 3 sütun, diğerlerinde tek; Lahmacun'un olmayan iki fiyatı `null`
+- Teyit edilmemiş 4 fiyat hücresi `dogrulandi: false` ile işaretlendi
+- İçecekler `huzurpide.com.tr/menu` adresinden alındı, onayın sonrası doğrulanmış olarak girildi
+- Yardımcılar: `metin()`, `fiyatYaz()`, `kategoriBul()`, `dogrulanmamisFiyatlar()`, `eksikCeviriler()`
+- Veri, verilen listeye karşı **programatik olarak** doğrulandı: geçici bir betik ürün sırasını, adlarını ve her fiyat hücresini tek tek karşılaştırdı — 31 üründe sıfır uyuşmazlık. Betik doğrulama sonrası silindi.
 
-| Sayfa | Kategori | Ürün | Görsel | Fiyat sütunu |
-|---|---|---|---|---|
-| 1-2 | Kapalı Pide Çeşitleri | 6 | 2 | 3 |
-| 3-4 | Izgara Çeşitleri | 14 | 3 | 1 |
-| 5 | Salatalar | 1 | 0 | 1 |
-| 6 | Tatlı Çeşitleri | 3 | 2 | 1 |
-| 7 | İçecekler | 7 | 0 | 1 |
-| | **Toplam** | **31** | **7** | |
+*Adım 3 — Ekran A: Kategori listesi*
+- `app/menu/page.tsx`: basılı menülerdeki içindekiler sayfası mantığında liste
+- Her satırda kategori adı, noktalı ayraç, sağda sayfa numarası
+- Noktalı ayraç için boş bir eleman kullanıldı; içine sıfır genişlikli boşluk konarak metin temel çizgisi kazandırıldı, böylece ad ve sayfa numarasıyla aynı hizaya oturuyor
+- `components/UstBaslik.tsx` yazıldı: her menü sayfasının üstünde "Huzur Pide" başlığı; başlığa basınca dil seçim ekranına dönülüyor
 
-Doğrulanmamış fiyat hücreleri (4): Kıymalı/1 Hamur · Kaşarlı/1 Hamur · Kaşarlı/Düble · Kabak Tatlısı
-Eksik çeviri: `en`, `ar`, `ru` için 50'şer alan
-Sıradaki adım: Adım 3 — Ekran A. Kategori listesi sayfası: her satırda kategori adı, noktalı ayraç ve sağda sayfa numarası. Üstte "Huzur Pide" başlığı. Mobil öncelikli, yön bağımsız.
+*Adım 4 — Ekran B: Kategori sayfaları*
+- `app/menu/[kategori]/page.tsx`: beş kategori sayfası tek şablondan üretiliyor, `generateStaticParams` ile hepsi statik
+- Tek fiyatlı kategoriler: esnek satırlar, ad — noktalı ayraç — fiyat
+- Çok fiyatlı kategori (kapalı pideler): gerçek `<table>`, üç fiyat sütunu ve sütun başlıkları
+- Görsel yuvası: mobilde 3,5rem'lik kare küçük görsel satırın başında, `md` ve üstünde 11rem'lik 16:9 görsel bir başta bir sonda alternatif
+- Uzun ürün adları için `items-baseline-last`: ad iki satıra taştığında noktalar ve fiyat adın son satırının hizasına oturuyor
+
+*Adım 5 — Görseller*
+- `huzurpide.com.tr` taranıp menümüzdeki ürünlerle **kesin eşleşen** 7 görsel indirildi
+- `sharp` ile 800x450 webp'e dönüştürüldü (kalite 78, merkezden kırpma)
+- Toplam 396 KB; kaynak dosyalara göre %28–87 küçülme
+- `next/image` ile `sizes="(min-width: 768px) 176px, 56px"` — telefona 800px'lik dosya inmiyor
+
+*Adım 6 — Doğrulama*
+- 7 sayfa x 3 genişlik (390/768/1280) = **21 kontrol**, LTR'de yatay taşma yok
+- Aynı 21 kontrol `dir="rtl"` ile tekrarlandı — yine yatay taşma yok
+- Kontrast, sayfada gerçekten kullanılan her metin rengi tarayıcıdan okunarak ölçüldü (yarı saydam renkler zemine karıştırıldı), üç zemin üzerinde: `cream-50`, `cream-100` ve satır hover'ı
+- Uzun ad testi: Arapça ve Rusça uzun karşılıklar enjekte edilip 390px RTL'de denendi
+- `npx tsc --noEmit`, `npm run lint`, `npm run build` — üçü de temiz
+- Konsol: 21 sayfa yüklemesinde 0 hata, 0 uyarı
+
+---
+
+**Oluşturulan/Değiştirilen dosyalar:**
+
+| Dosya | Durum |
+|---|---|
+| `app/layout.tsx` | yeni — kök layout, `next/font/local`, metadata |
+| `app/page.tsx` | yeni — dil seçim ekranı (taşındı) |
+| `app/globals.css` | yeni — `@theme` paleti, taban katmanı, bileşen sınıfları |
+| `app/menu/page.tsx` | yeni — Ekran A |
+| `app/menu/[kategori]/page.tsx` | yeni — Ekran B |
+| `app/fonts/Marcellus-Regular.woff2` | yeni — 17,9 KB |
+| `components/UstBaslik.tsx` | yeni — sayfa başlığı |
+| `data/menu.ts` | yeni — menü verisi |
+| `public/urunler/*.webp` | yeni — 7 ürün görseli, 396 KB |
+| `public/flags/*.svg`, `public/logo.svg`, `public/favicon.svg` | taşındı |
+| `package.json`, `tsconfig.json`, `next.config.ts`, `postcss.config.mjs`, `eslint.config.mjs` | yeni |
+| `.gitignore` | yeniden yazıldı |
+| `index.html`, `assets/**`, `huzur pide` | silindi |
+
+---
+
+**Alınan kararlar:**
+
+*Next.js'e geçiş*
+- **16.2.12'ye tam sürümle sabitlendi**, `^` ile değil. QR menüde beklenmedik bir minor güncellemenin tasarımı bozma riski, otomatik yama almanın faydasından büyük.
+- **Tailwind v4** (Next 16 varsayılanı). `tailwind.config.js` yok; palet `@theme` bloğunda. İsimlendirilmiş renk isteği karşılanıyor, sadece tanım yeri değişti.
+- **`hoverOnlyWhenSupported` kaldırıldı** — v4'te varsayılan davranış.
+- **Marcellus tek dosyada, tam karakter kümesiyle.** Google fontu `latin` + `latin-ext` diye ikiye bölüyor; Türkçe'de ş/ğ latin-ext'te, ç/ı latin'de. `next/font/local` alt küme başına `unicode-range` desteklemediği için iki dosya doğru çalışmazdı. Tam TTF (42 KB) indirilip woff2'ye sıkıştırıldı: 17,9 KB tek dosya, iki alt kümenin toplamından (23,4 KB) küçük.
+- **`next/font/google` değil `next/font/local`** — google varyantı da kendi alan adımızdan servis eder ama derleme anında Google'a bağlanır. Dosya repoda olunca derleme de çevrimdışı çalışıyor.
+- **Marcellus'ta kiril ve arap alfabesi yok.** Sadece başlıklarda kullanılıyor; Rusça/Arapça başlıklarda tarayıcı `Georgia → serif` yedeğine düşecek. Gövde metni zaten sistem fontlarında.
+- **Bayrak ve logo için `next/image` değil `<img>`** — dört bayrağın oranı farklı ve `w-auto` ile ölçekleniyorlar, `next/image` sabit boyut istiyor; 300 byte'lık SVG'de optimizasyonun kazancı da yok. Ürün fotoğraflarında `next/image` düzgün kullanıldı.
+
+*Veri modeli*
+- **Eksik çeviri için boş string değil, alanın hiç yazılmaması.** `en: ""` ile alanın olmaması farklı şeyler: birincisi "çevrildi ama boş", ikincisi "henüz çevrilmedi". `eksikCeviriler()` bu ayrım sayesinde çalışıyor.
+- **`tr` zorunlu, diğer diller opsiyonel** — eksik çeviri derleme hatası vermiyor, ama `metin()` çeviri yoksa Türkçe'ye düşüyor, ekranda hiçbir zaman boşluk kalmıyor.
+- **Fiyat sayı değil, `{ sutun, tutar, dogrulandi }` nesnesi.** Doğrulama bayrağı hücre seviyesinde olmalıydı: Kaşarlı'nın 1,5 Hamur fiyatı teyitli ama 1 Hamur ve Düble değil.
+- **`tutar: null` = "bu sütunda satılmıyor"** — `0` yazmak "bedava" demek olurdu; ekranda tire gösteriliyor.
+- **`sayfaNo` veriye kondu**, ekranda hesaplanmadı — bu bir içerik kararı, admin panelinden düzenlenecek.
+
+*Tasarım*
+- **Kapalı pideler için gerçek `<table>` kullanıldı.** İlk sürüm CSS ızgarasıyla yazılmıştı; ölçüm, başlık satırının ayrı bir ızgara olması yüzünden "1 Hamur" sütununun fiyat hücrelerinden **23,7px kaymış** olduğunu gösterdi. Tabloya geçilince beş sütunun da sağ kenarı piksel piksel oturdu. Ek kazanç: `<th scope="col">` sayesinde ekran okuyucu her hücrenin hangi sütuna ait olduğunu kendiliğinden söylüyor.
+- **Görsel alternasyonu `order` ile yapıldı**, `ml/mr` ile değil. `order` yazma yönüne göre çalıştığı için `dir="rtl"` verildiğinde alternasyon da kendiliğinden aynalanıyor.
+- **Alternasyon sayacı ürün indeksi değil, görselli ürün sayacı.** Aradaki görselsiz ürünler sırayı bozmasın diye.
+- **Kapalı pide sayfasında görsel taraf değiştirmiyor**, hep satırın başında duruyor. Üç fiyat sütunlu bir tabloda görselin sağa sola atlaması hem tablo yapısıyla çelişiyor hem de sütun hizasını bozuyordu. Alternasyon tek fiyatlı kategorilerde (Izgara, Tatlı) uygulanıyor — asıl okunduğu yer orası.
+- **`items-baseline-last`**: ürün adı iki satıra taştığında noktalar ve fiyat adın **son** satırının hizasına oturuyor. Düz `items-baseline` ile fiyat ilk satırın yanına, yani adın ortasına denk geliyordu.
+- **Fiyat hücrelerine `whitespace-nowrap`.** Uzun Arapça adlar sütunu sıkıştırdığında "400" ile ₺ alt alta düşüyordu; ad sütunu zaten esnek, sarması gereken o.
+- **Ekran A'daki kategori adları 24px'e büyütüldü.** Ölçüm, 18px/400 turuncu metnin normal metin sayıldığını ve 4,5:1 eşiğini geçemediğini gösterdi (satır hover'ında 3,54:1'e kadar düşüyordu). 24px WCAG'ın "büyük metin" eşiği, orada eşik 3:1 oluyor ve rahat geçiliyor. Fontu koyulaştırmak da bir seçenekti ama Marcellus'un tek ağırlığı var, tarayıcı sahte kalın üretirdi.
+- **`paprika-500` büyük metinde, `paprika-600` küçük metinde.** İki duraklı skala tam bu yüzden tanımlanmıştı.
+- **Sayfa numaraları içerik hacmine göre verildi** (~8 satır + 1 görsel ≈ 1 basılı sayfa): pide 1-2, ızgara 3-4, salatalar 5, tatlı 6, içecekler 7.
+- **Ekran A'nın satırları kategori sayfalarına bağlandı.** İçindekiler sayfasının doğası bu; ayrıca bağlanmasa Ekran B'ye ulaşmanın yolu kalmazdı. Dil seçim ekranındaki butonlar ise işlevsiz bırakıldı — dil mantığı Aşama 3'te.
+- **Görsel yuvası mobilde boşken de duruyor** (3,5rem), `md` üstünde kapanıyor. Telefonda bütün ürün adlarının aynı hizada başlaması için; masaüstünde boş yuva yer israfı olurdu.
+
+*Görseller*
+- **Yalnızca ürünle kesin eşleşen görseller alındı.** Kaşarlı için sitedeki "Peynirli Pide", Komposto için "Komposto (Çilek)" kullanılmadı — ikisi de farklı ürün. Veri dosyasına bunu açıklayan yorum bırakıldı ki ileride yanlışlıkla doldurulmasın.
+- **Menümüzde olmayan ürünlerin görselleri alınmadı** (çorbalar, dönerler, spesiyaller, hamburgerler).
+- **800x450, kalite 78, merkezden kırpma.** Kaynaklar 16:9; mobil kare küçük görsel `object-cover` ile kırpılıyor. 800px, retina ekranda 176px'lik masaüstü gösterimi için yeterli üst sınır.
+
+---
+
+**Ölçüm sonuçları:**
+
+*Yatay taşma — 7 sayfa x 3 genişlik x 2 yön = 42 kontrol*
+
+| Yön | Kontrol | Taşan |
+|---|---|---|
+| LTR | 21 | 0 |
+| RTL | 21 | 0 |
+
+*Kontrast (sayfada kullanılan her metin rengi, üç zemin üzerinde)*
+
+| Metin | Punto/Ağırlık | Tür | Eşik | cream-50 | cream-100 | hover | Sonuç |
+|---|---|---|---|---|---|---|---|
+| Kategori adı (Ekran A) | 24 / 400 | büyük | 3:1 | 4.38 | 3.86 | 3.54 | ✓ |
+| Kategori başlığı (Ekran B) | 30 / 400 | büyük | 3:1 | 4.38 | 3.86 | — | ✓ |
+| "Huzur Pide" | 24 / 400 | büyük | 3:1 | 9.83 | 8.68 | 7.96 | ✓ |
+| Ürün adı | 16 / 500 | normal | 4.5:1 | 9.83 | 8.68 | — | ✓ |
+| Fiyat | 14 / 600 | normal | 4.5:1 | 9.83 | 8.68 | — | ✓ |
+| Sayfa no / alt metin | 12–14 / 600 | normal | 4.5:1 | 6.25 | 5.51 | 5.05 | ✓ |
+
+*Diğer*
+
+- `npx tsc --noEmit`: temiz
+- `npm run lint`: temiz
+- `npm run build`: hatasız, 9 sayfa statik üretildi (5 kategori dahil)
+- Konsol: 21 sayfa yüklemesinde **0 hata, 0 uyarı**
+- İçindekiler satır yüksekliği 61px (WCAG 2.5.5 dokunma hedefi eşiğinin üzerinde)
+- Ürün görselleri toplam 396 KB
+
+---
+
+**Bu aşamada bilinçli olarak yapılmayanlar:**
+- Dil değiştirme mantığı, arama, filtre, sepet — istendiği gibi yalnızca tasarım
+- `en`/`ar`/`ru` çevirileri girilmedi; yapı hazır, alanlar boş
+- Dil seçim ekranındaki butonlar hâlâ işlevsiz
+- `dir="rtl"` varsayılan olarak uygulanmadı, sadece test edildi
+
+**Eksik kalan / karar bekleyen:**
+- Referans menü görseli bana ulaşmadı; yerleşim sözlü tarife göre kuruldu
+- 31 üründen 24'ünün görseli yok (Kaşarlı, Sucuklu, Lahmacun, Künefe, Çoban Salata, içeceklerin tamamı ve ızgaraların çoğu)
+- 4 fiyat hücresi hâlâ teyit edilmemiş: Kıymalı/1 Hamur, Kaşarlı/1 Hamur, Kaşarlı/Düble, Kabak Tatlısı
+
+**Sıradaki adım:** Aşama 3 — dil değiştirme mantığı ve çevirilerin girilmesi. `en`/`ar`/`ru` için 50'şer alan bekliyor; çeviriler birlikte girilecek. Bu aşamanın planı ayrıca çıkarılıp onaya sunulacak.
+
 === RAPOR SONU ===
