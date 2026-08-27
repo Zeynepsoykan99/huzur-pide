@@ -1,0 +1,133 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   Huzur Pide — tasarim tokenlari.
+
+   Tailwind v4'te palet artik tailwind.config.js'te degil, bu @theme blogunda
+   tanimlanir. Buradaki her --color-* degeri kendiliginden bir utility uretir:
+   --color-latte-400  ->  bg-latte-400 / text-latte-400 / ring-latte-400 ...
+   --------------------------------------------------------------------------- */
+@theme {
+  /* Bej zeminler */
+  --color-cream-50: #f5efe6;
+  --color-cream-100: #ede0d4;
+  --color-cream-200: #e0cdb8;
+
+  /* Sutlu kahve — butonlar ve vurgular */
+  --color-latte-400: #c8a27a;
+  --color-latte-500: #b08968;
+  --color-latte-600: #96745a;
+
+  /* Koyu kahve — metin */
+  --color-cocoa-700: #6b5342;
+  --color-cocoa-900: #4a3728;
+
+  /* Kahve ile turuncu arasi — kategori basliklari.
+     500 buyuk metin icin (cream-50 uzerinde 4.38:1, cream-100 uzerinde 3.86:1),
+     600 kucuk metin icin (5.45:1 / 4.81:1 — normal metin AA esigini gecer). */
+  --color-paprika-400: #c2622a;
+  --color-paprika-500: #b0561f;
+  --color-paprika-600: #9a4a1a;
+
+  /* Yazi tipleri. --font-display degiskeni layout.tsx'te next/font tarafindan
+     dolduruluyor; govde metni bilincli olarak sistem fontlarinda. */
+  --font-display: var(--font-marcellus), Georgia, Cambria, serif;
+  --font-body: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, sans-serif;
+}
+
+/* ---------------------------------------------------------------------------
+   Taban katmani
+   --------------------------------------------------------------------------- */
+@layer base {
+  html {
+    /* Mobilde butona dokunurken beliren mavi/gri parlamayi kaldirir;
+       kendi :active durumumuz zaten geri bildirim veriyor. */
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    /* iOS'ta yatay tasma ve sayfanin yatay kaymasi engellenir. */
+    overflow-x: hidden;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Hareket azaltma tercihini isletim sisteminden okur.
+     Vestibuler rahatsizligi olan kullanicilar icin animasyonlari kapatir. */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Bilesenler
+
+   Yon bagimli hicbir utility yok (ml/mr/left/right yerine gap, px, text-start).
+   Bu sayede <html dir="rtl"> verildiginde duzen kendiliginden aynalanir.
+   --------------------------------------------------------------------------- */
+@layer components {
+  /* --- Dil secim butonu --- */
+  .lang-btn {
+    @apply flex min-h-14 w-full items-center gap-4 rounded-2xl
+           bg-latte-400 px-4 py-3.5 text-start
+           shadow-md shadow-cocoa-900/10
+           ring-1 ring-latte-600/25
+           outline-hidden transition duration-200 ease-out
+           hover:-translate-y-0.5 hover:bg-latte-500 hover:shadow-lg hover:shadow-cocoa-900/20
+           active:translate-y-0 active:scale-[0.985] active:bg-latte-500
+           active:shadow-sm active:ring-latte-600/60 active:duration-75
+           focus-visible:outline-solid focus-visible:outline-2
+           focus-visible:outline-offset-[3px] focus-visible:outline-cocoa-900;
+  }
+
+  /* Bayraklarin en-boy orani birbirinden farkli (tr 3:2, gb 1:2, ae 2:1,
+     ru 3:2). Sabit genislikte bir slot hepsini ayni yere oturtup metinlerin
+     hizasini korur. */
+  .flag-slot {
+    @apply flex w-12 shrink-0 items-center justify-center;
+  }
+
+  /* Ince kenarlik: RU/GB/AE bayraklarindaki beyaz alanlar sutlu kahve
+     zeminde kaybolmasin diye. */
+  .flag {
+    @apply h-6 w-auto max-w-full rounded-[3px]
+           ring-1 ring-cocoa-900/25 shadow-sm shadow-cocoa-900/20;
+  }
+
+  .lang-name {
+    @apply flex-1 text-xl font-semibold leading-tight text-cocoa-900;
+  }
+
+  /* Arap alfabesi ayni punto degerinde latin harflerden kucuk gorunur. */
+  .lang-name[lang="ar"] {
+    @apply text-2xl leading-snug;
+  }
+
+  .lang-arrow {
+    @apply h-5 w-5 shrink-0 text-cocoa-900/45
+           transition-transform duration-200 ease-out;
+    --arrow-flip: 1;
+    --arrow-shift: 0rem;
+    /* scaleX once yazilir: RTL'de koordinat sistemi terslendigi icin sonraki
+       translateX de kendiliginden sola kayar. Tailwind'in translate-x-*
+       utility'si fiziksel yonlu oldugu icin kullanilmadi. */
+    transform: scaleX(var(--arrow-flip)) translateX(var(--arrow-shift));
+  }
+
+  /* <html dir="rtl"> verildiginde ok kendiliginden sola doner. */
+  [dir="rtl"] .lang-arrow {
+    --arrow-flip: -1;
+  }
+
+  .lang-btn:hover .lang-arrow {
+    @apply text-cocoa-900/70;
+    --arrow-shift: 0.25rem;
+  }
+}

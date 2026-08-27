@@ -3,15 +3,15 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 1 tamamlandı — sıradaki: Aşama 2 (menü sayfaları tasarımı)
-**Son güncelleme:** 2026-08-27 10:40
+**Güncel aşama:** Aşama 2 — Menü sayfaları (Next.js'e geçildi, 1/7 adım)
+**Son güncelleme:** 2026-08-27 11:36
 
 ### Genel Durum
 
 | Aşama | Konu | Durum |
 |---|---|---|
 | 1 | Dil seçim ekranı tasarımı | **Tamamlandı** (5/5 adım) |
-| 2 | Menü sayfaları tasarımı | Başlanmadı |
+| 2 | Menü sayfaları tasarımı | Devam ediyor (1/7 adım) |
 | 3 | Dil değiştirme mantığı + menü verisi | Başlanmadı |
 | 4 | RTL (Arapça) desteğinin devreye alınması | Başlanmadı |
 
@@ -23,6 +23,16 @@
 - [x] Adım 4 — Dil butonları ve etkileşim durumları
 - [x] Adım 5 — RTL hazırlığı, erişilebilirlik ve doğrulama
 
+### Aşama 2 Adımları
+
+- [x] Adım 0 — Next.js'e geçiş
+- [ ] Adım 1 — GitHub
+- [ ] Adım 2 — Veri modeli
+- [ ] Adım 3 — Ekran A: Kategori listesi
+- [ ] Adım 4 — Ekran B: Kategori sayfaları
+- [ ] Adım 5 — Görseller
+- [ ] Adım 6 — Doğrulama
+
 ### Aşama 1 Çıktısı
 
 `index.html` — tek sayfalık dil seçim ekranı. Dört dil butonu (Türkçe, English,
@@ -30,16 +40,17 @@
 düzen, RTL'e hazır yapı. Henüz işlevsellik yok; butonlar tıklanabilir ama bir şey
 yapmıyor — bu bilinçli, Aşama 3'te bağlanacak.
 
-Açmak için: proje klasöründe `python -m http.server 8765` çalıştırıp tarayıcıda
-`http://127.0.0.1:8765` adresine gidin. (`index.html`'i doğrudan çift tıklayarak
-da açabilirsiniz; Tailwind CDN için internet bağlantısı gerekir.)
+> **Not (Aşama 2, Adım 0):** Bu ekran artık `index.html` değil, Next.js
+> uygulaması olarak `app/page.tsx` içinde yaşıyor. Çalıştırmak için proje
+> klasöründe `npm run dev` çalıştırıp `http://localhost:3000` adresine gidin.
 
 ### Teknoloji ve Kararlar
 
-- HTML + Tailwind CSS v3 (Play CDN), framework yok
-- Bayraklar yerel SVG (`assets/flags/`), dış servise bağımlılık yok
+- Next.js 16.2.12 (App Router, TypeScript) + Tailwind CSS v4
+- Aşama 1'de HTML + Tailwind v3 Play CDN idi; Aşama 2 Adım 0'da taşındı
+- Bayraklar yerel SVG (`public/flags/`), dış servise bağımlılık yok
 - Arapça için Birleşik Arap Emirlikleri bayrağı
-- Başlık fontu Marcellus (Google Fonts), gövde metni sistem fontları
+- Başlık fontu Marcellus, `next/font/local` ile repodan servis ediliyor; gövde metni sistem fontları
 - Mobile-first; RTL'e hazır yapı (yön bağımsız utility'ler)
 
 ### Renk Paleti
@@ -54,12 +65,16 @@ da açabilirsiniz; Tailwind CDN için internet bağlantısı gerekir.)
 | latte-600 | #96745A | Kenarlık (ring) |
 | cocoa-700 | #6B5342 | İkincil metin |
 | cocoa-900 | #4A3728 | Ana yazı rengi |
+| paprika-400 | #C2622A | Açık turuncu (yedek) |
+| paprika-500 | #B0561F | Kategori başlıkları (büyük metin) |
+| paprika-600 | #9A4A1A | Turuncu, küçük metin gerekirse |
 
 ### Rapor Biçimi
 
-Raporlar adım adım ayrı ayrı değil, **aşama başına tek birleşik rapor** olarak
-tutulur. Bir aşama bitince yukarıdaki özet güncellenir ve dosyanın sonuna o
-aşamanın tek raporu eklenir; önceki raporların üzerine yazılmaz.
+Aşama 1 raporları sonradan **tek birleşik rapor** hâlinde toplandı. Aşama 2 için
+Zeynep tekrar **adım adım rapor** istedi; bu aşamanın raporları her adım sonunda
+ayrı blok olarak ekleniyor. Aşama sonunda istenirse yine tek rapora toplanabilir.
+Her durumda özet bölümü güncellenir, önceki raporların üzerine yazılmaz.
 
 ---
 
@@ -291,4 +306,69 @@ kullanma" uyarısı, bu aşama için beklenen ve kabul edilmiş durum).
 kartları, fiyat gösterimi, geri dönüş ve dil değiştirme kontrolü). Bu aşamanın planı
 ayrıca çıkarılıp onaya sunulacak.
 
+=== RAPOR SONU ===
+
+---
+
+## Aşama 2 — Menü Sayfaları
+
+### Adım 0 · 2026-08-27 11:36
+
+=== RAPOR BAŞLANGICI ===
+Adım: Aşama 2 / Adım 0 — Next.js'e geçiş
+Yapılanlar:
+- Ortam doğrulandı: Node v24.19.0, npm 11.17, `gh` 2.97 yetkili (`Zeynepsoykan99`, scope `repo`)
+- Next.js 16.2 hattının son kararlı sürümü tespit edildi (**16.2.12**) ve buna sabitlendi
+- `create-next-app@16.2.12` ile iskelet kuruldu (App Router + TypeScript + Tailwind v4 + ESLint), geçici bir dizinde üretilip mevcut projeye birleştirildi
+- Tailwind CDN kaldırıldı; palet `app/globals.css` içindeki `@theme` bloğuna taşındı
+- Palete `paprika-400/500/600` turuncu tonları eklendi (kategori başlıkları için, Adım 4'te kullanılacak)
+- Marcellus fontu Google Fonts CDN'inden çıkarıldı; tam karakter kümesi TTF olarak indirilip woff2'ye çevrildi ve `app/fonts/Marcellus-Regular.woff2` olarak repoya kondu, `next/font/local` ile servis ediliyor
+- Aşama 1 ekranı `app/page.tsx` + `app/layout.tsx` olarak taşındı; palet, tipografi, düzen, etkileşim durumları ve RTL kurgusu birebir korundu
+- Aşama 1 varlıkları `assets/` altından `public/` altına taşındı (`public/flags/`, `public/logo.svg`, `public/favicon.svg`)
+- `index.html`, `assets/` klasörü, Next'in örnek SVG'leri ve kök dizindeki boş `huzur pide` dosyası silindi
+- `.gitignore` Next.js projesine göre yeniden yazıldı (`.next/`, `node_modules/`, `.env*`, `.vercel` vb.)
+- `sharp` ve `unrs-resolver` kurulum betikleri onaylandı (npm 11'in yeni `allow-scripts` kapısı); `sharp` Adım 5'te `next/image` optimizasyonu için gerekli
+- `npm run lint` ve `npm run build` hatasız geçti
+- Taşıma 390x844, 768x1024 ve 1280x800 çözünürlüklerinde ve `dir="rtl"` ile yeniden doğrulandı
+Oluşturulan/Değiştirilen dosyalar:
+- `app/layout.tsx` (yeni) — kök layout, `next/font/local`, metadata, viewport
+- `app/page.tsx` (yeni) — dil seçim ekranı
+- `app/globals.css` (yeni) — `@theme` paleti, taban katmanı, bileşen sınıfları
+- `app/fonts/Marcellus-Regular.woff2` (yeni, 17,9 KB)
+- `public/flags/{tr,gb,ae,ru}.svg`, `public/logo.svg`, `public/favicon.svg` (taşındı)
+- `package.json`, `package-lock.json`, `tsconfig.json`, `next.config.ts`, `postcss.config.mjs`, `eslint.config.mjs`, `next-env.d.ts` (yeni)
+- `AGENTS.md`, `CLAUDE.md`, `README.md` (create-next-app şablonundan)
+- `.gitignore` (yeniden yazıldı)
+- `index.html`, `assets/**`, `huzur pide` (silindi)
+- `ILERLEME.md` (güncellendi)
+Alınan kararlar:
+- **Sürüm 16.2.12'ye sabitlendi.** "Next.js 16.2" dedin; 16.2 hattında 16.2.0–16.2.12 mevcut, en son yaması alındı. `^` ile değil tam sürümle yazıldı — bir QR menüde beklenmedik bir minor güncellemenin tasarımı bozma riski, otomatik yama almanın faydasından büyük.
+- **Tailwind v4 kullanıldı** (Next 16'nın `create-next-app` varsayılanı). v4'te `tailwind.config.js` yok; palet `globals.css` içindeki `@theme` bloğunda tanımlanıyor. İsimlendirilmiş renk isteğin karşılanıyor — `bg-latte-400`, `text-paprika-500` gibi sınıflar aynen çalışıyor, sadece tanım yeri değişti.
+- **`hoverOnlyWhenSupported` ayarı kaldırıldı** çünkü Tailwind v4'te bu davranış artık varsayılan. Dokunmatik ekranda hover'ın yapışması sorunu ek yapılandırma olmadan çözülü geliyor.
+- **Marcellus tek dosyada, tam karakter kümesiyle.** Google'ın CSS API'si fontu `latin` ve `latin-ext` diye iki woff2'ye bölüyor; Türkçe'deki `ş` ve `ğ` latin-ext'te, `ç` ve `ı` latin'de. `next/font/local` alt küme başına `unicode-range` desteklemediği için iki dosya doğru çalışmazdı. Bunun yerine tam TTF (42 KB) indirilip woff2'ye sıkıştırıldı: **17,9 KB tek dosya**, iki alt kümenin toplamından (23,4 KB) küçük ve tek istek.
+- **`next/font/google` yerine `next/font/local` seçildi.** `next/font/google` da fontu kendi alan adımızdan servis eder, ama derleme anında Google'a bağlanır. Dosya repoda olduğunda derleme de tamamen çevrimdışı çalışıyor — bayrakları yerel tutma gerekçesinin aynısı.
+- **Marcellus'ta kiril ve arap alfabesi yok.** Bu font sadece başlıklarda kullanılıyor; Rusça/Arapça başlıklarda tarayıcı `Georgia → serif` yedeğine düşecek. Gövde metni zaten sistem fontlarında olduğu için dil ekranındaki "Русский" ve "العربية" etiketleri etkilenmiyor.
+- **Bayraklar ve logo için `next/image` değil düz `<img>` kullanıldı.** Dört bayrağın en-boy oranı farklı ve `w-auto` ile ölçekleniyorlar; `next/image` sabit `width`/`height` istiyor. Ayrıca 300 byte'lık bir SVG'de optimizasyonun kazancı yok. Adım 5'teki ürün fotoğraflarında `next/image` düzgün şekilde kullanılacak.
+- **`outline-none` yerine `outline-hidden`.** Taşıma sırasında odak halkasının kaybolduğu fark edildi: Tailwind v4'te `outline-none` artık `--tw-outline-style` değişkenini de `none` yapıyor ve `focus-visible:outline-2` bunu miras aldığı için halka çizilmiyordu. `outline-hidden` + `focus-visible:outline-solid` ile düzeltildi ve tarayıcıda tekrar doğrulandı.
+- **`AGENTS.md` / `CLAUDE.md` şablon dosyaları silinmedi**; create-next-app'in ürettiği Next.js kılavuz notları, ileride işe yarayabilir.
+Ölçüm sonuçları (Aşama 1 ile karşılaştırmalı):
+
+| Ölçüm | Aşama 1 | Adım 0 sonrası |
+|---|---|---|
+| Metin / buton (normal) | 4.77:1 | 4.77:1 |
+| Metin / buton (hover+active) | 3.55:1 | 3.55:1 |
+| Metin / sayfa arka planı | 9.83:1 | 9.83:1 |
+| Alt metin / sayfa | 5.51:1 | 5.51:1 |
+| Buton yüksekliği | 56px | 56px |
+| Etiket puntosu | 20px / 600 | 20px / 600 |
+| Odaklanabilir öğe | 4 | 4 |
+| Yatay taşma (390/768/1280) | yok | yok |
+| RTL: bayrak sağa geçiyor | evet | evet |
+| RTL: ok yönü `scaleX(-1)` | evet | evet |
+| Konsol | Tailwind CDN uyarısı | **temiz** |
+
+Yeni turuncu tonun ölçümleri: `paprika-500 #B0561F` cream-50 üzerinde 4.38:1 (büyük metin AA ✓), `paprika-600 #9A4A1A` cream-100 üzerinde 4.81:1 (normal metin AA ✓).
+
+`npm run build`: hatasız, 3 statik sayfa üretildi. `npm run lint`: temiz.
+Sıradaki adım: Adım 1 — GitHub. `huzur-pide` adında private repo oluşturulacak, remote bağlanacak ve mevcut geçmiş push edilecek. Push öncesi onayın alınacak.
 === RAPOR SONU ===
