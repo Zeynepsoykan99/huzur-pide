@@ -43,3 +43,6 @@ yarn-error.log*
 .playwright-mcp/
 _preview.html
 /*.png
+
+# Vercel (vercel link tarafindan eklendi)
+.vercel

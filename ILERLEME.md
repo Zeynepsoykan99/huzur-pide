@@ -3,8 +3,8 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 4 tamamlandı — ana seçim ekranı eklendi. Bekleyen: organizasyon içeriği, font kararı, eksik fotoğraflar
-**Son güncelleme:** 2026-08-27 12:55
+**Güncel aşama:** Aşama 5 tamamlandı — proje **canlıda**. Bekleyen: QR adresi kararı, organizasyon içeriği, font kararı, eksik fotoğraflar
+**Son güncelleme:** 2026-08-27 13:20
 
 ### Genel Durum
 
@@ -15,6 +15,7 @@
 | 3 | Çok dillilik + dil değiştirme | **Tamamlandı** |
 | 4 | RTL (Arapça) desteği | **Tamamlandı** (Aşama 3 içinde) |
 | 5 | Ana seçim ekranı + organizasyon | **Tamamlandı** |
+| 6 | Vercel'de canlıya alma | **Tamamlandı** |
 
 ### Aşama 1 Adımları
 
@@ -33,6 +34,13 @@
 - [x] Adım 4 — Ekran B: Kategori sayfaları
 - [x] Adım 5 — Görseller
 - [x] Adım 6 — Doğrulama
+
+### Canlı Adres
+
+**https://huzur-pide.vercel.app**
+
+Vercel projesi: `zey-ad23/huzur-pide` · üretim dalı `main` · GitHub bağlı,
+`main`'e her push otomatik üretim dağıtımı tetikler.
 
 ### Depo
 
@@ -814,5 +822,173 @@ Font kararını birlikte vereceğiz.
 - İstersen kart açıklama satırı (çevirileri hazır)
 
 **Sıradaki adım:** Organizasyon içeriği, font kararı ve eksik fotoğraflar — üçü de senin girdine bağlı.
+
+=== RAPOR SONU ===
+
+---
+
+## Aşama 5 — Vercel'de Canlıya Alma · 2026-08-27
+
+=== RAPOR BAŞLANGICI ===
+
+**Adım:** Aşama 5 — Vercel Dağıtımı (Adım 1–5, tamamı)
+
+---
+
+**Yapılanlar:**
+
+*Adım 1 — CLI ve hesap durumu*
+- Vercel CLI kurulu bulundu: **58.9.1** (v59.7.0 mevcut; güncelleme gerekmediği için yapılmadı)
+- Oturum **açıktı**: `zeynepsoykan99`, aktif kapsam `zey-ad23` ("Zey")
+- Hiçbir hesap oluşturma veya ilişkilendirme yapılmadı, yalnızca mevcut oturum okundu
+
+*Adım 2 — Dağıtım öncesi kontrol*
+- Yerel `main` ile `origin/main` aynı noktada (`2af2369`), fark 0/0 — `git ls-remote` ile uzak depodan doğrulandı
+- Commit edilmemiş değişiklik yoktu
+- `next build` temiz, 38 statik sayfa
+- Ortam değişkeni ihtiyacı yok
+- Node: yerel v24.19.0, Vercel varsayılanı 24.x — uyumlu
+
+*Adım 3 — Projeyi bağlama*
+- `vercel link` ile `zey-ad23/huzur-pide` projesi oluşturuldu
+- GitHub deposu **otomatik bağlandı** (`Zeynepsoykan99/huzur-pide`); `vercel git connect` ile ayrıca doğrulandı
+- Framework Next.js olarak kendiliğinden algılandı; kök dizin, build/install komutu, Node sürümü Vercel varsayılanında bırakıldı
+- `vercel link` bir `.env.local` (OIDC token) oluşturdu ve `.gitignore`'a `.vercel` + `.env*` ekledi. `.env*` zaten vardı, yinelenen satır temizlendi. **İkisinin de git tarafından yok sayıldığı doğrulandı** — token depoya sızmadı.
+
+*Adım 4 — İlk üretim dağıtımı*
+- `vercel --prod` ile dağıtıldı, durum **READY**, build süresi **29 sn**
+- Üretim adresi: **https://huzur-pide.vercel.app** (istenen ad boştu, ek almadı)
+- Dağıtım kimliği: `dpl_GW6N6fFzL6QTeLEbr5AvjFoTzJuH`
+- **Dağıtım koruması kapalı** — canlı adres giriş yapmadan açılıyor, ayar değişikliği gerekmedi
+
+*Adım 5 — Canlı doğrulama*
+- HTTP testleri, tarayıcıda görsel doğrulama, 108 taşma kontrolü, varlık bütünlüğü, font ve görsel optimizasyonu, QR gecikme ölçümü
+
+---
+
+**Oluşturulan/Değiştirilen dosyalar:**
+
+| Dosya | Durum |
+|---|---|
+| `.gitignore` | güncellendi — `.vercel` eklendi, yinelenen `.env*` temizlendi |
+| `.vercel/project.json` | yeni, **git'e girmiyor** — proje bağlantısı |
+| `.env.local` | yeni, **git'e girmiyor** — Vercel OIDC token |
+
+Uygulama kodunda hiçbir değişiklik yapılmadı.
+
+---
+
+**Canlı test sonuçları:**
+
+*Rotalar — hepsi canlı adres üzerinden*
+
+| Test | Sonuç |
+|---|---|
+| Kök adres | `/` → **307** → `Location: /tr` ✓ |
+| Dört dilin giriş sayfaları | `/tr` `/en` `/ar` `/ru` → **200** ✓ |
+| Ana seçim ekranı | `/tr/secim` `/en/secim` `/ar/secim` `/ru/secim` → **200** ✓ |
+| Organizasyon | `/tr/organizasyon` `/en/organizasyon` `/ar/organizasyon` `/ru/organizasyon` → **200** ✓ |
+| Menü listesi | `/tr/menu` `/en/menu` `/ar/menu` `/ru/menu` → **200** ✓ |
+| Kategori sayfaları (tr, 5 kategori) | hepsi **200** ✓ |
+| Kategori (ar/ru/en örnekleri) | hepsi **200** ✓ |
+| Geçersiz rotalar | `/xx/menu` `/tr/menu/olmayan-kategori` `/tr/olmayan-sayfa` `/zz` → **404** ✓ |
+
+*Arapça RTL*
+
+| Sayfa | `<html>` |
+|---|---|
+| `/ar` | `lang="ar" dir="rtl"` ✓ |
+| `/ar/secim` | `lang="ar" dir="rtl"` ✓ |
+| `/ar/menu` | `lang="ar" dir="rtl"` ✓ |
+| `/ar/organizasyon` | `lang="ar" dir="rtl"` ✓ |
+| `/ar/menu/izgara` | `lang="ar" dir="rtl"` ✓ |
+| `/tr`, `/ru/menu` (karşılaştırma) | `dir="ltr"` ✓ |
+
+Tarayıcıda görsel olarak da doğrulandı: `/ar/menu/kapali-pide` tam aynalanmış — görseller sağda, fiyat sütunları hizalı, açıklamalar adların altında.
+
+*Varlıklar — indirilip yerel dosyalarla karşılaştırıldı*
+
+| Dosya | HTTP | Tür | Boyut | Yerelle aynı |
+|---|---|---|---|---|
+| `/logo.svg` | 200 | image/svg+xml | 1.226 B | ✓ |
+| `/flags/tr.svg` | 200 | image/svg+xml | 396 B | ✓ |
+| `/flags/ae.svg` | 200 | image/svg+xml | 347 B | ✓ |
+| `/urunler/kiymali-pide.webp` | 200 | image/webp | 37.464 B | **birebir** ✓ |
+| `/urunler/karisik-izgara.webp` | 200 | image/webp | 62.132 B | ✓ |
+| `/urunler/sutlac.webp` | 200 | image/webp | 46.166 B | ✓ |
+| Marcellus woff2 | 200 | font/woff2 | 17.980 B | **birebir** ✓ |
+
+*Font*
+
+`document.fonts` → `marcellus loaded`. Genişlik ölçümüyle doğrulandı: başlık Marcellus'la 174,1px, Georgia'ya zorlandığında 178,7px — yani font gerçekten uygulanıyor, yedeğe düşmüyor. Kendi alan adımızdan servis ediliyor, Google'a hiçbir istek gitmiyor.
+
+*Görsel optimizasyonu (`next/image`)*
+
+Telefonda 56px gösterilen ürün fotoğrafı için tarayıcı `w=64` sürümü indiriyor:
+
+| Sürüm | Boyut |
+|---|---|
+| Kaynak `sutlac.webp` | 46.166 B |
+| `_next/image?w=256` | 7.022 B |
+| `_next/image?w=64` (telefonun indirdiği) | **1.036 B** |
+
+Yani telefona kaynağın **%2,2'si** iniyor. Adım 5'te koyduğumuz `sizes` niteliği işini yapıyor.
+
+*Yerleşim ve konsol*
+
+| Kontrol | Sonuç |
+|---|---|
+| Yatay taşma (4 dil × 9 sayfa × 3 genişlik) | **108 kontrol, 0 taşma** |
+| Konsol | **0 hata, 0 uyarı** |
+
+---
+
+**QR kodunun bakacağı adres**
+
+Ölçüm (8'er örnek, ortalama):
+
+| Adres | Ortalama süre | Yönlendirme |
+|---|---|---|
+| `https://huzur-pide.vercel.app/` | **0,415 sn** | 1 |
+| `https://huzur-pide.vercel.app/tr` | **0,223 sn** | 0 |
+
+Kök adres bir fazladan gidiş-dönüş yapıyor: önce 307 yanıtı (0,21 sn), sonra `/tr` (0,20 sn). **Aradaki fark yaklaşık 190 ms** — masada telefonla açan müşteri için gözle görülür olmasa da ölçülebilir bir gecikme.
+
+İki adresin gösterdiği ekran **aynı**: `/tr` dil seçim ekranı, dört dil butonuyla. Kök adres de oraya gidiyor.
+
+QR kodun karmaşıklığı açısından fark yok — 21 ve 24 karakter aynı QR sürümüne sığıyor.
+
+**Önerim: QR `https://huzur-pide.vercel.app/tr` adresine baksın.** Yönlendirme atlanır, sayfa doğrudan açılır. Kök adres yine çalışmaya devam eder — elle yazan veya eski bir QR'ı okutan müşteri de aynı yere gider. **Karar senin.**
+
+---
+
+**Bundan sonra kod değişikliği canlıya nasıl yansıyacak**
+
+```
+kod değişikliği  →  git commit  →  git push origin main
+                                          ↓
+                              Vercel değişikliği algılar
+                                          ↓
+                              npm install + next build (~30 sn)
+                                          ↓
+                     https://huzur-pide.vercel.app güncellenir
+```
+
+- **`main`'e her push otomatik üretim dağıtımı tetikler.** Ayrıca bir komut çalıştırmaya gerek yok.
+- **Başka bir dala push edilirse** Vercel ayrı bir önizleme adresi üretir; üretim adresi etkilenmez.
+- **Build başarısız olursa** dağıtım yayına alınmaz; canlı adres son çalışan sürümde kalır.
+- **Geri alma:** Vercel panelinden önceki bir dağıtım "Promote to Production" ile anında geri getirilebilir; yeni build beklenmez.
+
+---
+
+**Yapılmayanlar (istendiği gibi):**
+- Alan adı bağlanmadı — Vercel'in ücretsiz adresi kullanılıyor
+- Hiçbir plan değişikliği yapılmadı
+- Hiçbir koruma/güvenlik ayarı değiştirilmedi
+- Vercel'in varsayılan build ayarlarına dokunulmadı
+
+**Hatırlatma:** Vercel'in Hobby planı ticari kullanıma kapalı. Bu bir restoranın müşteri menüsü. "Devam et, sorumluluk bende" dedin ve öyle yapıldı; kapsamın hangi planda olduğunu CLI'dan okuyamıyorum, panelden bakman gerekir.
+
+**Sıradaki adım:** QR adresi kararı. Ayrıca Aşama 3-4'ten bekleyenler duruyor: organizasyon içeriği, font kararı, 24 ürünün fotoğrafı, 4 teyit edilmemiş fiyat, Arapça çevirilerin kontrolü.
 
 === RAPOR SONU ===
