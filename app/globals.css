@@ -309,4 +309,46 @@
   .urun-icerik {
     @apply mt-0.5 text-xs leading-snug font-normal text-cocoa-700 sm:text-sm;
   }
+
+  /* --- Ana secim ekrani kartlari ---
+     Dil secim butonlarindan bilincli olarak daha iri: yukseklik 56px degil
+     96px, ikon 40px, baslik gosterim fontunda. Iki ekran art arda
+     goruldugunde ayni bilesen gibi okunmasin diye. */
+  .secim-karti {
+    @apply flex min-h-24 w-full items-center gap-4 rounded-2xl
+           bg-latte-400 px-5 py-5 text-start
+           shadow-md shadow-cocoa-900/10
+           ring-1 ring-latte-600/25
+           outline-hidden transition duration-200 ease-out
+           hover:-translate-y-0.5 hover:bg-latte-500 hover:shadow-lg hover:shadow-cocoa-900/20
+           active:translate-y-0 active:scale-[0.985] active:bg-latte-500
+           active:shadow-sm active:ring-latte-600/60 active:duration-75
+           focus-visible:outline-solid focus-visible:outline-2
+           focus-visible:outline-offset-[3px] focus-visible:outline-cocoa-900
+           sm:gap-5 sm:px-6;
+  }
+
+  .secim-ikonu {
+    @apply h-10 w-10 shrink-0 text-cocoa-900/70
+           transition-colors duration-200 sm:h-11 sm:w-11;
+  }
+
+  .secim-karti:hover .secim-ikonu {
+    @apply text-cocoa-900;
+  }
+
+  .secim-basligi {
+    @apply flex-1 font-display text-2xl leading-tight text-cocoa-900 sm:text-3xl;
+  }
+
+  /* --- Organizasyon sayfasi: hazirlaniyor blogu --- */
+  .hazirlaniyor {
+    @apply mx-auto mt-10 flex max-w-sm flex-col items-center gap-4
+           rounded-2xl bg-cream-200/50 px-6 py-10 text-center
+           ring-1 ring-latte-600/20 ring-inset;
+  }
+
+  .hazirlaniyor-metin {
+    @apply text-base leading-relaxed text-cocoa-700 sm:text-lg;
+  }
 }

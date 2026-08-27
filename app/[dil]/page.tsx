@@ -18,7 +18,8 @@ import {
  * Çevresindeki metinler o dilde, dört buton her zaman dört dili gösteriyor.
  * Arapça kopyada sayfa RTL, çünkü `dir` kök layout'ta URL'den geliyor.
  *
- * Butonlar artık gerçekten çalışıyor: her biri o dilin menüsüne bağlantı.
+ * Butonlar her biri o dilin ana seçim ekranına bağlanıyor; menüye oradan
+ * geçiliyor.
  */
 export function generateStaticParams() {
   return DILLER.map((dil) => ({ dil }));
@@ -111,7 +112,7 @@ export default async function DilSecimSayfasi({ params }: PageProps<"/[dil]">) {
               return (
                 <Link
                   key={hedef}
-                  href={`/${hedef}/menu`}
+                  href={`/${hedef}/secim`}
                   hrefLang={hedef}
                   data-lang={hedef}
                   data-dir={DIL_YONU[hedef]}

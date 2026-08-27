@@ -3,8 +3,8 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 3 tamamlandı — dört dil çalışıyor. Bekleyen: font kararı, eksik fotoğraflar
-**Son güncelleme:** 2026-08-27 12:25
+**Güncel aşama:** Aşama 4 tamamlandı — ana seçim ekranı eklendi. Bekleyen: organizasyon içeriği, font kararı, eksik fotoğraflar
+**Son güncelleme:** 2026-08-27 12:55
 
 ### Genel Durum
 
@@ -14,6 +14,7 @@
 | 2 | Menü sayfaları tasarımı | **Tamamlandı** (7/7 adım) |
 | 3 | Çok dillilik + dil değiştirme | **Tamamlandı** |
 | 4 | RTL (Arapça) desteği | **Tamamlandı** (Aşama 3 içinde) |
+| 5 | Ana seçim ekranı + organizasyon | **Tamamlandı** |
 
 ### Aşama 1 Adımları
 
@@ -41,9 +42,13 @@ https://github.com/Zeynepsoykan99/huzur-pide (**public**, dal: `main`)
 
 Dil URL'nin ilk parçası: `tr` · `en` · `ar` · `ru`. `/` adresi `/tr`'ye yönlendirilir.
 
+**Akış:** QR → dil seçimi → ana seçim → menü veya organizasyon
+
 | Yol | Ekran |
 |---|---|
 | `/[dil]` | Dil seçimi |
+| `/[dil]/secim` | Ana seçim — Menü / Organizasyon |
+| `/[dil]/organizasyon` | Organizasyon (içerik bekliyor) |
 | `/[dil]/menu` | Ekran A — kategori listesi |
 | `/[dil]/menu/kapali-pide` | Ekran B — Kapalı Pide Çeşitleri |
 | `/[dil]/menu/izgara` | Ekran B — Izgara Çeşitleri |
@@ -51,7 +56,7 @@ Dil URL'nin ilk parçası: `tr` · `en` · `ar` · `ru`. `/` adresi `/tr`'ye yö
 | `/[dil]/menu/tatlilar` | Ekran B — Tatlı Çeşitleri |
 | `/[dil]/menu/icecekler` | Ekran B — İçecekler |
 
-Toplam 30 statik sayfa. Örnek: `/ar/menu/izgara`
+Toplam 38 statik sayfa. Örnek: `/ar/menu/izgara`
 
 ### Aşama 1 Çıktısı
 
@@ -672,5 +677,142 @@ Font kararını birlikte vereceğiz.
 - Referans menü görseli hiç ulaşmadı; yerleşim sözlü tarife göre kuruldu
 
 **Sıradaki adım:** Font kararı ve eksik fotoğraflar. İkisi de senin girdine bağlı.
+
+=== RAPOR SONU ===
+
+---
+
+## Aşama 4 — Ana Seçim Ekranı · 2026-08-27
+
+=== RAPOR BAŞLANGICI ===
+
+**Adım:** Aşama 4 — Ana Seçim Ekranı (Adım 1–5, tamamı)
+
+---
+
+**Yapılanlar:**
+
+*Adım 1 — Çeviriler*
+- `data/arayuz.ts`'e dört yeni metin eklendi, dördü de dört dilde:
+  `organizasyon`, `bolumSecin`, `yakinda`, `anaEkranaDon`
+- Kullanılmayan hale gelen `anaSayfa` anahtarı kaldırıldı
+- Veri dosyasına, "organization" (kurum) ile karıştırılmaması için açıklayıcı yorum bırakıldı
+
+*Adım 2 — Ana seçim ekranı*
+- `app/[dil]/secim/page.tsx` oluşturuldu, dört dilde statik üretiliyor
+- İki kart: Menü → `/[dil]/menu`, Organizasyon → `/[dil]/organizasyon`
+- `components/Ikonlar.tsx`: `PideIkonu` ve `SofraIkonu`
+- `.secim-karti` stili: yükseklik 96px, ikon 40–44px, başlık gösterim fontunda 24–30px
+
+*Adım 3 — Organizasyon sayfası*
+- `app/[dil]/organizasyon/page.tsx` oluşturuldu, dört dilde statik
+- Üst başlık + dil kontrolü diğer sayfalarla aynı
+- Ortada "hazırlanıyor" bloğu: sofra ikonu + tek satır metin
+- Altında "Ana ekrana dön" bağlantısı
+- Hizmet, kapasite, iletişim gibi hiçbir bilgi eklenmedi — elimizde yok
+
+*Adım 4 — Bağlantı güncellemeleri*
+- Dil seçim butonları `/[dil]/menu` yerine `/[dil]/secim`'e bağlandı
+- `UstBaslik`'teki logo/marka bağlantısı `/[dil]` yerine `/[dil]/secim`'e gitti; erişilebilir etiketi de "Ana ekrana dön" oldu
+- Dil seçim ekranına dönüş yolu başlıktaki dil kontrolü üzerinden korundu
+
+*Adım 5 — Doğrulama*
+- 4 dil × 9 sayfa × 3 genişlik = **108 yatay taşma kontrolü**
+- Kontrast: dört dilde beş sayfa taranıp **16 metin kombinasyonu** ölçüldü; sayfa zeminlerinde beş farklı arka plan, kart üzerindeki metinler kart ve kart-hover zeminlerinde
+- Akış uçtan uca tarayıcıda tıklanarak izlendi
+- Rota testi, konsol, `tsc`, `lint`, `build`
+
+---
+
+**Oluşturulan/Değiştirilen dosyalar:**
+
+| Dosya | Durum |
+|---|---|
+| `app/[dil]/secim/page.tsx` | yeni — ana seçim ekranı |
+| `app/[dil]/organizasyon/page.tsx` | yeni — organizasyon (içerik bekliyor) |
+| `components/Ikonlar.tsx` | yeni — pide ve sofra ikonları |
+| `data/arayuz.ts` | güncellendi — 4 yeni metin, 1 kullanılmayan kaldırıldı |
+| `app/[dil]/page.tsx` | güncellendi — dil butonları `/secim`'e |
+| `components/UstBaslik.tsx` | güncellendi — logo `/secim`'e |
+| `app/globals.css` | güncellendi — kart ve "hazırlanıyor" stilleri |
+
+---
+
+**Alınan kararlar:**
+
+*Rota*
+- **Mevcut rotalara hiç dokunulmadı**, iki yeni rota eklendi. `/[dil]` hâlâ dil seçimi ve QR'ın indiği yer; ana seçim `/[dil]/secim`'e geldi. Ana seçimi `/[dil]`'e taşımak, çalışan giriş noktasını değiştirmek olurdu — kazancı yok, riski var.
+- **Slug'lar Türkçe** (`secim`, `organizasyon`), mevcut `kapali-pide` / `izgara` ile tutarlı.
+- **`UstBaslik` logosu artık dil seçimine değil ana seçime dönüyor.** Uygulamanın bir "ana ekranı" olduğu andan itibaren logonun oraya dönmesi doğru davranış; dil değiştirmek isteyen zaten başlıktaki dil kontrolünü kullanıyor.
+
+*İki ekranın ayrışması*
+- **Ayrışma içerikle değil yapıyla sağlandı.** Dil ekranı kimlik ağırlıklı kaldı (80px logo, 48px marka, slogan, dikeyde ortalanmış). Ana seçim ekranı **menü sayfalarıyla aynı `UstBaslik`'i** kullanıyor (44px logo, 24px marka, dil kontrolü). Böylece dil seçimi "kapı", ana seçim "içerisi" gibi okunuyor — ikinci bir açılış ekranı hissi vermiyor.
+- **Kartlar dil butonlarından bilinçli olarak iri:** 96px / 56px yükseklik, 40px ikon, gösterim fontunda başlık. Dil butonlarında gövde fontu ve 20px vardı. Aynı bileşenin tekrarı gibi durmuyor.
+- **Kart açıklamaları senin tercihinle çıkarıldı.** Şunu belirtmem gerek: "Organizasyon" kelimesi tek başına, özellikle yabancı müşteride ne anlattığını tam söylemiyor. İkonu bu yüzden anlamlı seçtim (sofra), ama açıklama satırı istersen sonradan eklenebilir — çevirileri hazır.
+
+*İkonlar*
+- **Pide ikonu ilk sürümde göz gibi okunuyordu.** Mercek şeklinin içinde ikinci bir mercek vardı; 40px'te tam bir göz. İç mercek kaldırılıp yerine üç malzeme noktası ve üste buhar konunca şekil netleşti. Logoda da tam olarak aynı düzeltme yapılmıştı.
+- **Sofra ikonu ilk sürümde film makarası gibi okunuyordu.** Masa ve sandalyelerin hepsi daireydi. Sandalyeler yuvarlak köşeli dikdörtgene çevrilip masaya bakacak şekilde döndürülünce sofra olduğu anlaşılır oldu.
+- İkisi de `currentColor` kullanıyor, hover'da başlıkla birlikte koyulaşıyorlar.
+
+*Çeviriler*
+- **EN "Events"** — restoran sektöründe standart terim. "Organization" kesinlikle yanlış olurdu (kurum demek). "Special Occasions" daha açıklayıcı ama buton için uzun.
+- **AR "المناسبات"** — *munāsabāt*: düğün, nişan, kutlama, anma için Arapça'daki tam karşılık.
+- **RU "Банкеты"** — Rusça'da restoranda düğün/kutlama rezervasyonu ararken kullanılan terim.
+- **`bolumSecin` ekranda görünmüyor**, yalnızca ekran okuyucu ve sayfa başlığı için. Ekranda ayrı bir başlık istenmemişti; iki kart kendini anlatıyor.
+
+---
+
+**Ölçüm sonuçları:**
+
+*Yatay taşma — 4 dil × 9 sayfa × 3 genişlik*
+
+| Kontrol | Taşan |
+|---|---|
+| 108 | **0** |
+
+*Kontrast — 16 metin kombinasyonu*
+
+| Metin | Punto/Ağırlık | Zemin | Eşik | En düşük | |
+|---|---|---|---|---|---|
+| Organizasyon başlığı | 30 / 400 | sayfa | 3:1 | 3.17 | ✓ |
+| Kategori adı (Ekran A) | 24 / 400 | sayfa | 3:1 | 3.17 | ✓ |
+| Dil adı (seçim ekranı) | 20–24 / 600 | kart | 3:1 | 3.55 | ✓ |
+| Kart başlığı (Menü / Organizasyon) | 24–30 / 400 | kart | 3:1 | 3.55 | ✓ |
+| "Hazırlanıyor" metni | 16 / 400 | hazırlanıyor bloğu | 4.5:1 | 4.53 | ✓ |
+| Diğer 11 kombinasyon | — | — | — | ≥ 4.53 | ✓ |
+
+**16/16 geçiyor, başarısız yok.**
+
+*Akış testi — uçtan uca tarayıcıda tıklanarak*
+
+| Adım | Sonuç |
+|---|---|
+| `/tr` → RU butonu | `/ru/secim`, `lang=ru` — kartlar "Меню" / "Банкеты" |
+| Банкеты kartı | `/ru/organizasyon`, başlık "Банкеты" |
+| Dil kontrolünden AR | `/ar/organizasyon`, `lang=ar dir=rtl`, başlık "المناسبات" — **aynı sayfada kalındı** |
+| Ana ekrana dön | `/ar/secim`, RTL korundu |
+| Menü kartı | `/ar/menu`, kategori listesi |
+
+*Diğer*
+
+- Rota testi: `/tr/secim` `/en/secim` `/ar/secim` `/ru/secim` `/tr/organizasyon` `/ar/organizasyon` `/tr/menu` `/ar/menu/izgara` `/tr` → hepsi 200; `/xx/secim` → 404
+- `npx tsc --noEmit`: temiz
+- `npm run lint`: temiz
+- `npm run build`: hatasız, **30 → 38 sayfa statik** (4 dil × 2 yeni sayfa)
+- Konsol: 108 sayfa yüklemesinde **0 hata, 0 uyarı**
+- **Mevcut menü akışı bozulmadı** — tüm kategori sayfaları ve dil değiştirme çalışıyor
+
+---
+
+**Karar bekleyen / eksik kalan (Aşama 3'ten devam):**
+- Organizasyon sayfasının içeriği: hizmetler, kapasite, iletişim — hiçbiri girilmedi
+- Arapça çevirilerin ana dili konuşan biri tarafından gözden geçirilmesi
+- 24 ürünün fotoğrafı yok
+- 4 fiyat hücresi teyit edilmemiş
+- Marcellus'un Arapça ve Kiril'de yedek fonta düşmesi — font kararı bekliyor
+- İstersen kart açıklama satırı (çevirileri hazır)
+
+**Sıradaki adım:** Organizasyon içeriği, font kararı ve eksik fotoğraflar — üçü de senin girdine bağlı.
 
 === RAPOR SONU ===

@@ -21,6 +21,32 @@ export const ARAYUZ = {
     ru: "Из печи на ваш стол",
   },
   menu: { tr: "Menü", en: "Menu", ar: "القائمة", ru: "Меню" },
+  organizasyon: {
+    tr: "Organizasyon",
+    // "Organization" DEGIL — o kurum/sirket demek. Burada kastedilen dugun,
+    // nisan, kina, mevlit, toplu yemek gibi ozel gun organizasyonlari.
+    en: "Events",
+    ar: "المناسبات",
+    ru: "Банкеты",
+  },
+  bolumSecin: {
+    tr: "Bölüm seçin",
+    en: "Choose a section",
+    ar: "اختر القسم",
+    ru: "Выберите раздел",
+  },
+  yakinda: {
+    tr: "Bu bölüm hazırlanıyor.",
+    en: "This section is coming soon.",
+    ar: "هذا القسم قيد الإعداد.",
+    ru: "Этот раздел готовится.",
+  },
+  anaEkranaDon: {
+    tr: "Ana ekrana dön",
+    en: "Back to main screen",
+    ar: "العودة إلى الشاشة الرئيسية",
+    ru: "На главный экран",
+  },
   menuyeDon: {
     tr: "Menüye dön",
     en: "Back to menu",
@@ -55,12 +81,6 @@ export const ARAYUZ = {
     en: "Change language",
     ar: "تغيير اللغة",
     ru: "Изменить язык",
-  },
-  anaSayfa: {
-    tr: "Dil seçim ekranına dön",
-    en: "Back to language selection",
-    ar: "العودة إلى اختيار اللغة",
-    ru: "Вернуться к выбору языка",
   },
 } satisfies Record<string, Cevrilebilir>;
 

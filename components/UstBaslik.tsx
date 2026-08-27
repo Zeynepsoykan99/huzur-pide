@@ -7,8 +7,9 @@ import type { DilKodu } from "@/data/menu";
  * Her menü sayfasının üstünde duran "Huzur Pide" başlığı ve dil değiştirme
  * kontrolü.
  *
- * Başlığa basıldığında o dilin dil seçim ekranına dönülüyor — QR menüde geri
+ * Başlığa basıldığında o dilin ana seçim ekranına dönülüyor — QR menüde geri
  * tuşu her zaman elverişli olmuyor, başlığın kendisi çıkış yolu oluyor.
+ * Dil seçim ekranına dönmek için başlıktaki dil kontrolü var.
  */
 export function UstBaslik({
   dil,
@@ -23,8 +24,8 @@ export function UstBaslik({
   return (
     <header className="flex flex-col items-center pt-8 pb-6 text-center sm:pt-10">
       <Link
-        href={`/${dil}`}
-        aria-label={ui("anaSayfa", dil)}
+        href={`/${dil}/secim`}
+        aria-label={ui("anaEkranaDon", dil)}
         className="flex flex-col items-center rounded-2xl px-4 py-2 outline-hidden
                    transition-colors duration-150 hover:bg-cream-200/40
                    focus-visible:outline-solid focus-visible:outline-2
