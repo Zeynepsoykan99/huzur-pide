@@ -3,8 +3,8 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 2 tamamlandı — sıradaki: Aşama 3 (dil mantığı + çeviriler)
-**Son güncelleme:** 2026-08-27 12:15
+**Güncel aşama:** Aşama 3 tamamlandı — dört dil çalışıyor. Bekleyen: font kararı, eksik fotoğraflar
+**Son güncelleme:** 2026-08-27 12:25
 
 ### Genel Durum
 
@@ -12,8 +12,8 @@
 |---|---|---|
 | 1 | Dil seçim ekranı tasarımı | **Tamamlandı** (5/5 adım) |
 | 2 | Menü sayfaları tasarımı | **Tamamlandı** (7/7 adım) |
-| 3 | Dil değiştirme mantığı + menü verisi | Başlanmadı |
-| 4 | RTL (Arapça) desteğinin devreye alınması | Başlanmadı |
+| 3 | Çok dillilik + dil değiştirme | **Tamamlandı** |
+| 4 | RTL (Arapça) desteği | **Tamamlandı** (Aşama 3 içinde) |
 
 ### Aşama 1 Adımları
 
@@ -35,19 +35,23 @@
 
 ### Depo
 
-https://github.com/Zeynepsoykan99/huzur-pide (private, dal: `main`)
+https://github.com/Zeynepsoykan99/huzur-pide (**public**, dal: `main`)
 
 ### Ekranlar
 
+Dil URL'nin ilk parçası: `tr` · `en` · `ar` · `ru`. `/` adresi `/tr`'ye yönlendirilir.
+
 | Yol | Ekran |
 |---|---|
-| `/` | Dil seçimi (Aşama 1) |
-| `/menu` | Ekran A — kategori listesi |
-| `/menu/kapali-pide` | Ekran B — Kapalı Pide Çeşitleri |
-| `/menu/izgara` | Ekran B — Izgara Çeşitleri |
-| `/menu/salatalar` | Ekran B — Salatalar |
-| `/menu/tatlilar` | Ekran B — Tatlı Çeşitleri |
-| `/menu/icecekler` | Ekran B — İçecekler |
+| `/[dil]` | Dil seçimi |
+| `/[dil]/menu` | Ekran A — kategori listesi |
+| `/[dil]/menu/kapali-pide` | Ekran B — Kapalı Pide Çeşitleri |
+| `/[dil]/menu/izgara` | Ekran B — Izgara Çeşitleri |
+| `/[dil]/menu/salatalar` | Ekran B — Salatalar |
+| `/[dil]/menu/tatlilar` | Ekran B — Tatlı Çeşitleri |
+| `/[dil]/menu/icecekler` | Ekran B — İçecekler |
+
+Toplam 30 statik sayfa. Örnek: `/ar/menu/izgara`
 
 ### Aşama 1 Çıktısı
 
@@ -495,5 +499,178 @@ ayrıca çıkarılıp onaya sunulacak.
 - 4 fiyat hücresi hâlâ teyit edilmemiş: Kıymalı/1 Hamur, Kaşarlı/1 Hamur, Kaşarlı/Düble, Kabak Tatlısı
 
 **Sıradaki adım:** Aşama 3 — dil değiştirme mantığı ve çevirilerin girilmesi. `en`/`ar`/`ru` için 50'şer alan bekliyor; çeviriler birlikte girilecek. Bu aşamanın planı ayrıca çıkarılıp onaya sunulacak.
+
+=== RAPOR SONU ===
+
+---
+
+## Aşama 3 — Çok Dillilik ve Dil Değiştirme · 2026-08-27
+
+=== RAPOR BAŞLANGICI ===
+
+**Adım:** Aşama 3 — Çok Dillilik (Adım 1–6, tamamı)
+
+---
+
+**Yapılanlar:**
+
+*Adım 1 — GitHub sorunu*
+- Depo üç ayrı kaynaktan doğrulandı: yerel takip referansı, `git ls-remote` ile uzak depo, GitHub API'sinden `main` dalının ucu — üçü de aynı SHA (`afbda64`)
+- Teşhis: depoda sorun yoktu, sorun görünürlüktü. Private depo yalnızca sahibinin oturumunda görünür.
+- Onayınla depo **public** yapıldı (`gh repo edit --visibility public`)
+- Depo adı değiştirilmedi
+
+*Adım 2 — Görsel yer tutucuları*
+- `gorsel` alanı opsiyonel olmaktan çıkıp **zorunlu ve nullable** oldu (`Gorsel | null`); fotoğrafı olmayan 24 ürünün her birinde artık açık bir `gorsel: null,` satırı var
+- `gorselsizUrunler()` yardımcısı eklendi
+- `components/UrunGorseli.tsx`: fotoğraf varsa `next/image`, yoksa yer tutucu
+- Yer tutucu gerçek görselle birebir aynı ölçüde (mobilde 3,5rem kare, `md` üstünde 11rem 16:9) — fotoğraf eklendiğinde satır hizası hiç değişmiyor
+- İçinde logodaki pide silüetinin sadeleştirilmiş hâli; `cream-200` zemin, `latte-600/20` ince kenarlık, gölge yok
+
+*Adım 3 — Ürün içerikleri*
+- 31 ürünün tamamı için Türkçe içerik önerisi hazırlanıp onayına sunuldu; 9 kalemde tahmin yürütüldüğü ayrıca işaretlendi
+- Onay sonrası `icerik` alanı eklendi ve 28 ürünün Türkçe açıklaması girildi
+- Kola, Fanta ve Su'da `icerik: null` — dört dilde de kendilerini anlatıyorlar
+- `icerikMetni()`: Türkçe'de **her zaman** null döner; açıklama yalnızca en/ar/ru'da render ediliyor
+
+*Adım 4 — Çeviriler*
+- Yaklaşım onaylandı: Türkçe yemek adı korunur, parantez içinde o dildeki karşılığı verilir
+- Girilen çeviriler: 5 kategori adı, 4 sütun başlığı, 31 ürün adı, 28 içerik, 7 görsel alt metni, 10 arayüz metni
+- `data/arayuz.ts` oluşturuldu: arayüz metinleri menü verisinden ayrı tutuluyor
+- `eksikCeviriler()` artık `icerik` alanını da kontrol ediyor; üç dilde de **sıfır eksik**
+
+*Adım 5 — Dil değiştirme işlevi*
+- Rota yapısı dil önekli hâle getirildi: `/[dil]/menu/[kategori]`
+- Uygulamanın tamamı `app/[dil]/` altına taşındı; kök layout `<html lang>` ve `<html dir>` değerlerini URL'den okuyor
+- `/` adresi `next.config.ts` içinde `/tr`'ye yönlendiriliyor
+- Dil seçim ekranındaki butonlar artık gerçek bağlantı: `/ar/menu` gibi
+- `components/DilKontrolu.tsx`: her menü sayfasının başlığı altında bayrak + kısaltma sırası; aktif dil `aria-current="true"` ve sütlü kahve zeminle işaretli
+- Dil değiştirince aynı sayfada kalınıyor (`/tr/menu/tatlilar` → `/ar/menu/tatlilar`)
+- Geçersiz dil kodu 404 veriyor (`/xx/menu`)
+
+*Adım 6 — Doğrulama*
+- 4 dil × 7 sayfa × 3 genişlik = **84 yatay taşma kontrolü**
+- Kontrast: dört dilde beş sayfa taranıp gerçekten kullanılan **14 ayrı metin kombinasyonu** ölçüldü, dört zemin üzerinde (cream-50, cream-100, satır hover'ı, aktif dil rozeti)
+- Dil değiştirme davranışı tarayıcıda tıklanarak doğrulandı
+- Font yedeği dört dilde incelendi
+- `tsc`, `lint`, `build`, konsol
+
+---
+
+**Oluşturulan/Değiştirilen dosyalar:**
+
+| Dosya | Durum |
+|---|---|
+| `app/[dil]/layout.tsx` | taşındı + yeniden yazıldı — `<html lang dir>` URL'den |
+| `app/[dil]/page.tsx` | taşındı + yeniden yazıldı — dil seçimi, butonlar artık bağlantı |
+| `app/[dil]/menu/page.tsx` | taşındı — Ekran A, dört dilde |
+| `app/[dil]/menu/[kategori]/page.tsx` | taşındı — Ekran B, dört dilde, içerik açıklamalı |
+| `components/DilKontrolu.tsx` | yeni — dil değiştirme kontrolü |
+| `components/UrunGorseli.tsx` | yeni — fotoğraf veya yer tutucu |
+| `components/UstBaslik.tsx` | güncellendi — dil parametresi ve dil kontrolü |
+| `data/arayuz.ts` | yeni — 10 arayüz metni, dört dil |
+| `data/menu.ts` | güncellendi — dört dil, içerik alanı, dil yardımcıları |
+| `app/globals.css` | güncellendi — yer tutucu, dil kontrolü, içerik stilleri |
+| `next.config.ts` | güncellendi — `/` → `/tr` yönlendirmesi |
+
+---
+
+**Alınan kararlar:**
+
+*GitHub*
+- **Teşhis önce üç kaynaktan doğrulandı**, yerel `origin/main` referansına güvenilmedi. Yerel takip referansı bayat olabilir; `git ls-remote` ve GitHub API doğrudan uzak depoyu sorguluyor.
+- **Depo adı ve görünürlüğü kendiliğinden değiştirilmedi**, önce soruldu.
+
+*Yer tutucular*
+- **`gorsel` alanı opsiyonel değil, zorunlu ve nullable yapıldı.** Opsiyonel bırakılsaydı fotoğrafı olmayan ürün veri dosyasında hiçbir iz bırakmazdı; şimdi 24 satır açıkça duruyor ve fotoğraf gelince o satırı doldurmak yetiyor.
+- **Yer tutucu fotoğrafla aynı ölçüde.** Küçük tutulsaydı fotoğraf eklendiğinde satır yüksekliği değişir, düzen oynardı.
+- **Yer tutucu çizgiyle değil dolguyla çizildi.** İlk sürüm ince konturluydu; mobilde 56px'lik kutuda çizgi kalınlığı 1px'in altına düşüp kayboluyordu. İki farklı dolgu opaklığı şekli her boyutta okunur tutuyor.
+- **Gölge verilmedi.** Yer tutucu öne çıkmamalı; fotoğraflarda gölge var, yer tutucuda yok — bu fark bilinçli.
+
+*İçerik ve çeviri*
+- **Türkçe açıklama veride var ama ekranda yok.** Yerel müşteri ürünü zaten tanıyor; açıklama yalnızca yabancı dillerde gösteriliyor. Türkçe metin çevirilerin kaynağı ve işletmenin onayladığı hâli, o yüzden silinmedi.
+- **Ad çevirisinde üç istisna uygulandı:** (1) O dilde yerleşik ad varsa parantez yok — Arapça'da *لحم بعجين*, *كنافة*; Rusça'da *Компот*. (2) Türkçe ad zaten parantez taşıyorsa ikincisi eklenmedi. (3) Tanımlayıcı adlar düz çevrildi — "Et Izgara 1 KG" bir yemek adı değil, tarif.
+- **Soda ve Meyveli Soda'da Türkçe ad bilinçli olarak korunmadı.** İngilizce'de "soda" gazlı meşrubat demek, Türkçe'de maden suyu. Ad korunsaydı yabancı müşteri yanlış şey sipariş ederdi.
+- **Arayüz metinleri menü verisinden ayrı dosyada.** Menü içeriği ileride admin panelinden düzenlenecek; "Menüye dön" yazısı panelde düzenlenebilir olmamalı.
+- **Eksik çeviri için boş string değil, alanın hiç yazılmaması** kuralı korundu.
+
+*Dil yönlendirmesi*
+- **URL tabanlı, çerez veya `localStorage` değil.** QR menüde müşteri linki paylaşıyor: Arapça menüyü paylaşan müşterinin arkadaşı da Arapça açmalı. Çerezle tutulsaydı link dili taşımazdı.
+- **Uygulamanın tamamı `[dil]` altında.** Next.js'te `<html>` etiketini yalnızca kök layout basabiliyor ve kök layout route parametresini ancak kendisi dinamik bir segmentin altındaysa okuyabiliyor. Bu yüzden dil seçim ekranı da `/tr`, `/en`, `/ar`, `/ru` olarak dört kopya hâlinde üretiliyor — her biri kendi dilinde ve Arapça olanı RTL.
+- **Bunun bir yan etkisi var:** `/` artık gerçek bir sayfa değil, `/tr`'ye yönlendiriyor. Planda "`/` dilden bağımsız dil seçimi" demiştim; çerçevenin kısıtı yüzünden değişti. QR kodu doğrudan `/tr` adresine bakarsa yönlendirme hiç çalışmaz.
+- **Kazanç:** Arapça sayfalar daha ilk baytta `dir="rtl"` ile geliyor. Sayfa önce soldan sağa çizilip sonra aynalanmıyor.
+- **Dil değiştirme için JavaScript yok.** Her seçenek düz bir bağlantı; 4 dil × 5 kategori = 20 kategori sayfası derleme anında statik üretiliyor, sunucuda hesap yapılmıyor.
+- **Dil değiştirince aynı sayfada kalınıyor.** Kontrol, dil önekinden sonraki yolu parametre olarak alıyor.
+- **Bayrak + kısaltma birlikte** (senin tercihin). 390px'te sığması için bayrak 14px, punto 12px, iç boşluk dar tutuldu; dokunma hedefi `min-h-9` (36px) ile korundu.
+- **Aktif dil yalnızca renkle değil**, zemin ve kenarlıkla da ayrılıyor — renk körlüğü için.
+
+*Tasarım düzeltmeleri*
+- **İçerik açıklaması ilk sürümde yanlış yere düşüyordu.** Pide tablosunda `ayrac-satir` flex kapsayıcısının içine konmuştu, böylece noktalarla aynı satırda bir flex öğesi hâline gelip adın yanına sıkışıyordu. Ad + noktalar üst satırda, açıklama altında ayrı blok olarak ayrıldı.
+- **Açıklamaya `font-normal` verildi.** Pide tablosunda açıklama `<th scope="row">` içinde duruyor ve `th` varsayılan olarak kalın; açıklama da kalın geliyordu.
+- **Dil seçim ekranındaki ayraç noktası kendi rengini bıraktı.** Sütlü kahve tonda 12px'lik bir nokta AA eşiğini geçemiyordu (en düşük 2,45:1); artık paragrafın rengini miras alıyor.
+
+---
+
+**Ölçüm sonuçları:**
+
+*Yatay taşma — 4 dil × 7 sayfa × 3 genişlik*
+
+| Kontrol | Taşan |
+|---|---|
+| 84 | **0** |
+
+*Kontrast — dört dilde kullanılan 14 metin kombinasyonu, dört zemin üzerinde*
+
+| Metin | Punto/Ağırlık | Tür | Eşik | En düşük | Sonuç |
+|---|---|---|---|---|---|
+| Kategori adı (Ekran A) | 24 / 400 | büyük | 3:1 | 3.17 | ✓ |
+| Kategori başlığı (Ekran B) | 30 / 400 | büyük | 3:1 | 3.17 | ✓ |
+| Slogan / "Menü" / sütun başlığı | 12–14 / 400–600 | normal | 4.5:1 | 4.53 | ✓ |
+| Dil kısaltması (pasif) | 12 / 600 | normal | 4.5:1 | 4.53 | ✓ |
+| Ürün içerik açıklaması | 12 / 400 | normal | 4.5:1 | 4.53 | ✓ |
+| "Menüye dön" | 14 / 600 | normal | 4.5:1 | 4.53 | ✓ |
+| "Huzur Pide" | 24–36 / 400 | büyük | 3:1 | 7.12 | ✓ |
+| Dil adı (seçim ekranı) | 20–24 / 600 | büyük | 3:1 | 7.12 | ✓ |
+| Dil kısaltması (aktif) | 12 / 600 | normal | 4.5:1 | 7.12 | ✓ |
+| Ürün adı / fiyat | 14–16 / 500–600 | normal | 4.5:1 | 7.12 | ✓ |
+
+**14 kombinasyonun tamamı geçiyor, başarısız kalan yok.**
+
+*Diğer*
+
+- `npx tsc --noEmit`: temiz
+- `npm run lint`: temiz
+- `npm run build`: hatasız, **30 sayfa statik üretildi** (4 dil ekranı + 4 menü + 20 kategori + not-found)
+- Konsol: 84 sayfa yüklemesinde **0 hata, 0 uyarı**
+- Rota testi: `/tr` `/en` `/ar` `/ru` `/tr/menu` `/ar/menu` `/ar/menu/kapali-pide` `/ru/menu/izgara` → hepsi 200; `/xx/menu` → 404; `/` → 307 → `/tr`
+- Dil değiştirme: `/tr/menu/tatlilar` üzerinde AR'ye tıklandı → `/ar/menu/tatlilar`, `<html lang="ar" dir="rtl">`, başlık "الحلويات", ilk ürün "كنافة" — sayfa korundu
+
+---
+
+**Bilinen sorun — font yedeği (çözülmedi, istendiği gibi):**
+
+Marcellus'un karakter kümesi latin + latin-ext. Kiril ve Arap alfabesi yok.
+
+| Dil | Başlıklarda kullanılan font | Nasıl görünüyor |
+|---|---|---|
+| Türkçe | Marcellus | Tasarlandığı gibi |
+| İngilizce | Marcellus | Tasarlandığı gibi |
+| Rusça | Georgia (yedek) | Kabul edilebilir — Georgia'nın Kiril desteği iyi, klasik bir serif. Marcellus'tan biraz daha kalın ve geniş duruyor, marka karakteri zayıflıyor. |
+| Arapça | Sistem naskh serifi (Georgia'da da Arapça yok, zincir generic serif'e düşüyor) | Okunaklı ama nötr. Marcellus'un klasik havasıyla ilgisi yok; Windows'ta Times New Roman'ın Arapça yüzü çıkıyor, başka işletim sistemlerinde başka bir font çıkacak — yani görünüm cihazdan cihaza değişiyor. |
+
+"Huzur Pide" marka adı latin harfli olduğu için dört dilde de Marcellus'la render ediliyor — marka tutarlılığı korunuyor. Sorun yalnızca kategori başlıklarında.
+
+Font kararını birlikte vereceğiz.
+
+---
+
+**Karar bekleyen / eksik kalan:**
+- Arapça çevirilerin bir ana dili konuşan tarafından gözden geçirilmesi öneriliyor (özellikle Türkçe adın harf çevirisiyle yazıldığı kalemler: كاشارلي, كاريشيك, ساتش كافورما)
+- 24 ürünün fotoğrafı hâlâ yok — yer tutucu gösteriliyor
+- 4 fiyat hücresi teyit edilmemiş: Kıymalı/1 Hamur, Kaşarlı/1 Hamur, Kaşarlı/Düble, Kabak Tatlısı
+- Marcellus'un Arapça ve Kiril'de yedeğe düşmesi
+- Referans menü görseli hiç ulaşmadı; yerleşim sözlü tarife göre kuruldu
+
+**Sıradaki adım:** Font kararı ve eksik fotoğraflar. İkisi de senin girdine bağlı.
 
 === RAPOR SONU ===

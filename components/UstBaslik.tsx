@@ -1,16 +1,30 @@
 import Link from "next/link";
+import { DilKontrolu } from "@/components/DilKontrolu";
+import { ui } from "@/data/arayuz";
+import type { DilKodu } from "@/data/menu";
 
 /**
- * Her menü sayfasının üstünde duran "Huzur Pide" başlığı.
+ * Her menü sayfasının üstünde duran "Huzur Pide" başlığı ve dil değiştirme
+ * kontrolü.
  *
- * Logoya basıldığında dil seçim ekranına dönülüyor — QR menüde geri tuşu
- * her zaman elverişli olmuyor, başlığın kendisi çıkış yolu oluyor.
+ * Başlığa basıldığında o dilin dil seçim ekranına dönülüyor — QR menüde geri
+ * tuşu her zaman elverişli olmuyor, başlığın kendisi çıkış yolu oluyor.
  */
-export function UstBaslik({ altBaslik }: { altBaslik?: string }) {
+export function UstBaslik({
+  dil,
+  altBaslik,
+  /** Dil önekinden SONRAKİ yol. Dil değiştirilince aynı sayfada kalınır. */
+  yol,
+}: {
+  dil: DilKodu;
+  altBaslik?: string;
+  yol: string;
+}) {
   return (
     <header className="flex flex-col items-center pt-8 pb-6 text-center sm:pt-10">
       <Link
-        href="/"
+        href={`/${dil}`}
+        aria-label={ui("anaSayfa", dil)}
         className="flex flex-col items-center rounded-2xl px-4 py-2 outline-hidden
                    transition-colors duration-150 hover:bg-cream-200/40
                    focus-visible:outline-solid focus-visible:outline-2
@@ -31,8 +45,10 @@ export function UstBaslik({ altBaslik }: { altBaslik?: string }) {
         </span>
       </Link>
 
+      <DilKontrolu aktifDil={dil} yol={yol} />
+
       {/* Ince ayrac */}
-      <div className="mt-4 flex w-full max-w-[11rem] items-center gap-3" aria-hidden="true">
+      <div className="mt-5 flex w-full max-w-[11rem] items-center gap-3" aria-hidden="true">
         <span className="h-px flex-1 bg-gradient-to-r from-transparent to-latte-400" />
         <span className="h-1.5 w-1.5 rotate-45 bg-latte-500" />
         <span className="h-px flex-1 bg-gradient-to-l from-transparent to-latte-400" />

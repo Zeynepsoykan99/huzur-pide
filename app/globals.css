@@ -277,4 +277,36 @@
   .pide-gorsel-hucre {
     @apply py-2.5 pe-3 align-middle;
   }
+
+  /* --- Dil degistirme kontrolu (menu sayfalari) ---
+     Dort secenek 390px'te sigmali: bayrak kucuk, ic bosluk dar, punto 12px.
+     Dokunma hedefi min-h-9 (36px) ile korunuyor. */
+  .dil-secenek {
+    @apply flex min-h-9 items-center gap-1.5 rounded-lg px-2 py-1.5
+           text-xs font-semibold tracking-wide text-cocoa-700 uppercase
+           outline-hidden transition-colors duration-150
+           hover:bg-cream-200/60 hover:text-cocoa-900
+           focus-visible:outline-solid focus-visible:outline-2
+           focus-visible:outline-offset-2 focus-visible:outline-cocoa-900
+           sm:gap-2 sm:px-2.5 sm:text-sm;
+  }
+
+  /* Aktif dil yalnizca renkle degil, zemin ve alt cizgiyle de ayriliyor. */
+  .dil-secenek-aktif {
+    @apply bg-latte-400/35 text-cocoa-900 shadow-xs shadow-cocoa-900/10
+           ring-1 ring-latte-600/30;
+  }
+
+  .dil-bayrak {
+    @apply h-3.5 w-auto max-w-6 rounded-[2px]
+           ring-1 ring-cocoa-900/25 sm:h-4;
+  }
+
+  /* --- Urun icerik aciklamasi ---
+     Turkce'de hic render edilmiyor; en/ar/ru'da urun adinin altinda. */
+  /* font-normal gerekli: pide tablosunda aciklama <th scope="row"> icinde
+     duruyor ve th varsayilan olarak kalin, aciklama da kalin geliyordu. */
+  .urun-icerik {
+    @apply mt-0.5 text-xs leading-snug font-normal text-cocoa-700 sm:text-sm;
+  }
 }
