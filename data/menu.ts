@@ -145,19 +145,43 @@ export type Urun = {
 };
 
 export type Kategori = {
-  /** URL parçası: /menu/kapali-pide */
+  /** URL parçası temeli: kapali-pide → /tr/menu/kapali-pide-1 */
   slug: string;
   ad: Cevrilebilir;
   /**
-   * Basılı menüdeki sayfa numarası. Kategori listesinde noktalı ayracın
-   * sağında gösterilir. Tek sayfaysa "5", birden fazlaysa "1-2".
+   * Kategorinin kaç menü sayfasına bölüneceği ve her sayfaya kaç ürün
+   * düşeceği. Toplamı `urunler.length` olmak zorunda — `sayfalariUret()`
+   * bunu doğruluyor, tutmazsa derleme anında hata veriyor.
+   *
+   * Bölmenin amacı sıkışıklığı gidermek: sayfa başına düşen ürün azalınca
+   * yazılar ve görseller büyüyebiliyor.
    */
-  sayfaNo: string;
+  sayfaBolumleri: number[];
   /**
    * Fiyat sütunları. Tek elemanlıysa başlık satırı gösterilmez.
    */
   sutunlar: FiyatSutunu[];
   urunler: Urun[];
+};
+
+/**
+ * Menünün tek bir sayfası — kitaptaki bir yaprak.
+ *
+ * Menü artık dikey bir liste değil, yatay kaydırılan 7 sayfalık bir kitap.
+ * Sayfa numaraları (1..7) kategori listesinde de gösterilen numaralarla aynı;
+ * artık dekoratif değil, gerçek sayfaları işaret ediyor.
+ */
+export type MenuSayfasi = {
+  /** Kitaptaki sıra: 1..7. Ekranda "3 / 7" olarak görünen sayı. */
+  no: number;
+  /** URL parçası. Tek sayfalık kategoride kategori slug'ının aynısı. */
+  slug: string;
+  kategori: Kategori;
+  urunler: Urun[];
+  /** Kategori içindeki kaçıncı sayfa (örn. 2 sayfalık kategoride 1 veya 2). */
+  kategoriIcindeNo: number;
+  /** Kategorinin toplam sayfa sayısı. */
+  kategoriToplamSayfa: number;
 };
 
 /* -------------------------------------------------------------------------
@@ -204,7 +228,7 @@ export const MENU: Kategori[] = [
       ar: "البيدة المغلقة",
       ru: "Закрытая пиде",
     },
-    sayfaNo: "1-2",
+    sayfaBolumleri: [3, 3],
     sutunlar: PIDE_SUTUNLARI,
     urunler: [
       {
@@ -369,7 +393,7 @@ export const MENU: Kategori[] = [
       ar: "المشويات",
       ru: "Блюда на гриле",
     },
-    sayfaNo: "3-4",
+    sayfaBolumleri: [7, 7],
     sutunlar: TEK_SUTUN,
     urunler: [
       { id: "et-izgara-kg", ad: {
@@ -593,7 +617,7 @@ export const MENU: Kategori[] = [
   {
     slug: "salatalar",
     ad: { tr: "Salatalar", en: "Salads", ar: "السلطات", ru: "Салаты" },
-    sayfaNo: "5",
+    sayfaBolumleri: [1],
     sutunlar: TEK_SUTUN,
     urunler: [{ id: "coban-salata", ad: {
           tr: "Çoban Salata",
@@ -617,7 +641,7 @@ export const MENU: Kategori[] = [
       ar: "الحلويات",
       ru: "Десерты",
     },
-    sayfaNo: "6",
+    sayfaBolumleri: [3],
     sutunlar: TEK_SUTUN,
     urunler: [
       { id: "kunefe", ad: {
@@ -693,7 +717,7 @@ export const MENU: Kategori[] = [
   {
     slug: "icecekler",
     ad: { tr: "İçecekler", en: "Drinks", ar: "المشروبات", ru: "Напитки" },
-    sayfaNo: "7",
+    sayfaBolumleri: [7],
     sutunlar: TEK_SUTUN,
     // Bu kategorinin içeriği huzurpide.com.tr/menu adresinden alındı.
     urunler: [
@@ -766,6 +790,75 @@ export const MENU: Kategori[] = [
 /* -------------------------------------------------------------------------
    Yardımcılar
    ------------------------------------------------------------------------- */
+
+/* -------------------------------------------------------------------------
+   Menü sayfaları — kitabın yaprakları
+   ------------------------------------------------------------------------- */
+
+/**
+ * MENU'yü `sayfaBolumleri`'ne göre düz bir sayfa dizisine çevirir.
+ *
+ * Sonuç kitabın kendisi: 7 yaprak, sırayla numaralanmış. Sayfa numaraları
+ * hem yatay kaydırmada hem kategori listesinde aynı numaralar.
+ *
+ * Bölüm toplamı ürün sayısını tutmuyorsa burada hata fırlatılıyor; hata
+ * derleme anında çıkıyor, canlıya eksik ürünle çıkılamıyor.
+ */
+function sayfalariUret(): MenuSayfasi[] {
+  const sayfalar: MenuSayfasi[] = [];
+  let no = 0;
+
+  for (const kategori of MENU) {
+    const toplam = kategori.sayfaBolumleri.reduce((a, b) => a + b, 0);
+    if (toplam !== kategori.urunler.length) {
+      throw new Error(
+        `${kategori.slug}: sayfaBolumleri toplamı ${toplam}, ürün sayısı ${kategori.urunler.length}`,
+      );
+    }
+
+    const kategoriToplamSayfa = kategori.sayfaBolumleri.length;
+    let imlec = 0;
+
+    kategori.sayfaBolumleri.forEach((adet, i) => {
+      no += 1;
+      sayfalar.push({
+        no,
+        // Tek sayfalık kategoride ek yok: /tr/menu/salatalar eskisi gibi çalışır.
+        slug: kategoriToplamSayfa === 1 ? kategori.slug : `${kategori.slug}-${i + 1}`,
+        kategori,
+        urunler: kategori.urunler.slice(imlec, imlec + adet),
+        kategoriIcindeNo: i + 1,
+        kategoriToplamSayfa,
+      });
+      imlec += adet;
+    });
+  }
+
+  return sayfalar;
+}
+
+/** Kitabın tamamı — yatay kaydırmada bu sırayla diziliyor. */
+export const SAYFALAR: MenuSayfasi[] = sayfalariUret();
+
+export function sayfaBul(slug: string): MenuSayfasi | undefined {
+  return SAYFALAR.find((s) => s.slug === slug);
+}
+
+/** Kategorinin ilk sayfası — kategori listesinden buraya bağlanılıyor. */
+export function kategorininIlkSayfasi(kategori: Kategori): MenuSayfasi {
+  return SAYFALAR.find((s) => s.kategori.slug === kategori.slug)!;
+}
+
+/**
+ * Kategorinin kapladığı sayfa aralığı: tek sayfaysa "5", iki sayfaysa "1-2".
+ * Kategori listesinde noktalı ayracın sağında görünen değer.
+ */
+export function sayfaAraligi(kategori: Kategori): string {
+  const kendi = SAYFALAR.filter((s) => s.kategori.slug === kategori.slug);
+  const ilk = kendi[0].no;
+  const son = kendi[kendi.length - 1].no;
+  return ilk === son ? `${ilk}` : `${ilk}-${son}`;
+}
 
 /** Para birimi. Tek yerde tutuluyor ki değişirse tek satır düzenlensin. */
 export const PARA_BIRIMI = "₺";

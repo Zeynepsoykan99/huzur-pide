@@ -3,7 +3,15 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { UstBaslik } from "@/components/UstBaslik";
 import { ui } from "@/data/arayuz";
-import { DILLER, MENU, gecerliDil, metin, type DilKodu } from "@/data/menu";
+import {
+  DILLER,
+  MENU,
+  gecerliDil,
+  kategorininIlkSayfasi,
+  metin,
+  sayfaAraligi,
+  type DilKodu,
+} from "@/data/menu";
 
 /**
  * Ekran A — Kategori listesi.
@@ -41,8 +49,10 @@ export default async function MenuSayfasi({ params }: PageProps<"/[dil]/menu">) 
           <ul className="flex flex-col">
             {MENU.map((kategori) => (
               <li key={kategori.slug}>
+                {/* Kategorinin ILK sayfasina baglaniyor; kategori birden
+                    fazla sayfaya bolunmus olabilir. */}
                 <Link
-                  href={`/${dil}/menu/${kategori.slug}`}
+                  href={`/${dil}/menu/${kategorininIlkSayfasi(kategori).slug}`}
                   className="icindekiler-satir"
                 >
                   <span className="icindekiler-ad">{metin(kategori.ad, dil)}</span>
@@ -51,7 +61,7 @@ export default async function MenuSayfasi({ params }: PageProps<"/[dil]/menu">) 
                       anlamli bir ifade olarak okunmasi icin etiketlendi. */}
                   <span className="icindekiler-sayfa">
                     <span className="sr-only">{ui("sayfa", dil)} </span>
-                    {kategori.sayfaNo}
+                    {sayfaAraligi(kategori)}
                   </span>
                 </Link>
               </li>

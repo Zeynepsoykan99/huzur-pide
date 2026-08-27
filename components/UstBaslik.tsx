@@ -16,11 +16,47 @@ export function UstBaslik({
   altBaslik,
   /** Dil önekinden SONRAKİ yol. Dil değiştirilince aynı sayfada kalınır. */
   yol,
+  /**
+   * Menü kitabında kullanılan sıkışık varyant: dikey boşluklar ve logo
+   * küçültülüyor, ayraç kalkıyor. Kitap ekran yüksekliğine sığmak zorunda,
+   * başlığa harcanan her piksel ürün satırlarından gidiyor.
+   */
+  sikisik = false,
 }: {
   dil: DilKodu;
   altBaslik?: string;
   yol: string;
+  sikisik?: boolean;
 }) {
+  if (sikisik) {
+    return (
+      <header className="flex shrink-0 flex-col items-center px-4 pt-4 pb-2 text-center">
+        <Link
+          href={`/${dil}/secim`}
+          aria-label={ui("anaEkranaDon", dil)}
+          className="flex items-center gap-2.5 rounded-xl px-3 py-1.5 outline-hidden
+                     transition-colors duration-150 hover:bg-cream-200/50
+                     focus-visible:outline-solid focus-visible:outline-2
+                     focus-visible:outline-offset-2 focus-visible:outline-cocoa-900"
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/logo.svg"
+            alt=""
+            aria-hidden="true"
+            width={32}
+            height={32}
+            className="h-7 w-7"
+          />
+          <span className="font-display text-lg leading-none tracking-wide text-cocoa-900">
+            Huzur Pide
+          </span>
+        </Link>
+        <DilKontrolu aktifDil={dil} yol={yol} sikisik />
+      </header>
+    );
+  }
+
   return (
     <header className="flex flex-col items-center pt-8 pb-6 text-center sm:pt-10">
       <Link

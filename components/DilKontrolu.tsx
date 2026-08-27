@@ -16,12 +16,18 @@ export function DilKontrolu({
   aktifDil,
   /** Dil önekinden SONRAKİ yol, başında eğik çizgiyle. Örn. "/menu/izgara". */
   yol,
+  /** Menü kitabındaki sıkışık varyant: üst boşluk azaltılıyor. */
+  sikisik = false,
 }: {
   aktifDil: DilKodu;
   yol: string;
+  sikisik?: boolean;
 }) {
   return (
-    <nav aria-label={ui("dilDegistir", aktifDil)} className="mt-5 flex justify-center">
+    <nav
+      aria-label={ui("dilDegistir", aktifDil)}
+      className={`flex justify-center ${sikisik ? "mt-2" : "mt-5"}`}
+    >
       <ul className="flex items-center gap-1">
         {DILLER.map((dil) => {
           const aktif = dil === aktifDil;

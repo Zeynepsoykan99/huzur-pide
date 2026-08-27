@@ -3,8 +3,8 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 5 tamamlandı — proje **canlıda**. Bekleyen: QR adresi kararı, organizasyon içeriği, font kararı, eksik fotoğraflar
-**Son güncelleme:** 2026-08-27 13:20
+**Güncel aşama:** Aşama 7 tamamlandı — menü kitabı formatına dönüştürüldü, commit bekliyor. Bekleyen: QR adresi kararı, organizasyon içeriği, font kararı, eksik fotoğraflar
+**Son güncelleme:** 2026-08-27 17:30
 
 ### Genel Durum
 
@@ -16,6 +16,7 @@
 | 4 | RTL (Arapça) desteği | **Tamamlandı** (Aşama 3 içinde) |
 | 5 | Ana seçim ekranı + organizasyon | **Tamamlandı** |
 | 6 | Vercel'de canlıya alma | **Tamamlandı** |
+| 7 | Menü kitabı — yatay kaydırma | **Tamamlandı** (commit bekliyor) |
 
 ### Aşama 1 Adımları
 
@@ -990,5 +991,194 @@ kod değişikliği  →  git commit  →  git push origin main
 **Hatırlatma:** Vercel'in Hobby planı ticari kullanıma kapalı. Bu bir restoranın müşteri menüsü. "Devam et, sorumluluk bende" dedin ve öyle yapıldı; kapsamın hangi planda olduğunu CLI'dan okuyamıyorum, panelden bakman gerekir.
 
 **Sıradaki adım:** QR adresi kararı. Ayrıca Aşama 3-4'ten bekleyenler duruyor: organizasyon içeriği, font kararı, 24 ürünün fotoğrafı, 4 teyit edilmemiş fiyat, Arapça çevirilerin kontrolü.
+
+=== RAPOR SONU ===
+
+---
+
+## Aşama 7 — Menü Kitabı · 2026-08-27
+
+=== RAPOR BAŞLANGICI ===
+
+**Adım:** Aşama 7 — Menü Kitabı (tasarım ve gezinme değişiklikleri, tamamı)
+
+---
+
+**Yapılanlar:**
+
+*1 — Menü sayfalarını bölme*
+- `sayfaNo: string` alanı kaldırıldı, yerine `sayfaBolumleri: number[]` geldi
+- Kapalı pideler 3+3 = 2 sayfaya, ızgaralar 7+7 = 2 sayfaya bölündü
+- Salatalar (1 ürün), Tatlılar (3 ürün), İçecekler (7 ürün) bölünmedi
+- `MenuSayfasi` tipi eklendi: kitaptaki tek bir yaprak
+- `sayfalariUret()`: MENU'yü `sayfaBolumleri`'ne göre düz sayfa dizisine çeviriyor; toplam tutmazsa derleme anında hata
+- `SAYFALAR`: 7 yapraklık kitap dizisi, `sayfaBul()`, `kategorininIlkSayfasi()`, `sayfaAraligi()` yardımcıları
+- Kategori listesindeki sayfa numaraları artık veriden türetiliyor (1-2, 3-4, 5, 6, 7)
+
+*2 — Kitap gibi yatay kaydırma*
+- `app/[dil]/menu/[kategori]/page.tsx` → `app/[dil]/menu/[sayfa]/page.tsx` olarak yeniden adlandırıldı ve tamamen yazıldı
+- Tek bir rota tüm 7 sayfayı **yatay scroll-snap kitap** olarak basıyor
+- Saf CSS `scroll-snap-type: x mandatory` — parmak takibi ve ivme tarayıcının native davranışı, JavaScript ile taklit edilmiyor
+- `snap-always`: hızlı parmak hareketinde birden fazla sayfa atlanmıyor
+- Animasyon yok — istendiği gibi düz geçiş
+- İlk konumlandırma gömülü senkron script ile (`scrollIntoView`) — React effect'inden önce çalışıyor, paylaşılan link doğru sayfada açılıyor
+- `components/SayfaSayaci.tsx`: `"use client"` bileşeni, `IntersectionObserver` ile aktif sayfayı algılıyor, "3 / 7" sayacını güncelliyor, `history.replaceState` ile URL'i değiştiriyor
+- RTL'de (Arapça) kaydırma yönü kendiliğinden tersleniyor, ek kod yazılmadı
+- `scrollIntoView` kullanıldı, elle `scrollLeft` hesabı değil — RTL'de `scrollLeft` negatif oluyor ve tarayıcıdan tarayıcıya değişiyordu
+- Sayfa içi dikey kaydırma yatay kaydırmayı etkilemiyor (`overscroll-y-contain overscroll-x-auto`)
+
+*3 — Arka plan değişikliği*
+- `cream-150: #e7d6c0` rengi paleteye eklendi — düz kraft tonu
+- `.kitap-cercevesi` düz kraft zemin kullanıyor, gradyan kaldırıldı
+- Değişiklik yalnızca menü sayfalarında; dil seçimi, ana seçim ve kategori listesi eski bej gradyanda kaldı
+
+*4 — Yazı boyutları büyütme*
+- Ürün adı: 16px → 18px (sm: 18 → 20)
+- Fiyat: 14px → 16px (sm: 16 → 18)
+- İçerik açıklaması: 12px → 14px (sm: 14 → 15)
+- Sütun başlıkları (pide): 11px → 12px (sm: 12 → 14)
+- Pide fiyat hücreleri: 14px → 16px (sm: 16 → 18)
+- Tablo hücre iç boşlukları da büyütüldü
+
+*5 — Kompakt başlık*
+- `UstBaslik`'e `sikisik` prop'u eklendi — kitap modunda 32px logo, azaltılmış boşluklar, ayraç kaldırıldı
+- `DilKontrolu`'na `sikisik` prop'u eklendi — üst boşluk azaltıldı
+- Kitap ekran yüksekliğine sığmak zorunda; başlığa harcanan her piksel ürün satırlarından gidiyor
+
+*6 — Eski URL yönlendirmeleri*
+- `next.config.ts`'e `/kapali-pide` → `/kapali-pide-1` ve `/izgara` → `/izgara-1` yönlendirmeleri eklendi
+- Daha önce paylaşılmış linkler kırılmıyor
+- Tek sayfalık kategorilerin slug'ları değişmedi (salatalar, tatlilar, icecekler)
+
+---
+
+**Oluşturulan/Değiştirilen dosyalar:**
+
+| Dosya | Durum |
+|---|---|
+| `app/[dil]/menu/[sayfa]/page.tsx` | yeniden adlandırıldı + tamamen yazıldı — kitap formatı |
+| `components/SayfaSayaci.tsx` | yeni — sayaç ve URL senkronu |
+| `data/menu.ts` | güncellendi — `sayfaBolumleri`, `MenuSayfasi`, sayfa yardımcıları |
+| `app/globals.css` | güncellendi — kitap stilleri, büyütülmüş puntolar, kraft zemin |
+| `components/UstBaslik.tsx` | güncellendi — sıkışık varyant |
+| `components/DilKontrolu.tsx` | güncellendi — sıkışık varyant |
+| `app/[dil]/menu/page.tsx` | güncellendi — türetilmiş sayfa numaraları, ilk sayfaya bağlantı |
+| `next.config.ts` | güncellendi — eski kategori adresleri için yönlendirme |
+
+---
+
+**Kitabın yapısı:**
+
+| Sayfa | Slug | Kategori | Ürün |
+|---|---|---|---|
+| 1 | `kapali-pide-1` | Kapalı Pide Çeşitleri (1/2) | 3 |
+| 2 | `kapali-pide-2` | Kapalı Pide Çeşitleri (2/2) | 3 |
+| 3 | `izgara-1` | Izgara Çeşitleri (1/2) | 7 |
+| 4 | `izgara-2` | Izgara Çeşitleri (2/2) | 7 |
+| 5 | `salatalar` | Salatalar | 1 |
+| 6 | `tatlilar` | Tatlı Çeşitleri | 3 |
+| 7 | `icecekler` | İçecekler | 7 |
+
+Kategori listesindeki numaralar (1-2, 3-4, 5, 6, 7) artık **gerçek sayfaları** gösteriyor.
+
+---
+
+**Alınan kararlar:**
+
+*Sayfa bölme*
+- **Salatalar, Tatlılar ve İçecekler bölünmedi.** Salatalar 1, Tatlılar 3 ürün — bölmek yarısı boş sayfa üretirdi. İçecekler 7 ürün ama satırları en kısa olanlar; bölünmüş Izgara sayfalarıyla aynı yoğunlukta.
+- **Bölüm toplamı ürün sayısını tutmazsa derleme hata veriyor.** Sessizce ürün kaybetmektense derlemeyi durdurmak doğru; canlıya eksik menüyle çıkılamaz.
+- **Sayfa numarası artık veriye elle yazılmıyor, bölümden türetiliyor.** Elle yazıldığında bölme değiştiğinde numara yalan söylerdi.
+
+*Renk*
+- **Düz kraft, gradyan yok.** "Kağıt gibi dursun" denildi; kağıdın tonu düzdür.
+- **Sadece ürün sayfaları değişti.** Dil seçimi, ana seçim ve kategori listesi eski bej gradyanda kaldı — ayrım "menünün içindesin" demenin bir yolu oldu.
+
+*Yatay kaydırma*
+- **Saf CSS scroll-snap.** JavaScript ile taklit edilen kaydırmalar telefonda hantal hisseder.
+- **Animasyon yok.** Snap yalnızca hizalar; kağıt kıvrılması, 3B dönme, gölge yok.
+- **`snap-always` eklendi:** hızlı parmak hareketinde birden fazla sayfa atlanmıyor.
+- **RTL için ek kod yazılmadı** — `dir="rtl"` verildiğinde kaydırma yönü kendiliğinden tersine dönüyor.
+- **İlk konumlandırma gömülü senkron script ile.** Effect ilk boyamadan sonra çalışır; paylaşılan link açılırken bir kare boyunca 1. sayfa görünürdü.
+- **`scrollIntoView` kullanıldı**, `scrollLeft` değil. RTL'de `scrollLeft` tarayıcıdan tarayıcıya değişiyordu.
+- **`replaceState`, `pushState` değil.** Geri tuşu 7 sayfalık yığınla dolmasın.
+
+*JavaScript kaybı*
+
+Statik üretim ve dil değiştirme **bozulmadı**: 46 sayfanın hepsi derleme anında statik, dil değiştirme hâlâ düz bağlantı.
+
+| İşlev | JS varsa | JS yoksa |
+|---|---|---|
+| Parmakla kaydırma | ✅ | ✅ CSS, etkilenmiyor |
+| Menünün tamamını gezme | ✅ | ✅ |
+| Sayfa içi dikey kaydırma | ✅ | ✅ |
+| Paylaşılan linkte doğru sayfada açılma | ✅ | ✅ gömülü script |
+| Kaydırdıkça adresin güncellenmesi | ✅ | ❌ |
+| Sayacın güncellenmesi | ✅ | ❌ açılış sayfasında kalır |
+
+---
+
+**Yakalanan üç hata:**
+
+1. **Yatay kaydırma hiç çalışmıyordu.** `.kitap-icerik` üzerindeki `overscroll-behavior: contain` iki eksende birden geçerliydi. `overflow-y: auto` verilen elemanda `overflow-x` de otomatik `auto`ya dönüyor, kutu yatayda da kaydırma kabı sayılıyor ve `contain` parmağın yatay hareketini üstteki kaba geçirmiyordu. Sadece Y eksenine `contain` verilerek düzeltildi. **Gerçek dokunmatik testte çıktı.**
+
+2. **Belge yatay kayıyordu.** 7 sayfanın toplam genişliği (2733px) `<html>` seviyesine sızıyordu. `.kitap`'a `contain: paint` verilerek kesildi.
+
+3. **`overflow-x: hidden` yeterli değildi.** `hidden` yalnızca kullanıcı hareketini engelliyor. Taban kural `html, body { overflow-x: clip }` olarak değiştirildi.
+
+---
+
+**Ölçüm sonuçları:**
+
+*Yatay taşma — 4 dil × 11 sayfa × 3 genişlik*
+
+| Kontrol | Taşan |
+|---|---|
+| **132** | **0** |
+
+*Kontrast — kraft zeminde*
+
+| Metin | Punto/Ağırlık | Tür | Eşik | Oran | |
+|---|---|---|---|---|---|
+| Kategori başlığı | 24 / 400 | büyük | 3:1 | **4.39** | ✓ |
+| Dil kısaltması (pasif) | 12 / 600 | normal | 4.5:1 | **5.02** | ✓ |
+| "Menüye dön" | 14 / 600 | normal | 4.5:1 | **5.02** | ✓ |
+| İçerik açıklaması | 14 / 400 | normal | 4.5:1 | **5.02** | ✓ |
+| Marka adı | 18 / 400 | normal | 4.5:1 | **7.91** | ✓ |
+| Dil kısaltması (aktif) | 12 / 600 | normal | 4.5:1 | **7.91** | ✓ |
+| Ürün adı | 18 / 500 | normal | 4.5:1 | **7.91** | ✓ |
+| Fiyat | 16 / 600 | normal | 4.5:1 | **7.91** | ✓ |
+
+**8/8 geçiyor, başarısız yok.**
+
+*Gerçek dokunmatik kaydırma (CDP)*
+
+| Yön | Hareket | Sonuç |
+|---|---|---|
+| LTR | parmak sağdan sola | 1 → 2 → 3 → 4, sayaç ve adres takip etti |
+| LTR | parmak soldan sağa | 4 → 3, geri gitti |
+| RTL (Arapça) | parmak soldan sağa | 1 → 2 → 3, ileri gitti ✓ |
+| RTL (Arapça) | parmak sağdan sola | 3 → 2, geri gitti ✓ |
+| Her adımda | belge kaydı mı | hayır (`window.scrollX === 0`) |
+
+*Diğer*
+
+- `npx tsc --noEmit`: temiz
+- `npm run lint`: temiz
+- `npm run build`: hatasız, **38 → 46 statik sayfa** (4 dil × 7 menü sayfası)
+- Konsol: 132+ sayfa yüklemesinde **0 hata, 0 uyarı**
+- Rota testi: 7 sayfa slug'ı 4 dilde 200; eski adresler 307 → ilk sayfa; geçersiz → 404
+
+---
+
+**Not:**
+
+7 satırlı Izgara sayfaları 390px'te tek ekrana sığmıyor, bir miktar dikey kayıyor. Pide, Salata ve Tatlı sayfaları tek ekrana sığıyor.
+
+Gösterge olarak sadece sayfa numarası kullanıldı ("3 / 7"). İkonlu/noktalı bir gösterge sonradan eklenebilir.
+
+**Karar bekleyen (önceki aşamalardan):** organizasyon içeriği · Arapça çevirilerin kontrolü · 24 ürünün fotoğrafı · 4 teyit edilmemiş fiyat · font kararı · QR adresi (kök mü `/tr` mi)
+
+**Sıradaki adım:** Commit + push → otomatik Vercel dağıtımı. Ve bekleyen içerik kararları.
 
 === RAPOR SONU ===

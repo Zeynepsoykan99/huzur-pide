@@ -1,38 +1,41 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { UstBaslik } from "@/components/UstBaslik";
+import { SayfaSayaci } from "@/components/SayfaSayaci";
 import { UrunGorseli } from "@/components/UrunGorseli";
+import { UstBaslik } from "@/components/UstBaslik";
 import { ui } from "@/data/arayuz";
 import {
   DILLER,
-  MENU,
+  SAYFALAR,
   fiyatYaz,
   gecerliDil,
   icerikMetni,
-  kategoriBul,
   metin,
+  sayfaBul,
   type DilKodu,
-  type Kategori,
+  type MenuSayfasi,
   type Urun,
 } from "@/data/menu";
 
+const KAP_ID = "kitap";
+
 export function generateStaticParams() {
-  // 4 dil x 5 kategori = 20 sayfa, hepsi derleme aninda statik uretiliyor.
-  return DILLER.flatMap((dil) => MENU.map((k) => ({ dil, kategori: k.slug })));
+  // 4 dil x 7 sayfa = 28 rota, hepsi derleme aninda statik.
+  return DILLER.flatMap((dil) => SAYFALAR.map((s) => ({ dil, sayfa: s.slug })));
 }
 
 export async function generateMetadata({
   params,
-}: PageProps<"/[dil]/menu/[kategori]">): Promise<Metadata> {
-  const { dil, kategori } = await params;
-  const k = kategoriBul(kategori);
-  if (!gecerliDil(dil) || !k) return { title: "Huzur Pide" };
-  return { title: `${metin(k.ad, dil)} · Huzur Pide` };
+}: PageProps<"/[dil]/menu/[sayfa]">): Promise<Metadata> {
+  const { dil, sayfa } = await params;
+  const s = sayfaBul(sayfa);
+  if (!gecerliDil(dil) || !s) return { title: "Huzur Pide" };
+  return { title: `${metin(s.kategori.ad, dil)} · Huzur Pide` };
 }
 
 /* ---------------------------------------------------------------------------
-   Tek fiyatlı kategoriler:  [görsel] Ad ................. 500 ₺
+   Tek fiyatlı sayfa:  [görsel] Ad ................. 500 ₺
 
    Görsel yuvası her satırda aynı genişlikte: fotoğrafı olan ürün fotoğrafını,
    olmayan yer tutucusunu gösteriyor. md ve üstünde yuva büyüyor ve sırayla bir
@@ -73,34 +76,23 @@ function TekFiyatliSatir({
   );
 }
 
-function TekFiyatliListe({ kategori, dil }: { kategori: Kategori; dil: DilKodu }) {
-  return (
-    <ul className="mt-7">
-      {kategori.urunler.map((urun, i) => (
-        <TekFiyatliSatir key={urun.id} urun={urun} dil={dil} sonTarafta={i % 2 === 1} />
-      ))}
-    </ul>
-  );
-}
-
 /* ---------------------------------------------------------------------------
-   Çok fiyatlı kategori (kapalı pideler)
+   Çok fiyatlı sayfa (kapalı pideler)
 
    Veri gerçekten tablo: ürün x hamur boyu -> fiyat. Bu yüzden CSS ızgara değil
    gerçek <table>: sütun başlıkları fiyat hücrelerinin tam üstüne oturuyor ve
    <th scope="col"> sayesinde ekran okuyucu her hücrenin hangi sütuna ait
    olduğunu kendiliğinden söylüyor. Tablo Arapça'da kendiliğinden aynalanıyor.
-
-   Tablo yapısı gereği görsel burada taraf değiştirmiyor; hep satırın başında.
    --------------------------------------------------------------------------- */
-function CokFiyatliTablo({ kategori, dil }: { kategori: Kategori; dil: DilKodu }) {
+function CokFiyatliTablo({ sayfa, dil }: { sayfa: MenuSayfasi; dil: DilKodu }) {
+  const { kategori, urunler } = sayfa;
   return (
-    <table className="pide-tablo mt-7">
+    <table className="pide-tablo mt-6">
       <caption className="sr-only">
         {metin(kategori.ad, dil)} — {ui("hamurBoyunaGoreFiyatlar", dil)}
       </caption>
       <colgroup>
-        <col className="w-14 md:w-44" />
+        <col className="w-20 md:w-52" />
         <col />
         {kategori.sutunlar.map((s) => (
           <col key={s.kod} />
@@ -122,15 +114,12 @@ function CokFiyatliTablo({ kategori, dil }: { kategori: Kategori; dil: DilKodu }
         </tr>
       </thead>
       <tbody>
-        {kategori.urunler.map((urun) => (
+        {urunler.map((urun) => (
           <tr key={urun.id}>
             <td className="pide-gorsel-hucre">
               <UrunGorseli urun={urun} dil={dil} />
             </td>
             <th scope="row" className="pide-ad-hucre">
-              {/* Ad ve noktali ayrac ust satirda; aciklama ALTINDA ayri bir
-                  blok. Aciklama ayrac-satir'in icinde olsaydi noktalarla ayni
-                  satirda bir flex ogesi olur, adin yanina sikisirdi. */}
               <div className="ayrac-satir">
                 <span className="urun-ad">{metin(urun.ad, dil)}</span>
                 <span className="nokta" aria-hidden="true" />
@@ -159,46 +148,114 @@ function CokFiyatliTablo({ kategori, dil }: { kategori: Kategori; dil: DilKodu }
   );
 }
 
-export default async function KategoriSayfasi({
-  params,
-}: PageProps<"/[dil]/menu/[kategori]">) {
-  const { dil: ham, kategori: slug } = await params;
-  if (!gecerliDil(ham)) notFound();
-  const dil: DilKodu = ham;
-
-  const kategori = kategoriBul(slug);
-  if (!kategori) notFound();
-
-  const cokSutunlu = kategori.sutunlar.length > 1;
-
+/** Kitabın tek bir yaprağı. */
+function Yaprak({ sayfa, dil }: { sayfa: MenuSayfasi; dil: DilKodu }) {
+  const cokSutunlu = sayfa.kategori.sutunlar.length > 1;
   return (
-    <div className="menu-sayfa">
-      <UstBaslik dil={dil} yol={`/menu/${kategori.slug}`} />
-
-      <main>
-        <h1 className="text-center font-display text-3xl leading-tight text-paprika-500 sm:text-4xl">
-          {metin(kategori.ad, dil)}
-        </h1>
+    <section
+      id={`s${sayfa.no}`}
+      className="kitap-sayfa"
+      aria-label={`${metin(sayfa.kategori.ad, dil)} — ${ui("sayfa", dil)} ${sayfa.no}`}
+    >
+      <div className="kitap-icerik">
+        <h2 className="kitap-baslik">
+          {metin(sayfa.kategori.ad, dil)}
+          {sayfa.kategoriToplamSayfa > 1 ? (
+            <span className="sr-only">
+              {" "}
+              ({sayfa.kategoriIcindeNo}/{sayfa.kategoriToplamSayfa})
+            </span>
+          ) : null}
+        </h2>
 
         {cokSutunlu ? (
-          <CokFiyatliTablo kategori={kategori} dil={dil} />
+          <CokFiyatliTablo sayfa={sayfa} dil={dil} />
         ) : (
-          <TekFiyatliListe kategori={kategori} dil={dil} />
+          <ul className="mt-6">
+            {sayfa.urunler.map((urun, i) => (
+              <TekFiyatliSatir
+                key={urun.id}
+                urun={urun}
+                dil={dil}
+                sonTarafta={(sayfa.no + i) % 2 === 1}
+              />
+            ))}
+          </ul>
         )}
 
-        <nav className="mt-12 flex justify-center">
+        <nav className="mt-10 flex justify-center">
           <Link
             href={`/${dil}/menu`}
             className="rounded-xl px-4 py-2.5 text-sm font-semibold text-cocoa-700
                        outline-hidden transition-colors duration-150
-                       hover:bg-cream-200/60 hover:text-cocoa-900
+                       hover:bg-cream-200/70 hover:text-cocoa-900
                        focus-visible:outline-solid focus-visible:outline-2
                        focus-visible:outline-offset-2 focus-visible:outline-cocoa-900"
           >
             {ui("menuyeDon", dil)}
           </Link>
         </nav>
-      </main>
+      </div>
+    </section>
+  );
+}
+
+export default async function MenuKitabiSayfasi({
+  params,
+}: PageProps<"/[dil]/menu/[sayfa]">) {
+  const { dil: ham, sayfa: slug } = await params;
+  if (!gecerliDil(ham)) notFound();
+  const dil: DilKodu = ham;
+
+  const acilis = sayfaBul(slug);
+  if (!acilis) notFound();
+
+  const sayfaListesi = SAYFALAR.map((s) => ({ slug: s.slug, no: s.no }));
+
+  return (
+    <div className="kitap-cercevesi">
+      <UstBaslik dil={dil} yol={`/menu/${acilis.slug}`} sikisik />
+
+      {/*
+        Kitabın tamamı her rotada basılıyor; hangi sayfada açılacağını
+        aşağıdaki senkron script belirliyor. Böylece 7 sayfanın hepsi tek
+        belgede geliyor ve müşteri kaydırarak menünün her yerine ulaşabiliyor —
+        kategori değiştirmek için menüye dönmesi gerekmiyor.
+      */}
+      <div id={KAP_ID} className="kitap" data-acilis={acilis.no}>
+        {SAYFALAR.map((s) => (
+          <Yaprak key={s.no} sayfa={s} dil={dil} />
+        ))}
+      </div>
+
+      {/*
+        İlk konumlandırma. React'in effect'i ilk boyamadan SONRA çalıştığı için
+        orada yapılsaydı paylaşılan bir link açılırken bir kare boyunca 1. sayfa
+        görünürdü. Bu script HTML ayrıştırılırken, kap DOM'a girdikten hemen
+        sonra çalışıyor; ekrana hiç yanlış sayfa düşmüyor.
+
+        scrollIntoView kullanılıyor çünkü yazma yönünü kendisi hesaba katıyor:
+        Arapça'da (dir="rtl") scrollLeft negatif değer alıyor, elle hesap
+        yapmak tarayıcıdan tarayıcıya değişiyordu.
+      */}
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `(function(){var k=document.getElementById(${JSON.stringify(KAP_ID)});if(!k)return;var n=k.getAttribute("data-acilis");var h=document.getElementById("s"+n);if(h&&h.scrollIntoView)h.scrollIntoView({block:"nearest",inline:"start",behavior:"instant"});})();`,
+        }}
+      />
+
+      {/* "3 / 7" — bidi karismasin diye sayac her dilde soldan saga. */}
+      <p className="sayfa-numarasi" dir="ltr">
+        <span className="sr-only">{ui("sayfa", dil)} </span>
+        <SayfaSayaci
+          kabId={KAP_ID}
+          sayfalar={sayfaListesi}
+          dil={dil}
+          baslangicNo={acilis.no}
+        />
+        {" / "}
+        {SAYFALAR.length}
+      </p>
     </div>
   );
 }
