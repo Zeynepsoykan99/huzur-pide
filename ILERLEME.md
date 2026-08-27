@@ -3,15 +3,15 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 2 — Menü sayfaları (2/7 adım)
-**Son güncelleme:** 2026-08-27 11:42
+**Güncel aşama:** Aşama 2 — Menü sayfaları (3/7 adım)
+**Son güncelleme:** 2026-08-27 11:50
 
 ### Genel Durum
 
 | Aşama | Konu | Durum |
 |---|---|---|
 | 1 | Dil seçim ekranı tasarımı | **Tamamlandı** (5/5 adım) |
-| 2 | Menü sayfaları tasarımı | Devam ediyor (2/7 adım) |
+| 2 | Menü sayfaları tasarımı | Devam ediyor (3/7 adım) |
 | 3 | Dil değiştirme mantığı + menü verisi | Başlanmadı |
 | 4 | RTL (Arapça) desteğinin devreye alınması | Başlanmadı |
 
@@ -27,7 +27,7 @@
 
 - [x] Adım 0 — Next.js'e geçiş
 - [x] Adım 1 — GitHub
-- [ ] Adım 2 — Veri modeli
+- [x] Adım 2 — Veri modeli
 - [ ] Adım 3 — Ekran A: Kategori listesi
 - [ ] Adım 4 — Ekran B: Kategori sayfaları
 - [ ] Adım 5 — Görseller
@@ -398,4 +398,50 @@ Alınan kararlar:
 - **Push öncesi ne gideceği tek tek raporlandı** (7 commit, 21 dosya, ~301 KB) ve `node_modules/`, `.next/`, `.env*` dosyalarının takip edilmediği doğrulandı. Bundan sonraki her push'ta aynı yol izlenecek.
 - Uzak depo adresi: https://github.com/Zeynepsoykan99/huzur-pide
 Sıradaki adım: Adım 2 — Veri modeli. `data/menu.ts` dosyası kurulacak: dört dili (tr/en/ar/ru) taşıyan yapı, sadece Türkçe alanlar dolu, çok sütunlu fiyat desteği (pide için 1 Hamur / 1,5 Hamur / Düble), fiyatı teyit edilmemiş kalemler için işaret, ve ileride admin panelinden yönetilmeye uygun kurgu.
+=== RAPOR SONU ===
+
+---
+
+### Adım 2 · 2026-08-27 11:50
+
+=== RAPOR BAŞLANGICI ===
+Adım: Aşama 2 / Adım 2 — Veri modeli
+Yapılanlar:
+- `data/menu.ts` oluşturuldu: menünün tek kaynağı, hiçbir içerik bileşenlere gömülmüyor
+- Dört dili taşıyan `Cevrilebilir` tipi tanımlandı; `tr` zorunlu, `en`/`ar`/`ru` opsiyonel
+- 5 kategori ve 31 ürünün tamamı Türkçe olarak girildi; diğer dillerin alanları hiç yazılmadı (uydurulmadı)
+- Çok sütunlu fiyat desteği kuruldu: kapalı pidelerde 3 sütun (1 Hamur / 1,5 Hamur / Düble), diğer kategorilerde tek sütun
+- Lahmacun'un olmayan iki fiyatı `null` olarak işaretlendi
+- Fiyatı teyit edilmemiş 4 hücre `dogrulandi: false` ile işaretlendi
+- İçecekler `huzurpide.com.tr/menu` adresinden alındı, teyidin sonrası doğrulanmış olarak girildi
+- Yardımcı fonksiyonlar yazıldı: `metin()`, `fiyatYaz()`, `kategoriBul()`, `dogrulanmamisFiyatlar()`, `eksikCeviriler()`
+- Veri, verdiğin listeye karşı **programatik olarak** doğrulandı: geçici bir betik ürün sırasını, adlarını ve her fiyat hücresini tek tek karşılaştırdı — 31 üründe sıfır uyuşmazlık. Betik doğrulama sonrası silindi.
+- `npx tsc --noEmit` ve `npm run lint` temiz
+Oluşturulan/Değiştirilen dosyalar:
+- `data/menu.ts` (yeni)
+- `ILERLEME.md` (güncellendi)
+Alınan kararlar:
+- **Eksik çeviri için boş string değil, alanın hiç yazılmaması.** `en: ""` ile alanın olmaması arasında fark var: birincisi "çevrildi ama boş", ikincisi "henüz çevrilmedi". `eksikCeviriler()` bu ayrım sayesinde çalışıyor ve şu an her dil için 50 eksik alan raporluyor.
+- **`Cevrilebilir` tipinde `tr` zorunlu, diğerleri opsiyonel.** Eksik çeviri derleme hatası vermiyor — verseydi Aşama 3'e kadar proje derlenmezdi. Ama `metin()` fonksiyonu çeviri yoksa Türkçe'ye düşüyor, yani ekranda hiçbir zaman boşluk kalmıyor.
+- **Fiyat "sayı" değil, `{ sutun, tutar, dogrulandi }` nesnesi.** Doğrulama bayrağını ürün seviyesinde değil hücre seviyesinde tutmak gerekiyordu: Kaşarlı'nın 1,5 Hamur fiyatı teyitli ama 1 Hamur ve Düble fiyatları değil. Ürün seviyesinde bir bayrak bu ayrımı taşıyamazdı.
+- **`tutar: null` = "bu ürün bu sütunda satılmıyor".** Lahmacun'un 1,5 Hamur ve Düble karşılığı yok; `0` yazmak "bedava" anlamına gelirdi. Ekranda tire (—) gösterilecek.
+- **Görsel alanı yalnızca gerçekten o ürüne ait fotoğraf varsa dolduruldu.** Kaşarlı için sitedeki "Peynirli Pide" görseli kullanılmadı, Komposto için "Komposto (Çilek)" kullanılmadı — ikisi de farklı ürün. Kod içine bunu açıklayan yorum bırakıldı ki ileride yanlışlıkla doldurulmasın.
+- **Görsel `alt` metni de çevrilebilir.** Ekran okuyucu kullanan Arapça bir müşteri fotoğrafın açıklamasını da kendi dilinde duymalı.
+- **Fiyat biçimlendirmesi `toLocaleString("tr-TR")` ile** — 1500 değil "1.500 ₺". Para birimi `PARA_BIRIMI` sabitinde, tek yerde.
+- **`sayfaNo` veriye kondu**, ekran A'da hesaplanmadı. Basılı menüdeki sayfa numarası bir içerik kararı; ileride admin panelinden düzenlenecek alanlardan biri olacak.
+- **Kategori `slug`'ları Türkçe karaktersiz** (`kapali-pide`, `tatlilar`) — URL'de sorun çıkarmasın diye.
+Veri özeti:
+
+| Sayfa | Kategori | Ürün | Görsel | Fiyat sütunu |
+|---|---|---|---|---|
+| 1-2 | Kapalı Pide Çeşitleri | 6 | 2 | 3 |
+| 3-4 | Izgara Çeşitleri | 14 | 3 | 1 |
+| 5 | Salatalar | 1 | 0 | 1 |
+| 6 | Tatlı Çeşitleri | 3 | 2 | 1 |
+| 7 | İçecekler | 7 | 0 | 1 |
+| | **Toplam** | **31** | **7** | |
+
+Doğrulanmamış fiyat hücreleri (4): Kıymalı/1 Hamur · Kaşarlı/1 Hamur · Kaşarlı/Düble · Kabak Tatlısı
+Eksik çeviri: `en`, `ar`, `ru` için 50'şer alan
+Sıradaki adım: Adım 3 — Ekran A. Kategori listesi sayfası: her satırda kategori adı, noktalı ayraç ve sağda sayfa numarası. Üstte "Huzur Pide" başlığı. Mobil öncelikli, yön bağımsız.
 === RAPOR SONU ===
