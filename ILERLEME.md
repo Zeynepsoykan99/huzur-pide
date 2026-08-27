@@ -3,15 +3,15 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 2 — Menü sayfaları (Next.js'e geçildi, 1/7 adım)
-**Son güncelleme:** 2026-08-27 11:36
+**Güncel aşama:** Aşama 2 — Menü sayfaları (2/7 adım)
+**Son güncelleme:** 2026-08-27 11:42
 
 ### Genel Durum
 
 | Aşama | Konu | Durum |
 |---|---|---|
 | 1 | Dil seçim ekranı tasarımı | **Tamamlandı** (5/5 adım) |
-| 2 | Menü sayfaları tasarımı | Devam ediyor (1/7 adım) |
+| 2 | Menü sayfaları tasarımı | Devam ediyor (2/7 adım) |
 | 3 | Dil değiştirme mantığı + menü verisi | Başlanmadı |
 | 4 | RTL (Arapça) desteğinin devreye alınması | Başlanmadı |
 
@@ -26,12 +26,16 @@
 ### Aşama 2 Adımları
 
 - [x] Adım 0 — Next.js'e geçiş
-- [ ] Adım 1 — GitHub
+- [x] Adım 1 — GitHub
 - [ ] Adım 2 — Veri modeli
 - [ ] Adım 3 — Ekran A: Kategori listesi
 - [ ] Adım 4 — Ekran B: Kategori sayfaları
 - [ ] Adım 5 — Görseller
 - [ ] Adım 6 — Doğrulama
+
+### Depo
+
+https://github.com/Zeynepsoykan99/huzur-pide (private, dal: `main`)
 
 ### Aşama 1 Çıktısı
 
@@ -371,4 +375,27 @@ Yeni turuncu tonun ölçümleri: `paprika-500 #B0561F` cream-50 üzerinde 4.38:1
 
 `npm run build`: hatasız, 3 statik sayfa üretildi. `npm run lint`: temiz.
 Sıradaki adım: Adım 1 — GitHub. `huzur-pide` adında private repo oluşturulacak, remote bağlanacak ve mevcut geçmiş push edilecek. Push öncesi onayın alınacak.
+=== RAPOR SONU ===
+
+---
+
+### Adım 1 · 2026-08-27 11:42
+
+=== RAPOR BAŞLANGICI ===
+Adım: Aşama 2 / Adım 1 — GitHub
+Yapılanlar:
+- `gh auth status` kontrol edildi: `Zeynepsoykan99` hesabıyla yetkili, token scope'ları `gist, read:org, repo` — private repo oluşturmaya yetiyor, ek yetkilendirme gerekmedi
+- Aynı adda bir repo olup olmadığı önceden kontrol edildi (yoktu)
+- `gh repo create huzur-pide --private --source . --remote origin` ile **private** repo oluşturuldu ve `origin` remote'u bağlandı
+- Push öncesi durum raporlanıp onay alındı
+- `git push -u origin main` ile 7 commit gönderildi, `main` upstream olarak ayarlandı
+Oluşturulan/Değiştirilen dosyalar:
+- Dosya değişikliği yok; sadece git remote yapılandırması ve uzak depo
+- `ILERLEME.md` (güncellendi)
+Alınan kararlar:
+- **Repo private açıldı** (istendiği gibi). Menü içeriği ve fiyatlar herkese açık bir depoda durmasın.
+- **`gh repo create --source .` kullanıldı**, `--push` bayrağı bilinçli olarak eklenmedi. Bu sayede repo ve remote hazırlandı ama gönderim, onayın alınana kadar bekledi.
+- **Push öncesi ne gideceği tek tek raporlandı** (7 commit, 21 dosya, ~301 KB) ve `node_modules/`, `.next/`, `.env*` dosyalarının takip edilmediği doğrulandı. Bundan sonraki her push'ta aynı yol izlenecek.
+- Uzak depo adresi: https://github.com/Zeynepsoykan99/huzur-pide
+Sıradaki adım: Adım 2 — Veri modeli. `data/menu.ts` dosyası kurulacak: dört dili (tr/en/ar/ru) taşıyan yapı, sadece Türkçe alanlar dolu, çok sütunlu fiyat desteği (pide için 1 Hamur / 1,5 Hamur / Düble), fiyatı teyit edilmemiş kalemler için işaret, ve ileride admin panelinden yönetilmeye uygun kurgu.
 === RAPOR SONU ===
