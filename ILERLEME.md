@@ -4,13 +4,13 @@
 
 **Proje:** Huzur Pide dijital menü uygulaması
 **Güncel aşama:** Aşama 1 — Frontend / Tasarım (dil seçim ekranı)
-**Son güncelleme:** 2026-08-27 10:23
+**Son güncelleme:** 2026-08-27 10:26
 
 ### Genel Durum
 
 | Aşama | Konu | Durum |
 |---|---|---|
-| 1 | Dil seçim ekranı tasarımı | Devam ediyor (3/5 adım) |
+| 1 | Dil seçim ekranı tasarımı | Devam ediyor (4/5 adım) |
 | 2 | Menü sayfaları tasarımı | Başlanmadı |
 | 3 | Dil değiştirme mantığı + menü verisi | Başlanmadı |
 | 4 | RTL (Arapça) desteğinin devreye alınması | Başlanmadı |
@@ -20,7 +20,7 @@
 - [x] Adım 1 — Proje iskeleti
 - [x] Adım 2 — Bayrak SVG'leri
 - [x] Adım 3 — index.html iskeleti ve genel layout
-- [ ] Adım 4 — Dil butonları ve etkileşim durumları
+- [x] Adım 4 — Dil butonları ve etkileşim durumları
 - [ ] Adım 5 — RTL hazırlığı, erişilebilirlik ve doğrulama
 
 ### Teknoloji ve Kararlar
@@ -135,4 +135,38 @@ Alınan kararlar:
 - Logo dekoratif olduğu için `alt=""` + `aria-hidden="true"`; hemen altındaki `<h1>` zaten aynı bilgiyi veriyor, ekran okuyucu iki kez okumasın diye.
 - Konsoldaki tek uyarı Tailwind CDN'in "üretimde kullanma" uyarısı; bu aşama için beklenen ve kabul edilmiş bir durum, canlıya çıkmadan önce Tailwind CLI build'ine geçilecek.
 Sıradaki adım: Adım 4 — Dört dil butonunun tasarımı: sabit genişlikli bayrak slotu, dil adının kendi dilinde yazımı, hover/active/focus durumları, mobilde dikey liste ve masaüstünde 2x2 grid düzeni.
+=== RAPOR SONU ===
+
+---
+
+## 2026-08-27 10:26
+
+=== RAPOR BAŞLANGICI ===
+Adım: 4 — Dil butonları ve etkileşim durumları
+Yapılanlar:
+- Dört dil butonu `#language-list` içine eklendi: Türkçe, English, العربية, Русский
+- Her buton üç parçadan oluşuyor: sabit genişlikli bayrak slotu, dil adının kendi dilindeki yazımı, sağda ince bir ok
+- `index.html` içine `<style type="text/tailwindcss">` bloğu eklendi; `@layer components` altında `.lang-btn`, `.flag-slot`, `.flag`, `.lang-name`, `.lang-arrow` sınıfları `@apply` ile tanımlandı
+- Etkileşim durumları kuruldu: hover'da bir ton koyulaşma + hafif yukarı kalkma + gölge büyümesi + okun ileri kayması; active'de geri basılma; focus-visible'da koyu kahve odak halkası
+- Tailwind config'e `future: { hoverOnlyWhenSupported: true }` eklendi
+- Düzen: mobilde tek sütun dikey liste, `md` ve üstünde 2x2 grid
+- `header` + `main` dikeyde ortalanan bir gruba alındı, `footer` sayfanın altında bırakıldı
+- 390x844 (telefon), 834x900 (tablet) ve 1280x800 (masaüstü) çözünürlüklerinde tarayıcıda doğrulandı; hover ve klavye odağı ayrıca test edildi
+Oluşturulan/Değiştirilen dosyalar:
+- `index.html` (güncellendi)
+- `ILERLEME.md` (güncellendi)
+Alınan kararlar:
+- **`<a>` değil `<button type="button">` kullanıldı.** Dil seçimi bir sayfa navigasyonu değil, uygulama içi bir durum değişikliği olacak. Butonlar klavye ve ekran okuyucu tarafından zaten doğru şekilde ele alınıyor.
+- **`data-lang` ve `data-dir` nitelikleri şimdiden eklendi.** Sonraki aşamada JS bu iki niteliği okuyup `<html lang>` ve `<html dir>` değerlerini ayarlayacak; HTML'e tekrar dokunmak gerekmeyecek.
+- **Dil adları kendi dilinde yazıldı** ("English", "العربية", "Русский" — "İngilizce, Arapça, Rusça" değil). Rusça bilen bir müşteri "Rusça" kelimesini okuyamaz ama "Русский"i tanır. Dil seçim ekranlarında standart yaklaşım budur.
+- **Sabit 48px bayrak slotu:** bayrakların oranları farklı olduğu için (Union Jack 1:2, BAE 2:1) doğrudan yan yana konsalardı metinler kaydırılırdı. Slot sayesinde en geniş bayrak slotu doldururken diğerleri ortalanıyor, dört metin de aynı hizada başlıyor.
+- **Bayraklara ince kenarlık (`ring-1 ring-cocoa-900/25`) eklendi.** Rusya, BK ve BAE bayraklarındaki beyaz alanlar sütlü kahve zeminde sınırsız kalıyordu.
+- **Arapça etiket bir punto büyük gösteriliyor.** Arap alfabesi aynı punto değerinde latin harflerden gözle görülür şekilde küçük görünür; `text-xl` ile dengelendi.
+- **Arapça etiketten `dir="rtl"` kaldırıldı.** Etiket tek yönlü bir metin, yön işareti olmadan da doğru render oluyor; `dir="rtl"` verildiğinde ise metin buton içinde sağa yaslanıp diğer üç butonla hizasını bozuyordu. Sayfa RTL'e geçtiğinde dördü birden aynalanacağı için doğru davranış bu. `lang="ar"` korundu (font seçimi ve ekran okuyucu telaffuzu için gerekli).
+- **`hoverOnlyWhenSupported` açıldı.** Bu ayar olmadan dokunmatik ekranda bir butona dokunduktan sonra hover durumu ekranda "yapışıp" kalıyor. Menü ağırlıklı olarak telefondan açılacağı için önemli.
+- **Odak göstergesi `ring` değil `outline` ile yapıldı.** Butonun normal halinde zaten bir `ring-1` kenarlığı var; ikisi de `box-shadow` kullandığı için çakışıyorlardı. `outline` ayrı bir katman olduğundan çakışma olmuyor.
+- **Minimum dokunma hedefi 56px** (`min-h-[3.5rem]`). WCAG 2.5.5'in önerdiği 44px'in üzerinde; telefondan tek elle rahat basılıyor.
+- **Ok işareti `<img>` değil inline `<svg>`.** 4 buton için 4 ayrı ağ isteği yerine tek satır işaretleme; ayrıca `currentColor` kullandığı için hover'da metinle birlikte renk değiştirebiliyor.
+- **Yön bağımlı hiçbir utility kullanılmadı.** `px`, `gap`, `text-start` gibi yönden bağımsız sınıflar tercih edildi; `ml`/`mr`/`left`/`right` hiç geçmiyor. Adım 5'te `dir="rtl"` denendiğinde satırın kendiliğinden aynalanmasının nedeni bu.
+Sıradaki adım: Adım 5 — RTL doğrulaması (`dir="rtl"` ile düzenin aynalanmasının test edilmesi ve okun yön değiştirmesi), erişilebilirlik kontrolü (`aria` nitelikleri, kontrast, klavye sırası) ve üç çözünürlükte son doğrulama.
 === RAPOR SONU ===

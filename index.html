@@ -17,6 +17,9 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
+      // Dokunmatik ekranlarda hover durumunun dokunustan sonra
+      // ekranda "yapisip" kalmasini engeller.
+      future: { hoverOnlyWhenSupported: true },
       theme: {
         extend: {
           colors: {
@@ -32,6 +35,59 @@
       },
     };
   </script>
+  <style type="text/tailwindcss">
+    @layer components {
+
+      /* Dil butonu.
+         Yon bagimli hicbir utility yok (px, gap, text-start) — dir="rtl"
+         verildiginde satir kendiliginden aynalanir. */
+      .lang-btn {
+        @apply flex min-h-[3.5rem] w-full items-center gap-4 rounded-2xl
+               bg-latte-400 px-4 py-3.5 text-start
+               shadow-md shadow-cocoa-900/10
+               ring-1 ring-latte-600/25
+               outline-none transition duration-200 ease-out
+               hover:-translate-y-0.5 hover:bg-latte-500 hover:shadow-lg hover:shadow-cocoa-900/20
+               active:translate-y-0 active:bg-latte-600 active:shadow-sm active:duration-75
+               focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[3px]
+               focus-visible:outline-cocoa-900;
+      }
+
+      /* Bayraklarin en-boy orani birbirinden farkli (tr 3:2, gb 1:2,
+         ae 2:1, ru 3:2). Sabit genislikte bir slot, hepsini ayni yere
+         oturtup metinlerin hizasini korur. */
+      .flag-slot {
+        @apply flex w-12 shrink-0 items-center justify-center;
+      }
+
+      /* Ince kenarlik: RU/GB/AE bayraklarindaki beyaz alanlar sutlu
+         kahve zeminde kaybolmasin diye. */
+      .flag {
+        @apply h-6 w-auto max-w-full rounded-[3px]
+               ring-1 ring-cocoa-900/25 shadow-sm shadow-cocoa-900/20;
+      }
+
+      .lang-name {
+        @apply flex-1 text-lg font-semibold leading-tight text-cocoa-900 sm:text-xl;
+      }
+
+      /* Arap alfabesi ayni punto degerinde latin harflerden kucuk
+         gorunur; bu yuzden biraz buyutulur. */
+      .lang-name[lang="ar"] {
+        @apply text-xl leading-snug sm:text-2xl;
+      }
+
+      .lang-arrow {
+        @apply h-5 w-5 shrink-0 text-cocoa-900/45
+               transition-transform duration-200 ease-out;
+      }
+
+      .lang-btn:hover .lang-arrow {
+        @apply translate-x-1 text-cocoa-900/70;
+      }
+    }
+  </style>
+
   <link rel="stylesheet" href="assets/css/custom.css">
 </head>
 
@@ -43,6 +99,9 @@
     kendiliginden aynalanir.
   -->
   <div class="mx-auto flex min-h-dvh w-full max-w-md flex-col px-6 py-10 sm:max-w-lg sm:py-14 lg:max-w-xl">
+
+    <!-- Header + dil secimi: dikeyde ortalanir, footer altta kalir -->
+    <div class="flex flex-1 flex-col justify-center py-2">
 
     <!-- Logo / baslik alani -->
     <header class="flex flex-col items-center text-center">
@@ -66,7 +125,7 @@
     </header>
 
     <!-- Dil secimi. Butonlar Adim 4'te eklenecek. -->
-    <main class="mt-10 flex flex-1 flex-col sm:mt-12">
+    <main class="mt-10 sm:mt-12">
       <h2 class="text-center text-xs font-semibold uppercase tracking-[0.18em] text-cocoa-700">
         Dil Seçiniz
       </h2>
@@ -78,10 +137,64 @@
         <span lang="ru">Выберите язык</span>
       </p>
 
-      <div id="language-list" class="mt-6 flex flex-col gap-3">
-        <!-- Adim 4: dil butonlari -->
+      <!--
+        Dil butonlari.
+        - data-lang / data-dir: Asama 3'te JS'in tutunacagi kancalar.
+        - Yon bagimli hicbir sinif yok (ml/mr/left/right yerine ms/me ve
+          text-start), bu yuzden <html dir="rtl"> yapildiginda satir
+          kendiliginden aynalanir: bayrak saga, ok sola gecer.
+      -->
+      <div id="language-list"
+           class="mt-6 grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4">
+
+        <button type="button" data-lang="tr" data-dir="ltr" class="lang-btn">
+          <span class="flag-slot">
+            <img src="assets/flags/tr.svg" alt="" aria-hidden="true" class="flag">
+          </span>
+          <span class="lang-name" lang="tr">Türkçe</span>
+          <svg class="lang-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+
+        <button type="button" data-lang="en" data-dir="ltr" class="lang-btn">
+          <span class="flag-slot">
+            <img src="assets/flags/gb.svg" alt="" aria-hidden="true" class="flag">
+          </span>
+          <span class="lang-name" lang="en">English</span>
+          <svg class="lang-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+
+        <button type="button" data-lang="ar" data-dir="rtl" class="lang-btn">
+          <span class="flag-slot">
+            <img src="assets/flags/ae.svg" alt="" aria-hidden="true" class="flag">
+          </span>
+          <span class="lang-name" lang="ar">العربية</span>
+          <svg class="lang-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+
+        <button type="button" data-lang="ru" data-dir="ltr" class="lang-btn">
+          <span class="flag-slot">
+            <img src="assets/flags/ru.svg" alt="" aria-hidden="true" class="flag">
+          </span>
+          <span class="lang-name" lang="ru">Русский</span>
+          <svg class="lang-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+
       </div>
     </main>
+
+    </div>
 
     <footer class="mt-10 pt-6 text-center text-xs text-cocoa-700/60">
       <p>Huzur Pide · Dijital Menü</p>
