@@ -52,17 +52,22 @@ function YerTutucu({ kategoriSlug }: { kategoriSlug: string }) {
 /**
  * Ürün görseli — fotoğraf varsa `next/image`, yoksa kategorisinin yer tutucusu.
  *
- * `sizes`: tarayıcı bu bilgiyle srcset'ten doğru boyu seçiyor, telefona
- * masaüstü boyutunda dosya inmiyor.
+ * `sizes` CSS'teki gerçek ölçüleri söylüyor; tarayıcı srcset'ten doğru boyu
+ * bununla seçiyor, telefona masaüstü boyutunda dosya inmiyor. İki ölçü var:
+ * çok fiyatlı pide tablosunda görsel telefonda 56px (satırı üç fiyat sütunuyla
+ * paylaşıyor), diğer sayfalarda 80px. md üstünde ikisi de 208px.
  */
 export function UrunGorseli({
   urun,
   dil,
   kategoriSlug,
+  /** Çok fiyatlı tablo satırı: görsel telefonda 80px değil 56px. */
+  dar = false,
 }: {
   urun: Urun;
   dil: DilKodu;
   kategoriSlug: string;
+  dar?: boolean;
 }) {
   if (!urun.gorsel) return <YerTutucu kategoriSlug={kategoriSlug} />;
 
@@ -72,7 +77,7 @@ export function UrunGorseli({
       alt={metin(urun.gorsel.alt, dil)}
       width={urun.gorsel.genislik}
       height={urun.gorsel.yukseklik}
-      sizes="(min-width: 768px) 176px, 56px"
+      sizes={dar ? "(min-width: 768px) 208px, 56px" : "(min-width: 768px) 208px, 80px"}
       className="urun-gorsel"
     />
   );

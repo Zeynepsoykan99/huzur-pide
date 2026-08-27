@@ -3,7 +3,7 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 7 tamamlandı — denetim ve düzeltmeler. Bekleyen: QR adresi kararı, organizasyon içeriği, font kararı, eksik fotoğraflar
+**Güncel aşama:** Aşama 8 tamamlandı — 11 sayfalık kitap, her sayfa 390px'te tek ekrana sığıyor. Bekleyen: QR adresi kararı, organizasyon içeriği, font kararı, eksik fotoğraflar
 **Son güncelleme:** 2026-08-27
 
 ### Genel Durum
@@ -20,6 +20,7 @@ Numaralandırma rapor başlıklarıyla aynı: aşağıdaki her satırın karşı
 | 5 | Vercel'de canlıya alma | **Tamamlandı** |
 | 6 | Menü kitabı — yatay kaydırma | **Tamamlandı** |
 | 7 | Denetim ve düzeltmeler | **Tamamlandı** |
+| 8 | Sayfa bölme ince ayarı | **Tamamlandı** |
 
 ### Aşama 1 Adımları
 
@@ -64,26 +65,32 @@ Dil URL'nin ilk parçası: `tr` · `en` · `ar` · `ru`. `/` adresi `/tr`'ye yö
 | `/[dil]/menu` | Ekran A — kategori listesi |
 | `/[dil]/menu/[sayfa]` | Ekran B — menü kitabının bir yaprağı (aşağıdaki 9 slug) |
 
-**Menü kitabı — 9 sayfa.** Her rota kitabın tamamını basıyor; adresteki slug
+**Menü kitabı — 11 sayfa.** Her rota kitabın tamamını basıyor; adresteki slug
 kitabın hangi sayfasında açılacağını belirliyor. Parmakla yana kaydırınca
 sayfalar arasında geziliyor, adres de kaydıkça güncelleniyor.
 
-| Sayfa | Slug | Kategori | Ürün |
-|---|---|---|---|
-| 1 | `kapali-pide-1` | Kapalı Pide Çeşitleri (1/2) | 3 |
-| 2 | `kapali-pide-2` | Kapalı Pide Çeşitleri (2/2) | 3 |
-| 3 | `izgara-1` | Izgara Çeşitleri (1/3) | 5 |
-| 4 | `izgara-2` | Izgara Çeşitleri (2/3) | 5 |
-| 5 | `izgara-3` | Izgara Çeşitleri (3/3) | 4 |
-| 6 | `salatalar` | Salatalar | 1 |
-| 7 | `tatlilar` | Tatlı Çeşitleri | 3 |
-| 8 | `icecekler-1` | İçecekler (1/2) | 4 |
-| 9 | `icecekler-2` | İçecekler (2/2) | 3 |
+| Sayfa | Slug | Kategori | Ürün | İçerik |
+|---|---|---|---|---|
+| 1 | `kapali-pide-1` | Kapalı Pide (1/3) | 2 | Kıymalı, Kaşarlı |
+| 2 | `kapali-pide-2` | Kapalı Pide (2/3) | 2 | Sucuklu, Kıyma-kaşar |
+| 3 | `kapali-pide-3` | Kapalı Pide (3/3) | 2 | Karışık, Lahmacun |
+| 4 | `izgara-1` | Izgara (1/4) | 4 | Et + Kuzu |
+| 5 | `izgara-2` | Izgara (2/4) | 3 | Köfte |
+| 6 | `izgara-3` | Izgara (3/4) | 4 | Tavuk + Karışık |
+| 7 | `izgara-4` | Izgara (4/4) | 3 | Saç kavurma + Şiş |
+| 8 | `salatalar` | Salatalar | 1 | Çoban salata |
+| 9 | `tatlilar` | Tatlı Çeşitleri | 3 | Künefe, Sütlaç, Kabak |
+| 10 | `icecekler-1` | İçecekler (1/2) | 4 | Kola, Fanta, Soda, Ayran |
+| 11 | `icecekler-2` | İçecekler (2/2) | 3 | Komposto, Meyveli soda, Su |
+
+Izgara bölümlerinin sınırları ürün gruplarına göre seçildi: et, kuzu, köfte,
+tavuk, karışık, saç kavurma ve şiş gruplarından hiçbiri sayfa ortasında
+bölünmüyor. Bu yüzden bölüm 4+3+4+3, eşit değil.
 
 Bölünen kategorilerin eski adresleri (`kapali-pide`, `izgara`, `icecekler`)
 ilk sayfalarına yönlendiriliyor; daha önce paylaşılmış linkler kırılmıyor.
 
-Toplam **54 statik sayfa** (4 dil × 9 menü sayfası + 4 dil × 4 diğer ekran +
+Toplam **62 statik sayfa** (4 dil × 11 menü sayfası + 4 dil × 4 diğer ekran +
 `_not-found`). Örnek: `/ar/menu/izgara-1`
 
 ### Aşama 1 Çıktısı
@@ -1439,5 +1446,137 @@ Arapça satır yükseklikleri de düştü: 170 → 126px, 201 → 151px.
 
 **Sıradaki adım:** Push onayı bekleniyor. Push edilirse Vercel otomatik
 dağıtımı tetiklenir.
+
+=== RAPOR SONU ===
+
+---
+
+## Aşama 8 — Sayfa Bölme İnce Ayarı · 2026-08-27
+
+=== RAPOR BAŞLANGICI ===
+
+**Adım:** Aşama 8 — Kitabı 11 sayfaya çıkarma, sığma doğrulaması ve `sizes`
+düzeltmesi (tamamı)
+
+---
+
+**1 — Bölme sınırları: grup bütünlüğü + sığma**
+
+İki kısıt vardı ve ikisi de sağlandı, feda edilen olmadı:
+
+*Sığma kısıtı.* 390 × 844'te bir menü sayfası 692px; sabit kısım (kategori
+başlığı + "Menüye dön" + alt boşluk) 170px; satırlara kalan **522px**. Bir ızgara
+satırı 112px → 522/112 = 4,66, yani **sayfa başına en fazla 4 satır**.
+
+*Grup kısıtı.* Izgara ürünleri yedi gruba ayrılıyor: et (2), kuzu (2), köfte (3),
+tavuk (2), karışık (2), saç kavurma (1), şiş (2).
+
+Grupları bozmadan, hiçbir sayfa 4 satırı geçmeden yapılan bölme:
+
+| Sayfa | Ürün | Gruplar |
+|---|---|---|
+| `izgara-1` | 4 | et + kuzu |
+| `izgara-2` | 3 | köfte (bütün) |
+| `izgara-3` | 4 | tavuk + karışık |
+| `izgara-4` | 3 | saç kavurma + şiş |
+
+**4+3+4+3.** Senin yazdığın 4+4+3+3 ile aynı sayfa sayısı (4), ama 4+4+3+3'ün
+ikinci sınırı 8. üründe düşüyor ve tavuk grubunu ikiye bölüyordu. 4+3+4+3'te
+hiçbir grup bölünmüyor. Çakışma çıkmadığı için sormadan uyguladım.
+
+*Kapalı pide.* 2+2+2 uygulandı. Buradaki kalemler grup oluşturmuyor, her biri
+ayrı bir pide çeşidi. Bölme sebebi sığma: tablo satırları İngilizce ve Rusça
+açıklamalarla 264px'e kadar çıkıyor, 3'er bölündüğünde ikinci sayfa taşıyordu.
+
+*İçecekler* 4+3, *Salatalar* 1, *Tatlılar* 3 — değişmedi, zaten sığıyorlardı.
+
+Kitap **9 → 11 sayfa**, statik sayfa **54 → 62**.
+
+---
+
+**2 — Sığma doğrulaması (390 × 844, 4 dil × 11 sayfa = 44 sayfa)**
+
+| Dil | Sığan | Taşan |
+|---|---|---|
+| TR | 11 / 11 | 0 |
+| EN | 11 / 11 | 0 |
+| AR | 11 / 11 | 0 |
+| RU | 11 / 11 | 0 |
+| **Toplam** | **44 / 44** | **0** |
+
+Her sayfanın içeriği tam 692px veya altında; hiçbirinde dikey kaydırma çubuğu
+oluşmuyor. Öncesi: 36 sayfanın 10'u taşıyordu (Izgara 38px, İngilizce kapalı
+pide 126px, Rusça 33–81px).
+
+*Daha küçük ekran (360 × 640).* Bu ekranda sayfa yüksekliği 692 değil 488px.
+Türkçe 11 sayfanın **6'sı** burada dikey kayıyor (618px ve 506px'lik sayfalar).
+Senin verdiğin hedef 390px'ti ve orada tamamı sığıyor; 360 × 640 bilgi olsun diye
+ölçüldü. Dikey kaydırmanın sayfanın içinde kaldığı, kitabın yatay konumunu
+bozmadığı bu ekranda ayrıca doğrulandı (`kitap.scrollLeft` 1080 → 1080,
+sayfa içi `scrollTop` 0 → 130).
+
+---
+
+**3 — `next/image` `sizes` düzeltmesi**
+
+Öncesi `(min-width: 768px) 176px, 56px` — Aşama 6'da görsel yuvası büyütülürken
+güncellenmemişti.
+
+Gerçekte iki ölçü var, ikisi de yazıldı:
+
+| Yer | Telefon | md üstü |
+|---|---|---|
+| Tek fiyatlı sayfalar | **80px** | **208px** |
+| Çok fiyatlı pide tablosu | **56px** | **208px** |
+
+`UrunGorseli` artık `dar` prop'u alıyor; pide tablosu bunu veriyor.
+
+---
+
+**Değiştirilen dosyalar:**
+
+| Dosya | Durum |
+|---|---|
+| `data/menu.ts` | `sayfaBolumleri`: kapalı pide `[2,2,2]`, izgara `[4,3,4,3]` — ikisine de gerekçe yorumu eklendi |
+| `components/UrunGorseli.tsx` | `sizes` gerçek ölçülere çekildi, `dar` prop'u eklendi |
+| `app/[dil]/menu/[sayfa]/page.tsx` | Pide tablosu `dar` gönderiyor |
+| `ILERLEME.md` | Üst özet, ekranlar tablosu (11 sayfa, 62 statik sayfa) |
+
+Kategori listesindeki sayfa numaraları veriden türetildiği için kendiliğinden
+güncellendi: **1-3 · 4-7 · 8 · 9 · 10-11**. Eski adres yönlendirmeleri
+(`kapali-pide`, `izgara`, `icecekler` → ilk sayfa) yerinde ve çalışıyor.
+
+---
+
+**Doğrulama:**
+
+- `npx tsc --noEmit` · `npm run lint` · `npm run build`: temiz, **62 statik sayfa**
+- **180 sayfa yüklemesi** (4 dil × 15 sayfa × 3 genişlik): 0 konsol hatası,
+  0 uyarı, 0 yatay taşma, 0 taşan öğe, 180/180 doğru `dir`/`lang`, font yüklü
+- Dikey sığma: **44/44 sayfa** 390px'te tek ekrana sığıyor
+- Kontrast (gerçek pikselden, 14 kombinasyon): 14/14 geçiyor
+- Rotalar: 11 slug × 4 dil 200 · 3 eski adres 307 → ilk sayfa · `izgara-5` ve
+  geçersiz slug 404
+- Gezinme zinciri dört dilde: 20/20 doğru
+- Gerçek dokunmatik (CDP): LTR 1→2, 7→6, 10→11 · RTL 1→2, 5→4, 11→10 — yön
+  doğru aynalanıyor, her adımda `window.scrollX === 0`
+- Sayfa içi dikey kaydırma yatay konumu bozmuyor (360 × 640'ta ölçüldü)
+- Görünen görseller dört dilde de yükleniyor
+
+---
+
+**Not:**
+
+Kapalı pide tablosunda uzun İngilizce adlar hâlâ dar bir sütuna sarıyor:
+"Lahmacun (Thin Flatbread with Minced Meat)" 390px'te **6 satır**. Sayfa artık
+sığıyor, yani bozulma değil — ama sütun dar. Sebebi Aşama 7'de ölçülenle aynı:
+ad sütunu üç fiyat sütunuyla yeri paylaşıyor. Tam çözümü görsel sütununu
+telefonda tamamen gizlemek olurdu; o seçenek reddedilmişti.
+
+**Karar bekleyen (önceki aşamalardan):** organizasyon içeriği · Arapça
+çevirilerin ana dili konuşan biri tarafından kontrolü · 24 ürünün fotoğrafı ·
+4 teyit edilmemiş fiyat · font kararı · QR adresi (kök mü `/tr` mi)
+
+**Sıradaki adım:** Push onayı bekleniyor.
 
 === RAPOR SONU ===

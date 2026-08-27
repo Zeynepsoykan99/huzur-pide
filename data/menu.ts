@@ -228,7 +228,10 @@ export const MENU: Kategori[] = [
       ar: "البيدة المغلقة",
       ru: "Закрытая пиде",
     },
-    sayfaBolumleri: [3, 3],
+    // Sayfa basina 2 urun: bunlar tablo satiri ve Ingilizce/Rusca
+    // aciklamalarla 264px'e kadar cikiyorlar. 3'er bolundugunde ikinci sayfa
+    // 390px'te tasiyordu.
+    sayfaBolumleri: [2, 2, 2],
     sutunlar: PIDE_SUTUNLARI,
     urunler: [
       {
@@ -393,7 +396,11 @@ export const MENU: Kategori[] = [
       ar: "المشويات",
       ru: "Блюда на гриле",
     },
-    sayfaBolumleri: [5, 5, 4],
+    // 4+3+4+3, esit degil: bolum sinirlari urun gruplarina gore secildi.
+    // et+kuzu | kofte | tavuk+karisik | sac+sis — hicbir grup sayfa ortasinda
+    // bolunmuyor. Sayfa basina en fazla 4 satir: 390px'te satirlara kalan
+    // yukseklik 522px, bir izgara satiri 112px (5 satir sigmiyor, 4 siğiyor).
+    sayfaBolumleri: [4, 3, 4, 3],
     sutunlar: TEK_SUTUN,
     urunler: [
       { id: "et-izgara-kg", ad: {

@@ -122,7 +122,7 @@ function CokFiyatliTablo({ sayfa, dil }: { sayfa: MenuSayfasi; dil: DilKodu }) {
         {urunler.map((urun) => (
           <tr key={urun.id}>
             <td className="pide-gorsel-hucre">
-              <UrunGorseli urun={urun} dil={dil} kategoriSlug={kategori.slug} />
+              <UrunGorseli urun={urun} dil={dil} kategoriSlug={kategori.slug} dar />
             </td>
             <th scope="row" className="pide-ad-hucre">
               <div className="ayrac-satir">
