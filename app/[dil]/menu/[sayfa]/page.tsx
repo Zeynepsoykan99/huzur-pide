@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { SayfaOklari } from "@/components/SayfaOklari";
 import { SayfaSayaci } from "@/components/SayfaSayaci";
 import { UrunGorseli } from "@/components/UrunGorseli";
 import { UstBaslik } from "@/components/UstBaslik";
@@ -94,10 +95,11 @@ function CokFiyatliTablo({ sayfa, dil }: { sayfa: MenuSayfasi; dil: DilKodu }) {
         {metin(kategori.ad, dil)} — {ui("hamurBoyunaGoreFiyatlar", dil)}
       </caption>
       <colgroup>
-        {/* Telefonda 56px, md ustunde 208px: cok fiyatli tabloda ad sutunu
-            uc fiyat sutunuyla yeri paylastigi icin 390px'te 110px'e kadar
-            dusuyordu ve Arapca/Ingilizce/Rusca adlar 3-5 satira sariyordu. */}
-        <col className="w-14 md:w-52" />
+        {/* Gorsel sutunu telefonda tamamen kalkiyor: hucreleri gizlemek
+            yetmiyor, sutunun kendisi de kalkmali yoksa genisligini ayirmaya
+            devam ediyor. md ustunde 208px. Gerekcesi globals.css'te
+            .pide-gorsel-hucre yaninda. */}
+        <col className="hidden w-14 md:table-column md:w-52" />
         <col />
         {kategori.sutunlar.map((s) => (
           <col key={s.kod} />
@@ -105,7 +107,7 @@ function CokFiyatliTablo({ sayfa, dil }: { sayfa: MenuSayfasi; dil: DilKodu }) {
       </colgroup>
       <thead>
         <tr>
-          <th scope="col">
+          <th scope="col" className="hidden md:table-cell">
             <span className="sr-only">{ui("gorsel", dil)}</span>
           </th>
           <th scope="col" className="pide-sutun-basligi text-start">
@@ -130,7 +132,14 @@ function CokFiyatliTablo({ sayfa, dil }: { sayfa: MenuSayfasi; dil: DilKodu }) {
                 <span className="nokta" aria-hidden="true" />
               </div>
               {icerikMetni(urun, dil) ? (
-                <p className="urun-icerik">{icerikMetni(urun, dil)}</p>
+                /* Telefonda tek satir: pide tablosunda ad sutunu uc fiyat
+                   sutunuyla yer paylastigi icin aciklama uc-dort satira
+                   sariyor ve sayfayi tasiriyordu. Ilk satir kaliyor —
+                   Turkce bilmeyen musteri icindekiler fikrini yine aliyor.
+                   md ustunde tam metin. */
+                <p className="urun-icerik line-clamp-1 md:line-clamp-none">
+                  {icerikMetni(urun, dil)}
+                </p>
               ) : null}
             </th>
             {kategori.sutunlar.map((sutun) => {
@@ -216,25 +225,39 @@ export default async function MenuKitabiSayfasi({
         belgede geliyor ve müşteri kaydırarak menünün her yerine ulaşabiliyor —
         kategori değiştirmek için menüye dönmesi gerekmiyor.
       */}
-      <div id={KAP_ID} className="kitap" data-acilis={acilis.no}>
-        {SAYFALAR.map((s) => (
-          <Yaprak key={s.no} sayfa={s} dil={dil} />
-        ))}
+      <div className="kitap-alani">
+        <div id={KAP_ID} className="kitap" data-acilis={acilis.no}>
+          {SAYFALAR.map((s) => (
+            <Yaprak key={s.no} sayfa={s} dil={dil} />
+          ))}
+        </div>
+
+        {/* Kenarlardaki sayfa cevirme oklari. Kitabin kardesi, cocugu degil:
+            kaydirma kabinin icinde olsalardi sayfalarla birlikte kayarlardi. */}
+        <SayfaOklari
+          kabId={KAP_ID}
+          sayfalar={sayfaListesi}
+          dil={dil}
+          baslangicNo={acilis.no}
+        />
       </div>
 
       {/*
-        İlk konumlandırma. React'in effect'i ilk boyamadan SONRA çalıştığı için
-        orada yapılsaydı paylaşılan bir link açılırken bir kare boyunca 1. sayfa
-        görünürdü. Bu script HTML ayrıştırılırken, kap DOM'a girdikten hemen
-        sonra çalışıyor; ekrana hiç yanlış sayfa düşmüyor.
+        TAM SAYFA YÜKLEMEDE ilk konumlandırma. HTML ayrıştırılırken, kap DOM'a
+        girdikten hemen sonra çalışıyor; ekrana hiç yanlış sayfa düşmüyor.
 
-        scrollIntoView kullanılıyor çünkü yazma yönünü kendisi hesaba katıyor:
-        Arapça'da (dir="rtl") scrollLeft negatif değer alıyor, elle hesap
-        yapmak tarayıcıdan tarayıcıya değişiyordu.
+        İSTEMCİ TARAFI gezinmede bu script çalışmaz — innerHTML ile DOM'a giren
+        bir script'i tarayıcı çalıştırmaz. O yolu SayfaSayaci içindeki layout
+        effect kapatıyor; ikisi aynı fark hesabını kullanıyor.
+
+        Fark yöntemi yazma yönünden bağımsız: hedef ile kabın kutuları
+        arasındaki mesafe RTL'de kendiliğinden negatif çıkıyor. (Eskiden
+        scrollIntoView kullanılıyordu; `behavior:"instant"` eski tarayıcılarda
+        geçersiz enum sayılıp TypeError atabildiği için bırakıldı.)
       */}
       <script
         dangerouslySetInnerHTML={{
-          __html: `(function(){var k=document.getElementById(${JSON.stringify(KAP_ID)});if(!k)return;var n=k.getAttribute("data-acilis");var h=document.getElementById("s"+n);if(h&&h.scrollIntoView)h.scrollIntoView({block:"nearest",inline:"start",behavior:"instant"});})();`,
+          __html: `(function(){var k=document.getElementById(${JSON.stringify(KAP_ID)});if(!k)return;var h=document.getElementById("s"+k.getAttribute("data-acilis"));if(!h)return;k.scrollLeft+=h.getBoundingClientRect().left-k.getBoundingClientRect().left;})();`,
         }}
       />
 
@@ -260,6 +283,7 @@ export default async function MenuKitabiSayfasi({
             sayfalar={sayfaListesi}
             dil={dil}
             baslangicNo={acilis.no}
+            baslangicSlug={acilis.slug}
           />
           {" / "}
           {SAYFALAR.length}

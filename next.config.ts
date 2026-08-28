@@ -27,6 +27,14 @@ const nextConfig: NextConfig = {
         permanent: false,
       },
       {
+        // Kapali pide 2+2+2 iken 3+3'e gecti: 3. sayfa artik yok. Eski 3.
+        // sayfadaki Karisik ve Lahmacun yeni bolmede 2. sayfada duruyor,
+        // bu yuzden hedef ilk sayfa DEGIL, 2. sayfa.
+        source: "/:dil/menu/kapali-pide-3",
+        destination: "/:dil/menu/kapali-pide-2",
+        permanent: false,
+      },
+      {
         // Icecekler tek sayfaydi, 4+3 olarak bolundu: eski adres artik
         // bir sayfa degil, ilk sayfasina gidiyor.
         source: "/:dil/menu/icecekler",

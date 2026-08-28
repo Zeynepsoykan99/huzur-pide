@@ -293,8 +293,13 @@
     @apply py-2.5 align-middle md:py-4;
   }
 
+  /* Gorsel hucresi telefonda gizli.
+     Kapali pide 2 sayfaya indirilince (3+3) Ingilizce 2. sayfa 800px, Rusca
+     707px yukseklik istiyordu; hedefteki en kisa cihaz 629px. Gorsel sutunu
+     kalkinca ad sutunu genisliyor, uzun adlar daha az satira sariyor ve
+     sayfalar hedefteki butun telefonlara sigiyor. md ustunde geri geliyor. */
   .pide-gorsel-hucre {
-    @apply py-2.5 pe-4 align-middle md:py-4;
+    @apply hidden py-2.5 pe-4 align-middle md:table-cell md:py-4;
   }
 
   /* Cok fiyatli tabloda gorsel telefonda daraliyor (80 -> 56px). Tek fiyatli
@@ -400,6 +405,12 @@
     @apply flex min-h-0 flex-1 snap-x snap-mandatory overflow-x-auto overflow-y-hidden;
     scrollbar-width: none;
     overscroll-behavior-x: contain;
+    /* touch-action DENENDI VE GERI ALINDI: `.kitap` icin pan-x,
+       `.kitap-icerik` icin pan-y verildiginde kaydirma TAMAMEN durdu.
+       Sebep: tarayici, dokunmanin basladigi elemandan yukari dogru butun
+       ata zincirinin touch-action degerlerini KESISTIRIYOR; pan-y ∩ pan-x
+       bos kume oluyor ve hicbir yonde kaydirma kalmiyor. Gercek tarayicida
+       olculdu (Chrome ve WebKit: 4 -> 4, sayfa degismedi). */
     /* contain: paint OLMADAN, 7 sayfanin toplam genisligi (2733px) belgenin
        kaydirma alanina sizip <html> seviyesinde yatay kaydirma aciyordu —
        overflow-x: clip/hidden bile engellemiyordu. Bu ilan kitabin icerigini
@@ -431,6 +442,88 @@
     @apply mx-auto w-full max-w-md min-h-0 flex-1 overflow-y-auto
            overscroll-y-contain overscroll-x-auto px-5 pb-3
            sm:max-w-lg sm:px-6 md:pb-8 lg:max-w-2xl;
+    /* Dikey kaydirma cubugu gizli — kaydirma ISLEVI duruyor, yalnizca cubuk
+       cizilmiyor. Ikisi birlikte her tarayiciyi kapsiyor: scrollbar-width
+       standart ozellik (Firefox, yeni Chrome/Edge, Safari 18.2+),
+       ::-webkit-scrollbar eski Safari ve Chrome/Edge icin.
+       Ayni yontem .kitap'ta yatay cubuk icin zaten kullaniliyor. */
+    scrollbar-width: none;
+  }
+
+  .kitap-icerik::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* --- Sayfa cevirme oklari ---
+     Kitabin ICINDE degil, kardes katmanda duruyorlar: .kitap bir kaydirma
+     kabi ve icine konan mutlak konumlu bir cocuk sayfalarla birlikte kayardi.
+     Bu yuzden .kitap bir .kitap-alani sarmalayicisina alindi. */
+  .kitap-alani {
+    @apply relative flex min-h-0 flex-1;
+  }
+
+  /* Dokunma hedefi 44x44 (seffaf), gorunen kisim icerideki 20px'lik daire:
+     buyuk hedef, kucuk gorsel.
+
+     Gorunen daire, sayfanin 20px'lik kenar boslugunun ICINE sigiyor ve kenara
+     dayali duruyor — icerigin ustune binmiyor. Ilk denemede daire 28px'ti ve
+     kenardan 2px iceriydi: Arapca kapali-pide sayfasinda "440 ₺" fiyatinin ilk
+     rakamini ortuyordu (yazi kutulariyla olculdu, 279px kare ortusme). Seffaf
+     dokunma alani iceri tasabilir, orada tiklanacak baska bir sey yok. */
+  .kitap-ok {
+    @apply absolute top-1/2 z-10 flex h-11 w-11 -translate-y-1/2
+           items-center rounded-full outline-hidden
+           focus-visible:outline-solid focus-visible:outline-2
+           focus-visible:outline-offset-2 focus-visible:outline-cocoa-900;
+  }
+
+  /* Yon bagimsiz: RTL'de kitap sagdan sola aktigi icin "ileri" gercekten
+     sol kenardir; inset-inline-* bunu kendiliginden halleder. */
+  /* justify-*: gorunen daire 44px'lik dokunma alaninin ICINDE degil, DIS
+     kenarinda duruyor — boylece sayfanin kenar boslugunu asmiyor. Ortalanmis
+     olsaydi 12px iceriden baslar ve icerigin ustune binerdi. */
+  .kitap-ok-ileri {
+    @apply end-0 justify-end;
+  }
+
+  .kitap-ok-geri {
+    @apply start-0 justify-start;
+  }
+
+  .kitap-ok-govde {
+    @apply flex h-5 w-5 items-center justify-center rounded-full
+           bg-cream-50/85 text-cocoa-700
+           ring-1 ring-latte-600/30 shadow-sm shadow-cocoa-900/10
+           transition duration-150 ease-out
+           sm:h-6 sm:w-6;
+  }
+
+  .kitap-ok:hover .kitap-ok-govde {
+    @apply bg-cream-50 text-cocoa-900;
+  }
+
+  .kitap-ok:active .kitap-ok-govde {
+    @apply scale-95 bg-cream-100 duration-75;
+  }
+
+  /* Chevron kaynakta hep saga bakiyor; yon degiskenle aynalaniyor.
+     Sira onemli: en spesifik kural (RTL + geri) en sonda. */
+  .kitap-ok-simge {
+    @apply h-3 w-3 sm:h-3.5 sm:w-3.5;
+    --ok-flip: 1;
+    transform: scaleX(var(--ok-flip));
+  }
+
+  [dir="rtl"] .kitap-ok-simge {
+    --ok-flip: -1;
+  }
+
+  .kitap-ok-geri .kitap-ok-simge {
+    --ok-flip: -1;
+  }
+
+  [dir="rtl"] .kitap-ok-geri .kitap-ok-simge {
+    --ok-flip: 1;
   }
 
   /* Kitabin alt seridi: "Menuye don" ve sayfa numarasi ayni satirda.
