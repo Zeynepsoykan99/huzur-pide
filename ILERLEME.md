@@ -3,7 +3,7 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 11 tamamlandı (dalda, önizleme onayı bekliyor) — 10 sayfalık kitap, kaydırma çubuğu gizli, hedefteki tüm telefonlarda tek ekrana sığıyor. Bekleyen: QR adresi kararı, organizasyon içeriği, font kararı, eksik fotoğraflar
+**Güncel aşama:** Aşama 12 tamamlandı — Aşama 10 ve 11 **canlıda** (`main`, `cfbca88`). 10 sayfalık kitap, kaydırma çubuğu gizli, oklar dört dilde çalışıyor, Kapalı Pide 2 sayfa. Bekleyen: QR adresi kararı, organizasyon içeriği, font kararı, eksik fotoğraflar
 **Son güncelleme:** 2026-08-28
 
 ### Genel Durum
@@ -24,6 +24,7 @@ Numaralandırma rapor başlıklarıyla aynı: aşağıdaki her satırın karşı
 | 9 | Gerçek telefon yüksekliğine sığdırma | **Tamamlandı** |
 | 10 | Kategori bağlantısı hatası + sayfa çevirme okları | **Tamamlandı** |
 | 11 | Kaydırma çubuğu + Kapalı Pide 2 sayfa | **Tamamlandı** |
+| 12 | Üretime çıkış ve canlı doğrulama | **Tamamlandı** |
 
 ### Aşama 1 Adımları
 
@@ -2009,5 +2010,138 @@ AR 5/+133, RU 8/+139.)
 Palet, tipografi, boşluklar ve diğer kategorilerin bölmesi değişmedi.
 
 **Sıradaki adım:** Push onayı bekleniyor.
+
+=== RAPOR SONU ===
+
+---
+
+## Aşama 12 — Üretime Çıkış ve Canlı Doğrulama · 2026-08-28
+
+=== RAPOR BAŞLANGICI ===
+
+**Adım:** Aşama 12 — `duzeltme/kategori-baglantisi-ve-ok` dalının `main`'e
+alınması, üretime çıkış ve canlı adres üzerinde doğrulama (tamamı)
+
+---
+
+**1 — Birleştirme ve üretime çıkış**
+
+Dal `main`'e `--no-ff` ile alındı (birleştirme işlemesi `cfbca88`); Aşama 10 ve
+11'in iki işlemesi tek birleştirme altında toplandı, dal geçmişi korundu.
+Push öncesi `tsc --noEmit` ve `next build` yeniden çalıştırıldı: temiz, **58
+statik sayfa**.
+
+`main`'e push edildiğinde Vercel üretim dağıtımını otomatik tetikledi. Yeni
+sürümün canlıya indiği, sürüm işareti olarak `kapali-pide-3` adresiyle
+ölçüldü: eski sürümde gerçek bir sayfa (200), yeni sürümde yönlendirme (307).
+Push ile ilk 307 arasında yaklaşık 15 saniye geçti.
+
+**2 — Rotalar (canlı adres, HTTP)**
+
+| Ölçüm | Sonuç |
+|---|---|
+| 4 dil × 10 sayfa | 40/40 → 200 |
+| `kapali-pide` · `izgara` · `icecekler` (4 dil) | 12/12 → 307, ilk sayfaya |
+| `kapali-pide-3` (4 dil) | 4/4 → 307, **`kapali-pide-2`'ye** |
+| `/` kök adres | 307 → `/tr` |
+| `kapali-pide-4`, `izgara-5`, `salatalar-2`, geçersiz slug, `/de/...` | 5/5 → 404 |
+
+`kapali-pide-3`'ün hedefi bilinçli olarak ilk sayfa değil: eski 3. sayfadaki
+Karışık ve Lahmacun yeni bölmede 2. sayfada duruyor. Canlıda içerikle
+doğrulandı — adres `kapali-pide-2`'ye indi ve ekranda görünen ürünler
+Kıyma & Kaşar, Karışık, Lahmacun çıktı.
+
+**3 — Kategori listesinden gerçek tıklama (4 dil × 5 kategori)**
+
+Her dilde kategori listesi açıldı, beş bağlantıya sırayla **tıklandı**, her
+tıklamadan sonra adres değil **ekranda görünen** ölçüldü: hangi sayfa
+bölümünün görüş alanını kapladığı (`getBoundingClientRect` örtüşmesi), o
+bölümün başlığı, ürünleri ve alt şeritteki sayaç.
+
+| Dil | Sonuç |
+|---|---|
+| TR | 5/5 — Kapalı Pide (1/2) s.1 · Izgara (1/4) s.3 · Salatalar s.7 · Tatlı s.8 · İçecekler (1/2) s.9 |
+| EN | 5/5 — Closed Pide · Grilled Dishes · Salads · Desserts · Drinks |
+| AR | 5/5 — البيدة المغلقة · المشويات · السلطات · الحلويات · المشروبات |
+| RU | 5/5 — Закрытая пиде · Блюда на гриле · Салаты · Десерты · Напитки |
+
+Her ölçümde görüş alanında **tek** sayfa vardı ve tam 390 px kaplıyordu —
+yarım kalmış, iki sayfanın arasına oturmuş bir görüntü hiç oluşmadı.
+Kategori listesindeki numaralar (1-2 · 3-6 · 7 · 8 · 9-10) sayaçla tutarlı.
+
+**4 — Oklar (4 dil × 18 adım)**
+
+Her dilde 1. sayfadan başlanıp ileri okla 10'a, sonra geri okla 1'e yüründü;
+her adımda görünen bölüm, başlığı ve sayaç okundu.
+
+| Dil | İleri | Geri | Uçlarda |
+|---|---|---|---|
+| TR | 9/9 | 9/9 | s.1'de yalnız "Sonraki", s.10'da yalnız "Önceki" |
+| EN | 9/9 | 9/9 | aynı |
+| AR | 9/9 | 9/9 | aynı |
+| RU | 9/9 | 9/9 | aynı |
+
+**Toplam 72/72.** Arapça'da yön ayrıca ölçüldü: `dir="rtl"`, "sonraki" düğmesi
+solda (x=0) ve chevron aynalanmış (`matrix(-1,0,0,1,0,0)`), "önceki" sağda
+(x=346) ve düz. İleri gidildiğinde kap **sola** hareket etti (`scrollLeft`
+0 → −3514), geri gidildiğinde sağa (−3514 → 0) — dokuz adımın dokuzunda da.
+Düğme boyutu dört dilde 44×44 px.
+
+**Ölçüm sırasında karşılaşılan yanılsama.** İlk denemede her tık bir sayfa
+ilerletmiyor göründü. Sebep sitede değil, test tarayıcısında: başsız Chromium'da
+`requestAnimationFrame` saniyede ~2 kare çalışıyor, bu yüzden okun kullandığı
+`scrollBy({ behavior: "smooth" })` animasyonu 3 saniyeye yayılıyor. Aynı kapta
+ölçüldü — anlık kaydırma 31 ms, yumuşak kaydırma 3004 ms, rAF 2 kare/sn.
+Bekleme ölçütü "kaydırma durdu" yerine "hedef sayfa hizalandı" olarak
+düzeltilince dört dilde de 18/18 çıktı. Gerçek cihazda rAF 60 kare/sn
+çalıştığı için bu gecikme oluşmuyor.
+
+**5 — Kaydırma çubuğu**
+
+| Ölçüm | Sonuç |
+|---|---|
+| Kabın yatay çubuğa ayırdığı yer (`offsetHeight − clientHeight`) | **0 px** |
+| Hesaplanan `scrollbar-width` | `none` |
+| Yayına giden CSS'te kural | `.kitap::-webkit-scrollbar{display:none}` + `.kitap-icerik::-webkit-scrollbar{display:none}` |
+| Belgede yatay taşma | 0 px (390 px ve 1280 px'te) |
+| Kaydırma işlevi duruyor mu | evet (`scrollWidth` 3904 > `clientWidth` 390) |
+
+Ekran görüntüsüyle de bakıldı: çubuk çizilmiyor, sayfa tek ekrana oturuyor.
+
+**6 — Kapalı Pide ve sayaç**
+
+Kapalı Pide **2 sayfa**: 1. sayfa Kıymalı · Kaşarlı · Sucuklu, 2. sayfa
+Kıyma & Kaşar · Karışık · Lahmacun. Kitap toplam **10 sayfa** — sayaç dört
+dilde son sayfada 10/10 gösteriyor (`Sayfa 10 / 10` · `Page 10 / 10` ·
+`صفحة 10 / 10` · `Страница 10 / 10`). `kapali-pide-3` artık bir sayfa değil.
+
+**7 — Konsol ve ağ**
+
+Oturum boyunca dört dilde liste sayfaları, kitap sayfaları, 72 ok tıklaması,
+20 kategori tıklaması ve yönlendirme testleri yapıldı; sonunda konsol
+sayacı: **0 hata, 0 uyarı**. Ağ isteklerinin tamamı 200 — başarısız istek
+yok. Görsellerde bozuk yükleme yok (12 görsel, `naturalWidth = 0` olan yok;
+2 görsel henüz yüklenmemişti, bunlar görüş alanı dışında ve tembel yükleniyor).
+
+---
+
+**Küçük gözlem (düzeltilmedi):** Kitapta parmakla veya okla sayfa çevrilince
+adres güncelleniyor ama sekme başlığı (`document.title`) açılış sayfasının
+başlığında kalıyor — örneğin `/tr/menu/icecekler-2`'de başlık hâlâ "Kapalı Pide
+Çeşitleri". Yalnızca tarayıcı sekmesini etkiliyor, ekrandaki içeriği değil;
+QR ile açılan tam ekran görünümde görünmüyor. Bu aşamanın kapsamı dışında
+olduğu için dokunulmadı.
+
+**Değiştirilen dosyalar:**
+
+| Dosya | Durum |
+|---|---|
+| `ILERLEME.md` | Özet, durum tablosu, bu rapor |
+
+Kod değişmedi — bu aşama birleştirme, dağıtım ve doğrulamadan ibaret.
+
+**Sıradaki adım:** Bekleyen içerik kararları: QR adresi, organizasyon içeriği,
+font kararı, eksik fotoğraflar, 4 teyit edilmemiş fiyat, Arapça çevirilerin
+ana dili konuşan biri tarafından gözden geçirilmesi.
 
 === RAPOR SONU ===
