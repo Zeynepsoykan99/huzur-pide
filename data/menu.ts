@@ -83,7 +83,7 @@ export type Cevrilebilir = {
 } & Partial<Record<Exclude<DilKodu, "tr">, string>>;
 
 /**
- * Fiyat sütunu. Kapalı pidelerde üç sütun var (1 Hamur / 1,5 Hamur / Düble),
+ * Fiyat sütunu. Kapalı pidelerde üç sütun var (1 Hamur / 1,5 Hamur / Duble),
  * diğer kategorilerde tek sütun. Sütun başlıkları da çevrilebilir.
  */
 export type FiyatSutunu = {
@@ -200,7 +200,7 @@ const PIDE_SUTUNLARI: FiyatSutunu[] = [
   },
   {
     kod: "duble",
-    baslik: { tr: "Düble", en: "Double", ar: "دوبل", ru: "Двойная" },
+    baslik: { tr: "Duble", en: "Double", ar: "دوبل", ru: "Двойная" },
   },
 ];
 
@@ -284,7 +284,7 @@ export const MENU: Kategori[] = [
           ru: "Сыр кашар",
         },
         fiyatlar: [
-          // 1 Hamur ve Düble fiyatları işletmeyle teyit edilmedi.
+          // 1 Hamur ve Duble fiyatları işletmeyle teyit edilmedi.
           { sutun: "hamur1", tutar: 200, dogrulandi: false },
           { sutun: "hamur15", tutar: 300, dogrulandi: true },
           { sutun: "duble", tutar: 400, dogrulandi: false },
@@ -381,7 +381,7 @@ export const MENU: Kategori[] = [
         },
         fiyatlar: [
           { sutun: "hamur1", tutar: 100, dogrulandi: true },
-          // Lahmacun'un 1,5 Hamur ve Düble karşılığı yok.
+          // Lahmacun'un 1,5 Hamur ve Duble karşılığı yok.
           { sutun: "hamur15", tutar: null, dogrulandi: true },
           { sutun: "duble", tutar: null, dogrulandi: true },
         ],

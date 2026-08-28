@@ -3,7 +3,7 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 12 tamamlandı — Aşama 10 ve 11 **canlıda** (`main`, `cfbca88`). 10 sayfalık kitap, kaydırma çubuğu gizli, oklar dört dilde çalışıyor, Kapalı Pide 2 sayfa. Bekleyen: QR adresi kararı, organizasyon içeriği, font kararı, eksik fotoğraflar
+**Güncel aşama:** Aşama 13 tamamlandı — Aşama 10-12 **canlıda**. 10 sayfalık kitap, kaydırma çubuğu gizli, oklar dört dilde çalışıyor, Kapalı Pide 2 sayfa. Bekleyen: QR adresi kararı, organizasyon içeriği, font kararı, eksik fotoğraflar
 **Son güncelleme:** 2026-08-28
 
 ### Genel Durum
@@ -25,6 +25,7 @@ Numaralandırma rapor başlıklarıyla aynı: aşağıdaki her satırın karşı
 | 10 | Kategori bağlantısı hatası + sayfa çevirme okları | **Tamamlandı** |
 | 11 | Kaydırma çubuğu + Kapalı Pide 2 sayfa | **Tamamlandı** |
 | 12 | Üretime çıkış ve canlı doğrulama | **Tamamlandı** |
+| 13 | "Düble" → "Duble" yazım düzeltmesi | **Tamamlandı** |
 
 ### Aşama 1 Adımları
 
@@ -2143,5 +2144,73 @@ Kod değişmedi — bu aşama birleştirme, dağıtım ve doğrulamadan ibaret.
 **Sıradaki adım:** Bekleyen içerik kararları: QR adresi, organizasyon içeriği,
 font kararı, eksik fotoğraflar, 4 teyit edilmemiş fiyat, Arapça çevirilerin
 ana dili konuşan biri tarafından gözden geçirilmesi.
+
+=== RAPOR SONU ===
+
+---
+
+## Aşama 13 — "Düble" → "Duble" Yazım Düzeltmesi · 2026-08-28
+
+=== RAPOR BAŞLANGICI ===
+
+**Adım:** Aşama 13 — Kapalı Pide tablosundaki üçüncü fiyat sütununun Türkçe
+başlığının düzeltilmesi (tamamı)
+
+---
+
+**1 — Kelimenin geçtiği yerler**
+
+Metin tek yerde tanımlı: `data/menu.ts`, `PIDE_SUTUNLARI` içindeki üçüncü
+sütunun `baslik.tr` alanı. Oradan iki tüketiciye gidiyor — görünen sütun
+başlığı (`app/[dil]/menu/[sayfa]/page.tsx:118`) ve fiyatı teyit edilmemiş
+kalemleri listeleyen `dogrulanmamisFiyatlar()` (`menu.ts:923`).
+
+Ayrı bir ekran okuyucu etiketi **yok**: sütun başlığı `<th scope="col">` ve
+`aria-label` taşımıyor, yani görünen metin aynı zamanda erişilebilir ad. Tek
+düzeltme ikisini de kapsıyor.
+
+| Satır | Değişiklik |
+|---|---|
+| 203 | `tr: "Düble"` → `tr: "Duble"` — tek gerçek metin değişikliği |
+| 86 · 287 · 384 | Kod yorumlarındaki yazım, dosya kendi içinde tutarlı kalsın diye |
+
+**Dokunulmayanlar:** `en: "Double"`, `ar: "دوبل"`, `ru: "Двойная"`. `kod: "duble"`
+da aynı bırakıldı — zaten ASCII'ydi ve ürünlerdeki yedi `sutun: "duble"`
+referansı buna bağlı; değiştirilseydi fiyatlar sütunlarını kaybederdi.
+Ürün, fiyat ve bölme yapısına dokunulmadı.
+
+**2 — Doğrulama**
+
+Üretim derlemesi yerelde çalıştırılıp 390 px telefon genişliğinde bakıldı.
+
+| Ölçüm | Sonuç |
+|---|---|
+| TR sütun başlıkları (ekran) | 1 HAMUR · 1,5 HAMUR · **DUBLE** |
+| Erişilebilirlik ağacında sütun adı | `columnheader "Duble"` |
+| Kitabın tüm metninde `düble` (harf duyarsız) | **0** |
+| EN / AR / RU başlıkları | `Double` · `دوبل` · `Двойная` — değişmedi |
+| Sayfa 2 ürün ve fiyatları | Kıyma & Kaşar 220/330/440 · Karışık 240/350/480 · Lahmacun 100/—/— |
+| Konsol | 0 hata, 0 uyarı |
+| `tsc` · `lint` · `build` | temiz, 58 statik sayfa |
+
+Başlık ekranda büyük harfle görünüyor; bu bütün sütun başlıklarına uygulanan
+mevcut `text-transform: uppercase`'ten geliyor (1 HAMUR da öyle). Metnin
+kendisi ve ekran okuyucunun okuduğu ad "Duble".
+
+**Karakter denetimi.** Yazılan metin bayt bayt kontrol edildi: D U+0044,
+u U+0075, b U+0062, l U+006C, e U+0065 — saf ASCII. İstekte geçen bir
+tırnakta Latin `e` yerine Kiril `е` görünümlü bir karakter vardı; alınsaydı
+arama ve ekran okuyucu bozulurdu.
+
+**Değiştirilen dosyalar:**
+
+| Dosya | Durum |
+|---|---|
+| `data/menu.ts` | Sütun başlığının Türkçe karşılığı + üç kod yorumu |
+| `ILERLEME.md` | Özet, durum tablosu, bu rapor |
+
+**Sıradaki adım:** Bekleyen içerik kararları değişmedi: QR adresi, organizasyon
+içeriği, font kararı, eksik fotoğraflar, 4 teyit edilmemiş fiyat, Arapça
+çevirilerin gözden geçirilmesi.
 
 === RAPOR SONU ===
