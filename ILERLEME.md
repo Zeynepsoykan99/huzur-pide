@@ -3,8 +3,8 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 8 tamamlandı — 11 sayfalık kitap, her sayfa 390px'te tek ekrana sığıyor. Bekleyen: QR adresi kararı, organizasyon içeriği, font kararı, eksik fotoğraflar
-**Son güncelleme:** 2026-08-27
+**Güncel aşama:** Aşama 9 tamamlandı — 11 sayfalık kitap, iPhone SE 1. nesil hariç tüm telefonlarda tek ekrana sığıyor. Bekleyen: QR adresi kararı, organizasyon içeriği, font kararı, eksik fotoğraflar
+**Son güncelleme:** 2026-08-28
 
 ### Genel Durum
 
@@ -21,6 +21,7 @@ Numaralandırma rapor başlıklarıyla aynı: aşağıdaki her satırın karşı
 | 6 | Menü kitabı — yatay kaydırma | **Tamamlandı** |
 | 7 | Denetim ve düzeltmeler | **Tamamlandı** |
 | 8 | Sayfa bölme ince ayarı | **Tamamlandı** |
+| 9 | Gerçek telefon yüksekliğine sığdırma | **Tamamlandı** |
 
 ### Aşama 1 Adımları
 
@@ -89,6 +90,16 @@ bölünmüyor. Bu yüzden bölüm 4+3+4+3, eşit değil.
 
 Bölünen kategorilerin eski adresleri (`kapali-pide`, `izgara`, `icecekler`)
 ilk sayfalarına yönlendiriliyor; daha önce paylaşılmış linkler kırılmıyor.
+
+**"Menüye dön" düğmesi kitabın alt şeridinde**, sayfa numarasının yanında —
+her yaprağın içinde değil. Şerit 44px; düğme 44px dokunma hedefi, sayaç 14px.
+Arapça'da düğme sağda, sayaç solda (`justify-between` yazma yönünü izliyor).
+
+**Hedef ekran:** tek ekran kuralı, tarayıcının **görünür alanı** ≥ 547px
+(≥360px genişlikte) ve ≥ 508px (390px'te) olan her telefonda sağlanıyor.
+Cihazın fiziksel yüksekliği değil, adres çubuğu açıkken kalan yükseklik esas
+alınıyor — kitap belgeyi kaydırmadığı için o çubuk hiç toplanmıyor.
+Kapsam dışı: iPhone SE 1. nesil / 5s sınıfı (320×568).
 
 Toplam **62 statik sayfa** (4 dil × 11 menü sayfası + 4 dil × 4 diğer ekran +
 `_not-found`). Örnek: `/ar/menu/izgara-1`
@@ -1576,6 +1587,141 @@ telefonda tamamen gizlemek olurdu; o seçenek reddedilmişti.
 **Karar bekleyen (önceki aşamalardan):** organizasyon içeriği · Arapça
 çevirilerin ana dili konuşan biri tarafından kontrolü · 24 ürünün fotoğrafı ·
 4 teyit edilmemiş fiyat · font kararı · QR adresi (kök mü `/tr` mi)
+
+**Sıradaki adım:** Push onayı bekleniyor.
+
+=== RAPOR SONU ===
+
+---
+
+## Aşama 9 — Gerçek Telefon Yüksekliğine Sığdırma · 2026-08-28
+
+=== RAPOR BAŞLANGICI ===
+
+**Adım:** Aşama 9 — Kitabın her telefonda tek ekrana sığması (ölçüm, seçenek
+sunumu ve B seçeneğinin uygulanması — tamamı)
+
+---
+
+**1 — Ölçüm: yanlış hedefe ölçülüyormuş**
+
+Aşama 8'de "390×844'te 44/44 sığıyor" denmişti. 844, iPhone 12'nin **cihaz**
+yüksekliği; Safari'de adres çubuğu açıkken görünür alan **390×664**. Üstelik bu
+kitapta adres çubuğu hiç toplanmıyor: sayfa `h-dvh`, belge kaymıyor, kaydırma iç
+kutuda oluyor — adres çubuğunu toplayan şey ise belge kaydırmasıdır.
+
+Gerçek görünür alanlarla ölçüldüğünde (dört dil × 11 sayfa, Chrome + Playwright
+cihaz profilleri) listelenen 11 telefonun **10'unda** kitap tek ekrana
+sığmıyordu; yalnızca Pixel 7/8 sınıfı (839px) temizdi. En kötü dil her cihazda
+Rusça, en iyisi Türkçe.
+
+**2 — Seçenekler ölçüldü, B seçildi**
+
+Sunulan seçeneklerden **B** onaylandı: küçültme yok, 11 sayfa korunuyor,
+iPhone SE 1. nesil hedef dışı.
+
+Sayfa sayısını artırmak tek başına çözmüyordu: grupları bütün bırakma kuralı
+nedeniyle **köfte grubu (3 ürün, dört dilin en kötüsünde 364–403px)** bir duvar
+yaratıyor ve kitap 20 sayfaya çıksa bile 360×640'ta 85px taşma kalıyordu.
+
+**3 — Uygulanan değişiklikler**
+
+Hiçbir fotoğraf, ürün adı, açıklama veya kategori başlığı küçültülmedi.
+
+*Yapısal (asıl kazanç):* "Menüye dön" düğmesi her yaprağın içinden alınıp
+kitabın alt şeridine, sayfa sayacının yanına taşındı. Düğme orada üst
+boşluğuyla birlikte **sayfa başına 80px** yiyordu. Alt şerit bundan
+yükselmedi — yüksekliğini zaten 44px'lik dokunma hedefi belirliyor.
+
+*Boşluklar (yalnızca `md` altında, yani telefonda):*
+
+| Yer | Önce | Sonra |
+|---|---|---|
+| Ürün satırı dikey dolgusu | 16px | 10px |
+| Pide tablosu hücre dolgusu | 16px | 10px |
+| Başlık ile liste arası | 24px | 8px |
+| Sayfa alt boşluğu | 32px | 12px |
+| Üst şerit dolgusu | 16 / 8px | 6 / 0px |
+
+`md` (768px) ve üstünde bütün eski değerler geri geliyor.
+
+Sabit alan **322px → 180px** (sabit çerçeve 152→126, sayfa içi sabit 170→54).
+
+**Sayfa sayacının puntosu 14px'te kaldı, bedeli sıfır.** Ölçüldü: şeridin
+yüksekliğini 44px'lik düğme belirliyor, sayacın 20px'lik satırı onun altında
+kalıyor. Şerit dört dilde de tam **44px** — eski sayaç şeridiyle aynı.
+
+**4 — Sığma doğrulaması (gerçek görünür alan yüksekliğiyle)**
+
+15 cihaz profili × 4 dil × 11 sayfa:
+
+| Cihaz | Görünür alan | TR | EN | AR | RU |
+|---|---|---|---|---|---|
+| Galaxy S5 / Note | 360×640 | — | — | — | — |
+| iPhone 13 mini | 375×629 | — | — | — | — |
+| iPhone 11 Pro | 375×635 | — | — | — | — |
+| iPhone SE 3 / 8 | 375×667 | — | — | — | — |
+| iPhone 16e | 390×651 | — | — | — | — |
+| iPhone 15 / 16 | 393×659 | — | — | — | — |
+| iPhone 12–14 | 390×664 | — | — | — | — |
+| iPhone 11 | 414×715 | — | — | — | — |
+| Pixel 9 | 360×732 | — | — | — | — |
+| iPhone 15 Pro Max | 430×739 | — | — | — | — |
+| Galaxy S8 | 360×740 | — | — | — | — |
+| iPhone 17 Pro Max | 440×763 | — | — | — | — |
+| Galaxy S24 | 360×780 | — | — | — | — |
+| Pixel 7 / 8 | 412×839 | — | — | — | — |
+| **iPhone SE 1. nesil** | **320×568** | **3/20** | **9/81** | **4/49** | **6/111** |
+
+*(— = sıfır taşma; hücre = kaç sayfa kayıyor / en büyük taşma px)*
+
+**Hedefteki 14 cihazın tamamında, dört dilde, 11 sayfanın hepsi tek ekrana
+sığıyor: 616/616.** Öncesi: aynı ölçümde 10 cihazda taşma vardı.
+
+Hedef dışı bırakılan iPhone SE 1. nesil'de (320×568) 22 sayfa hâlâ kayıyor;
+en büyüğü Rusça `tatlilar` +111px. Kararı gereği bırakıldı.
+
+Tek ekran kuralının sağlandığı en düşük görünür yükseklik: **547px**
+(≥360px genişlikte), **508px** (390px'te), 647px (320px genişlikte).
+
+**5 — Diğer doğrulamalar**
+
+- `npx tsc --noEmit` · `npm run lint` · `npm run build`: temiz, **62 statik sayfa**
+- 240 sayfa yüklemesi (4 dil × 15 sayfa × 4 genişlik): **0 konsol hatası/uyarısı**,
+  0 yatay taşma, 240/240 doğru `dir` + `lang`
+- Kontrast, gerçek pikselden: "Menüye dön" 5.02 (hover 7.42), sayaç 5.02 —
+  hepsi 4.5 eşiğini geçiyor, Arapça dahil
+- Alt şerit Arapça'da doğru tarafta: `dir=rtl`'de düğme sağda, sayaç solda;
+  üç cihaz × dört dilde çakışma yok
+- Dokunma hedefi: düğme **44×104–128px** (44px asgari sağlanıyor)
+- Gerçek dokunmatik (CDP, iPhone 12): LTR 4→5→6→5 · RTL 4→3→2→3 — yön doğru
+  aynalanıyor, `window.scrollX = 0`
+- Gezinme zinciri dört dilde **24/24**, "Menüye dön"ün yeni yeri dahil
+- Rotalar: 11 slug × 4 dil 200 · 3 eski adres 307 · `izgara-5` ve geçersiz slug 404
+- Kategori listesi sayfa numaraları: 1-3 · 4-7 · 8 · 9 · 10-11 (değişmedi)
+- JavaScript kapalıyken "Menüye dön" bağlantısı çalışıyor (`href="/tr/menu"`)
+- iPhone SE 1'de sayfa içi dikey kaydırma kitabın yatay konumunu bozmuyor
+  (`kitap.scrollLeft` 1280 → 1280, sayfa `scrollTop` 0 → 87, belge kaymıyor)
+
+**Değiştirilen dosyalar:**
+
+| Dosya | Durum |
+|---|---|
+| `app/globals.css` | Satır/hücre dolguları, sayfa alt boşluğu; yeni `.alt-serit` ve `.alt-serit-baglanti`; `.sayfa-numarasi` sadeleşti |
+| `app/[dil]/menu/[sayfa]/page.tsx` | Yapraktan `nav` kaldırıldı, alt şerit eklendi; liste üst boşluğu `mt-2 md:mt-6` |
+| `components/UstBaslik.tsx` | Sıkışık şeridin telefon dolgusu 16/8 → 6/0 |
+| `ILERLEME.md` | Özet, durum tablosu, ekranlar bölümü |
+
+`data/menu.ts` **değişmedi** — bölme, sayfa sayısı, adresler ve yönlendirmeler
+aynı.
+
+**Not:**
+
+Kapalı pide tablosunda uzun İngilizce/Rusça adlar dar ad sütununda çok satıra
+sarmaya devam ediyor ("Kıymalı (Minced Beef)" 390px'te 3 satır). Sayfalar artık
+bol boşlukla sığdığı için bu daha görünür oldu. Aşama 8'de de vardı, sebebi
+aynı: ad sütunu üç fiyat sütunuyla yer paylaşıyor. Kapsam dışı bırakıldı,
+düzeltmesi ayrı bir karar.
 
 **Sıradaki adım:** Push onayı bekleniyor.
 

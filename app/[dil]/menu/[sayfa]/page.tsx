@@ -89,7 +89,7 @@ function TekFiyatliSatir({
 function CokFiyatliTablo({ sayfa, dil }: { sayfa: MenuSayfasi; dil: DilKodu }) {
   const { kategori, urunler } = sayfa;
   return (
-    <table className="pide-tablo mt-6">
+    <table className="pide-tablo mt-2 md:mt-6">
       <caption className="sr-only">
         {metin(kategori.ad, dil)} — {ui("hamurBoyunaGoreFiyatlar", dil)}
       </caption>
@@ -176,7 +176,7 @@ function Yaprak({ sayfa, dil }: { sayfa: MenuSayfasi; dil: DilKodu }) {
         {cokSutunlu ? (
           <CokFiyatliTablo sayfa={sayfa} dil={dil} />
         ) : (
-          <ul className="mt-6">
+          <ul className="mt-2 md:mt-6">
             {sayfa.urunler.map((urun, i) => (
               <TekFiyatliSatir
                 key={urun.id}
@@ -189,18 +189,6 @@ function Yaprak({ sayfa, dil }: { sayfa: MenuSayfasi; dil: DilKodu }) {
           </ul>
         )}
 
-        <nav className="mt-10 flex justify-center">
-          <Link
-            href={`/${dil}/menu`}
-            className="rounded-xl px-4 py-2.5 text-sm font-semibold text-cocoa-700
-                       outline-hidden transition-colors duration-150
-                       hover:bg-cream-200/70 hover:text-cocoa-900
-                       focus-visible:outline-solid focus-visible:outline-2
-                       focus-visible:outline-offset-2 focus-visible:outline-cocoa-900"
-          >
-            {ui("menuyeDon", dil)}
-          </Link>
-        </nav>
       </div>
     </section>
   );
@@ -250,18 +238,33 @@ export default async function MenuKitabiSayfasi({
         }}
       />
 
-      {/* "3 / 7" — bidi karismasin diye sayac her dilde soldan saga. */}
-      <p className="sayfa-numarasi" dir="ltr">
-        <span className="sr-only">{ui("sayfa", dil)} </span>
-        <SayfaSayaci
-          kabId={KAP_ID}
-          sayfalar={sayfaListesi}
-          dil={dil}
-          baslangicNo={acilis.no}
-        />
-        {" / "}
-        {SAYFALAR.length}
-      </p>
+      {/*
+        Alt serit: "Menuye don" ve sayfa numarasi.
+
+        Dugme her yapragin icinde tekrarlanmiyor artik — orada ust bosluguyla
+        birlikte sayfa basina 80px yiyordu ve kitap telefon ekranina sigmiyordu.
+        Burada bir kez duruyor, seridi yukseltmiyor ve her sayfada ayni yerde.
+
+        Seride dir verilmiyor: justify-between yazma yonunu kendisi izliyor,
+        Arapca'da dugme saga geciyor. Yalnizca sayac ltr — "3 / 11" bidi
+        karismasin diye. */}
+      <div className="alt-serit">
+        <Link href={`/${dil}/menu`} className="alt-serit-baglanti">
+          {ui("menuyeDon", dil)}
+        </Link>
+
+        <p className="sayfa-numarasi" dir="ltr">
+          <span className="sr-only">{ui("sayfa", dil)} </span>
+          <SayfaSayaci
+            kabId={KAP_ID}
+            sayfalar={sayfaListesi}
+            dil={dil}
+            baslangicNo={acilis.no}
+          />
+          {" / "}
+          {SAYFALAR.length}
+        </p>
+      </div>
     </div>
   );
 }

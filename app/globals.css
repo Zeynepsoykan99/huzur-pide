@@ -231,8 +231,11 @@
            md:aspect-video md:w-52;
   }
 
+  /* Telefonda dikey dolgu 16 -> 10px. Kitap ekran yuksekligine sigmak
+     zorunda ve satir sayisi cok: her satirdan kazanilan 12px sayfa basina
+     4 satirda 48px ediyor. md ustunde yer bol, eski deger geri geliyor. */
   .urun-satir {
-    @apply flex items-center gap-4 py-4 md:gap-6 md:py-5;
+    @apply flex items-center gap-4 py-2.5 md:gap-6 md:py-5;
   }
 
   .urun-govde {
@@ -277,8 +280,9 @@
   /* whitespace-nowrap: dar ekranda sutun sikistiginda "400" ile "TL"nin
      alt alta dusmesini engeller. Ad sutunu zaten esnek, o sarabilir. */
   .pide-hucre {
-    @apply py-4 ps-2 text-end align-middle text-base font-semibold
-           whitespace-nowrap tabular-nums text-cocoa-900 sm:ps-3 sm:text-lg;
+    @apply py-2.5 ps-2 text-end align-middle text-base font-semibold
+           whitespace-nowrap tabular-nums text-cocoa-900
+           sm:ps-3 sm:text-lg md:py-4;
   }
 
   .pide-hucre-bos {
@@ -286,11 +290,11 @@
   }
 
   .pide-ad-hucre {
-    @apply py-4 align-middle;
+    @apply py-2.5 align-middle md:py-4;
   }
 
   .pide-gorsel-hucre {
-    @apply py-4 pe-4 align-middle;
+    @apply py-2.5 pe-4 align-middle md:py-4;
   }
 
   /* Cok fiyatli tabloda gorsel telefonda daraliyor (80 -> 56px). Tek fiyatli
@@ -425,14 +429,36 @@
      ustteki .kitap'a gecirmiyordu. Gercek dokunmatik testte yakalandi. */
   .kitap-icerik {
     @apply mx-auto w-full max-w-md min-h-0 flex-1 overflow-y-auto
-           overscroll-y-contain overscroll-x-auto px-5 pb-8
-           sm:max-w-lg sm:px-6 lg:max-w-2xl;
+           overscroll-y-contain overscroll-x-auto px-5 pb-3
+           sm:max-w-lg sm:px-6 md:pb-8 lg:max-w-2xl;
   }
 
-  /* Sayfa numarasi — "3 / 7" */
+  /* Kitabin alt seridi: "Menuye don" ve sayfa numarasi ayni satirda.
+     Dugme eskiden her yapragin icinde duruyordu ve ust bosluguyla birlikte
+     SAYFA BASINA 80px yiyordu. Buraya tasinmasi seridi yukseltmiyor: seridin
+     yuksekligini zaten 44px'lik dokunma hedefi belirliyor, sayacin 20px'lik
+     satiri onun altinda kaliyor. Kazanilan 80px urun satirlarina kaldi.
+
+     Yon bagimsiz: justify-between RTL'de kendiliginden aynaliyor, dugme
+     Arapca'da sagda duruyor. */
+  .alt-serit {
+    @apply flex shrink-0 items-center justify-between gap-2 px-3 sm:px-4;
+  }
+
+  /* min-h-11 (44px) dokunma hedefi; punto kucultulmedi. */
+  .alt-serit-baglanti {
+    @apply flex min-h-11 items-center rounded-xl px-3 text-sm font-semibold
+           whitespace-nowrap text-cocoa-700
+           outline-hidden transition-colors duration-150
+           hover:bg-cream-200/70 hover:text-cocoa-900
+           focus-visible:outline-solid focus-visible:outline-2
+           focus-visible:outline-offset-2 focus-visible:outline-cocoa-900;
+  }
+
+  /* Sayfa numarasi — "3 / 11" */
   .sayfa-numarasi {
-    @apply shrink-0 py-3 text-center text-sm font-semibold tabular-nums
-           text-cocoa-700 sm:text-base;
+    @apply shrink-0 px-1 text-sm font-semibold tabular-nums
+           whitespace-nowrap text-cocoa-700 sm:text-base;
   }
 
   /* Urun sayfasindaki kategori basligi paprika-600 kullaniyor:

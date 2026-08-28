@@ -29,8 +29,12 @@ export function UstBaslik({
   sikisik?: boolean;
 }) {
   if (sikisik) {
+    // Telefonda dikey dolgu kisildi (16/8 -> 6/0): kitap ekran yuksekligine
+    // sigmak zorunda ve seritten kazanilan her piksel urun satirlarina
+    // gidiyor. md ustunde eski deger.
     return (
-      <header className="flex shrink-0 flex-col items-center px-4 pt-4 pb-2 text-center">
+      <header className="flex shrink-0 flex-col items-center px-4 pt-1.5 pb-0
+                         text-center md:pt-4 md:pb-2">
         <Link
           href={`/${dil}/secim`}
           aria-label={ui("anaEkranaDon", dil)}
