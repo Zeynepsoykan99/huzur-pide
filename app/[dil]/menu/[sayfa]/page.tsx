@@ -95,10 +95,11 @@ function CokFiyatliTablo({ sayfa, dil }: { sayfa: MenuSayfasi; dil: DilKodu }) {
         {metin(kategori.ad, dil)} — {ui("hamurBoyunaGoreFiyatlar", dil)}
       </caption>
       <colgroup>
-        {/* Telefonda 56px, md ustunde 208px: cok fiyatli tabloda ad sutunu
-            uc fiyat sutunuyla yeri paylastigi icin 390px'te 110px'e kadar
-            dusuyordu ve Arapca/Ingilizce/Rusca adlar 3-5 satira sariyordu. */}
-        <col className="w-14 md:w-52" />
+        {/* Gorsel sutunu telefonda tamamen kalkiyor: hucreleri gizlemek
+            yetmiyor, sutunun kendisi de kalkmali yoksa genisligini ayirmaya
+            devam ediyor. md ustunde 208px. Gerekcesi globals.css'te
+            .pide-gorsel-hucre yaninda. */}
+        <col className="hidden w-14 md:table-column md:w-52" />
         <col />
         {kategori.sutunlar.map((s) => (
           <col key={s.kod} />
@@ -106,7 +107,7 @@ function CokFiyatliTablo({ sayfa, dil }: { sayfa: MenuSayfasi; dil: DilKodu }) {
       </colgroup>
       <thead>
         <tr>
-          <th scope="col">
+          <th scope="col" className="hidden md:table-cell">
             <span className="sr-only">{ui("gorsel", dil)}</span>
           </th>
           <th scope="col" className="pide-sutun-basligi text-start">
@@ -131,7 +132,14 @@ function CokFiyatliTablo({ sayfa, dil }: { sayfa: MenuSayfasi; dil: DilKodu }) {
                 <span className="nokta" aria-hidden="true" />
               </div>
               {icerikMetni(urun, dil) ? (
-                <p className="urun-icerik">{icerikMetni(urun, dil)}</p>
+                /* Telefonda tek satir: pide tablosunda ad sutunu uc fiyat
+                   sutunuyla yer paylastigi icin aciklama uc-dort satira
+                   sariyor ve sayfayi tasiriyordu. Ilk satir kaliyor —
+                   Turkce bilmeyen musteri icindekiler fikrini yine aliyor.
+                   md ustunde tam metin. */
+                <p className="urun-icerik line-clamp-1 md:line-clamp-none">
+                  {icerikMetni(urun, dil)}
+                </p>
               ) : null}
             </th>
             {kategori.sutunlar.map((sutun) => {

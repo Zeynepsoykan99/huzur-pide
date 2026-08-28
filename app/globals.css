@@ -293,8 +293,13 @@
     @apply py-2.5 align-middle md:py-4;
   }
 
+  /* Gorsel hucresi telefonda gizli.
+     Kapali pide 2 sayfaya indirilince (3+3) Ingilizce 2. sayfa 800px, Rusca
+     707px yukseklik istiyordu; hedefteki en kisa cihaz 629px. Gorsel sutunu
+     kalkinca ad sutunu genisliyor, uzun adlar daha az satira sariyor ve
+     sayfalar hedefteki butun telefonlara sigiyor. md ustunde geri geliyor. */
   .pide-gorsel-hucre {
-    @apply py-2.5 pe-4 align-middle md:py-4;
+    @apply hidden py-2.5 pe-4 align-middle md:table-cell md:py-4;
   }
 
   /* Cok fiyatli tabloda gorsel telefonda daraliyor (80 -> 56px). Tek fiyatli
@@ -437,6 +442,16 @@
     @apply mx-auto w-full max-w-md min-h-0 flex-1 overflow-y-auto
            overscroll-y-contain overscroll-x-auto px-5 pb-3
            sm:max-w-lg sm:px-6 md:pb-8 lg:max-w-2xl;
+    /* Dikey kaydirma cubugu gizli — kaydirma ISLEVI duruyor, yalnizca cubuk
+       cizilmiyor. Ikisi birlikte her tarayiciyi kapsiyor: scrollbar-width
+       standart ozellik (Firefox, yeni Chrome/Edge, Safari 18.2+),
+       ::-webkit-scrollbar eski Safari ve Chrome/Edge icin.
+       Ayni yontem .kitap'ta yatay cubuk icin zaten kullaniliyor. */
+    scrollbar-width: none;
+  }
+
+  .kitap-icerik::-webkit-scrollbar {
+    display: none;
   }
 
   /* --- Sayfa cevirme oklari ---

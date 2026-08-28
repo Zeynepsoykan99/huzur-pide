@@ -3,7 +3,7 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 10 tamamlandı (dalda, önizleme onayı bekliyor) — kategori bağlantısı hatası giderildi, sayfa çevirme okları eklendi. Bekleyen: QR adresi kararı, organizasyon içeriği, font kararı, eksik fotoğraflar
+**Güncel aşama:** Aşama 11 tamamlandı (dalda, önizleme onayı bekliyor) — 10 sayfalık kitap, kaydırma çubuğu gizli, hedefteki tüm telefonlarda tek ekrana sığıyor. Bekleyen: QR adresi kararı, organizasyon içeriği, font kararı, eksik fotoğraflar
 **Son güncelleme:** 2026-08-28
 
 ### Genel Durum
@@ -23,6 +23,7 @@ Numaralandırma rapor başlıklarıyla aynı: aşağıdaki her satırın karşı
 | 8 | Sayfa bölme ince ayarı | **Tamamlandı** |
 | 9 | Gerçek telefon yüksekliğine sığdırma | **Tamamlandı** |
 | 10 | Kategori bağlantısı hatası + sayfa çevirme okları | **Tamamlandı** |
+| 11 | Kaydırma çubuğu + Kapalı Pide 2 sayfa | **Tamamlandı** |
 
 ### Aşama 1 Adımları
 
@@ -65,25 +66,24 @@ Dil URL'nin ilk parçası: `tr` · `en` · `ar` · `ru`. `/` adresi `/tr`'ye yö
 | `/[dil]/secim` | Ana seçim — Menü / Organizasyon |
 | `/[dil]/organizasyon` | Organizasyon (içerik bekliyor) |
 | `/[dil]/menu` | Ekran A — kategori listesi |
-| `/[dil]/menu/[sayfa]` | Ekran B — menü kitabının bir yaprağı (aşağıdaki 9 slug) |
+| `/[dil]/menu/[sayfa]` | Ekran B — menü kitabının bir yaprağı (aşağıdaki 10 slug) |
 
-**Menü kitabı — 11 sayfa.** Her rota kitabın tamamını basıyor; adresteki slug
+**Menü kitabı — 10 sayfa.** Her rota kitabın tamamını basıyor; adresteki slug
 kitabın hangi sayfasında açılacağını belirliyor. Parmakla yana kaydırınca
 sayfalar arasında geziliyor, adres de kaydıkça güncelleniyor.
 
 | Sayfa | Slug | Kategori | Ürün | İçerik |
 |---|---|---|---|---|
-| 1 | `kapali-pide-1` | Kapalı Pide (1/3) | 2 | Kıymalı, Kaşarlı |
-| 2 | `kapali-pide-2` | Kapalı Pide (2/3) | 2 | Sucuklu, Kıyma-kaşar |
-| 3 | `kapali-pide-3` | Kapalı Pide (3/3) | 2 | Karışık, Lahmacun |
-| 4 | `izgara-1` | Izgara (1/4) | 4 | Et + Kuzu |
-| 5 | `izgara-2` | Izgara (2/4) | 3 | Köfte |
-| 6 | `izgara-3` | Izgara (3/4) | 4 | Tavuk + Karışık |
-| 7 | `izgara-4` | Izgara (4/4) | 3 | Saç kavurma + Şiş |
-| 8 | `salatalar` | Salatalar | 1 | Çoban salata |
-| 9 | `tatlilar` | Tatlı Çeşitleri | 3 | Künefe, Sütlaç, Kabak |
-| 10 | `icecekler-1` | İçecekler (1/2) | 4 | Kola, Fanta, Soda, Ayran |
-| 11 | `icecekler-2` | İçecekler (2/2) | 3 | Komposto, Meyveli soda, Su |
+| 1 | `kapali-pide-1` | Kapalı Pide (1/2) | 3 | Kıymalı, Kaşarlı, Sucuklu |
+| 2 | `kapali-pide-2` | Kapalı Pide (2/2) | 3 | Kıyma-kaşar, Karışık, Lahmacun |
+| 3 | `izgara-1` | Izgara (1/4) | 4 | Et + Kuzu |
+| 4 | `izgara-2` | Izgara (2/4) | 3 | Köfte |
+| 5 | `izgara-3` | Izgara (3/4) | 4 | Tavuk + Karışık |
+| 6 | `izgara-4` | Izgara (4/4) | 3 | Saç kavurma + Şiş |
+| 7 | `salatalar` | Salatalar | 1 | Çoban salata |
+| 8 | `tatlilar` | Tatlı Çeşitleri | 3 | Künefe, Sütlaç, Kabak |
+| 9 | `icecekler-1` | İçecekler (1/2) | 4 | Kola, Fanta, Soda, Ayran |
+| 10 | `icecekler-2` | İçecekler (2/2) | 3 | Komposto, Meyveli soda, Su |
 
 Izgara bölümlerinin sınırları ürün gruplarına göre seçildi: et, kuzu, köfte,
 tavuk, karışık, saç kavurma ve şiş gruplarından hiçbiri sayfa ortasında
@@ -91,6 +91,18 @@ bölünmüyor. Bu yüzden bölüm 4+3+4+3, eşit değil.
 
 Bölünen kategorilerin eski adresleri (`kapali-pide`, `izgara`, `icecekler`)
 ilk sayfalarına yönlendiriliyor; daha önce paylaşılmış linkler kırılmıyor.
+`kapali-pide-3` artık yok — kategori 3 sayfadan 2 sayfaya indi — ve
+`kapali-pide-2`'ye yönleniyor: o sayfadaki ürünler şimdi orada.
+
+**Kapalı pide tablosu telefonda farklı:** görsel sütunu kalkıyor ve
+açıklamalar tek satıra kırpılıyor. Sebebi sığma: kategori 3+3 bölündüğünde
+İngilizce 2. sayfa 800px, Rusça 707px yükseklik istiyordu; hedefteki en kısa
+cihaz 629px. Görsel sütunu kalkınca ad sütunu genişliyor. md ve üstünde ikisi
+de geri geliyor.
+
+**Kaydırma çubukları gizli.** Hem kitabın yatay kabında (`.kitap`) hem sayfa
+içeriğinde (`.kitap-icerik`): `scrollbar-width: none` + `::-webkit-scrollbar`.
+Kaydırma işlevi duruyor, yalnızca çubuk çizilmiyor.
 
 **"Menüye dön" düğmesi kitabın alt şeridinde**, sayfa numarasının yanında —
 her yaprağın içinde değil. Şerit 44px; düğme 44px dokunma hedefi, sayaç 14px.
@@ -115,7 +127,7 @@ Cihazın fiziksel yüksekliği değil, adres çubuğu açıkken kalan yükseklik
 alınıyor — kitap belgeyi kaydırmadığı için o çubuk hiç toplanmıyor.
 Kapsam dışı: iPhone SE 1. nesil / 5s sınıfı (320×568).
 
-Toplam **62 statik sayfa** (4 dil × 11 menü sayfası + 4 dil × 4 diğer ekran +
+Toplam **58 statik sayfa** (4 dil × 10 menü sayfası + 4 dil × 4 diğer ekran +
 `_not-found`). Örnek: `/ar/menu/izgara-1`
 
 ### Aşama 1 Çıktısı
@@ -1887,5 +1899,115 @@ Yeni arayüz metinleri `data/arayuz.ts`'e eklendi: `sonrakiSayfa`, `oncekiSayfa`
 
 **Sıradaki adım:** Dalın push edilmesi ve Vercel önizleme adresi için onay
 bekleniyor.
+
+=== RAPOR SONU ===
+
+---
+
+## Aşama 11 — Kaydırma Çubuğu ve Kapalı Pide'nin 2 Sayfaya İnmesi · 2026-08-28
+
+=== RAPOR BAŞLANGICI ===
+
+**Adım:** Aşama 11 — Dikey kaydırma çubuğunun gizlenmesi ve Kapalı Pide
+bölmesinin 3+3 yapılması (tamamı)
+
+---
+
+**1 — Dikey kaydırma çubuğu gizlendi**
+
+`.kitap-icerik`'e `scrollbar-width: none` ve `::-webkit-scrollbar { display: none }`
+eklendi — kitabın yatay kabında (`.kitap`) Aşama 6'dan beri kullanılan yöntemin
+aynısı. İkisi birlikte bütün tarayıcıları kapsıyor: `scrollbar-width` standart
+özellik (Firefox 64+, Chrome/Edge 121+, Safari 18.2+), `::-webkit-scrollbar`
+eski Safari ve Chrome/Edge için.
+
+Kaydırma **işlevi** duruyor; bu özellikler yalnızca çubuğun çizilmesini
+etkiliyor, `overflow` değerine dokunmuyor. Sayfaların taştığı tek profilde
+(iPhone SE, kapsam dışı) gerçek parmakla dikey kaydırma denendi:
+`scrollTop` 0 → 117 (EN), 0 → 43 (RU); kitabın yatay konumu değişmedi
+(320 → 320, Arapça'da −320 → −320). Chrome ve WebKit'te aynı sonuç.
+
+Masaüstünde klasik çubuğun ayırdığı yer de sıfırlandı (`offsetWidth −
+clientWidth = 0`); o pikseller içeriğe döndü, yatay taşma ölçümü değişmedi.
+Ok düğmelerine dokunulmadı.
+
+**2 — Kapalı Pide 2+2+2 → 3+3**
+
+`data/menu.ts`'te yalnızca `sayfaBolumleri` satırı ve üstündeki gerekçe yorumu
+değişti; ürün, fiyat, çeviri içeriğine dokunulmadı.
+
+| | Önce | Sonra |
+|---|---|---|
+| Kitap | 11 sayfa | **10 sayfa** |
+| Statik sayfa | 62 | **58** |
+| Kategori listesi | 1-3 · 4-7 · 8 · 9 · 10-11 | **1-2 · 3-6 · 7 · 8 · 9-10** |
+| Son sayfa sayacı | 11 / 11 | **10 / 10** |
+
+`next.config.ts`'e yönlendirme eklendi: **`/:dil/menu/kapali-pide-3` →
+`kapali-pide-2`**. Hedef ilk sayfa değil ikinci sayfa, çünkü eski 3. sayfadaki
+Karışık ve Lahmacun yeni bölmede orada duruyor.
+
+**3 — Sığdırma (E seçeneği)**
+
+3+3 bölmesi tek başına hedefteki 14 cihazda **21 kombinasyonda taşıyordu**
+(EN `kapali-pide-2` 11 cihazda +20…+171px, RU 7 cihazda +40…+78px, AR 1
+cihazda +61px, EN `kapali-pide-1` 2 cihazda +3/+9px). Sebep, Lahmacun'un uzun
+İngilizce adının dar ad sütununda altı satıra sarması.
+
+Beş seçenek ölçülüp sunuldu, **E** onaylandı ve uygulandı — yalnızca `md`
+altında (telefon), tablet ve masaüstünde her şey eskisi gibi:
+
+- Pide tablosunda **görsel sütunu telefonda gizli**. Hücreleri gizlemek
+  yetmiyor, `<col>`'un kendisi de kalkmalı — yoksa genişliğini ayırmaya devam
+  ediyor. Kalkınca ad sütunu genişliyor, uzun adlar daha az satıra sarıyor.
+  (6 pide ürününden yalnızca 2'sinin fotoğrafı var.)
+- Pide tablosundaki **açıklamalar telefonda tek satır** (`line-clamp-1`).
+  İlk satır kalıyor; Türkçe bilmeyen müşteri içindekiler fikrini yine alıyor.
+
+Sonuç: hedefteki 14 cihazın tamamında, dört dilde, 10 sayfanın hepsi tek
+ekrana sığıyor — **0 taşma**.
+
+Kapsam dışı iPhone SE 1. nesil'de (320×568) durum iyileşti ama taşma sürüyor:
+TR 3 sayfa/+20px · EN 8/+117 · AR 3/+49 · RU 7/+111. (E öncesi: EN 9/+232,
+AR 5/+133, RU 8/+139.)
+
+**4 — Doğrulama**
+
+*Her testte adres VE ekranda görünen içerik birlikte kontrol edildi.*
+
+| Test | Sonuç |
+|---|---|
+| Kategori listesinden gerçek tıklama (4 dil × 5 kategori) — adres + kategori başlığı + ilk ürün adı | 20/20 |
+| Doğrudan yükleme (4 dil × 10 sayfa) | 40/40 |
+| Ok ile ileri 1→10 ve geri 10→1, her adımda içerik (4 dil) | 72/72 |
+| Uçlarda gizlilik, kenar, chevron yönü, dokunma hedefi, dikey merkez, boyut | 44/44 |
+| **Chrome toplam** | **176/176** |
+| **WebKit 26.5 toplam** | **176/176** |
+
+- Sığma: 15 cihaz profili × 4 dil × 10 sayfa — hedefteki 14 cihazda **0 taşma**
+- Parmakla kaydırma: TR 3→4→3, AR 3→2→3; listeden tıklayarak girdikten sonra
+  TR 8→9→8, AR 8→7→8; belge yatayda hiç kaymıyor
+- Ok düğmesinin metni örtmesi: **0 px²**, dört dilde
+- 224 sayfa yüklemesi (4 dil × 14 sayfa × 4 genişlik): **0 konsol
+  hatası/uyarısı**, 0 yatay taşma, 224/224 doğru `dir` + `lang`
+- Rotalar: 40 sayfa 200 · `kapali-pide-3` 307 → `kapali-pide-2` ·
+  `kapali-pide`/`izgara`/`icecekler` 307 · `kapali-pide-4`, `izgara-5` ve
+  geçersiz slug 404
+- Kategori listesi numaraları ve sayaç dört dilde tutarlı
+- `tsc`, `lint`, `build` temiz — **58 statik sayfa**
+
+**Değiştirilen dosyalar:**
+
+| Dosya | Durum |
+|---|---|
+| `app/globals.css` | Kaydırma çubuğu gizlendi; `.pide-gorsel-hucre` telefonda gizli |
+| `data/menu.ts` | Yalnızca `sayfaBolumleri`: `[2,2,2]` → `[3,3]` |
+| `next.config.ts` | `kapali-pide-3` → `kapali-pide-2` yönlendirmesi |
+| `app/[dil]/menu/[sayfa]/page.tsx` | Görsel sütunu (`<col>`, `<th>`) telefonda gizli; tablo açıklamaları `line-clamp-1 md:line-clamp-none` |
+| `ILERLEME.md` | Özet, durum tablosu, ekranlar bölümü |
+
+Palet, tipografi, boşluklar ve diğer kategorilerin bölmesi değişmedi.
+
+**Sıradaki adım:** Push onayı bekleniyor.
 
 === RAPOR SONU ===

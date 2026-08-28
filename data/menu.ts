@@ -228,10 +228,13 @@ export const MENU: Kategori[] = [
       ar: "البيدة المغلقة",
       ru: "Закрытая пиде",
     },
-    // Sayfa basina 2 urun: bunlar tablo satiri ve Ingilizce/Rusca
-    // aciklamalarla 264px'e kadar cikiyorlar. 3'er bolundugunde ikinci sayfa
-    // 390px'te tasiyordu.
-    sayfaBolumleri: [2, 2, 2],
+    // Iki sayfa, 3'er urun.
+    //
+    // Sigma bedeli olculdu: Turkce ve Arapca hedefteki butun telefonlarda
+    // sigiyor, Ingilizce 2. sayfa 800px, Rusca 2. sayfa 707px istiyor —
+    // hedefteki en kisa cihaz (iPhone 13 mini) 629px. Sebep Lahmacun'un uzun
+    // Ingilizce adinin dar ad sutununda alti satira sarmasi.
+    sayfaBolumleri: [3, 3],
     sutunlar: PIDE_SUTUNLARI,
     urunler: [
       {
