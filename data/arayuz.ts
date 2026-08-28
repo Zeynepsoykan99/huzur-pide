@@ -62,6 +62,20 @@ export const ARAYUZ = {
 
   /* --- Yalnizca ekran okuyucular icin --- */
   sayfa: { tr: "Sayfa", en: "Page", ar: "صفحة", ru: "Страница" },
+  // Ok dugmelerinin ekran okuyucu etiketleri. Dugmelerin kendisi yalnizca bir
+  // chevron gosteriyor; metin gorunmuyor, bu yuzden etiket sart.
+  sonrakiSayfa: {
+    tr: "Sonraki sayfa",
+    en: "Next page",
+    ar: "الصفحة التالية",
+    ru: "Следующая страница",
+  },
+  oncekiSayfa: {
+    tr: "Önceki sayfa",
+    en: "Previous page",
+    ar: "الصفحة السابقة",
+    ru: "Предыдущая страница",
+  },
   gorsel: { tr: "Görsel", en: "Image", ar: "صورة", ru: "Изображение" },
   urun: { tr: "Ürün", en: "Item", ar: "الصنف", ru: "Блюдо" },
   menuKategorileri: {

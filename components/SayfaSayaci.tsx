@@ -1,6 +1,13 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { sayfayaKaydir } from "@/components/kitapKaydirma";
+
+/**
+ * Sunucuda `useLayoutEffect` uyarı veriyor; orada zaten çalışmasına gerek yok.
+ */
+const useIzomorfikLayoutEffect =
+  typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
 /**
  * "3 / 7" sayacı ve yatay kaydırmanın ilerici zenginleştirme katmanı.
@@ -17,15 +24,17 @@ import { useEffect, useRef, useState } from "react";
  * JavaScript yüklenmezse kaydırma yine çalışır ve menünün tamamı gezilebilir;
  * yalnızca adres sabit kalır ve sayaç açılış sayfasında durur.
  *
- * İlk konumlandırma burada YAPILMIYOR — o, sayfaya gömülü senkron bir script
- * ile ilk boyamadan önce hallediliyor; yoksa paylaşılan bir link açılırken
- * bir kare boyunca 1. sayfa görünürdü.
+ * Tam sayfa yüklemede ilk konumlandırmayı sayfaya gömülü senkron script
+ * yapıyor (ilk boyamadan ÖNCE, yoksa paylaşılan bir link açılırken bir kare
+ * boyunca 1. sayfa görünürdü). Burada ise İSTEMCİ TARAFI gezinme için aynı
+ * konumlandırma tekrarlanıyor — aşağıdaki nota bakınız.
  */
 export function SayfaSayaci({
   kabId,
   sayfalar,
   dil,
   baslangicNo,
+  baslangicSlug,
 }: {
   kabId: string;
   /** Sayfa sırasına göre slug/no çiftleri. */
@@ -33,9 +42,40 @@ export function SayfaSayaci({
   dil: string;
   /** Sunucunun bildiği açılış sayfası — hydration bununla eşleşiyor. */
   baslangicNo: number;
+  /** Açılış sayfasının slug'ı; adres hafızasını kurmak için. */
+  baslangicSlug: string;
 }) {
   const [aktifNo, setAktifNo] = useState(baslangicNo);
+  const [oncekiBaslangic, setOncekiBaslangic] = useState(baslangicNo);
   const sonYazilanRef = useRef<string | null>(null);
+
+  // İstemci tarafı gezinmede bileşen yeniden kullanılıyor, mount olmuyor:
+  // rota parametresi değişince sayaç açılış sayfasına dönmeli. React'in
+  // "render sırasında state düzeltme" kalıbı — effect'te setState çağırmaktan
+  // ucuz, ekstra render turu doğurmuyor.
+  if (oncekiBaslangic !== baslangicNo) {
+    setOncekiBaslangic(baslangicNo);
+    setAktifNo(baslangicNo);
+  }
+
+  /*
+    Kitabı açılış sayfasına konumlandır.
+
+    Sayfanın sonundaki satır içi <script> bunu tam sayfa yüklemede yapıyor.
+    Ama kategori listesinden <Link> ile gelindiğinde belge yeniden
+    yüklenmiyor: React ağacı güncelliyor ve `dangerouslySetInnerHTML` ile
+    basılan script innerHTML üzerinden DOM'a girdiği için TARAYICI ONU
+    ÇALIŞTIRMIYOR. Sonuç: `data-acilis` doğru yazılıyordu, kimse okumuyordu ve
+    hangi kategoriye basılırsa basılsın kitap 1. sayfada kalıyordu.
+
+    Bu etki o boşluğu kapatıyor; boyamadan önce çalışıyor.
+  */
+  useIzomorfikLayoutEffect(() => {
+    const kap = document.getElementById(kabId);
+    if (kap) sayfayaKaydir(kap, baslangicNo);
+    // Gözlemci açılış sayfasını görüp adresi gereksiz yere yeniden yazmasın.
+    sonYazilanRef.current = `/${dil}/menu/${baslangicSlug}`;
+  }, [kabId, baslangicNo, dil, baslangicSlug]);
 
   useEffect(() => {
     const kap = document.getElementById(kabId);

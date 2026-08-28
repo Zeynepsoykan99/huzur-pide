@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { SayfaOklari } from "@/components/SayfaOklari";
 import { SayfaSayaci } from "@/components/SayfaSayaci";
 import { UrunGorseli } from "@/components/UrunGorseli";
 import { UstBaslik } from "@/components/UstBaslik";
@@ -216,25 +217,39 @@ export default async function MenuKitabiSayfasi({
         belgede geliyor ve müşteri kaydırarak menünün her yerine ulaşabiliyor —
         kategori değiştirmek için menüye dönmesi gerekmiyor.
       */}
-      <div id={KAP_ID} className="kitap" data-acilis={acilis.no}>
-        {SAYFALAR.map((s) => (
-          <Yaprak key={s.no} sayfa={s} dil={dil} />
-        ))}
+      <div className="kitap-alani">
+        <div id={KAP_ID} className="kitap" data-acilis={acilis.no}>
+          {SAYFALAR.map((s) => (
+            <Yaprak key={s.no} sayfa={s} dil={dil} />
+          ))}
+        </div>
+
+        {/* Kenarlardaki sayfa cevirme oklari. Kitabin kardesi, cocugu degil:
+            kaydirma kabinin icinde olsalardi sayfalarla birlikte kayarlardi. */}
+        <SayfaOklari
+          kabId={KAP_ID}
+          sayfalar={sayfaListesi}
+          dil={dil}
+          baslangicNo={acilis.no}
+        />
       </div>
 
       {/*
-        İlk konumlandırma. React'in effect'i ilk boyamadan SONRA çalıştığı için
-        orada yapılsaydı paylaşılan bir link açılırken bir kare boyunca 1. sayfa
-        görünürdü. Bu script HTML ayrıştırılırken, kap DOM'a girdikten hemen
-        sonra çalışıyor; ekrana hiç yanlış sayfa düşmüyor.
+        TAM SAYFA YÜKLEMEDE ilk konumlandırma. HTML ayrıştırılırken, kap DOM'a
+        girdikten hemen sonra çalışıyor; ekrana hiç yanlış sayfa düşmüyor.
 
-        scrollIntoView kullanılıyor çünkü yazma yönünü kendisi hesaba katıyor:
-        Arapça'da (dir="rtl") scrollLeft negatif değer alıyor, elle hesap
-        yapmak tarayıcıdan tarayıcıya değişiyordu.
+        İSTEMCİ TARAFI gezinmede bu script çalışmaz — innerHTML ile DOM'a giren
+        bir script'i tarayıcı çalıştırmaz. O yolu SayfaSayaci içindeki layout
+        effect kapatıyor; ikisi aynı fark hesabını kullanıyor.
+
+        Fark yöntemi yazma yönünden bağımsız: hedef ile kabın kutuları
+        arasındaki mesafe RTL'de kendiliğinden negatif çıkıyor. (Eskiden
+        scrollIntoView kullanılıyordu; `behavior:"instant"` eski tarayıcılarda
+        geçersiz enum sayılıp TypeError atabildiği için bırakıldı.)
       */}
       <script
         dangerouslySetInnerHTML={{
-          __html: `(function(){var k=document.getElementById(${JSON.stringify(KAP_ID)});if(!k)return;var n=k.getAttribute("data-acilis");var h=document.getElementById("s"+n);if(h&&h.scrollIntoView)h.scrollIntoView({block:"nearest",inline:"start",behavior:"instant"});})();`,
+          __html: `(function(){var k=document.getElementById(${JSON.stringify(KAP_ID)});if(!k)return;var h=document.getElementById("s"+k.getAttribute("data-acilis"));if(!h)return;k.scrollLeft+=h.getBoundingClientRect().left-k.getBoundingClientRect().left;})();`,
         }}
       />
 
@@ -260,6 +275,7 @@ export default async function MenuKitabiSayfasi({
             sayfalar={sayfaListesi}
             dil={dil}
             baslangicNo={acilis.no}
+            baslangicSlug={acilis.slug}
           />
           {" / "}
           {SAYFALAR.length}
