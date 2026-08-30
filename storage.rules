@@ -1,0 +1,29 @@
+rules_version = '2';
+
+// ===========================================================================
+// Cloud Storage güvenlik kuralları
+//
+// Firestore'daki mantığın aynısı: yükleme yalnızca Server Action içinden,
+// Admin SDK ile yapılıyor. Tarayıcı hiçbir şey yazamıyor.
+//
+// Okuma serbest: ürün fotoğrafları zaten müşteri menüsünde görünüyor.
+// Pratikte müşteriye Vercel'in görsel önbelleğinden iniyorlar, Storage'a
+// doğrudan çok az istek geliyor.
+//
+// Konsola yükleme: Firebase Console > Storage > Rules > yapıştır ve Publish.
+// ===========================================================================
+
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    match /urun-gorselleri/{dosya=**} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // Başka hiçbir yol açık değil.
+    match /{yol=**} {
+      allow read, write: if false;
+    }
+  }
+}
