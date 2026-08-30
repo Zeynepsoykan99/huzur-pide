@@ -3,7 +3,7 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 14 tamamlandı (dalda, push onayı bekliyor) — kitap 5 sayfa, her kategori tek sayfada; sığmayan sayfa dikey kayıyor, alt şeritte aşağı ok ipucu. Aşama 10-13 canlıda. 10 sayfalık kitap, kaydırma çubuğu gizli, oklar dört dilde çalışıyor, Kapalı Pide 2 sayfa. Bekleyen: QR adresi kararı, organizasyon içeriği, font kararı, eksik fotoğraflar
+**Güncel aşama:** Aşama 14 **canlıda** (`main`, `9e4abc5`) — kitap 5 sayfa, her kategori tek sayfada; sığmayan sayfa dikey kayıyor, alt şeritte aşağı ok ipucu. Bekleyen: QR adresi kararı, organizasyon içeriği, font kararı, eksik fotoğraflar 10 sayfalık kitap, kaydırma çubuğu gizli, oklar dört dilde çalışıyor, Kapalı Pide 2 sayfa. Bekleyen: QR adresi kararı, organizasyon içeriği, font kararı, eksik fotoğraflar
 **Son güncelleme:** 2026-08-28
 
 ### Genel Durum
@@ -2396,6 +2396,28 @@ kare sonra (~16 ms) haber veriyor.
 
 Palet, tipografi ve boşluklar değişmedi.
 
-**Sıradaki adım:** Push onayı bekleniyor.
+**Canlı doğrulama (2026-08-30, `9e4abc5`).** Push sonrası Vercel dağıtımı
+otomatik tetiklendi, yeni sürüm ~45 saniyede canlıya indi. Ölçümler canlı
+adres üzerinde tekrarlandı:
+
+| Test | Sonuç |
+|---|---|
+| 4 dil × 5 sayfa | 20/20 → 200 |
+| Eski numaralı adresler (9 slug × 4 dil) | **36/36** → kendi kategorisine 307 |
+| Hiç olmamış adresler + `/de/...` | 9/9 → 404 |
+| `/` | 307 → `/tr` |
+| Kategori listesinden gerçek tıklama (4 dil × 5 kategori), görünen içerik | **20/20** |
+| Aşağı ok, ölçülen taşmayla karşılaştırmalı (4 dil × 5 sayfa) | **20/20** |
+| Yan oklar 1→5 ve 5→1 (4 dil) | **32/32** |
+| Arapça yön: ileri = sola, geri = sağa, chevron aynalanmamış | doğru |
+| Dikey kaydırma yatay konumu bozuyor mu (TR/AR/RU) | hayır — 390 sabit, AR −390 sabit |
+| Aşağı ok dipte gizleniyor, yukarı dönünce geliyor | doğru |
+| Kaydırma çubukları | yatay 0 px, dikey 0 px; kaydırma işlevi duruyor |
+| Punto ve görsel ölçüleri | 24/12/18/14/16 px ve 80×80, 56×56 — temel ölçümle aynı |
+| Konsol | 0 hata, 0 uyarı |
+
+**Sıradaki adım:** Bekleyen içerik kararları: QR adresi, organizasyon içeriği,
+font kararı, eksik fotoğraflar, 4 teyit edilmemiş fiyat, Arapça çevirilerin
+gözden geçirilmesi.
 
 === RAPOR SONU ===
