@@ -1,0 +1,677 @@
+/* ===========================================================================
+   ÖNİZLEME STİLLERİ — iki tasarım yönü
+
+   Bu dosya YALNIZCA /[dil]/onizleme/[yon] rotasına giriyor. Katmansız
+   (unlayered) düz CSS: Tailwind'in @layer components katmanından her zaman
+   sonra geldiği için mevcut .kitap-ok / .kitap-icerik gibi sınıfları
+   sarmalayıcı içinde yeniden boyayabiliyor. Sarmalayıcının DIŞINDA hiçbir
+   şeye dokunmuyor — canlı menü etkilenmiyor.
+
+   Yön bağımlılığı yok: ml/mr/left/right yerine margin-inline, inset-inline
+   ve text-align: start. Arapça kendiliğinden aynalanıyor.
+   =========================================================================== */
+
+/* ---------------------------------------------------------------------------
+   ORTAK İSKELET — iki yön de aynı yapıyı kullanıyor, boyalar değişiyor
+   --------------------------------------------------------------------------- */
+
+.oz {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  overflow: hidden;
+  background: var(--oz-zemin);
+  color: var(--oz-metin);
+  font-family: var(--oz-govde);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Üst şerit */
+.oz-ust {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem 0.6rem;
+  background: var(--oz-ust-zemin);
+  border-bottom: var(--oz-ust-cizgi);
+}
+
+.oz-marka {
+  font-family: var(--oz-baslik);
+  font-size: 1.0625rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--oz-marka-renk);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.oz-marka-isaret {
+  width: 1.1rem;
+  height: 1.1rem;
+  flex-shrink: 0;
+  color: var(--oz-vurgu);
+}
+
+.oz-diller {
+  display: flex;
+  gap: 0.375rem;
+}
+
+.oz-dil {
+  min-height: 1.9rem;
+  padding: 0.2rem 0.55rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--oz-solgun);
+  border: var(--oz-dil-cizgi);
+  border-radius: var(--oz-dil-yuvarlak);
+  background: transparent;
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.oz-dil-aktif {
+  color: var(--oz-dil-aktif-metin);
+  background: var(--oz-dil-aktif-zemin);
+  border-color: var(--oz-dil-aktif-cizgi);
+}
+
+/* Kitap: yatay kaydırma, sayfa başına bir ekran */
+.oz-alan {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+}
+
+.oz .kitap {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-x: contain;
+  contain: paint;
+  scrollbar-width: none;
+}
+
+.oz .kitap::-webkit-scrollbar {
+  display: none;
+}
+
+.oz-sayfa {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  flex-shrink: 0;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  position: relative;
+}
+
+/* Sayfanın kendi dikey kaydırması. Çubuk gizli, işlev duruyor. */
+.oz .kitap-icerik {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  max-width: 34rem;
+  margin-inline: auto;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  overscroll-behavior-x: auto;
+  scrollbar-width: none;
+  padding: 1rem 1.15rem 1.25rem;
+}
+
+.oz .kitap-icerik::-webkit-scrollbar {
+  display: none;
+}
+
+/* Sayfa başlığı */
+.oz-baslik-blok {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.oz-baslik {
+  font-family: var(--oz-baslik);
+  font-weight: var(--oz-baslik-kalinlik);
+  font-size: 1.75rem;
+  line-height: 1.15;
+  color: var(--oz-baslik-renk);
+  margin: 0;
+  position: relative;
+  z-index: 1;
+}
+
+/* Arka plandaki dev sayfa numarası — "ikinci kez bak" detayı */
+.oz-hayalet-no {
+  position: absolute;
+  inset-inline-end: 0;
+  top: -0.85rem;
+  font-family: var(--oz-baslik);
+  font-size: 4.5rem;
+  line-height: 1;
+  font-weight: var(--oz-baslik-kalinlik);
+  color: var(--oz-hayalet);
+  z-index: 0;
+  pointer-events: none;
+  user-select: none;
+}
+
+.oz-baslik-alt {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.oz-kural {
+  height: 1px;
+  flex: 1;
+  background: var(--oz-kural);
+}
+
+.oz-motif {
+  width: 0.85rem;
+  height: 0.85rem;
+  flex-shrink: 0;
+  color: var(--oz-vurgu);
+}
+
+/* --- Tek fiyatlı ürün listesi --- */
+.oz-liste {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.oz-satir {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.7rem 0;
+  border-bottom: var(--oz-satir-cizgi);
+}
+
+.oz-satir:last-child {
+  border-bottom: 0;
+}
+
+.oz-gorsel-yuva {
+  width: 4.25rem;
+  height: 4.25rem;
+  flex-shrink: 0;
+  border-radius: var(--oz-gorsel-yuvarlak);
+  overflow: hidden;
+  background: var(--oz-yer-tutucu-zemin);
+  border: var(--oz-gorsel-cizgi);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.oz-gorsel-yuva img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Fotoğrafı olmayan 24 ürünün yer tutucusu: boş kutu değil, yönün kendi
+   motifi. Eksiklik süse dönüşüyor. */
+.oz-yer-tutucu-motif {
+  width: 1.9rem;
+  height: 1.9rem;
+  color: var(--oz-yer-tutucu-motif);
+}
+
+.oz-govde {
+  flex: 1;
+  min-width: 0;
+}
+
+.oz-ad-satir {
+  display: flex;
+  align-items: baseline;
+  gap: 0.45rem;
+}
+
+.oz-ad {
+  font-family: var(--oz-ad-font);
+  font-weight: var(--oz-ad-kalinlik);
+  font-size: 1.0625rem;
+  line-height: 1.3;
+  color: var(--oz-metin);
+}
+
+.oz-ayrac {
+  flex: 1;
+  height: 0.75rem;
+  min-width: 1rem;
+  background-image: var(--oz-ayrac-desen);
+  background-position: 0 bottom;
+  background-size: 0.3rem 1px;
+  background-repeat: repeat-x;
+  opacity: 0.75;
+}
+
+.oz-fiyat {
+  font-family: var(--oz-govde);
+  font-weight: 600;
+  font-size: 0.9375rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--oz-fiyat-renk);
+  white-space: nowrap;
+}
+
+.oz-icerik {
+  margin: 0.25rem 0 0;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: var(--oz-solgun);
+}
+
+/* --- Çok fiyatlı tablo (kapalı pide) --- */
+.oz-tablo {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.oz-tablo th,
+.oz-tablo td {
+  vertical-align: middle;
+}
+
+/* Uc sutun 390px'te dar: harf araligi genis birakilirsa basliklar
+   birbirine degiyor. Dar aralik + hucre ici bosluk ikisini ayiriyor. */
+.oz-sutun-basligi {
+  font-size: 0.5625rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--oz-sutun-basligi-renk);
+  padding: 0 0.2rem 0.5rem;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.oz-tablo tbody tr {
+  border-bottom: var(--oz-satir-cizgi);
+}
+
+.oz-tablo tbody tr:last-child {
+  border-bottom: 0;
+}
+
+.oz-hucre-gorsel {
+  width: 3.5rem;
+  padding: 0.6rem 0;
+  padding-inline-end: 0.7rem;
+}
+
+.oz-hucre-gorsel .oz-gorsel-yuva {
+  width: 3.5rem;
+  height: 3.5rem;
+}
+
+.oz-hucre-ad {
+  text-align: start;
+  font-weight: 400;
+  padding: 0.6rem 0;
+  padding-inline-end: 0.5rem;
+}
+
+.oz-hucre-fiyat {
+  padding: 0.6rem 0.2rem;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--oz-fiyat-renk);
+  white-space: nowrap;
+}
+
+.oz-hucre-bos {
+  color: var(--oz-solgun);
+  opacity: 0.55;
+}
+
+/* --- Alt şerit --- */
+.oz-alt {
+  position: relative;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0 0.75rem;
+  min-height: 2.9rem;
+  background: var(--oz-ust-zemin);
+  border-top: var(--oz-ust-cizgi);
+}
+
+.oz-alt-baglanti {
+  display: flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding-inline: 0.4rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--oz-solgun);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.oz-sayac {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+  color: var(--oz-vurgu);
+  white-space: nowrap;
+  padding-inline: 0.25rem;
+}
+
+/* --- Oklar: gerçek bileşenler, yönün boyasıyla --- */
+.oz .kitap-ok {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  height: 2.75rem;
+  width: 2.75rem;
+  border-radius: 999px;
+  background: transparent;
+  border: 0;
+}
+
+.oz .kitap-ok-ileri {
+  inset-inline-end: 0;
+  justify-content: flex-end;
+}
+
+.oz .kitap-ok-geri {
+  inset-inline-start: 0;
+  justify-content: flex-start;
+}
+
+.oz .kitap-ok-govde {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--oz-ok-boy);
+  height: var(--oz-ok-boy);
+  border-radius: var(--oz-ok-yuvarlak);
+  background: var(--oz-ok-zemin);
+  border: var(--oz-ok-cizgi);
+  color: var(--oz-ok-renk);
+  box-shadow: var(--oz-ok-golge);
+}
+
+.oz .kitap-ok-simge {
+  width: 0.8rem;
+  height: 0.8rem;
+  --ok-flip: 1;
+  transform: scaleX(var(--ok-flip));
+}
+
+.oz [dir="rtl"] .kitap-ok-simge,
+[dir="rtl"] .oz .kitap-ok-simge {
+  --ok-flip: -1;
+}
+
+.oz .kitap-ok-geri .kitap-ok-simge {
+  --ok-flip: -1;
+}
+
+[dir="rtl"] .oz .kitap-ok-geri .kitap-ok-simge {
+  --ok-flip: 1;
+}
+
+/* Aşağı ok — alt şeridin ortasında, içeriğin dışında */
+.oz .kitap-ok-asagi {
+  position: absolute;
+  inset-inline-start: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 0;
+  background: transparent;
+}
+
+[dir="rtl"] .oz .kitap-ok-asagi {
+  transform: translate(50%, -50%);
+}
+
+.oz .kitap-ok-simge-asagi {
+  width: 0.8rem;
+  height: 0.8rem;
+}
+
+/* ===========================================================================
+   YÖN A — GECE OCAĞI
+   Akşam, ateşin karşısı. Koyu ve sıcak; fotoğraflar karanlıkta parlıyor.
+   =========================================================================== */
+
+.yon-gece {
+  --oz-zemin: #14100d;
+  --oz-ust-zemin: #1c1712;
+  --oz-metin: #f6ece1;
+  --oz-solgun: #bda992;
+  --oz-vurgu: #e59a4a;
+  --oz-baslik-renk: #f6ece1;
+  --oz-marka-renk: #e8d4b8;
+  --oz-fiyat-renk: #e5b567;
+
+  --oz-baslik: var(--oz-baslik-latin);
+  --oz-govde: var(--oz-govde-latin);
+  --oz-ad-font: var(--oz-baslik);
+  --oz-baslik-kalinlik: 700;
+  --oz-ad-kalinlik: 500;
+
+  --oz-baslik-latin: var(--font-playfair), Georgia, serif;
+  --oz-govde-latin: var(--font-inter), system-ui, sans-serif;
+
+  --oz-ust-cizgi: 1px solid rgba(229, 154, 74, 0.22);
+  --oz-satir-cizgi: 1px solid rgba(246, 236, 225, 0.1);
+  --oz-kural: linear-gradient(
+    to right,
+    rgba(229, 154, 74, 0.65),
+    rgba(229, 154, 74, 0)
+  );
+  --oz-hayalet: rgba(229, 154, 74, 0.11);
+  --oz-ayrac-desen: radial-gradient(circle, rgba(246, 236, 225, 0.35) 0.5px, transparent 0.5px);
+
+  --oz-dil-cizgi: 1px solid rgba(246, 236, 225, 0.18);
+  --oz-dil-yuvarlak: 999px;
+  --oz-dil-aktif-metin: #14100d;
+  --oz-dil-aktif-zemin: #e5b567;
+  --oz-dil-aktif-cizgi: #e5b567;
+
+  --oz-gorsel-yuvarlak: 0.7rem;
+  --oz-gorsel-cizgi: 1px solid rgba(229, 154, 74, 0.28);
+  --oz-yer-tutucu-zemin: #221a14;
+  --oz-yer-tutucu-motif: rgba(229, 154, 74, 0.5);
+  --oz-sutun-basligi-renk: #e5b567;
+
+  --oz-ok-boy: 1.5rem;
+  --oz-ok-yuvarlak: 999px;
+  --oz-ok-zemin: rgba(34, 26, 20, 0.92);
+  --oz-ok-cizgi: 1px solid rgba(229, 154, 74, 0.45);
+  --oz-ok-renk: #e5b567;
+  --oz-ok-golge: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+[dir="rtl"] .yon-gece {
+  --oz-baslik-latin: var(--font-amiri), "Times New Roman", serif;
+  --oz-govde-latin: var(--font-noto-arabic), "Segoe UI", sans-serif;
+  --oz-baslik-kalinlik: 700;
+}
+
+/* Her sayfanın üstünde közden gelen sıcak bir ışık. Tek süsleme bu:
+   fotoğrafların önüne geçmiyor, sayfaya derinlik veriyor. */
+.yon-gece .oz-sayfa::before {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: 45%;
+  pointer-events: none;
+  background: radial-gradient(
+    120% 100% at 50% 0%,
+    rgba(229, 154, 74, 0.16) 0%,
+    rgba(229, 154, 74, 0.05) 38%,
+    transparent 72%
+  );
+  z-index: 0;
+}
+
+.yon-gece .kitap-icerik {
+  position: relative;
+  z-index: 1;
+}
+
+.yon-gece .oz-baslik {
+  letter-spacing: -0.01em;
+}
+
+/* Fotoğraflar karanlıkta kesilmiş gibi durmasın: sıcak bir iç gölge
+   kenarları zemine bağlıyor. */
+.yon-gece .oz-gorsel-yuva {
+  box-shadow: inset 0 0 0 1px rgba(20, 16, 13, 0.5), 0 3px 12px rgba(0, 0, 0, 0.45);
+}
+
+/* ===========================================================================
+   YÖN B — ÇİNİ LEVHA
+   İznik levhası: porselen zemin, kobalt, turkuaz ve mercan; ince bordür.
+   =========================================================================== */
+
+.yon-cini {
+  --oz-zemin: #f6f2e9;
+  --oz-ust-zemin: #fffdf8;
+  --oz-metin: #16233a;
+  --oz-solgun: #55637c;
+  --oz-vurgu: #1a4a8d;
+  --oz-baslik-renk: #12356b;
+  --oz-marka-renk: #12356b;
+  --oz-fiyat-renk: #b23b26;
+
+  --oz-baslik: var(--oz-baslik-latin);
+  --oz-govde: var(--oz-govde-latin);
+  --oz-ad-font: var(--oz-govde);
+  --oz-baslik-kalinlik: 700;
+  --oz-ad-kalinlik: 600;
+
+  --oz-baslik-latin: var(--font-cormorant), Georgia, serif;
+  --oz-govde-latin: var(--font-plex), system-ui, sans-serif;
+
+  --oz-ust-cizgi: 1px solid rgba(18, 53, 107, 0.22);
+  --oz-satir-cizgi: 1px solid rgba(18, 53, 107, 0.14);
+  --oz-kural: linear-gradient(
+    to right,
+    rgba(18, 53, 107, 0.55),
+    rgba(18, 53, 107, 0)
+  );
+  --oz-hayalet: rgba(26, 74, 141, 0.1);
+  --oz-ayrac-desen: radial-gradient(circle, rgba(18, 53, 107, 0.4) 0.5px, transparent 0.5px);
+
+  --oz-dil-cizgi: 1px solid rgba(18, 53, 107, 0.3);
+  --oz-dil-yuvarlak: 0.28rem;
+  --oz-dil-aktif-metin: #fffdf8;
+  --oz-dil-aktif-zemin: #12356b;
+  --oz-dil-aktif-cizgi: #12356b;
+
+  --oz-gorsel-yuvarlak: 0.28rem;
+  --oz-gorsel-cizgi: 1px solid rgba(18, 53, 107, 0.35);
+  --oz-yer-tutucu-zemin: #eaf1f0;
+  --oz-yer-tutucu-motif: #2b8080;
+  --oz-sutun-basligi-renk: #12356b;
+
+  --oz-ok-boy: 1.55rem;
+  --oz-ok-yuvarlak: 0.3rem;
+  --oz-ok-zemin: #fffdf8;
+  --oz-ok-cizgi: 1px solid rgba(18, 53, 107, 0.45);
+  --oz-ok-renk: #b23b26;
+  --oz-ok-golge: 0 1px 4px rgba(18, 53, 107, 0.16);
+}
+
+[dir="rtl"] .yon-cini {
+  --oz-baslik-latin: var(--font-reem), Tahoma, sans-serif;
+  --oz-govde-latin: var(--font-plex-arabic), "Segoe UI", sans-serif;
+  --oz-baslik-kalinlik: 600;
+}
+
+/* Zeminde çok soluk bir geometrik alan — çini levhanın kılcal dokusu.
+   %3 opaklıkta: yakından fark ediliyor, okumayı hiç etkilemiyor. */
+.yon-cini .oz-sayfa::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.055;
+  background-image:
+    linear-gradient(45deg, #12356b 25%, transparent 25%, transparent 75%, #12356b 75%),
+    linear-gradient(45deg, #12356b 25%, transparent 25%, transparent 75%, #12356b 75%);
+  background-size: 1.4rem 1.4rem;
+  background-position: 0 0, 0.7rem 0.7rem;
+}
+
+/* Sayfa bir "levha": içerik ince çift bordürlü bir panel içinde. */
+.yon-cini .kitap-icerik {
+  position: relative;
+  z-index: 1;
+}
+
+.yon-cini .oz-levha {
+  border: 1px solid rgba(18, 53, 107, 0.28);
+  outline: 1px solid rgba(18, 53, 107, 0.16);
+  outline-offset: 3px;
+  background: rgba(255, 253, 248, 0.86);
+  padding: 0.9rem 0.85rem 1rem;
+  border-radius: 0.15rem;
+}
+
+.yon-cini .oz-baslik {
+  text-align: center;
+  letter-spacing: 0.005em;
+}
+
+.yon-cini .oz-hayalet-no {
+  inset-inline-end: auto;
+  inset-inline-start: 0;
+  top: -0.5rem;
+  font-size: 3.6rem;
+}
+
+.yon-cini .oz-baslik-alt {
+  justify-content: center;
+}
+
+.yon-cini .oz-kural {
+  max-width: 4.5rem;
+  background: linear-gradient(to right, transparent, rgba(18, 53, 107, 0.55), transparent);
+}
+
+.yon-cini .oz-sutun-basligi {
+  border-bottom: 1px solid rgba(18, 53, 107, 0.25);
+}
