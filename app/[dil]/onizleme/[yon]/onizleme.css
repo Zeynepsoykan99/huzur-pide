@@ -675,3 +675,367 @@
 .yon-cini .oz-sutun-basligi {
   border-bottom: 1px solid rgba(18, 53, 107, 0.25);
 }
+
+/* ===========================================================================
+   DİĞER EKRANLAR — dil seçimi, ana seçim, kategori listesi, organizasyon, 404
+
+   Menü dışındaki ekranlar da aynı tasarım dilini kullanıyor: aynı değişkenler,
+   aynı motif, aynı şeritler. Uygulama tek bir dünya.
+   =========================================================================== */
+
+/* Kitap dışındaki ekranlar dikeyde akıyor. */
+.oz-tek-ekran {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.oz-tek-ekran::-webkit-scrollbar {
+  display: none;
+}
+
+.oz-govde-alani {
+  flex: 1;
+  width: 100%;
+  max-width: 34rem;
+  margin-inline: auto;
+  padding: 1.25rem 1.25rem 2rem;
+}
+
+/* --- Giriş kompozisyonu: dil seçimi ve yön kapağı --- */
+.oz-giris {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  max-width: 26rem;
+  margin-inline: auto;
+  padding: 1.75rem 1.5rem 1rem;
+}
+
+.oz-giris-tepe {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.oz-giris-motif {
+  width: 3rem;
+  height: 3rem;
+  color: var(--oz-vurgu);
+  margin-bottom: 0.85rem;
+}
+
+.oz-marka-buyuk {
+  font-size: 1.9rem;
+  letter-spacing: 0.1em;
+}
+
+/* Büyük markada motif tekrarlanmıyor: üstte zaten duruyor. */
+.oz-marka-buyuk .oz-marka-isaret {
+  display: none;
+}
+
+.oz-giris-ayrac {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  max-width: 11rem;
+  margin-top: 0.9rem;
+}
+
+.oz-slogan {
+  margin: 0.85rem 0 0;
+  font-size: 0.875rem;
+  color: var(--oz-solgun);
+}
+
+.oz-ust-baslik-kucuk {
+  margin: 2rem 0 0.9rem;
+  text-align: center;
+  font-family: var(--oz-govde);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--oz-solgun);
+}
+
+/* --- Dil kartları --- */
+.oz-dil-kartlari {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.oz-dil-karti,
+.oz-secim-karti {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  width: 100%;
+  padding: 0.85rem 0.95rem;
+  text-decoration: none;
+  color: var(--oz-metin);
+  background: var(--oz-kart-zemin);
+  border: var(--oz-kart-cizgi);
+  border-radius: var(--oz-kart-yuvarlak);
+  box-shadow: var(--oz-kart-golge);
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.oz-dil-karti:hover,
+.oz-secim-karti:hover {
+  background: var(--oz-kart-zemin-vurgu);
+  border-color: var(--oz-vurgu);
+}
+
+.oz-bayrak-yuva {
+  display: flex;
+  width: 2.4rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+}
+
+.oz-bayrak {
+  width: auto;
+  max-width: 100%;
+  height: 1.15rem;
+  border-radius: 2px;
+  box-shadow: 0 0 0 1px var(--oz-bayrak-hat);
+}
+
+.oz-dil-adi {
+  flex: 1;
+  font-family: var(--oz-ad-font);
+  font-size: 1.125rem;
+  font-weight: var(--oz-ad-kalinlik);
+  line-height: 1.2;
+}
+
+.oz-karti-ok {
+  width: 0.9rem;
+  height: 0.9rem;
+  flex-shrink: 0;
+  color: var(--oz-vurgu);
+  --ok-flip: 1;
+  transform: scaleX(var(--ok-flip));
+}
+
+[dir="rtl"] .oz-karti-ok {
+  --ok-flip: -1;
+}
+
+.oz-dipnot {
+  flex-shrink: 0;
+  padding: 1.25rem 1rem 1.5rem;
+  text-align: center;
+  font-size: 0.6875rem;
+  color: var(--oz-solgun);
+  opacity: 0.85;
+}
+
+/* --- Ana seçim kartları --- */
+.oz-secim-listesi {
+  list-style: none;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.oz-secim-karti {
+  padding: 1.3rem 1.1rem;
+  gap: 1rem;
+}
+
+.oz-secim-ikonu {
+  width: 2.4rem;
+  height: 2.4rem;
+  flex-shrink: 0;
+  color: var(--oz-vurgu);
+}
+
+.oz-secim-basligi {
+  flex: 1;
+  font-family: var(--oz-baslik);
+  font-weight: var(--oz-baslik-kalinlik);
+  font-size: 1.4rem;
+  line-height: 1.15;
+  color: var(--oz-baslik-renk);
+}
+
+/* --- Kategori listesi (içindekiler) --- */
+.oz-liste-basligi {
+  margin-bottom: 1.25rem;
+}
+
+.oz-icindekiler {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.oz-icindekiler-satir {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  padding: 0.85rem 0.15rem;
+  text-decoration: none;
+  color: var(--oz-metin);
+  border-bottom: var(--oz-satir-cizgi);
+}
+
+.oz-icindekiler li:last-child .oz-icindekiler-satir {
+  border-bottom: 0;
+}
+
+/* Sıra numarası: basılı menülerin içindekiler sayfası havası. */
+.oz-icindekiler-no {
+  font-family: var(--oz-govde);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.06em;
+  color: var(--oz-vurgu);
+  flex-shrink: 0;
+  min-width: 1.35rem;
+}
+
+.oz-icindekiler-ad {
+  font-family: var(--oz-baslik);
+  font-weight: var(--oz-baslik-kalinlik);
+  font-size: 1.25rem;
+  line-height: 1.2;
+  color: var(--oz-baslik-renk);
+}
+
+.oz-icindekiler-sayfa {
+  font-family: var(--oz-govde);
+  font-size: 0.875rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--oz-fiyat-renk);
+  flex-shrink: 0;
+}
+
+.oz-kapak-listesi .oz-icindekiler-ad {
+  font-size: 1.05rem;
+}
+
+/* --- Boş durum (organizasyon) --- */
+.oz-bos-durum {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 3rem 1rem;
+  margin-top: 0.5rem;
+  border: var(--oz-kart-cizgi);
+  border-radius: var(--oz-kart-yuvarlak);
+  background: var(--oz-kart-zemin);
+}
+
+.oz-bos-ikon {
+  width: 3rem;
+  height: 3rem;
+  color: var(--oz-vurgu);
+  opacity: 0.75;
+}
+
+.oz-bos-metin {
+  margin: 0;
+  text-align: center;
+  font-size: 0.9375rem;
+  color: var(--oz-solgun);
+}
+
+.oz-orta-baglanti {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+/* --- 404 --- */
+.oz-404 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding-top: 4rem;
+}
+
+.oz-404-sayi {
+  font-family: var(--oz-baslik);
+  font-weight: var(--oz-baslik-kalinlik);
+  font-size: 5.5rem;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  color: var(--oz-hayalet-guclu);
+  font-variant-numeric: tabular-nums;
+}
+
+.oz-404-motif {
+  width: 2.25rem;
+  height: 2.25rem;
+  color: var(--oz-vurgu);
+}
+
+/* --- Yön değişkenlerinin ekran karşılıkları --- */
+.yon-gece {
+  --oz-kart-zemin: #1f1912;
+  --oz-kart-zemin-vurgu: #2a2118;
+  --oz-kart-cizgi: 1px solid rgba(229, 154, 74, 0.26);
+  --oz-kart-yuvarlak: 0.85rem;
+  --oz-kart-golge: 0 2px 12px rgba(0, 0, 0, 0.35);
+  --oz-bayrak-hat: rgba(246, 236, 225, 0.3);
+  --oz-hayalet-guclu: rgba(229, 154, 74, 0.32);
+}
+
+.yon-cini {
+  --oz-kart-zemin: #fffdf8;
+  --oz-kart-zemin-vurgu: #f2f6f9;
+  --oz-kart-cizgi: 1px solid rgba(18, 53, 107, 0.3);
+  --oz-kart-yuvarlak: 0.25rem;
+  --oz-kart-golge: 0 1px 3px rgba(18, 53, 107, 0.1);
+  --oz-bayrak-hat: rgba(18, 53, 107, 0.35);
+  --oz-hayalet-guclu: rgba(18, 53, 107, 0.3);
+}
+
+/* Cini yonunde kartlar da birer levha: ikinci ince bordur. */
+.yon-cini .oz-dil-karti,
+.yon-cini .oz-secim-karti,
+.yon-cini .oz-bos-durum {
+  outline: 1px solid rgba(18, 53, 107, 0.14);
+  outline-offset: 2px;
+}
+
+/* Giris ekraninda da karo alani suruyor; desen cok soluk kaliyor. */
+.yon-cini .oz-tek-ekran {
+  background-color: var(--oz-zemin);
+  background-image:
+    linear-gradient(45deg, rgba(18, 53, 107, 0.055) 25%, transparent 25%, transparent 75%, rgba(18, 53, 107, 0.055) 75%),
+    linear-gradient(45deg, rgba(18, 53, 107, 0.055) 25%, transparent 25%, transparent 75%, rgba(18, 53, 107, 0.055) 75%);
+  background-size: 1.4rem 1.4rem;
+  background-position: 0 0, 0.7rem 0.7rem;
+}
+
+/* Gece yonunde giris ekraninin tepesinde de koz isigi. */
+.yon-gece .oz-tek-ekran {
+  background-image: radial-gradient(
+    110% 55% at 50% 0%,
+    rgba(229, 154, 74, 0.15) 0%,
+    rgba(229, 154, 74, 0.04) 40%,
+    transparent 72%
+  );
+  background-repeat: no-repeat;
+}
