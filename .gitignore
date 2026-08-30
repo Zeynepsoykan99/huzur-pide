@@ -46,3 +46,11 @@ _preview.html
 
 # Vercel (vercel link tarafindan eklendi)
 .vercel
+
+# Firebase gizli anahtarlari
+# .env* zaten yukarida yoksayiliyor; bunlar servis hesabi JSON dosyasinin
+# yanlislikla proje klasorune kopyalanmasina karsi ikinci kilit.
+*serviceAccount*.json
+*firebase-adminsdk*.json
+/firebase-debug.log
+/.firebase/
