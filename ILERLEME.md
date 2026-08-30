@@ -3,7 +3,7 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 13 tamamlandı — Aşama 10-12 **canlıda**. 10 sayfalık kitap, kaydırma çubuğu gizli, oklar dört dilde çalışıyor, Kapalı Pide 2 sayfa. Bekleyen: QR adresi kararı, organizasyon içeriği, font kararı, eksik fotoğraflar
+**Güncel aşama:** Aşama 14 tamamlandı (dalda, push onayı bekliyor) — kitap 5 sayfa, her kategori tek sayfada; sığmayan sayfa dikey kayıyor, alt şeritte aşağı ok ipucu. Aşama 10-13 canlıda. 10 sayfalık kitap, kaydırma çubuğu gizli, oklar dört dilde çalışıyor, Kapalı Pide 2 sayfa. Bekleyen: QR adresi kararı, organizasyon içeriği, font kararı, eksik fotoğraflar
 **Son güncelleme:** 2026-08-28
 
 ### Genel Durum
@@ -26,6 +26,7 @@ Numaralandırma rapor başlıklarıyla aynı: aşağıdaki her satırın karşı
 | 11 | Kaydırma çubuğu + Kapalı Pide 2 sayfa | **Tamamlandı** |
 | 12 | Üretime çıkış ve canlı doğrulama | **Tamamlandı** |
 | 13 | "Düble" → "Duble" yazım düzeltmesi | **Tamamlandı** |
+| 14 | Her kategori tek sayfa + aşağı ok ipucu | **Tamamlandı** |
 
 ### Aşama 1 Adımları
 
@@ -2212,5 +2213,189 @@ arama ve ekran okuyucu bozulurdu.
 **Sıradaki adım:** Bekleyen içerik kararları değişmedi: QR adresi, organizasyon
 içeriği, font kararı, eksik fotoğraflar, 4 teyit edilmemiş fiyat, Arapça
 çevirilerin gözden geçirilmesi.
+
+=== RAPOR SONU ===
+
+---
+
+## Aşama 14 — Her Kategori Tek Sayfa ve Aşağı Ok İpucu · 2026-08-28
+
+=== RAPOR BAŞLANGICI ===
+
+**Adım:** Aşama 14 — Kategori içi bölmenin kaldırılması, aşağı ok ipucu ve
+sığdırma uğruna verilmiş iki tavizin geri alınması (tamamı)
+
+---
+
+**1 — Bölme kavramı modelden kaldırıldı**
+
+Kitap 10 sayfadan **5 sayfaya** indi; her kategori kendi sayfasında:
+
+| Sayfa | Kategori | Ürün | Eskiden |
+|---|---|---|---|
+| 1 | Kapalı Pide Çeşitleri | 6 | 2 sayfa (3+3) |
+| 2 | Izgara Çeşitleri | 14 | 4 sayfa (4+3+4+3) |
+| 3 | Salatalar | 1 | 1 sayfa |
+| 4 | Tatlı Çeşitleri | 3 | 1 sayfa |
+| 5 | İçecekler | 7 | 2 sayfa (4+3) |
+
+Toplam 31 ürün — eskisiyle aynı.
+
+`sayfaBolumleri` alanı boş bırakılmadı, `Kategori` tipinden **silindi**;
+`MenuSayfasi`'ndan da `kategoriIcindeNo` ve `kategoriToplamSayfa` kalktı.
+Bölme verisi olmayınca "bölüm toplamı ürün sayısını tutmuyor" hatası da
+imkânsız hale geldi, `sayfalariUret()` içindeki doğrulama gereksizleşti.
+`kategorininIlkSayfasi` → `kategorininSayfasi`, `sayfaAraligi` →
+`sayfaNumarasi` (artık aralık değil tek numara). `data/menu.ts` 78 satır
+kısaldı.
+
+**Ürün, fiyat ve çeviri satırlarında sıfır değişiklik** — diff üzerinde
+`tutar:`, `ad:`, `icerik:`, `gorsel:` ve dil alanları arayarak doğrulandı,
+hiçbiri eşleşmedi.
+
+**2 — Sığdırma uğruna verilen tavizler geri alındı**
+
+| Taviz | Yeni durum |
+|---|---|
+| Kapalı Pide tablosunda fotoğraf sütunu telefonda gizliydi | Her ekranda görünür. Ölçü bildirimi (`w-14 md:w-52`) değişmedi; yalnızca gizlilik kalktı |
+| Açıklamalar telefonda tek satıra kırpılıyordu | Tam metin |
+
+**3 — Aşağı ok**
+
+Alt şeritte, "Menüye dön" ile sayacın **tam ortasında**. İçeriğin dışında
+durduğu için hiçbir ürünü ya da fiyatı örtmüyor. Görünen daire için mevcut
+`.kitap-ok-govde` sınıfı kullanıldı — yan oklarla aynı zemin, halka, gölge
+ve hover/active davranışı; ikisinin gövdesi de 20×20 px, dokunma hedefi
+44×44 px.
+
+**Kararlar:**
+
+- **Uçta gizleniyor.** Okun tek işi "aşağıda devamı var" demek; sonda devamı
+  yok, duran ok yanlış bilgi verirdi. Yan oklarda da aynı karar verilmişti.
+  Yukarı kaydırınca geri geliyor.
+- **Tıklanabilir düğme.** Yan oklarla aynı görünen bir şeye müşteri basar;
+  basınca hiçbir şey olmaması bozukluk hissi verirdi. Ayrıca klavye ve
+  anahtar kullanıcısına kaydırmanın tek yolunu veriyor. Bir tıkta görünür
+  yüksekliğin %85'i kadar kayıyor (bir miktar örtüşme kalsın diye tam ekran
+  boyu değil); `azHareket()` açıksa yumuşak animasyon yerine anlık.
+- **JavaScript kapalıyken hiç render edilmiyor** — taşma ölçülemeyeceği için
+  doğru bir ipucu üretilemez, yan oklardaki davranışın aynısı. Sunucudan
+  gelen ham HTML'de ok yok (üç dilde arayarak doğrulandı) ama dikey kaydırma
+  kutusu var: kaydırma saf CSS olduğu için JavaScript'siz de çalışıyor.
+  İpucu kaybolur, işlev kaybolmaz.
+
+**Yön.** Chevron'un kendi sınıfı var (`.kitap-ok-simge-asagi`), yan okların
+`--ok-flip` aynalama zincirine bilerek girmiyor: aşağı her iki yazma
+yönünde de aşağıdır. Arapça'da ölçüldü — `transform: none`, ok ekranın tam
+ortasında (x=195, ekran genişliği 390).
+
+**Ortak mantık.** "Hangi sayfa aktif" bilgisi artık `components/aktifSayfa.ts`
+içinde tek yerde; `SayfaOklari` ve `AsagiOk` aynı hook'u kullanıyor —
+üçüncü bir IntersectionObserver kopyası yazılmadı. `SayfaSayaci`'nin
+gözlemcisi adres yazma sorumluluğuyla iç içe olduğu için ona dokunulmadı.
+
+**4 — Eski adresler**
+
+Yön tersine döndü: eskiden `kapali-pide` → `kapali-pide-1` idi, şimdi tam
+tersi. Eski kurallar **silindi**; bırakılsalardı yenileriyle sonsuz döngü
+oluştururlardı.
+
+| Ölçüm | Sonuç |
+|---|---|
+| `kapali-pide-1/2/3`, `izgara-1/2/3/4`, `icecekler-1/2` × 4 dil | **36/36** → 307, kendi kategorisine |
+| 4 dil × 5 sayfa | 20/20 → 200 |
+| `kapali-pide-4/0`, `izgara-5/9`, `icecekler-3`, `salatalar-1/2`, `tatlilar-1`, geçersiz slug, `/de/...` | 10/10 → 404 |
+| `/` | 307 → `/tr` |
+
+Numaralar tek tek yazıldı (regex'li parametre eşleşmesi), böylece hiç var
+olmamış adresler 404 kalmaya devam ediyor.
+
+**5 — Doğrulama (390×844, üretim derlemesi)**
+
+| Test | Sonuç |
+|---|---|
+| Kategori listesinden gerçek tıklama (4 dil × 5 kategori) — görünen bölüm, başlık, ürünler, sayaç | **20/20** |
+| Her ölçümde görüş alanında tek sayfa, tam 390 px | 20/20 |
+| Yan oklar: 1→5 ileri, 5→1 geri, her adımda içerik + sayaç (4 dil) | **32/32** |
+| Uçlarda ok gizlenmesi (s.1'de yalnız "sonraki", s.5'te yalnız "önceki") | 8/8 |
+| Arapça yön: ileri = sola, geri = sağa | 8/8 |
+| Aşağı ok, ölçülen taşmayla karşılaştırmalı (4 dil × 5 sayfa) | **20/20** |
+| Aşağı okun şeritteki çakışması ("Menüye dön" ve sayaçla), 4 dil | **0 px²** |
+| Şerit yüksekliği (ok eklendikten sonra) | 44 px — değişmedi |
+| Konsol | 0 hata, 0 uyarı |
+| `tsc` · `lint` · `build` | temiz, **38 statik sayfa** (40 kitap rotası 20'ye indi) |
+
+**Aşağı ok davranışı** (TR/Izgara, taşma 744 px): ok görünür → 1. tık
+0→603 → 2. tık 603→744 (son) → **ok kayboldu**; yukarı dönünce geri geldi.
+Arapça'da aynı: 0→603→758, sonra kayboldu.
+
+**Dikey kaydırma yatay konumu bozmuyor** — taşan sayfada `kitap.scrollLeft`
+kaydedildi, sayfa içi dikey kaydırma yapıldı, tekrar ölçüldü:
+
+| Dil | Önce | Dikey kaydırma sırasında | Sonra |
+|---|---|---|---|
+| TR | 390 | 390 | 390 |
+| EN | 390 | 390 | 390 |
+| AR (RTL) | −390 | −390 | −390 |
+| RU | 390 | 390 | 390 |
+
+**Kaydırma çubukları gizli kalmaya devam ediyor:** yatay çubuk 0 px, dikey
+çubuk 0 px, `scrollbar-width: none` her ikisinde; kaydırma işlevi duruyor
+(`scrollWidth > clientWidth` ve `scrollHeight > clientHeight`). Belgede
+yatay/dikey taşma 0.
+
+**6 — Ölçü karşılaştırması (yazı ve görsel boyutları değişmedi)**
+
+Değişiklikten önce canlı adresten alınan temel ölçümle karşılaştırma, dil=en:
+
+| Öğe | 390px önce → sonra | 1280px önce → sonra |
+|---|---|---|
+| `.kitap-baslik` | 24px → **24px** | 30px → **30px** |
+| `.pide-sutun-basligi` | 12px → **12px** | 14px → **14px** |
+| `.urun-ad` (pide) | 18px → **18px** | 20px → **20px** |
+| `.urun-ad` (liste) | 18px → **18px** | 20px → **20px** |
+| `.urun-fiyat` | 16px → **16px** | 18px → **18px** |
+| `.urun-icerik` | 14px → **14px** | 15px → **15px** |
+| `.alt-serit-baglanti` | 14px, 111×44 → **aynı** | — |
+| Liste görseli / yer tutucu | 80×80 → **80×80** | 208×117 → **208×117** |
+| Pide görseli | *gizli* → **56×56** | 208×117 → **208×117** |
+| Alt şerit yüksekliği | 44 → **44** | — |
+| Kitap içerik kutusu | 390×710 → **390×710** | — |
+
+Punto, satır yüksekliği ve yazı kalınlığı **hiçbir öğede değişmedi**.
+Görsellerin bildirilmiş ölçüleri de aynı. Telefonda pide görselinin
+*gizli* → *56×56* olması senin kararın; 56 px zaten kodda bildirilen
+telefon genişliğiydi, gizlilik kalkınca ortaya çıktı.
+
+Tablo hücrelerinin genişlikleri birkaç piksel kaydı (örn. sütun başlığı
+57→53 px). Sebep boyut değişikliği değil: fotoğraf sütunu geri gelince
+tablo yerini yeniden paylaştırıyor, ayrıca sayfalar birleşince en uzun
+ürün adı değişti. Punto sabit.
+
+**Ölçüm sırasında karşılaşılan yanılsama.** Yatay geçişten hemen sonra
+(700 ms) sığan bir sayfada aşağı ok hâlâ görünüyordu. Sebep sitede değil:
+başsız Chromium'da `requestAnimationFrame` saniyede ~2 kare çalıştığı için
+IntersectionObserver geri çağrısı geç geliyor. Bekleme 1,8 saniyeye
+çıkarılınca dört dilde de 20/20 doğru çıktı. Gerçek cihazda gözlemci bir
+kare sonra (~16 ms) haber veriyor.
+
+**Değiştirilen dosyalar:**
+
+| Dosya | Durum |
+|---|---|
+| `data/menu.ts` | `sayfaBolumleri` kaldırıldı; `sayfalariUret()` sadeleşti; `kategorininSayfasi` / `sayfaNumarasi` |
+| `app/[dil]/menu/[sayfa]/page.tsx` | Fotoğraf sütunu geri açıldı, kırpma kalktı, `(1/2)` işareti kalktı, `AsagiOk` bağlandı |
+| `app/[dil]/menu/page.tsx` | Yeni yardımcı adları |
+| `next.config.ts` | Eski adres yönlendirmeleri ters çevrildi |
+| `components/AsagiOk.tsx` | **Yeni** — aşağı ok |
+| `components/aktifSayfa.ts` | **Yeni** — paylaşılan aktif sayfa mantığı |
+| `components/SayfaOklari.tsx` | Ortak hook'a geçti, 47 satır kısaldı |
+| `data/arayuz.ts` | `asagiKaydir` etiketi (4 dil) |
+| `app/globals.css` | `.kitap-ok-asagi`, `.kitap-ok-simge-asagi`, `.alt-serit`'e `relative`, `.pide-gorsel-hucre` her ekranda |
+| `ILERLEME.md` | Özet, durum tablosu, bu rapor |
+
+Palet, tipografi ve boşluklar değişmedi.
+
+**Sıradaki adım:** Push onayı bekleniyor.
 
 === RAPOR SONU ===

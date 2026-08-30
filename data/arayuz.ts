@@ -76,6 +76,14 @@ export const ARAYUZ = {
     ar: "الصفحة السابقة",
     ru: "Предыдущая страница",
   },
+  // Alt seritteki asagi ok. Sayfa ekrana sigmadiginda beliriyor; etiket
+  // "sonraki sayfa" ile karismasin diye YATAY degil DIKEY hareketi anlatiyor.
+  asagiKaydir: {
+    tr: "Aşağı kaydır",
+    en: "Scroll down",
+    ar: "مرر لأسفل",
+    ru: "Прокрутить вниз",
+  },
   gorsel: { tr: "Görsel", en: "Image", ar: "صورة", ru: "Изображение" },
   urun: { tr: "Ürün", en: "Item", ar: "الصنف", ru: "Блюдо" },
   menuKategorileri: {

@@ -12,33 +12,33 @@ const nextConfig: NextConfig = {
         destination: "/tr",
         permanent: false,
       },
-      // Bolunen kategorilerin eski adresleri ilk sayfalarina gidiyor;
-      // daha once paylasilmis linkler calismaya devam ediyor.
-      // salatalar ve tatlilar tek sayfa oldugu icin slug'lari degismedi,
-      // onlara yonlendirme gerekmiyor.
+      // Kategori ici bolme kaldirildi: her kategori artik TEK sayfa ve
+      // slug'i kategori slug'inin aynisi. Numarali eski adreslerin hepsi
+      // kendi kategorisine geliyor, daha once paylasilmis linkler
+      // calismaya devam ediyor.
+      //
+      // Yon TERSINE dondu: eskiden kapali-pide -> kapali-pide-1 idi. O
+      // kurallar silindi; birakilsalardi bu kurallarla sonsuz dongu
+      // olustururlardi.
+      //
+      // Numaralar tek tek yaziliyor (regex'li parametre eslesmesi):
+      // boylece gercekten var olmus adresler yonleniyor, hic olmamislar
+      // (izgara-9 gibi) 404 kalmaya devam ediyor.
+      //
+      // salatalar ve tatlilar hep tek sayfaydi, slug'lari degismedi.
       {
-        source: "/:dil/menu/kapali-pide",
-        destination: "/:dil/menu/kapali-pide-1",
+        source: "/:dil/menu/kapali-pide-:n(1|2|3)",
+        destination: "/:dil/menu/kapali-pide",
         permanent: false,
       },
       {
-        source: "/:dil/menu/izgara",
-        destination: "/:dil/menu/izgara-1",
+        source: "/:dil/menu/izgara-:n(1|2|3|4)",
+        destination: "/:dil/menu/izgara",
         permanent: false,
       },
       {
-        // Kapali pide 2+2+2 iken 3+3'e gecti: 3. sayfa artik yok. Eski 3.
-        // sayfadaki Karisik ve Lahmacun yeni bolmede 2. sayfada duruyor,
-        // bu yuzden hedef ilk sayfa DEGIL, 2. sayfa.
-        source: "/:dil/menu/kapali-pide-3",
-        destination: "/:dil/menu/kapali-pide-2",
-        permanent: false,
-      },
-      {
-        // Icecekler tek sayfaydi, 4+3 olarak bolundu: eski adres artik
-        // bir sayfa degil, ilk sayfasina gidiyor.
-        source: "/:dil/menu/icecekler",
-        destination: "/:dil/menu/icecekler-1",
+        source: "/:dil/menu/icecekler-:n(1|2)",
+        destination: "/:dil/menu/icecekler",
         permanent: false,
       },
     ];

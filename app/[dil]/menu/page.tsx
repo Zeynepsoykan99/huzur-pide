@@ -7,9 +7,9 @@ import {
   DILLER,
   MENU,
   gecerliDil,
-  kategorininIlkSayfasi,
+  kategorininSayfasi,
   metin,
-  sayfaAraligi,
+  sayfaNumarasi,
   type DilKodu,
 } from "@/data/menu";
 
@@ -49,10 +49,9 @@ export default async function MenuSayfasi({ params }: PageProps<"/[dil]/menu">) 
           <ul className="flex flex-col">
             {MENU.map((kategori) => (
               <li key={kategori.slug}>
-                {/* Kategorinin ILK sayfasina baglaniyor; kategori birden
-                    fazla sayfaya bolunmus olabilir. */}
+                {/* Her kategori tek sayfa: slug'i kategori slug'inin aynisi. */}
                 <Link
-                  href={`/${dil}/menu/${kategorininIlkSayfasi(kategori).slug}`}
+                  href={`/${dil}/menu/${kategorininSayfasi(kategori).slug}`}
                   className="icindekiler-satir"
                 >
                   <span className="icindekiler-ad">{metin(kategori.ad, dil)}</span>
@@ -61,7 +60,7 @@ export default async function MenuSayfasi({ params }: PageProps<"/[dil]/menu">) 
                       anlamli bir ifade olarak okunmasi icin etiketlendi. */}
                   <span className="icindekiler-sayfa">
                     <span className="sr-only">{ui("sayfa", dil)} </span>
-                    {sayfaAraligi(kategori)}
+                    {sayfaNumarasi(kategori)}
                   </span>
                 </Link>
               </li>

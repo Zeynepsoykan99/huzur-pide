@@ -293,13 +293,12 @@
     @apply py-2.5 align-middle md:py-4;
   }
 
-  /* Gorsel hucresi telefonda gizli.
-     Kapali pide 2 sayfaya indirilince (3+3) Ingilizce 2. sayfa 800px, Rusca
-     707px yukseklik istiyordu; hedefteki en kisa cihaz 629px. Gorsel sutunu
-     kalkinca ad sutunu genisliyor, uzun adlar daha az satira sariyor ve
-     sayfalar hedefteki butun telefonlara sigiyor. md ustunde geri geliyor. */
+  /* Gorsel hucresi her ekranda duruyor.
+     Bir sure telefonda gizliydi: sayfayi tek ekrana sigdirmak icin ad
+     sutununa yer aciyordu. Sigdirma hedefi birakilinca gizlemenin gerekcesi
+     de kalmadi — sayfa uzarsa kullanici asagi kaydiriyor. */
   .pide-gorsel-hucre {
-    @apply hidden py-2.5 pe-4 align-middle md:table-cell md:py-4;
+    @apply table-cell py-2.5 pe-4 align-middle md:py-4;
   }
 
   /* Cok fiyatli tabloda gorsel telefonda daraliyor (80 -> 56px). Tek fiyatli
@@ -526,6 +525,35 @@
     --ok-flip: 1;
   }
 
+  /* --- Asagi ok: "asagida devami var" ipucu ---
+     Alt seridin ORTASINDA, mutlak konumlu: seridin iki ucundaki "Menuye don"
+     ve sayac justify-between ile yerlestigi icin akista ucuncu bir eleman
+     ikisinin yerini kaydirirdi. Mutlak konum seridi yukseltmiyor da —
+     44px'lik dokunma hedefi seridin mevcut yuksekligiyle ayni.
+
+     Icerigin DISINDA duruyor: sayfa alaninin ustune binmedigi icin hicbir
+     urunu veya fiyati ortemiyor. Kenar oklarindan farki bu; onlar sayfanin
+     kenar boslugunda duruyor. */
+  .kitap-ok-asagi {
+    @apply absolute start-1/2 top-1/2 z-10 flex h-11 w-11
+           -translate-x-1/2 -translate-y-1/2 items-center justify-center
+           rounded-full outline-hidden
+           focus-visible:outline-solid focus-visible:outline-2
+           focus-visible:outline-offset-2 focus-visible:outline-cocoa-900;
+  }
+
+  /* RTL'de start-1/2 sagdan olculuyor, bu yuzden aynalama da ters olmali. */
+  [dir="rtl"] .kitap-ok-asagi {
+    @apply translate-x-1/2;
+  }
+
+  /* Kenar oklarinin --ok-flip zincirine BILEREK girmiyor: asagi her iki
+     yazma yonunde de asagidir, Arapca'da aynalanmamali. Olcu kenar
+     oklarinin chevron'uyla ayni. */
+  .kitap-ok-simge-asagi {
+    @apply h-3 w-3 sm:h-3.5 sm:w-3.5;
+  }
+
   /* Kitabin alt seridi: "Menuye don" ve sayfa numarasi ayni satirda.
      Dugme eskiden her yapragin icinde duruyordu ve ust bosluguyla birlikte
      SAYFA BASINA 80px yiyordu. Buraya tasinmasi seridi yukseltmiyor: seridin
@@ -534,8 +562,10 @@
 
      Yon bagimsiz: justify-between RTL'de kendiliginden aynaliyor, dugme
      Arapca'da sagda duruyor. */
+  /* relative: ortadaki asagi okun konumlandirma cercevesi. Boslugu ve
+     yuksekligi degistirmiyor. */
   .alt-serit {
-    @apply flex shrink-0 items-center justify-between gap-2 px-3 sm:px-4;
+    @apply relative flex shrink-0 items-center justify-between gap-2 px-3 sm:px-4;
   }
 
   /* min-h-11 (44px) dokunma hedefi; punto kucultulmedi. */

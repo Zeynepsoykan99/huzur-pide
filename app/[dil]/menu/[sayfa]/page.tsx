@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { AsagiOk } from "@/components/AsagiOk";
 import { SayfaOklari } from "@/components/SayfaOklari";
 import { SayfaSayaci } from "@/components/SayfaSayaci";
 import { UrunGorseli } from "@/components/UrunGorseli";
@@ -22,7 +23,7 @@ import {
 const KAP_ID = "kitap";
 
 export function generateStaticParams() {
-  // 4 dil x 7 sayfa = 28 rota, hepsi derleme aninda statik.
+  // 4 dil x 5 sayfa (kategori basina bir) = 20 rota, hepsi derleme aninda statik.
   return DILLER.flatMap((dil) => SAYFALAR.map((s) => ({ dil, sayfa: s.slug })));
 }
 
@@ -95,11 +96,10 @@ function CokFiyatliTablo({ sayfa, dil }: { sayfa: MenuSayfasi; dil: DilKodu }) {
         {metin(kategori.ad, dil)} — {ui("hamurBoyunaGoreFiyatlar", dil)}
       </caption>
       <colgroup>
-        {/* Gorsel sutunu telefonda tamamen kalkiyor: hucreleri gizlemek
-            yetmiyor, sutunun kendisi de kalkmali yoksa genisligini ayirmaya
-            devam ediyor. md ustunde 208px. Gerekcesi globals.css'te
-            .pide-gorsel-hucre yaninda. */}
-        <col className="hidden w-14 md:table-column md:w-52" />
+        {/* Gorsel sutunu her ekranda duruyor. Telefonda bir sure gizliydi —
+            sayfayi tek ekrana sigdirmak icindi, o hedef birakildi.
+            Genislik: telefonda 56px, md ustunde 208px. */}
+        <col className="w-14 md:w-52" />
         <col />
         {kategori.sutunlar.map((s) => (
           <col key={s.kod} />
@@ -107,7 +107,7 @@ function CokFiyatliTablo({ sayfa, dil }: { sayfa: MenuSayfasi; dil: DilKodu }) {
       </colgroup>
       <thead>
         <tr>
-          <th scope="col" className="hidden md:table-cell">
+          <th scope="col">
             <span className="sr-only">{ui("gorsel", dil)}</span>
           </th>
           <th scope="col" className="pide-sutun-basligi text-start">
@@ -132,14 +132,9 @@ function CokFiyatliTablo({ sayfa, dil }: { sayfa: MenuSayfasi; dil: DilKodu }) {
                 <span className="nokta" aria-hidden="true" />
               </div>
               {icerikMetni(urun, dil) ? (
-                /* Telefonda tek satir: pide tablosunda ad sutunu uc fiyat
-                   sutunuyla yer paylastigi icin aciklama uc-dort satira
-                   sariyor ve sayfayi tasiriyordu. Ilk satir kaliyor —
-                   Turkce bilmeyen musteri icindekiler fikrini yine aliyor.
-                   md ustunde tam metin. */
-                <p className="urun-icerik line-clamp-1 md:line-clamp-none">
-                  {icerikMetni(urun, dil)}
-                </p>
+                /* Tam metin. Telefonda bir sure tek satira kirpiliyordu —
+                   sayfayi tek ekrana sigdirmak icindi, o hedef birakildi. */
+                <p className="urun-icerik">{icerikMetni(urun, dil)}</p>
               ) : null}
             </th>
             {kategori.sutunlar.map((sutun) => {
@@ -172,15 +167,7 @@ function Yaprak({ sayfa, dil }: { sayfa: MenuSayfasi; dil: DilKodu }) {
       aria-label={`${metin(sayfa.kategori.ad, dil)} — ${ui("sayfa", dil)} ${sayfa.no}`}
     >
       <div className="kitap-icerik">
-        <h2 className="kitap-baslik">
-          {metin(sayfa.kategori.ad, dil)}
-          {sayfa.kategoriToplamSayfa > 1 ? (
-            <span className="sr-only">
-              {" "}
-              ({sayfa.kategoriIcindeNo}/{sayfa.kategoriToplamSayfa})
-            </span>
-          ) : null}
-        </h2>
+        <h2 className="kitap-baslik">{metin(sayfa.kategori.ad, dil)}</h2>
 
         {cokSutunlu ? (
           <CokFiyatliTablo sayfa={sayfa} dil={dil} />
@@ -275,6 +262,15 @@ export default async function MenuKitabiSayfasi({
         <Link href={`/${dil}/menu`} className="alt-serit-baglanti">
           {ui("menuyeDon", dil)}
         </Link>
+
+        {/* "Asagida devami var" ipucu — seridin ortasinda, icerigin
+            disinda. Yalnizca aktif sayfa tasiyorsa beliriyor. */}
+        <AsagiOk
+          kabId={KAP_ID}
+          sayfalar={sayfaListesi}
+          dil={dil}
+          baslangicNo={acilis.no}
+        />
 
         <p className="sayfa-numarasi" dir="ltr">
           <span className="sr-only">{ui("sayfa", dil)} </span>

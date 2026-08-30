@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useSyncExternalStore } from "react";
+import { useAktifSayfa, useBagli } from "@/components/aktifSayfa";
 import { sayfayaKaydir } from "@/components/kitapKaydirma";
 import { ui } from "@/data/arayuz";
 import type { DilKodu } from "@/data/menu";
@@ -47,48 +47,11 @@ export function SayfaOklari({
   dil: DilKodu;
   baslangicNo: number;
 }) {
-  const [aktifNo, setAktifNo] = useState(baslangicNo);
-  const [oncekiBaslangic, setOncekiBaslangic] = useState(baslangicNo);
+  const aktifNo = useAktifSayfa(kabId, sayfalar, baslangicNo);
 
-  // Sunucuda ve hydration'dan önce false, istemcide true: oklar ancak
-  // JavaScript devredeyken beliriyor. Çalışmayan bir kontrol gösterilmiyor.
-  const bagli = useSyncExternalStore(
-    () => () => {},
-    () => true,
-    () => false,
-  );
-
-  // İstemci tarafı gezinmede bileşen yeniden kullanılıyor; rota parametresi
-  // değişince aktif sayfa açılış sayfasına dönmeli.
-  if (oncekiBaslangic !== baslangicNo) {
-    setOncekiBaslangic(baslangicNo);
-    setAktifNo(baslangicNo);
-  }
-
-  useEffect(() => {
-    const kap = document.getElementById(kabId);
-    if (!kap) return;
-
-    const bolumler = sayfalar
-      .map((s) => document.getElementById(`s${s.no}`))
-      .filter((el): el is HTMLElement => el !== null);
-    if (bolumler.length === 0) return;
-
-    const gozlemci = new IntersectionObserver(
-      (girisler) => {
-        let enIyi: IntersectionObserverEntry | null = null;
-        for (const g of girisler) {
-          if (!enIyi || g.intersectionRatio > enIyi.intersectionRatio) enIyi = g;
-        }
-        if (!enIyi || enIyi.intersectionRatio < 0.5) return;
-        setAktifNo(Number(enIyi.target.id.slice(1)));
-      },
-      { root: kap, threshold: [0.5, 0.75, 1] },
-    );
-
-    bolumler.forEach((b) => gozlemci.observe(b));
-    return () => gozlemci.disconnect();
-  }, [kabId, sayfalar]);
+  // Oklar ancak JavaScript devredeyken beliriyor: calismayan bir kontrol
+  // gosterilmiyor. Kaydirma o durumda da calismaya devam ediyor.
+  const bagli = useBagli();
 
   if (!bagli) return null;
 
