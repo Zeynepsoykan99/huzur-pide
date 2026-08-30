@@ -3,7 +3,7 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 14 **canlıda** (`main`, `9e4abc5`) — kitap 5 sayfa, her kategori tek sayfada; sığmayan sayfa dikey kayıyor, alt şeritte aşağı ok ipucu. Bekleyen: QR adresi kararı, organizasyon içeriği, font kararı, eksik fotoğraflar 10 sayfalık kitap, kaydırma çubuğu gizli, oklar dört dilde çalışıyor, Kapalı Pide 2 sayfa. Bekleyen: QR adresi kararı, organizasyon içeriği, font kararı, eksik fotoğraflar
+**Güncel aşama:** Aşama 15 tamamlandı (dalda, push onayı bekliyor) — Çini Levha temasi projenin tamamina uygulandi, dort temali yapi kuruldu. Asama 14 canlida. Bekleyen: QR adresi karari, organizasyon icerigi, eksik fotograflar
 **Son güncelleme:** 2026-08-28
 
 ### Genel Durum
@@ -27,6 +27,7 @@ Numaralandırma rapor başlıklarıyla aynı: aşağıdaki her satırın karşı
 | 12 | Üretime çıkış ve canlı doğrulama | **Tamamlandı** |
 | 13 | "Düble" → "Duble" yazım düzeltmesi | **Tamamlandı** |
 | 14 | Her kategori tek sayfa + aşağı ok ipucu | **Tamamlandı** |
+| 15 | Çini Levha teması + dört temalı yapı | **Tamamlandı** (dalda) |
 
 ### Aşama 1 Adımları
 
@@ -2419,5 +2420,160 @@ adres üzerinde tekrarlandı:
 **Sıradaki adım:** Bekleyen içerik kararları: QR adresi, organizasyon içeriği,
 font kararı, eksik fotoğraflar, 4 teyit edilmemiş fiyat, Arapça çevirilerin
 gözden geçirilmesi.
+
+=== RAPOR SONU ===
+
+---
+
+## Aşama 15 — Çini Levha Teması ve Dört Temalı Yapı · 2026-08-30
+
+=== RAPOR BAŞLANGICI ===
+
+**Adım:** Aşama 15 — Seçilen Çini Levha yönünün projenin tamamına uygulanması,
+tema altyapısının kurulması, iki yeni temanın eklenmesi (tamamı)
+
+---
+
+**1 — Tema altyapısı**
+
+Bir tema artık üç parçadan oluşuyor: `app/temalar/temalar.css` içinde bir
+değişken bloğu, kendi yazı tipi modülü (`fontlar-*.ts`) ve kendi motifi
+(`components/TemaMotifi.tsx`).
+
+Ekranlar temayı **bilmiyor** — yalnızca `--t-*` değişkenlerini kullanıyorlar.
+Hangi temanın geçerli olduğunu `<html>` üzerindeki `tema-*` sınıfı belirliyor;
+kök layout onu `data/tema.ts` içindeki `AKTIF_TEMA` sabitinden okuyor. Tema
+değiştirmek iki satır: `data/tema.ts` ve `app/temalar/aktif.ts`.
+
+**Yazı tipleri bilinçli olarak ayrı tutuldu.** `aktif.ts` tek bir tema modülü
+import ediyor; dördü birden import edilseydi dört takım yazı tipi yayına
+girerdi. Üretimde yalnızca Çini'nin dört ailesi iniyor. Önizleme rotası
+`tum-fontlar.ts` üzerinden hepsini yüklüyor, o dosya üretim ekranlarına hiç
+girmiyor.
+
+**Yakalanan mimari hata.** Tema farkları önce `.tema-cini .levha` gibi torun
+seçicilerle yazılmıştı. `<html>` aktif temayı taşıdığı için bu kurallar
+önizleme sarmalayıcısının **içinde de** eşleşiyordu — Mürekkep, Çini'nin levha
+çerçevesini çiziyordu. Yapısal farkların tamamı değişkene taşındı
+(`--t-levha-cizgi`, `--t-baslik-hiza`, `--t-kart-cizgi`, `--t-gorsel-golge`
+vb.); `globals.css` içinde kalan tema torun seçicisi sayısı **0**.
+
+**2 — Dört tema**
+
+| Tema | Karakter | Yazı tipleri (Latin+Kiril / Arapça) |
+|---|---|---|
+| **Çini Levha** (aktif) | İznik levhası: porselen, kobalt, mercan | Cormorant + IBM Plex Sans / Reem Kufi + IBM Plex Sans Arabic |
+| **Gece Ocağı** | Akşam, ateşin karşısı; koyu ve sıcak | Playfair Display + Inter / Amiri + Noto Sans Arabic |
+| **Mürekkep** | Matbaa afişi; kalın kurallar, süsleme yok | Oswald + Source Sans 3 / Cairo + Noto Kufi Arabic |
+| **Zeytin** | Bahçe ve sofra; yumuşak, sakin, organik | Lora + Nunito Sans / Noto Naskh Arabic + Noto Sans Arabic |
+
+**Gece Ocağı silinmedi, dalda da bırakılmadı:** ana kodda `.tema-gece` bloğu ve
+`fontlar-gece.ts` olarak yaşıyor, her derlemede derleniyor. Aktif etmek için
+tek satır yeterli.
+
+Not: eski başlık fontu Marcellus'ta Kiril ve Arapça yoktu; Rusça ve Arapça
+başlıklar sistem serifine düşüyordu. Dört temanın dördü de bu boşluğu kapatıyor
+— kapsamlar Google Fonts CSS API'sinden tek tek doğrulandı.
+
+**3 — Ana seçim ekranı bağımsızlaştı**
+
+Kitabın dilinden tamamen ayrıldı: sıkışık şerit yok, sayaç yok, ok yok, levha
+çerçevesi yok, **dil kontrolü de yok** (senin kararın). Ortalanmış motif,
+"Huzur Pide", ince ayraç ve iki iri buton. Sunucudan gelen HTML üzerinde dört
+dilde doğrulandı — `dil-secenek`, `sayfa-numarasi`, `kitap-ok` ve `class="kitap"`
+sayıları **0**, `secim-karti` var. Akış aynı: dil seçimi → ana seçim → menü.
+
+Bu kural dört temanın hepsinde geçerli.
+
+**4 — Rusça ad sütunu sıkışması (boyut küçültmeden)**
+
+Çok fiyatlı tabloda ürün adı, gövde fontu yerine temanın **başlık fontunu**
+kullanıyor (Çini'de Cormorant). Aynı tarayıcıda A/B ölçüldü — punto,
+satır yüksekliği ve görsel ölçüsü sabit tutularak yalnızca font ailesi
+değiştirildi:
+
+| Ürün | Gövde fontuyla | Başlık fontuyla | Kazanç |
+|---|---|---|---|
+| Кыймалы (с фаршем) | 2 | 2 | — |
+| Кашарлы (с сыром) | 2 | 2 | — |
+| Суджуклу (с суджуком) | 3 | **2** | 1 satır |
+| Кыйма и кашар (фарш и сыр) | 4 | **3** | 1 satır |
+| Карышык (ассорти) | 2 | 2 | — |
+| Лахмаджун (тонкая лепёшка…) | 4 | 4 | — |
+| **Toplam** | **17 satır** | **15 satır** | **2 satır** |
+
+Ölçüler değişmedi: ad 17px, açıklama 13px, fiyat 13px, başlık 28px, görsel
+56×56. En uzun ad (Лахмаджун, 34 karakter) hâlâ 4 satır — sayfa artık dikey
+kaydığı için bu bir bozulma değil.
+
+**5 — Karo deseni yumuşatıldı**
+
+Karo ölçüsü 1,4rem → **0,75rem**, opaklık %5,5 → **%3**. Yakından doku
+hissediliyor, uzaktan düz zemin okunuyor.
+
+**6 — Doğrulama (390×844, üretim derlemesi)**
+
+| Test | Sonuç |
+|---|---|
+| Kategori listesinden gerçek tıklama (4 dil × 5 kategori) — adres, görünen bölüm, başlık, ürünler, sayaç, aşağı ok | **20/20** |
+| Her ölçümde görüş alanında tek sayfa, tam 390 px | 20/20 |
+| Yan oklar 1→5 ve 5→1 (4 dil) | **32/32** |
+| Uçlarda ok gizlenmesi | 8/8 |
+| Arapça yön: ileri = sola, geri = sağa, aşağı ok ortada (x=195) ve aynalanmamış | doğru |
+| Dikey kaydırma yatay konumu bozuyor mu | hayır — 390 sabit |
+| Aşağı ok dipte gizleniyor, yukarı dönünce geliyor | doğru |
+| Yatay taşma (belge ve gövde) | 0 |
+| Kaydırma çubuğu | görünmüyor; kurallar yayına giden CSS'te |
+| Konsol | **0 hata** (yalnızca 404 testinin kendi 404'ü) |
+| `tsc` · `lint` · `build` | temiz, **150 statik sayfa** |
+
+**JavaScript kapalıyken** (sunucudan gelen ham HTML, üç dilde): 31 ürün adı ve
+5 dikey kaydırma kutusu var, yan ok ve aşağı ok **yok**. Menü görünüyor ve
+kaydırılıyor; yalnızca ipucu kontrolleri kayboluyor — bugünkü davranışın
+aynısı.
+
+**7 — Kontrast (WCAG AA), dört tema**
+
+Gerçek render edilmiş renkler üzerinden, saydamlıklar zemine düzleştirilerek,
+Rusça sayfada ölçüldü. Her temada 11 öğe: başlık, ürün adı, açıklama, fiyat,
+sütun başlığı, marka, pasif/aktif dil düğmesi, "menüye dön", sayaç ve yer
+tutucu ikonu (metin dışı, eşik 3:1).
+
+| Tema | Geçen | En düşük ölçüm |
+|---|---|---|
+| Çini Levha | **11/11** | Fiyat 5,30 (eşik 4,5) |
+| Gece Ocağı | **11/11** | Yer tutucu ikonu 5,77 (eşik 3,0) |
+| Mürekkep | **11/11** | Yer tutucu ikonu 4,49 (eşik 3,0) |
+| Zeytin | **11/11** | Yer tutucu ikonu 3,99 (eşik 3,0) |
+
+Gece'de önceki önizlemede 2,84:1 kalan yer tutucu ikonu düz renge çekilip
+açıldı: **5,77:1**.
+
+**Değiştirilen dosyalar:**
+
+| Dosya | Durum |
+|---|---|
+| `app/temalar/` | **Yeni** — `temalar.css` (dört tema), dört font modülü, `aktif.ts`, `tum-fontlar.ts` |
+| `data/tema.ts` | **Yeni** — tema kodları, adlar, `AKTIF_TEMA` |
+| `components/TemaMotifi.tsx` | **Yeni** — dört motif, logo yerine |
+| `components/ekranlar.tsx` | **Yeni** — altı ekranın tamamı tek yerde |
+| `app/[dil]/not-found.tsx` | **Yeni** — 404 |
+| `app/[dil]/onizleme/[tema]/` | **Yeni** — dört tema × altı ekran önizlemesi |
+| `app/globals.css` | Bileşen katmanı tema değişkenlerine taşındı |
+| `app/[dil]/layout.tsx` | Tema sınıfı ve aktif tema fontları |
+| Sayfa dosyaları (5) | İnce sarmalayıcıya indi |
+| `components/UstBaslik.tsx` · `DilKontrolu.tsx` · `UrunGorseli.tsx` · `SayfaSayaci.tsx` | Tema değişkenleri, `tema` ve `yolOneki` aktarımı |
+| `onizleme-gorselleri/` | Mürekkep, Zeytin ve uygulanmış Çini görüntüleri |
+
+`data/menu.ts` ve `data/arayuz.ts` içeriğine dokunulmadı: ürün, fiyat, çeviri
+ve açıklamalar aynı. Rotalar, yatay akış, sayfa yapısı, oklar ve RTL davranışı
+değişmedi.
+
+**Bilinen not:** önizleme rotası dört temanın yazı tiplerini de çektiği için
+derleme sırasında 16 Google Fonts ailesi indiriliyor; bir kez geçici ağ
+hatasıyla derleme başarısız oldu, tekrarında geçti. Üretim ekranları bundan
+etkilenmiyor (yalnızca aktif temanın aileleri).
+
+**Sıradaki adım:** Push onayı bekleniyor.
 
 === RAPOR SONU ===
