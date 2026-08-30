@@ -1,7 +1,8 @@
 import type { Metadata, Viewport } from "next";
-import localFont from "next/font/local";
 import { notFound } from "next/navigation";
+import { AKTIF_TEMA_FONTLARI } from "@/app/temalar/aktif";
 import { DILLER, DIL_YONU, gecerliDil } from "@/data/menu";
+import { AKTIF_TEMA_SINIFI } from "@/data/tema";
 import "../globals.css";
 
 /**
@@ -13,16 +14,13 @@ import "../globals.css";
  * daha ilk baytta `dir="rtl"` ile geliyor — sayfa önce soldan sağa çizilip
  * sonra aynalanmıyor.
  *
+ * TEMA da burada: `<html>` üzerindeki `tema-*` sınıfı bütün --t-* renk ve
+ * yazı tipi değişkenlerini belirliyor. Ekranların hiçbiri temayı bilmiyor.
+ * Yazı tipleri `aktif.ts` üzerinden geliyor; üretimde yalnızca aktif temanın
+ * aileleri iniyor.
+ *
  * `/` adresi next.config.ts içinde `/tr`'ye yönlendiriliyor.
  */
-const marcellus = localFont({
-  src: "../fonts/Marcellus-Regular.woff2",
-  weight: "400",
-  style: "normal",
-  display: "swap",
-  variable: "--font-marcellus",
-  fallback: ["Georgia", "Cambria", "serif"],
-});
 
 export const metadata: Metadata = {
   title: "Huzur Pide",
@@ -31,7 +29,8 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#F5EFE6",
+  /* Adres çubuğunun rengi de temadan: Çini Levha'nın porselen zemini. */
+  themeColor: "#F6F2E9",
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
@@ -49,10 +48,12 @@ export default async function KokLayout({
   if (!gecerliDil(dil)) notFound();
 
   return (
-    <html lang={dil} dir={DIL_YONU[dil]} className={marcellus.variable}>
-      <body className="min-h-dvh bg-cream-50 bg-gradient-to-b from-cream-50 to-cream-100 font-body text-cocoa-900 antialiased">
-        {children}
-      </body>
+    <html
+      lang={dil}
+      dir={DIL_YONU[dil]}
+      className={`${AKTIF_TEMA_SINIFI} ${AKTIF_TEMA_FONTLARI}`}
+    >
+      <body className="min-h-dvh">{children}</body>
     </html>
   );
 }

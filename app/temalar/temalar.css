@@ -1,0 +1,327 @@
+/* ===========================================================================
+   TEMALAR
+
+   Bir tema = burada tanımlı bir değişken bloğu + kendi yazı tipi çifti
+   (`fontlar-*.ts`) + kendi motifi (`components/TemaMotifi.tsx`).
+
+   Ekranlar temayı BİLMİYOR: yalnızca --t-* değişkenlerini kullanıyorlar.
+   Hangi temanın geçerli olduğunu üstteki `tema-*` sınıfı belirliyor; kök
+   layout onu <html> üzerine koyuyor. Bir alt ağaca başka bir `tema-*` sınıfı
+   verilirse orada o tema geçerli olur — önizleme rotası bunu kullanıyor.
+
+   Dördü de her derlemede yayına giriyor: bloklar birkaç yüz bayt, ileride
+   admin panelinden seçim yapılabilmesi için hepsinin hazır durması gerekiyor.
+   Yazı tipleri bunun dışında — üretimde yalnızca AKTİF temanınkiler iniyor
+   (bkz. `app/temalar/aktif.ts`).
+
+   Değişken sözlüğü
+   ----------------
+   zemin/yuzey    sayfa zemini ve onun üstündeki kart/levha/şerit yüzeyi
+   metin/solgun   birincil ve ikincil metin
+   vurgu          motif, ok, sıra numarası — temanın imza rengi
+   baslik-renk    kategori ve ekran başlıkları
+   fiyat          fiyat rakamları (bilinçli olarak ayrı bir renk)
+   cizgi          saç teli ayraçlar
+   hayalet        arka plandaki dev sayfa numarası
+   desen          zemin dokusu (yoksa `none`)
+   =========================================================================== */
+
+/* ---------------------------------------------------------------------------
+   ÇİNİ LEVHA — aktif tema
+   İznik levhası: porselen zemin, kobalt, turkuaz ve mercan; ince bordür.
+   --------------------------------------------------------------------------- */
+.tema-cini {
+  --t-zemin: #f6f2e9;
+  --t-yuzey: #fffdf8;
+  --t-yuzey-vurgu: #f2f6f9;
+  --t-metin: #16233a;
+  --t-solgun: #55637c;
+  --t-vurgu: #1a4a8d;
+  --t-baslik-renk: #12356b;
+  --t-fiyat: #b23b26;
+
+  --t-yer-tutucu-zemin: #eaf1f0;
+  --t-yer-tutucu-renk: #2b8080;
+
+  --t-cizgi: rgba(18, 53, 107, 0.14);
+  --t-cizgi-guclu: rgba(18, 53, 107, 0.3);
+  --t-hayalet: rgba(26, 74, 141, 0.1);
+  --t-hayalet-guclu: rgba(18, 53, 107, 0.3);
+  --t-nokta: rgba(18, 53, 107, 0.4);
+
+  --t-baslik-font: var(--font-cormorant), Georgia, Cambria, serif;
+  --t-govde-font: var(--font-plex), system-ui, "Segoe UI", Arial, sans-serif;
+  --t-baslik-kalinlik: 700;
+  --t-ad-kalinlik: 600;
+
+  --t-yuvarlak: 0.25rem;
+  --t-yuvarlak-kucuk: 0.28rem;
+  --t-ok-yuvarlak: 0.3rem;
+  --t-golge: 0 1px 3px rgba(18, 53, 107, 0.1);
+  --t-ok-golge: 0 1px 4px rgba(18, 53, 107, 0.16);
+
+  /* Karo alanı: ölçü 0,75rem ve opaklık %3. Önizlemede 1,4rem/%5,5 idi ve
+     dama tahtası gibi okunuyordu; küçültülüp soldurulunca yakından doku,
+     uzaktan düz zemin oluyor. */
+  --t-desen:
+    linear-gradient(45deg, rgba(18, 53, 107, 0.03) 25%, transparent 25%,
+                    transparent 75%, rgba(18, 53, 107, 0.03) 75%),
+    linear-gradient(45deg, rgba(18, 53, 107, 0.03) 25%, transparent 25%,
+                    transparent 75%, rgba(18, 53, 107, 0.03) 75%);
+  --t-desen-boy: 0.75rem 0.75rem;
+  --t-desen-konum: 0 0, 0.375rem 0.375rem;
+
+  /* Yapisal farklar da degisken: torun secici (.tema-cini .levha) kullanilsaydi
+     <html> uzerindeki aktif tema, ic ice gecen bir onizleme sarmalayicisinin
+     icinde de eslesir ve yanlis temayi cizerdi. */
+  --t-levha-cizgi: 1px solid var(--t-cizgi-guclu);
+  --t-levha-dis-cizgi: 1px solid var(--t-cizgi);
+  --t-levha-dis-bosluk: 3px;
+  --t-levha-zemin: color-mix(in srgb, var(--t-yuzey) 86%, transparent);
+  --t-levha-bosluk: 0.9rem 0.85rem 1rem;
+  --t-levha-yuvarlak: var(--t-yuvarlak);
+
+  --t-baslik-hiza: center;
+  --t-baslik-donusum: none;
+  --t-ayrac-hiza: center;
+  --t-kural-yukseklik: 1px;
+  --t-kural-genislik: 4.5rem;
+  --t-kural-zemin: linear-gradient(to right, transparent, var(--t-cizgi-guclu), transparent);
+
+  --t-hayalet-bas: 0;
+  --t-hayalet-son: auto;
+  --t-hayalet-ust: -0.5rem;
+  --t-hayalet-punto: 3.6rem;
+
+  --t-kart-cizgi: 1px solid var(--t-cizgi-guclu);
+  --t-kart-dis-cizgi: 1px solid var(--t-cizgi);
+  --t-kart-dis-bosluk: 2px;
+  --t-gorsel-golge: none;
+}
+
+[dir="rtl"] .tema-cini {
+  --t-baslik-font: var(--font-reem), Tahoma, sans-serif;
+  --t-govde-font: var(--font-plex-arabic), "Segoe UI", Tahoma, sans-serif;
+  --t-baslik-kalinlik: 600;
+}
+
+/* ---------------------------------------------------------------------------
+   GECE OCAĞI
+   Akşam, ateşin karşısı. Koyu ve sıcak; fotoğraflar karanlıkta parlıyor.
+   --------------------------------------------------------------------------- */
+.tema-gece {
+  --t-zemin: #14100d;
+  --t-yuzey: #1f1912;
+  --t-yuzey-vurgu: #2a2118;
+  --t-metin: #f6ece1;
+  --t-solgun: #bda992;
+  --t-vurgu: #e59a4a;
+  --t-baslik-renk: #f6ece1;
+  --t-fiyat: #e5b567;
+
+  --t-yer-tutucu-zemin: #241c15;
+  /* Önizlemede %50 opaklıkta 2,84:1 kalıyordu (metin dışı eşik 3:1).
+     Düz renge çekilip açıldı. */
+  --t-yer-tutucu-renk: #c98a4e;
+
+  --t-cizgi: rgba(246, 236, 225, 0.1);
+  --t-cizgi-guclu: rgba(229, 154, 74, 0.26);
+  --t-hayalet: rgba(229, 154, 74, 0.11);
+  --t-hayalet-guclu: rgba(229, 154, 74, 0.32);
+  --t-nokta: rgba(246, 236, 225, 0.35);
+
+  --t-baslik-font: var(--font-playfair), Georgia, Cambria, serif;
+  --t-govde-font: var(--font-inter), system-ui, "Segoe UI", Arial, sans-serif;
+  --t-baslik-kalinlik: 700;
+  --t-ad-kalinlik: 500;
+
+  --t-yuvarlak: 0.85rem;
+  --t-yuvarlak-kucuk: 0.7rem;
+  --t-ok-yuvarlak: 999px;
+  --t-golge: 0 2px 12px rgba(0, 0, 0, 0.35);
+  --t-ok-golge: 0 2px 10px rgba(0, 0, 0, 0.5);
+
+  /* Tek süsleme: sayfanın tepesinden inen köz ışığı. */
+  --t-desen: radial-gradient(
+    120% 60% at 50% 0%,
+    rgba(229, 154, 74, 0.16) 0%,
+    rgba(229, 154, 74, 0.05) 38%,
+    transparent 72%
+  );
+  --t-desen-boy: auto;
+  --t-desen-konum: 0 0;
+
+
+  --t-levha-cizgi: none;
+  --t-levha-dis-cizgi: none;
+  --t-levha-dis-bosluk: 0;
+  --t-levha-zemin: transparent;
+  --t-levha-bosluk: 0;
+  --t-levha-yuvarlak: 0;
+
+  --t-baslik-hiza: start;
+  --t-baslik-donusum: none;
+  --t-ayrac-hiza: flex-start;
+  --t-kural-yukseklik: 1px;
+  --t-kural-genislik: none;
+  --t-kural-zemin: linear-gradient(to right, var(--t-cizgi-guclu), transparent);
+
+  --t-hayalet-bas: auto;
+  --t-hayalet-son: 0;
+  --t-hayalet-ust: -0.85rem;
+  --t-hayalet-punto: 4.5rem;
+
+  --t-kart-cizgi: 1px solid var(--t-cizgi-guclu);
+  --t-kart-dis-cizgi: none;
+  --t-kart-dis-bosluk: 0;
+  /* Fotograflarin kenarlari koyu zeminde kesilmis gibi durmasin. */
+  --t-gorsel-golge: inset 0 0 0 1px rgba(20, 16, 13, 0.5), 0 3px 12px rgba(0, 0, 0, 0.45);
+}
+
+[dir="rtl"] .tema-gece {
+  --t-baslik-font: var(--font-amiri), "Times New Roman", serif;
+  --t-govde-font: var(--font-noto-arabic), "Segoe UI", Tahoma, sans-serif;
+}
+
+/* ---------------------------------------------------------------------------
+   MÜREKKEP
+   Matbaa afişi: gazete kremi, kalın kurallar, sıkışık büyük harf başlıklar.
+   Süsleme yok — karakterin tamamı tipografiden geliyor.
+   --------------------------------------------------------------------------- */
+.tema-murekkep {
+  --t-zemin: #f2ede3;
+  --t-yuzey: #fbf8f1;
+  --t-yuzey-vurgu: #ece5d8;
+  --t-metin: #17150f;
+  --t-solgun: #57513f;
+  --t-vurgu: #bf3721;
+  --t-baslik-renk: #17150f;
+  --t-fiyat: #bf3721;
+
+  --t-yer-tutucu-zemin: #e6dfd0;
+  --t-yer-tutucu-renk: #6b6350;
+
+  --t-cizgi: rgba(23, 21, 15, 0.16);
+  --t-cizgi-guclu: rgba(23, 21, 15, 0.85);
+  --t-hayalet: rgba(23, 21, 15, 0.09);
+  --t-hayalet-guclu: rgba(23, 21, 15, 0.22);
+  --t-nokta: rgba(23, 21, 15, 0.4);
+
+  --t-baslik-font: var(--font-oswald), "Arial Narrow", sans-serif;
+  --t-govde-font: var(--font-source-sans), system-ui, "Segoe UI", Arial, sans-serif;
+  --t-baslik-kalinlik: 600;
+  --t-ad-kalinlik: 600;
+
+  --t-yuvarlak: 0;
+  --t-yuvarlak-kucuk: 0;
+  --t-ok-yuvarlak: 0;
+  --t-golge: none;
+  --t-ok-golge: none;
+
+  --t-desen: none;
+  --t-desen-boy: auto;
+  --t-desen-konum: 0 0;
+
+
+  --t-levha-cizgi: none;
+  --t-levha-dis-cizgi: none;
+  --t-levha-dis-bosluk: 0;
+  --t-levha-zemin: transparent;
+  --t-levha-bosluk: 0;
+  --t-levha-yuvarlak: 0;
+
+  --t-baslik-hiza: start;
+  --t-baslik-donusum: uppercase;
+  --t-ayrac-hiza: flex-start;
+  /* Matbaa dili: kural ince degil kalin. */
+  --t-kural-yukseklik: 3px;
+  --t-kural-genislik: none;
+  --t-kural-zemin: var(--t-cizgi-guclu);
+
+  --t-hayalet-bas: auto;
+  --t-hayalet-son: 0;
+  --t-hayalet-ust: -0.85rem;
+  --t-hayalet-punto: 4.5rem;
+
+  /* Kart degil kutu: kalin cerceve, golge yok. */
+  --t-kart-cizgi: 2px solid var(--t-metin);
+  --t-kart-dis-cizgi: none;
+  --t-kart-dis-bosluk: 0;
+  --t-gorsel-golge: none;
+}
+
+[dir="rtl"] .tema-murekkep {
+  --t-baslik-font: var(--font-cairo), Tahoma, sans-serif;
+  --t-govde-font: var(--font-noto-kufi), "Segoe UI", Tahoma, sans-serif;
+  --t-baslik-kalinlik: 700;
+}
+
+/* ---------------------------------------------------------------------------
+   ZEYTİN
+   Bahçe ve sofra: sıcak fildişi, zeytin yeşili, terrakota. Yumuşak, sakin.
+   --------------------------------------------------------------------------- */
+.tema-zeytin {
+  --t-zemin: #faf6ec;
+  --t-yuzey: #fffdf7;
+  --t-yuzey-vurgu: #f1f2e6;
+  --t-metin: #2b3327;
+  --t-solgun: #5f6b56;
+  --t-vurgu: #46553a;
+  --t-baslik-renk: #3a4830;
+  --t-fiyat: #a85a36;
+
+  --t-yer-tutucu-zemin: #edf0e3;
+  --t-yer-tutucu-renk: #6b7a58;
+
+  --t-cizgi: rgba(70, 85, 58, 0.16);
+  --t-cizgi-guclu: rgba(70, 85, 58, 0.32);
+  --t-hayalet: rgba(70, 85, 58, 0.1);
+  --t-hayalet-guclu: rgba(70, 85, 58, 0.28);
+  --t-nokta: rgba(70, 85, 58, 0.35);
+
+  --t-baslik-font: var(--font-lora), Georgia, Cambria, serif;
+  --t-govde-font: var(--font-nunito), system-ui, "Segoe UI", Arial, sans-serif;
+  --t-baslik-kalinlik: 600;
+  --t-ad-kalinlik: 600;
+
+  --t-yuvarlak: 1.1rem;
+  --t-yuvarlak-kucuk: 0.9rem;
+  --t-ok-yuvarlak: 999px;
+  --t-golge: 0 2px 10px rgba(70, 85, 58, 0.1);
+  --t-ok-golge: 0 1px 5px rgba(70, 85, 58, 0.16);
+
+  /* Çok soluk, yumuşak bir benek dokusu — dokunmuş keten hissi. */
+  --t-desen: radial-gradient(rgba(70, 85, 58, 0.05) 1px, transparent 1px);
+  --t-desen-boy: 0.9rem 0.9rem;
+  --t-desen-konum: 0 0;
+
+
+  --t-levha-cizgi: none;
+  --t-levha-dis-cizgi: none;
+  --t-levha-dis-bosluk: 0;
+  --t-levha-zemin: transparent;
+  --t-levha-bosluk: 0;
+  --t-levha-yuvarlak: 0;
+
+  --t-baslik-hiza: start;
+  --t-baslik-donusum: none;
+  --t-ayrac-hiza: flex-start;
+  --t-kural-yukseklik: 1px;
+  --t-kural-genislik: none;
+  --t-kural-zemin: linear-gradient(to right, var(--t-cizgi-guclu), transparent);
+
+  --t-hayalet-bas: auto;
+  --t-hayalet-son: 0;
+  --t-hayalet-ust: -0.85rem;
+  --t-hayalet-punto: 4.5rem;
+
+  --t-kart-cizgi: 1px solid var(--t-cizgi-guclu);
+  --t-kart-dis-cizgi: none;
+  --t-kart-dis-bosluk: 0;
+  --t-gorsel-golge: none;
+}
+
+[dir="rtl"] .tema-zeytin {
+  --t-baslik-font: var(--font-naskh), "Times New Roman", serif;
+  --t-govde-font: var(--font-noto-arabic), "Segoe UI", Tahoma, sans-serif;
+}

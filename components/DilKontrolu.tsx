@@ -9,26 +9,20 @@ import { DILLER, DIL_ADI, DIL_BAYRAGI, DIL_KISA_AD, metin, type DilKodu } from "
  * adresine gidiyor (`/tr/menu/izgara` → `/ar/menu/izgara`), yani dil
  * değiştirince müşteri baktığı sayfayı kaybetmiyor.
  *
- * Aktif dil `aria-current="true"` ile işaretli; görsel olarak da sütlü kahve
- * zemin ve alt çizgiyle ayrılıyor — yalnızca renkle değil, şekille de.
+ * Aktif dil `aria-current="true"` ile işaretli; görsel olarak da dolu zemin
+ * ve ters renkle ayrılıyor — yalnızca renkle değil, şekille de.
  */
 export function DilKontrolu({
   aktifDil,
   /** Dil önekinden SONRAKİ yol, başında eğik çizgiyle. Örn. "/menu/izgara". */
   yol,
-  /** Menü kitabındaki sıkışık varyant: üst boşluk azaltılıyor. */
-  sikisik = false,
 }: {
   aktifDil: DilKodu;
   yol: string;
-  sikisik?: boolean;
 }) {
   return (
-    <nav
-      aria-label={ui("dilDegistir", aktifDil)}
-      className={`flex justify-center ${sikisik ? "mt-2" : "mt-5"}`}
-    >
-      <ul className="flex items-center gap-1">
+    <nav aria-label={ui("dilDegistir", aktifDil)} className="dil-kontrolu">
+      <ul className="dil-listesi">
         {DILLER.map((dil) => {
           const aktif = dil === aktifDil;
           const bayrak = DIL_BAYRAGI[dil];
@@ -39,7 +33,7 @@ export function DilKontrolu({
                 hrefLang={dil}
                 lang={dil}
                 aria-current={aktif ? "true" : undefined}
-                className={`dil-secenek ${aktif ? "dil-secenek-aktif" : ""}`}
+                className={`dil-secenek odak ${aktif ? "dil-secenek-aktif" : ""}`}
               >
                 {/* Bayrak dekoratif: yanindaki kisaltma zaten dili soyluyor. */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}

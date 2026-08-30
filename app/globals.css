@@ -1,44 +1,18 @@
 @import "tailwindcss";
+@import "./temalar/temalar.css";
 
 /* ---------------------------------------------------------------------------
-   Huzur Pide — tasarim tokenlari.
+   Huzur Pide — tasarim sistemi.
 
-   Tailwind v4'te palet artik tailwind.config.js'te degil, bu @theme blogunda
-   tanimlanir. Buradaki her --color-* degeri kendiliginden bir utility uretir:
-   --color-latte-400  ->  bg-latte-400 / text-latte-400 / ring-latte-400 ...
+   Bilesen siniflari artik sabit renk/font degerleri KULLANMIYOR: hepsi
+   `app/temalar/temalar.css` icindeki --t-* degiskenlerinden besleniyor.
+   Boylece ekranlar temayi bilmiyor; hangi temanin gecerli oldugunu <html>
+   uzerindeki `tema-*` sinifi belirliyor.
+
+   Yon bagimliligi yok: ml/mr/left/right yerine margin-inline, inset-inline
+   ve text-align: start. <html dir="rtl"> verildiginde duzen kendiliginden
+   aynalaniyor.
    --------------------------------------------------------------------------- */
-@theme {
-  /* Bej zeminler */
-  --color-cream-50: #f5efe6;
-  --color-cream-100: #ede0d4;
-  /* Kraft — yalnizca urun sayfalarinin zemini. Duz, gradyansiz: kagit
-     hissi icin. Uzerinde cocoa-900 7.91:1, cocoa-700 5.02:1,
-     paprika-600 4.39:1 veriyor. */
-  --color-cream-150: #e7d6c0;
-  --color-cream-200: #e0cdb8;
-
-  /* Sutlu kahve — butonlar ve vurgular */
-  --color-latte-400: #c8a27a;
-  --color-latte-500: #b08968;
-  --color-latte-600: #96745a;
-
-  /* Koyu kahve — metin */
-  --color-cocoa-700: #6b5342;
-  --color-cocoa-900: #4a3728;
-
-  /* Kahve ile turuncu arasi — kategori basliklari.
-     500 buyuk metin icin (cream-50 uzerinde 4.38:1, cream-100 uzerinde 3.86:1),
-     600 kucuk metin icin (5.45:1 / 4.81:1 — normal metin AA esigini gecer). */
-  --color-paprika-400: #c2622a;
-  --color-paprika-500: #b0561f;
-  --color-paprika-600: #9a4a1a;
-
-  /* Yazi tipleri. --font-display degiskeni layout.tsx'te next/font tarafindan
-     dolduruluyor; govde metni bilincli olarak sistem fontlarinda. */
-  --font-display: var(--font-marcellus), Georgia, Cambria, serif;
-  --font-body: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
-    Arial, sans-serif;
-}
 
 /* ---------------------------------------------------------------------------
    Taban katmani
@@ -52,8 +26,8 @@
 
   /* Yatay tasmaya karsi kesin kilit.
      `hidden` yerine `clip`: `hidden` yalnizca kullanici hareketini engelliyor,
-     belge programatik olarak (ve bazi tarayicilarda kazara) yatay kayabiliyor.
-     `clip` her ikisini de kapatiyor ve kaydirma kabi olusturmuyor.
+     belge programatik olarak yatay kayabiliyor. `clip` her ikisini de kapatiyor
+     ve kaydirma kabi olusturmuyor.
 
      Menu kitabinin yatay kaydirmasi bundan ETKILENMIYOR: o kendi kabinda
      (.kitap) yasiyor, belge seviyesinde degil. */
@@ -63,7 +37,11 @@
   }
 
   body {
+    background-color: var(--t-zemin);
+    color: var(--t-metin);
+    font-family: var(--t-govde-font);
     text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
   }
 
   /* Hareket azaltma tercihini isletim sisteminden okur.
@@ -81,514 +59,995 @@
 }
 
 /* ---------------------------------------------------------------------------
-   Bilesenler
-
-   Yon bagimli hicbir utility yok (ml/mr/left/right yerine gap, px, text-start).
-   Bu sayede <html dir="rtl"> verildiginde duzen kendiliginden aynalanir.
+   Ortak parcalar
    --------------------------------------------------------------------------- */
-@layer components {
-  /* --- Dil secim butonu --- */
-  .lang-btn {
-    @apply flex min-h-14 w-full items-center gap-4 rounded-2xl
-           bg-latte-400 px-4 py-3.5 text-start
-           shadow-md shadow-cocoa-900/10
-           ring-1 ring-latte-600/25
-           outline-hidden transition duration-200 ease-out
-           hover:-translate-y-0.5 hover:bg-latte-500 hover:shadow-lg hover:shadow-cocoa-900/20
-           active:translate-y-0 active:scale-[0.985] active:bg-latte-500
-           active:shadow-sm active:ring-latte-600/60 active:duration-75
-           focus-visible:outline-solid focus-visible:outline-2
-           focus-visible:outline-offset-[3px] focus-visible:outline-cocoa-900;
-  }
-
-  /* Bayraklarin en-boy orani birbirinden farkli (tr 3:2, gb 1:2, ae 2:1,
-     ru 3:2). Sabit genislikte bir slot hepsini ayni yere oturtup metinlerin
-     hizasini korur. */
-  .flag-slot {
-    @apply flex w-12 shrink-0 items-center justify-center;
-  }
-
-  /* Ince kenarlik: RU/GB/AE bayraklarindaki beyaz alanlar sutlu kahve
-     zeminde kaybolmasin diye. */
-  .flag {
-    @apply h-6 w-auto max-w-full rounded-[3px]
-           ring-1 ring-cocoa-900/25 shadow-sm shadow-cocoa-900/20;
-  }
-
-  .lang-name {
-    @apply flex-1 text-xl font-semibold leading-tight text-cocoa-900;
-  }
-
-  /* Arap alfabesi ayni punto degerinde latin harflerden kucuk gorunur. */
-  .lang-name[lang="ar"] {
-    @apply text-2xl leading-snug;
-  }
-
-  .lang-arrow {
-    @apply h-5 w-5 shrink-0 text-cocoa-900/45
-           transition-transform duration-200 ease-out;
-    --arrow-flip: 1;
-    --arrow-shift: 0rem;
-    /* scaleX once yazilir: RTL'de koordinat sistemi terslendigi icin sonraki
-       translateX de kendiliginden sola kayar. Tailwind'in translate-x-*
-       utility'si fiziksel yonlu oldugu icin kullanilmadi. */
-    transform: scaleX(var(--arrow-flip)) translateX(var(--arrow-shift));
-  }
-
-  /* <html dir="rtl"> verildiginde ok kendiliginden sola doner. */
-  [dir="rtl"] .lang-arrow {
-    --arrow-flip: -1;
-  }
-
-  .lang-btn:hover .lang-arrow {
-    @apply text-cocoa-900/70;
-    --arrow-shift: 0.25rem;
-  }
-
-  /* ======================================================================
-     Menu sayfalari
-     ====================================================================== */
-
-  /* Her menu sayfasinin ortak govde genisligi. QR menu telefondan
-     acilacagi icin taban 28rem; buyuk ekranda okunakli bir sutun olarak
-     kaliyor, sayfaya yayilmiyor. */
-  .menu-sayfa {
-    @apply mx-auto w-full max-w-md px-5 pb-16 sm:max-w-lg sm:px-6 lg:max-w-2xl;
-  }
-
-  /* --- Noktali ayracli satir (hem icindekiler hem fiyat satirlari) ---
-     .nokta bos bir eleman; icine sifir genislikli bosluk konarak metin
-     temel cizgisi kazaniyor, boylece items-baseline ile ad ve deger
-     satirina tam oturuyor. */
-  /* items-baseline-last: urun adi iki satira tastiginda noktalar ve fiyat
-     adin SON satirinin hizasina oturuyor. Duz items-baseline olsaydi fiyat
-     ilk satirin yanina, yani adin ortasina denk gelirdi. */
-  .ayrac-satir {
-    @apply flex items-baseline-last gap-2;
-  }
-
-  /* self-baseline VERILMEZ: kapsayicidan items-baseline-last miras alsin,
-     yoksa ad iki satira tastiginda noktalar ilk satirda kalirdi. */
-  .nokta {
-    @apply min-w-6 flex-1 -translate-y-[0.22em]
-           border-b-2 border-dotted border-cocoa-900/35;
-  }
-
-  .nokta::before {
-    content: "\200B"; /* zero-width space */
-  }
-
-  /* --- Ekran A: icindekiler --- */
-  /* Not: Tailwind v4'te @apply yalnizca gercek utility'lerle calisiyor,
-     baska bir bilesen sinifi (.ayrac-satir) uygulanamiyor — bu yuzden
-     hizalama kurallari burada tekrar yaziliyor. */
-  .icindekiler-satir {
-    @apply flex items-baseline-last gap-2
-           w-full rounded-xl px-3 py-3.5 text-start
-           outline-hidden transition-colors duration-150
-           hover:bg-cream-200/50
-           focus-visible:outline-solid focus-visible:outline-2
-           focus-visible:outline-offset-2 focus-visible:outline-cocoa-900;
-  }
-
-  /* 24px (WCAG'in "buyuk metin" esigi) bilincli bir secim: paprika-500 bu
-     puntonun altinda normal metin sayiliyor ve 4.5:1 esigini geciremiyordu
-     (satir hover'inda 3.54:1'e kadar dusuyor). 24px'te esik 3:1 oluyor ve
-     rahat geciliyor. Fontu koyulastirmak da bir secenekti ama Marcellus'un
-     tek agirligi var, tarayici sahte kalin uretirdi. */
-  .icindekiler-ad {
-    @apply font-display text-2xl leading-snug text-paprika-500;
-  }
-
-  .icindekiler-sayfa {
-    @apply shrink-0 text-base font-semibold whitespace-nowrap tabular-nums
-           text-cocoa-700 sm:text-lg;
-  }
-
-  /* --- Ekran B: urun satirlari --- */
-
-  /* Gorsel yuvasi. Her satirda ayni genislikte — fotografi olmayan urunde
-     yer tutucu duruyor, bos kalmiyor. Sabit genislik sayesinde butun urun
-     adlari ayni hizada basliyor ve fotograf eklendiginde duzen degismiyor. */
-  .gorsel-yuvasi {
-    @apply w-20 shrink-0 md:w-52;
-  }
-
-  /* Mobilde kare kirpilmis kucuk gorsel, md ustunde 16:9 tam gorsel. */
-  .urun-gorsel {
-    @apply aspect-square w-20 rounded-xl object-cover
-           ring-1 ring-cocoa-900/15 shadow-sm shadow-cocoa-900/15
-           md:aspect-video md:w-52;
-  }
-
-  /* Fotografi olmayan urunler icin yer tutucu. Gorselle birebir ayni olcu:
-     fotograf eklendiginde satir hizasi degismiyor. Golge YOK — yer tutucu
-     one cikmamali, sadece bosluk dolduruyor. */
-  .urun-gorsel-yer-tutucu {
-    @apply flex aspect-square w-20 items-center justify-center rounded-xl
-           bg-cream-200/70 text-latte-600/60
-           ring-1 ring-latte-600/20 ring-inset
-           md:aspect-video md:w-52;
-  }
-
-  /* Telefonda dikey dolgu 16 -> 10px. Kitap ekran yuksekligine sigmak
-     zorunda ve satir sayisi cok: her satirdan kazanilan 12px sayfa basina
-     4 satirda 48px ediyor. md ustunde yer bol, eski deger geri geliyor. */
-  .urun-satir {
-    @apply flex items-center gap-4 py-2.5 md:gap-6 md:py-5;
-  }
-
-  .urun-govde {
-    @apply min-w-0 flex-1;
-  }
-
-  /* Sayfalar bolundugu icin satir basina daha cok yer var: punto 16 -> 18. */
-  .urun-ad {
-    @apply text-lg leading-snug font-medium text-cocoa-900 sm:text-xl;
-  }
-
-  .urun-fiyat {
-    @apply shrink-0 text-base font-semibold whitespace-nowrap tabular-nums
-           text-cocoa-900 sm:text-lg;
-  }
-
-  /* Fiyati teyit edilmemis kalem: gorsel olarak ayirt edilmiyor (musteri
-     icin fiyat fiyattir), sadece isaretleniyor ki admin panelinde ve
-     testlerde bulunabilsin. */
-  .urun-fiyat[data-dogrulandi="false"] {
-    @apply text-cocoa-900;
-  }
-
-  /* --- Cok fiyatli kategori (kapali pideler) ---
-     Gercek bir <table>: veri zaten tablo (urun x hamur boyu -> fiyat).
-     Tablo sutunlari kendiliginden hizalandigi icin baslik satiri ile fiyat
-     hucreleri piksel piksel ustuste oturuyor; ayrica <th scope="col">
-     sayesinde ekran okuyucu her hucrenin hangi sutuna ait oldugunu
-     kendiliginden soyluyor. dir="rtl" verildiginde tablo da aynalanir. */
-  .pide-tablo {
-    @apply w-full border-collapse;
-  }
-
-  /* ps-* fiyat hucreleriyle ayni: basliklar da hucreler de ayni ic bosluga
-     sahip olsun ki dar sutunlarda birbirine yapismasinlar. */
-  .pide-sutun-basligi {
-    @apply border-b border-latte-600/50 pb-2 ps-2 text-end
-           text-xs leading-tight font-semibold tracking-wide
-           text-cocoa-700 uppercase sm:ps-3 sm:text-sm;
-  }
-
-  /* whitespace-nowrap: dar ekranda sutun sikistiginda "400" ile "TL"nin
-     alt alta dusmesini engeller. Ad sutunu zaten esnek, o sarabilir. */
-  .pide-hucre {
-    @apply py-2.5 ps-2 text-end align-middle text-base font-semibold
-           whitespace-nowrap tabular-nums text-cocoa-900
-           sm:ps-3 sm:text-lg md:py-4;
-  }
-
-  .pide-hucre-bos {
-    @apply text-cocoa-700/40;
-  }
-
-  .pide-ad-hucre {
-    @apply py-2.5 align-middle md:py-4;
-  }
-
-  /* Gorsel hucresi her ekranda duruyor.
-     Bir sure telefonda gizliydi: sayfayi tek ekrana sigdirmak icin ad
-     sutununa yer aciyordu. Sigdirma hedefi birakilinca gizlemenin gerekcesi
-     de kalmadi — sayfa uzarsa kullanici asagi kaydiriyor. */
-  .pide-gorsel-hucre {
-    @apply table-cell py-2.5 pe-4 align-middle md:py-4;
-  }
-
-  /* Cok fiyatli tabloda gorsel telefonda daraliyor (80 -> 56px). Tek fiyatli
-     sayfalarda satiri gorsel ile ad paylasiyor, burada ise ad ayrica uc fiyat
-     sutunuyla da paylasmak zorunda: 390px'te ada 110px kaliyordu ve Arapca
-     adlar bes satira kadar sariyordu. md ustunde yer bol, 208px'e donuyor. */
-  .pide-tablo .urun-gorsel,
-  .pide-tablo .urun-gorsel-yer-tutucu {
-    @apply w-14 md:w-52;
-  }
-
-  /* --- Dil degistirme kontrolu (menu sayfalari) ---
-     Dort secenek 390px'te sigmali: bayrak kucuk, ic bosluk dar, punto 12px.
-     Dokunma hedefi min-h-9 (36px) ile korunuyor. */
-  .dil-secenek {
-    @apply flex min-h-9 items-center gap-1.5 rounded-lg px-2 py-1.5
-           text-xs font-semibold tracking-wide text-cocoa-700 uppercase
-           outline-hidden transition-colors duration-150
-           hover:bg-cream-200/60 hover:text-cocoa-900
-           focus-visible:outline-solid focus-visible:outline-2
-           focus-visible:outline-offset-2 focus-visible:outline-cocoa-900
-           sm:gap-2 sm:px-2.5 sm:text-sm;
-  }
-
-  /* Aktif dil yalnizca renkle degil, zemin ve alt cizgiyle de ayriliyor. */
-  .dil-secenek-aktif {
-    @apply bg-latte-400/35 text-cocoa-900 shadow-xs shadow-cocoa-900/10
-           ring-1 ring-latte-600/30;
-  }
-
-  .dil-bayrak {
-    @apply h-3.5 w-auto max-w-6 rounded-[2px]
-           ring-1 ring-cocoa-900/25 sm:h-4;
-  }
-
-  /* --- Urun icerik aciklamasi ---
-     Turkce'de hic render edilmiyor; en/ar/ru'da urun adinin altinda. */
-  /* font-normal gerekli: pide tablosunda aciklama <th scope="row"> icinde
-     duruyor ve th varsayilan olarak kalin, aciklama da kalin geliyordu. */
-  .urun-icerik {
-    @apply mt-1 text-sm leading-snug font-normal text-cocoa-700 sm:text-[0.9375rem];
-  }
-
-  /* --- Ana secim ekrani kartlari ---
-     Dil secim butonlarindan bilincli olarak daha iri: yukseklik 56px degil
-     96px, ikon 40px, baslik gosterim fontunda. Iki ekran art arda
-     goruldugunde ayni bilesen gibi okunmasin diye. */
-  .secim-karti {
-    @apply flex min-h-24 w-full items-center gap-4 rounded-2xl
-           bg-latte-400 px-5 py-5 text-start
-           shadow-md shadow-cocoa-900/10
-           ring-1 ring-latte-600/25
-           outline-hidden transition duration-200 ease-out
-           hover:-translate-y-0.5 hover:bg-latte-500 hover:shadow-lg hover:shadow-cocoa-900/20
-           active:translate-y-0 active:scale-[0.985] active:bg-latte-500
-           active:shadow-sm active:ring-latte-600/60 active:duration-75
-           focus-visible:outline-solid focus-visible:outline-2
-           focus-visible:outline-offset-[3px] focus-visible:outline-cocoa-900
-           sm:gap-5 sm:px-6;
-  }
-
-  .secim-ikonu {
-    @apply h-10 w-10 shrink-0 text-cocoa-900/70
-           transition-colors duration-200 sm:h-11 sm:w-11;
-  }
-
-  .secim-karti:hover .secim-ikonu {
-    @apply text-cocoa-900;
-  }
-
-  .secim-basligi {
-    @apply flex-1 font-display text-2xl leading-tight text-cocoa-900 sm:text-3xl;
-  }
-
-  /* --- Organizasyon sayfasi: hazirlaniyor blogu --- */
-  .hazirlaniyor {
-    @apply mx-auto mt-10 flex max-w-sm flex-col items-center gap-4
-           rounded-2xl bg-cream-200/50 px-6 py-10 text-center
-           ring-1 ring-latte-600/20 ring-inset;
-  }
-
-  .hazirlaniyor-metin {
-    @apply text-base leading-relaxed text-cocoa-700 sm:text-lg;
-  }
-
-  /* ======================================================================
-     Menu kitabi — yatay kaydirma
-     ====================================================================== */
-
-  /* Kitabin disi: ekran yuksekliginde, kendisi kaymiyor.
-     Zemin duz kraft — urun sayfalarina ozel; diger ekranlar bej gradyanda. */
-  .kitap-cercevesi {
-    @apply flex h-dvh flex-col overflow-hidden bg-cream-150;
-  }
-
-  /* Yatay kaydirma kabi.
-     scroll-snap ile her sayfa ekrana tam oturuyor. Kaydirmanin kendisi
-     tamamen tarayicinin isi — JavaScript ile taklit edilmiyor, bu yuzden
-     parmak takibi ve ivme native hissettiriyor. Animasyon YOK: snap yalnizca
-     hizalar, sayfa cevirme efekti uygulamaz.
-     dir="rtl" verildiginde yon kendiliginden tersine doner. */
-  .kitap {
-    @apply flex min-h-0 flex-1 snap-x snap-mandatory overflow-x-auto overflow-y-hidden;
-    scrollbar-width: none;
-    overscroll-behavior-x: contain;
-    /* touch-action DENENDI VE GERI ALINDI: `.kitap` icin pan-x,
-       `.kitap-icerik` icin pan-y verildiginde kaydirma TAMAMEN durdu.
-       Sebep: tarayici, dokunmanin basladigi elemandan yukari dogru butun
-       ata zincirinin touch-action degerlerini KESISTIRIYOR; pan-y ∩ pan-x
-       bos kume oluyor ve hicbir yonde kaydirma kalmiyor. Gercek tarayicida
-       olculdu (Chrome ve WebKit: 4 -> 4, sayfa degismedi). */
-    /* contain: paint OLMADAN, 7 sayfanin toplam genisligi (2733px) belgenin
-       kaydirma alanina sizip <html> seviyesinde yatay kaydirma aciyordu —
-       overflow-x: clip/hidden bile engellemiyordu. Bu ilan kitabin icerigini
-       kendi kutusuna hapsediyor; belge artik hic yatay kaymiyor.
-       Kitabin KENDI yatay kaydirmasi etkilenmiyor. */
-    contain: paint;
-  }
-
-  .kitap::-webkit-scrollbar {
-    display: none;
-  }
-
-  /* snap-always: hizli bir parmak hareketinde birden fazla sayfa atlanmiyor,
-     her seferinde bir sonraki sayfada duruluyor. Kitap gibi. */
-  .kitap-sayfa {
-    @apply flex h-full w-full shrink-0 snap-start snap-always flex-col;
-  }
-
-  /* Sayfa icerigi ekrana sigmazsa SAYFA KENDI ICINDE dikey kayar.
-     overscroll YALNIZCA Y ekseninde contain: dikey kaydirma yatay kaba
-     tasmiyor, ama yatay parmak hareketi kaba ZINCIRLENEBILIYOR.
-
-     Bu ayrim kritik. `overscroll-behavior: contain` (iki eksen) yazildiginda
-     yatay kaydirma tamamen olmuyordu: overflow-y:auto verilen bir elemanda
-     overflow-x de otomatik olarak `auto`ya donuyor, boylece bu kutu yatayda
-     da bir kaydirma kabi sayiliyor ve contain parmagin yatay hareketini
-     ustteki .kitap'a gecirmiyordu. Gercek dokunmatik testte yakalandi. */
-  .kitap-icerik {
-    @apply mx-auto w-full max-w-md min-h-0 flex-1 overflow-y-auto
-           overscroll-y-contain overscroll-x-auto px-5 pb-3
-           sm:max-w-lg sm:px-6 md:pb-8 lg:max-w-2xl;
-    /* Dikey kaydirma cubugu gizli — kaydirma ISLEVI duruyor, yalnizca cubuk
-       cizilmiyor. Ikisi birlikte her tarayiciyi kapsiyor: scrollbar-width
-       standart ozellik (Firefox, yeni Chrome/Edge, Safari 18.2+),
-       ::-webkit-scrollbar eski Safari ve Chrome/Edge icin.
-       Ayni yontem .kitap'ta yatay cubuk icin zaten kullaniliyor. */
-    scrollbar-width: none;
-  }
-
-  .kitap-icerik::-webkit-scrollbar {
-    display: none;
-  }
-
-  /* --- Sayfa cevirme oklari ---
-     Kitabin ICINDE degil, kardes katmanda duruyorlar: .kitap bir kaydirma
-     kabi ve icine konan mutlak konumlu bir cocuk sayfalarla birlikte kayardi.
-     Bu yuzden .kitap bir .kitap-alani sarmalayicisina alindi. */
-  .kitap-alani {
-    @apply relative flex min-h-0 flex-1;
-  }
-
-  /* Dokunma hedefi 44x44 (seffaf), gorunen kisim icerideki 20px'lik daire:
-     buyuk hedef, kucuk gorsel.
-
-     Gorunen daire, sayfanin 20px'lik kenar boslugunun ICINE sigiyor ve kenara
-     dayali duruyor — icerigin ustune binmiyor. Ilk denemede daire 28px'ti ve
-     kenardan 2px iceriydi: Arapca kapali-pide sayfasinda "440 ₺" fiyatinin ilk
-     rakamini ortuyordu (yazi kutulariyla olculdu, 279px kare ortusme). Seffaf
-     dokunma alani iceri tasabilir, orada tiklanacak baska bir sey yok. */
-  .kitap-ok {
-    @apply absolute top-1/2 z-10 flex h-11 w-11 -translate-y-1/2
-           items-center rounded-full outline-hidden
-           focus-visible:outline-solid focus-visible:outline-2
-           focus-visible:outline-offset-2 focus-visible:outline-cocoa-900;
-  }
-
-  /* Yon bagimsiz: RTL'de kitap sagdan sola aktigi icin "ileri" gercekten
-     sol kenardir; inset-inline-* bunu kendiliginden halleder. */
-  /* justify-*: gorunen daire 44px'lik dokunma alaninin ICINDE degil, DIS
-     kenarinda duruyor — boylece sayfanin kenar boslugunu asmiyor. Ortalanmis
-     olsaydi 12px iceriden baslar ve icerigin ustune binerdi. */
-  .kitap-ok-ileri {
-    @apply end-0 justify-end;
-  }
-
-  .kitap-ok-geri {
-    @apply start-0 justify-start;
-  }
-
-  .kitap-ok-govde {
-    @apply flex h-5 w-5 items-center justify-center rounded-full
-           bg-cream-50/85 text-cocoa-700
-           ring-1 ring-latte-600/30 shadow-sm shadow-cocoa-900/10
-           transition duration-150 ease-out
-           sm:h-6 sm:w-6;
-  }
-
-  .kitap-ok:hover .kitap-ok-govde {
-    @apply bg-cream-50 text-cocoa-900;
-  }
-
-  .kitap-ok:active .kitap-ok-govde {
-    @apply scale-95 bg-cream-100 duration-75;
-  }
-
-  /* Chevron kaynakta hep saga bakiyor; yon degiskenle aynalaniyor.
-     Sira onemli: en spesifik kural (RTL + geri) en sonda. */
-  .kitap-ok-simge {
-    @apply h-3 w-3 sm:h-3.5 sm:w-3.5;
-    --ok-flip: 1;
-    transform: scaleX(var(--ok-flip));
-  }
-
-  [dir="rtl"] .kitap-ok-simge {
-    --ok-flip: -1;
-  }
-
-  .kitap-ok-geri .kitap-ok-simge {
-    --ok-flip: -1;
-  }
-
-  [dir="rtl"] .kitap-ok-geri .kitap-ok-simge {
-    --ok-flip: 1;
-  }
-
-  /* --- Asagi ok: "asagida devami var" ipucu ---
-     Alt seridin ORTASINDA, mutlak konumlu: seridin iki ucundaki "Menuye don"
-     ve sayac justify-between ile yerlestigi icin akista ucuncu bir eleman
-     ikisinin yerini kaydirirdi. Mutlak konum seridi yukseltmiyor da —
-     44px'lik dokunma hedefi seridin mevcut yuksekligiyle ayni.
-
-     Icerigin DISINDA duruyor: sayfa alaninin ustune binmedigi icin hicbir
-     urunu veya fiyati ortemiyor. Kenar oklarindan farki bu; onlar sayfanin
-     kenar boslugunda duruyor. */
-  .kitap-ok-asagi {
-    @apply absolute start-1/2 top-1/2 z-10 flex h-11 w-11
-           -translate-x-1/2 -translate-y-1/2 items-center justify-center
-           rounded-full outline-hidden
-           focus-visible:outline-solid focus-visible:outline-2
-           focus-visible:outline-offset-2 focus-visible:outline-cocoa-900;
-  }
-
-  /* RTL'de start-1/2 sagdan olculuyor, bu yuzden aynalama da ters olmali. */
-  [dir="rtl"] .kitap-ok-asagi {
-    @apply translate-x-1/2;
-  }
-
-  /* Kenar oklarinin --ok-flip zincirine BILEREK girmiyor: asagi her iki
-     yazma yonunde de asagidir, Arapca'da aynalanmamali. Olcu kenar
-     oklarinin chevron'uyla ayni. */
-  .kitap-ok-simge-asagi {
-    @apply h-3 w-3 sm:h-3.5 sm:w-3.5;
-  }
-
-  /* Kitabin alt seridi: "Menuye don" ve sayfa numarasi ayni satirda.
-     Dugme eskiden her yapragin icinde duruyordu ve ust bosluguyla birlikte
-     SAYFA BASINA 80px yiyordu. Buraya tasinmasi seridi yukseltmiyor: seridin
-     yuksekligini zaten 44px'lik dokunma hedefi belirliyor, sayacin 20px'lik
-     satiri onun altinda kaliyor. Kazanilan 80px urun satirlarina kaldi.
-
-     Yon bagimsiz: justify-between RTL'de kendiliginden aynaliyor, dugme
-     Arapca'da sagda duruyor. */
-  /* relative: ortadaki asagi okun konumlandirma cercevesi. Boslugu ve
-     yuksekligi degistirmiyor. */
-  .alt-serit {
-    @apply relative flex shrink-0 items-center justify-between gap-2 px-3 sm:px-4;
-  }
-
-  /* min-h-11 (44px) dokunma hedefi; punto kucultulmedi. */
-  .alt-serit-baglanti {
-    @apply flex min-h-11 items-center rounded-xl px-3 text-sm font-semibold
-           whitespace-nowrap text-cocoa-700
-           outline-hidden transition-colors duration-150
-           hover:bg-cream-200/70 hover:text-cocoa-900
-           focus-visible:outline-solid focus-visible:outline-2
-           focus-visible:outline-offset-2 focus-visible:outline-cocoa-900;
-  }
-
-  /* Sayfa numarasi — "3 / 11" */
-  .sayfa-numarasi {
-    @apply shrink-0 px-1 text-sm font-semibold tabular-nums
-           whitespace-nowrap text-cocoa-700 sm:text-base;
-  }
-
-  /* Urun sayfasindaki kategori basligi paprika-600 kullaniyor:
-     kraft zemin daha koyu oldugu icin paprika-500 3.52:1'e dusuyordu,
-     600 ile 4.39:1 oluyor. Diger ekranlarda 500 kalmaya devam ediyor. */
-  .kitap-baslik {
-    @apply pt-1 text-center font-display text-2xl leading-tight
-           text-paprika-600 sm:text-3xl;
-  }
+
+/* Odak halkasi tek yerde: her tiklanabilir ogede ayni. */
+.odak {
+  outline: none;
+}
+
+.odak:focus-visible {
+  outline: 2px solid var(--t-vurgu);
+  outline-offset: 2px;
+}
+
+/* Noktali ayrac — basili menulerdeki gibi ad ile fiyat arasinda. */
+.ayrac-satir {
+  display: flex;
+  align-items: baseline;
+  gap: 0.45rem;
+}
+
+.nokta {
+  flex: 1;
+  min-width: 1rem;
+  height: 0.75rem;
+  background-image: radial-gradient(circle, var(--t-nokta) 0.5px, transparent 0.5px);
+  background-position: 0 bottom;
+  background-size: 0.3rem 1px;
+  background-repeat: repeat-x;
+  opacity: 0.75;
+}
+
+/* Baslik alti: iki yana solan kural ve ortada temanin motifi. */
+.baslik-alt {
+  display: flex;
+  align-items: center;
+  justify-content: var(--t-ayrac-hiza);
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.kural {
+  height: var(--t-kural-yukseklik);
+  flex: 1;
+  max-width: var(--t-kural-genislik);
+  background: var(--t-kural-zemin);
+}
+
+.motif {
+  width: 0.85rem;
+  height: 0.85rem;
+  flex-shrink: 0;
+  color: var(--t-vurgu);
+}
+
+/* ---------------------------------------------------------------------------
+   Ekran: dil secimi ve ana secim (kitaptan bagimsiz, ferah kompozisyon)
+   --------------------------------------------------------------------------- */
+.giris-ekrani {
+  display: flex;
+  min-height: 100dvh;
+  flex-direction: column;
+  background-color: var(--t-zemin);
+  background-image: var(--t-desen);
+  background-size: var(--t-desen-boy);
+  background-position: var(--t-desen-konum);
+}
+
+.giris-govde {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  max-width: 26rem;
+  margin-inline: auto;
+  padding: 2rem 1.5rem 1rem;
+}
+
+.giris-tepe {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.giris-motif {
+  width: 3.25rem;
+  height: 3.25rem;
+  color: var(--t-vurgu);
+  margin-bottom: 0.9rem;
+}
+
+.marka-adi {
+  font-family: var(--t-baslik-font);
+  font-weight: var(--t-baslik-kalinlik);
+  font-size: 2rem;
+  line-height: 1.1;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--t-baslik-renk);
+  margin: 0;
+}
+
+.giris-ayrac {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  max-width: 11rem;
+  margin-top: 0.9rem;
+}
+
+.slogan {
+  margin: 0.9rem 0 0;
+  font-size: 0.9375rem;
+  color: var(--t-solgun);
+}
+
+.bolum-basligi {
+  margin: 2.25rem 0 0.9rem;
+  text-align: center;
+  font-family: var(--t-govde-font);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--t-solgun);
+}
+
+.giris-dipnot {
+  flex-shrink: 0;
+  padding: 1.25rem 1rem 1.5rem;
+  text-align: center;
+  font-size: 0.6875rem;
+  color: var(--t-solgun);
+  opacity: 0.85;
+}
+
+/* Kart — dil secenekleri ve ana secim butonlari ayni govdeyi kullaniyor. */
+.kart {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  width: 100%;
+  padding: 0.9rem 1rem;
+  text-decoration: none;
+  color: var(--t-metin);
+  background: var(--t-yuzey);
+  border: var(--t-kart-cizgi);
+  border-radius: var(--t-yuvarlak);
+  box-shadow: var(--t-golge);
+  outline: var(--t-kart-dis-cizgi);
+  outline-offset: var(--t-kart-dis-bosluk);
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.kart:hover {
+  background: var(--t-yuzey-vurgu);
+  border-color: var(--t-vurgu);
+}
+
+.kart:active {
+  transform: scale(0.99);
+}
+
+.flag-slot {
+  display: flex;
+  width: 2.5rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+}
+
+.flag {
+  width: auto;
+  max-width: 100%;
+  height: 1.25rem;
+  border-radius: 2px;
+  box-shadow: 0 0 0 1px var(--t-cizgi-guclu);
+}
+
+.lang-name {
+  flex: 1;
+  font-family: var(--t-govde-font);
+  font-size: 1.125rem;
+  font-weight: var(--t-ad-kalinlik);
+  line-height: 1.2;
+  color: var(--t-metin);
+}
+
+/* Ileri chevron. Kaynakta hep saga bakiyor; RTL'de aynalaniyor. */
+.lang-arrow {
+  width: 0.9rem;
+  height: 0.9rem;
+  flex-shrink: 0;
+  color: var(--t-vurgu);
+  --ok-flip: 1;
+  transform: scaleX(var(--ok-flip));
+}
+
+[dir="rtl"] .lang-arrow {
+  --ok-flip: -1;
+}
+
+/* Dil secim ekraninin baslik alti satiri: "Dil Seciniz" ifadesinin diger uc
+   dildeki karsiligi. Ayrac noktasi kendi rengini almiyor, paragrafin rengini
+   miras aliyor — kucuk bir nokta ayri bir tonda AA esigini gecemiyordu. */
+.diller-alt-satir {
+  margin: 0.35rem 0 0;
+  text-align: center;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: var(--t-solgun);
+}
+
+/* Dort dil karti alt alta. */
+.dil-kartlari {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-top: 1.4rem;
+}
+
+/* --- Ana secim: iki buyuk buton --- */
+.secim-listesi {
+  list-style: none;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.secim-karti {
+  padding: 1.4rem 1.15rem;
+  gap: 1rem;
+}
+
+.secim-ikonu {
+  width: 2.6rem;
+  height: 2.6rem;
+  flex-shrink: 0;
+  color: var(--t-vurgu);
+}
+
+.secim-basligi {
+  flex: 1;
+  font-family: var(--t-baslik-font);
+  font-weight: var(--t-baslik-kalinlik);
+  font-size: 1.5rem;
+  line-height: 1.15;
+  color: var(--t-baslik-renk);
+}
+
+/* ---------------------------------------------------------------------------
+   Ekran: kategori listesi ve organizasyon (ust serit + dikey icerik)
+   --------------------------------------------------------------------------- */
+.menu-sayfa {
+  min-height: 100dvh;
+  background-color: var(--t-zemin);
+  background-image: var(--t-desen);
+  background-size: var(--t-desen-boy);
+  background-position: var(--t-desen-konum);
+}
+
+.sayfa-govdesi {
+  width: 100%;
+  max-width: 34rem;
+  margin-inline: auto;
+  padding: 0.5rem 1.25rem 2.5rem;
+}
+
+/* Ust serit: marka + dil kontrolu. Menu kitabinda sikisik varyanti var. */
+.ust-serit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem 1rem 0.75rem;
+  text-align: center;
+}
+
+.ust-serit-sikisik {
+  flex-shrink: 0;
+  padding: 0.4rem 1rem 0;
+  background: var(--t-yuzey);
+  border-bottom: 1px solid var(--t-cizgi-guclu);
+}
+
+.ust-marka {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.4rem 0.75rem;
+  border-radius: var(--t-yuvarlak);
+  text-decoration: none;
+  transition: background-color 0.15s ease;
+}
+
+.ust-marka:hover {
+  background: var(--t-yuzey-vurgu);
+}
+
+.ust-marka-motif {
+  width: 1.4rem;
+  height: 1.4rem;
+  flex-shrink: 0;
+  color: var(--t-vurgu);
+}
+
+.ust-marka-adi {
+  font-family: var(--t-baslik-font);
+  font-weight: var(--t-baslik-kalinlik);
+  font-size: 1.15rem;
+  line-height: 1;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--t-baslik-renk);
+}
+
+.sayfa-basligi {
+  position: relative;
+  margin: 1rem 0 1.25rem;
+}
+
+.ekran-basligi {
+  font-family: var(--t-baslik-font);
+  font-weight: var(--t-baslik-kalinlik);
+  font-size: 1.9rem;
+  line-height: 1.15;
+  color: var(--t-baslik-renk);
+  text-align: var(--t-baslik-hiza);
+  text-transform: var(--t-baslik-donusum);
+  margin: 0;
+  position: relative;
+  z-index: 1;
+}
+
+/* --- Dil degistirme kontrolu --- */
+.dil-kontrolu {
+  display: flex;
+  justify-content: center;
+  margin-top: 0.75rem;
+}
+
+.dil-listesi {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.dil-secenek {
+  display: flex;
+  min-height: 2rem;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.2rem 0.55rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--t-solgun);
+  text-decoration: none;
+  border: 1px solid var(--t-cizgi-guclu);
+  border-radius: var(--t-yuvarlak-kucuk);
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.dil-secenek:hover {
+  color: var(--t-metin);
+  background: var(--t-yuzey-vurgu);
+}
+
+.dil-secenek-aktif {
+  color: var(--t-yuzey);
+  background: var(--t-vurgu);
+  border-color: var(--t-vurgu);
+}
+
+.dil-bayrak {
+  height: 0.85rem;
+  width: auto;
+  max-width: 1.4rem;
+  border-radius: 1px;
+  box-shadow: 0 0 0 1px var(--t-cizgi);
+}
+
+/* --- Icindekiler (kategori listesi) --- */
+.icindekiler {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.icindekiler-satir {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  padding: 0.9rem 0.15rem;
+  text-decoration: none;
+  color: var(--t-metin);
+  border-bottom: 1px solid var(--t-cizgi);
+}
+
+.icindekiler li:last-child .icindekiler-satir {
+  border-bottom: 0;
+}
+
+.icindekiler-satir:hover .icindekiler-ad {
+  color: var(--t-vurgu);
+}
+
+/* Iki haneli sira numarasi: basili menulerin icindekiler sayfasi havasi. */
+.icindekiler-no {
+  font-family: var(--t-govde-font);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.06em;
+  color: var(--t-vurgu);
+  flex-shrink: 0;
+  min-width: 1.4rem;
+}
+
+.icindekiler-ad {
+  font-family: var(--t-baslik-font);
+  font-weight: var(--t-baslik-kalinlik);
+  font-size: 1.3rem;
+  line-height: 1.2;
+  color: var(--t-baslik-renk);
+  transition: color 0.15s ease;
+}
+
+.icindekiler-sayfa {
+  font-family: var(--t-govde-font);
+  font-size: 0.875rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--t-fiyat);
+  flex-shrink: 0;
+}
+
+/* --- Bos durum (organizasyon) --- */
+.hazirlaniyor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 3rem 1rem;
+  border: var(--t-kart-cizgi);
+  border-radius: var(--t-yuvarlak);
+  background: var(--t-yuzey);
+  outline: var(--t-kart-dis-cizgi);
+  outline-offset: var(--t-kart-dis-bosluk);
+}
+
+.hazirlaniyor-ikon {
+  width: 3rem;
+  height: 3rem;
+  color: var(--t-vurgu);
+  opacity: 0.75;
+}
+
+.hazirlaniyor-metin {
+  margin: 0;
+  text-align: center;
+  font-size: 0.9375rem;
+  color: var(--t-solgun);
+}
+
+.orta-baglanti {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+/* --- 404 --- */
+.bulunamadi {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 4rem 1rem 2rem;
+}
+
+.bulunamadi-sayi {
+  font-family: var(--t-baslik-font);
+  font-weight: var(--t-baslik-kalinlik);
+  font-size: 5.5rem;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  color: var(--t-hayalet-guclu);
+  font-variant-numeric: tabular-nums;
+}
+
+.bulunamadi-motif {
+  width: 2.25rem;
+  height: 2.25rem;
+  color: var(--t-vurgu);
+}
+
+/* ---------------------------------------------------------------------------
+   Menu kitabi
+   --------------------------------------------------------------------------- */
+
+/* Kitabin disi: ekran yuksekliginde, kendisi kaymiyor. */
+.kitap-cercevesi {
+  display: flex;
+  height: 100dvh;
+  flex-direction: column;
+  overflow: hidden;
+  background-color: var(--t-zemin);
+}
+
+/* Yatay kaydirma kabi.
+   scroll-snap ile her sayfa ekrana tam oturuyor. Kaydirmanin kendisi tamamen
+   tarayicinin isi — JavaScript ile taklit edilmiyor, bu yuzden parmak takibi
+   ve ivme native hissettiriyor.
+   dir="rtl" verildiginde yon kendiliginden tersine doner. */
+.kitap {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  /* contain: paint OLMADAN, sayfalarin toplam genisligi belgenin kaydirma
+     alanina sizip <html> seviyesinde yatay kaydirma aciyordu — overflow-x:
+     clip bile engellemiyordu. Bu ilan kitabin icerigini kendi kutusuna
+     hapsediyor. Kitabin KENDI yatay kaydirmasi etkilenmiyor. */
+  contain: paint;
+  /* touch-action DENENDI VE GERI ALINDI: `.kitap` icin pan-x, `.kitap-icerik`
+     icin pan-y verildiginde kaydirma TAMAMEN durdu. Tarayici ata zincirindeki
+     touch-action degerlerini KESISTIRIYOR; pan-y ∩ pan-x bos kume oluyor. */
+}
+
+.kitap::-webkit-scrollbar {
+  display: none;
+}
+
+/* snap-stop: always — hizli bir parmak hareketinde birden fazla sayfa
+   atlanmiyor, her seferinde bir sonraki sayfada duruluyor. Kitap gibi. */
+.kitap-sayfa {
+  position: relative;
+  display: flex;
+  height: 100%;
+  width: 100%;
+  flex-shrink: 0;
+  flex-direction: column;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
+/* Temanin dokusu her yapragin zemininde. */
+.kitap-sayfa::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: var(--t-desen);
+  background-size: var(--t-desen-boy);
+  background-position: var(--t-desen-konum);
+}
+
+/* Sayfa icerigi ekrana sigmazsa SAYFA KENDI ICINDE dikey kayar.
+   overscroll YALNIZCA Y ekseninde contain: dikey kaydirma yatay kaba
+   tasmiyor, ama yatay parmak hareketi kaba ZINCIRLENEBILIYOR.
+
+   Bu ayrim kritik. Iki eksende birden contain yazildiginda yatay kaydirma
+   tamamen olmuyordu: overflow-y:auto verilen bir elemanda overflow-x de
+   otomatik `auto`ya donuyor, boylece bu kutu yatayda da kaydirma kabi
+   sayiliyor ve contain parmagin yatay hareketini ustteki .kitap'a
+   gecirmiyordu. Gercek dokunmatik testte yakalandi. */
+.kitap-icerik {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  max-width: 34rem;
+  margin-inline: auto;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  overscroll-behavior-x: auto;
+  /* Dikey kaydirma cubugu gizli — kaydirma ISLEVI duruyor, yalnizca cubuk
+     cizilmiyor. Ikisi birlikte her tarayiciyi kapsiyor. */
+  scrollbar-width: none;
+  padding: 1rem 1.15rem 1.25rem;
+}
+
+.kitap-icerik::-webkit-scrollbar {
+  display: none;
+}
+
+/* Sayfa sarmalayicisi. Cerceve isteyen temada levhaya donuyor, digerlerinde
+   seffaf kaliyor — farkin tamami degiskende, torun secicide degil. */
+.levha {
+  display: block;
+  border: var(--t-levha-cizgi);
+  outline: var(--t-levha-dis-cizgi);
+  outline-offset: var(--t-levha-dis-bosluk);
+  background: var(--t-levha-zemin);
+  padding: var(--t-levha-bosluk);
+  border-radius: var(--t-levha-yuvarlak);
+}
+
+.kitap-baslik-blok {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.kitap-baslik {
+  font-family: var(--t-baslik-font);
+  font-weight: var(--t-baslik-kalinlik);
+  font-size: 1.75rem;
+  line-height: 1.15;
+  color: var(--t-baslik-renk);
+  text-align: var(--t-baslik-hiza);
+  text-transform: var(--t-baslik-donusum);
+  margin: 0;
+  position: relative;
+  z-index: 1;
+}
+
+/* Arka plandaki dev sayfa numarasi — "ikinci kez bak" detayi. */
+.hayalet-no {
+  position: absolute;
+  inset-inline-start: var(--t-hayalet-bas);
+  inset-inline-end: var(--t-hayalet-son);
+  top: var(--t-hayalet-ust);
+  font-family: var(--t-baslik-font);
+  font-weight: var(--t-baslik-kalinlik);
+  font-size: var(--t-hayalet-punto);
+  line-height: 1;
+  color: var(--t-hayalet);
+  z-index: 0;
+  pointer-events: none;
+  user-select: none;
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- Tek fiyatli urun listesi --- */
+.urun-listesi {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.urun-satir {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.7rem 0;
+  border-bottom: 1px solid var(--t-cizgi);
+}
+
+.urun-satir:last-child {
+  border-bottom: 0;
+}
+
+.urun-govde {
+  flex: 1;
+  min-width: 0;
+}
+
+.urun-ad {
+  font-family: var(--t-govde-font);
+  font-weight: var(--t-ad-kalinlik);
+  font-size: 1.0625rem;
+  line-height: 1.3;
+  color: var(--t-metin);
+}
+
+.urun-fiyat {
+  font-family: var(--t-govde-font);
+  font-weight: 700;
+  font-size: 0.9375rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--t-fiyat);
+  white-space: nowrap;
+}
+
+.urun-icerik {
+  margin: 0.25rem 0 0;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  font-weight: 400;
+  color: var(--t-solgun);
+}
+
+/* --- Gorsel yuvasi ve yer tutucu --- */
+.gorsel-yuvasi {
+  display: flex;
+  width: 4.25rem;
+  height: 4.25rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: var(--t-yuvarlak-kucuk);
+  border: 1px solid var(--t-cizgi-guclu);
+  background: var(--t-yer-tutucu-zemin);
+  box-shadow: var(--t-gorsel-golge);
+}
+
+.gorsel-yuvasi img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Fotografi olmayan urunlerin yuvasi bos kalmiyor: kategorisinin kendi
+   silueti, temanin renginde. Kategoriye gore ikon kullaniliyor — iceceğe
+   pide silueti gostermek anlamca yanlis olurdu. */
+.yer-tutucu-ikon {
+  width: 1.9rem;
+  height: 1.9rem;
+  color: var(--t-yer-tutucu-renk);
+}
+
+/* --- Cok fiyatli tablo (kapali pide) --- */
+.pide-tablo {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.pide-tablo th,
+.pide-tablo td {
+  vertical-align: middle;
+}
+
+/* Uc fiyat sutunu 390px'te dar: harf araligi genis birakilirsa basliklar
+   birbirine degiyor. */
+.pide-sutun-basligi {
+  font-family: var(--t-govde-font);
+  font-size: 0.5625rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--t-baslik-renk);
+  padding: 0 0.2rem 0.5rem;
+  text-align: center;
+  white-space: nowrap;
+  border-bottom: 1px solid var(--t-cizgi-guclu);
+}
+
+.pide-tablo tbody tr {
+  border-bottom: 1px solid var(--t-cizgi);
+}
+
+.pide-tablo tbody tr:last-child {
+  border-bottom: 0;
+}
+
+.pide-gorsel-hucre {
+  width: 3.5rem;
+  padding: 0.6rem 0;
+  padding-inline-end: 0.7rem;
+}
+
+.pide-gorsel-hucre .gorsel-yuvasi {
+  width: 3.5rem;
+  height: 3.5rem;
+}
+
+.pide-gorsel-hucre .yer-tutucu-ikon {
+  width: 1.6rem;
+  height: 1.6rem;
+}
+
+.pide-ad-hucre {
+  text-align: start;
+  font-weight: 400;
+  padding: 0.6rem 0;
+  padding-inline-end: 0.5rem;
+}
+
+/* AD SUTUNU: burada govde fontu DEGIL, temanin baslik fontu kullaniliyor.
+   Sebep olculdu: ad sutunu uc fiyat sutunuyla yer paylastigi icin dar
+   kaliyor ve genis bir govde fontunda uzun Rusca adlar dort satira
+   sariyordu. Baslik fontlari belirgin dar — ayni puntoda cok daha az
+   satir. Punto ve gorsel olculeri DEGISMEDI. */
+.pide-ad-hucre .urun-ad {
+  font-family: var(--t-baslik-font);
+  font-weight: var(--t-baslik-kalinlik);
+  overflow-wrap: anywhere;
+  hyphens: auto;
+}
+
+.pide-hucre {
+  padding: 0.6rem 0.2rem;
+  text-align: center;
+  font-family: var(--t-govde-font);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--t-fiyat);
+  white-space: nowrap;
+}
+
+.pide-hucre-bos {
+  color: var(--t-solgun);
+  opacity: 0.55;
+}
+
+/* --- Sayfa cevirme oklari ---
+   Kitabin ICINDE degil, kardes katmanda duruyorlar: .kitap bir kaydirma kabi
+   ve icine konan mutlak konumlu bir cocuk sayfalarla birlikte kayardi. */
+.kitap-alani {
+  position: relative;
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+/* Dokunma hedefi 44x44 (seffaf), gorunen kisim icerideki kucuk daire:
+   buyuk hedef, kucuk gorsel. Gorunen daire sayfanin kenar boslugunun ICINE
+   sigiyor ve kenara dayali duruyor — icerigin ustune binmiyor. */
+.kitap-ok {
+  position: absolute;
+  top: 50%;
+  z-index: 10;
+  display: flex;
+  height: 2.75rem;
+  width: 2.75rem;
+  transform: translateY(-50%);
+  align-items: center;
+  border: 0;
+  background: transparent;
+  border-radius: 999px;
+}
+
+/* Yon bagimsiz: RTL'de kitap sagdan sola aktigi icin "ileri" gercekten sol
+   kenardir; inset-inline-* bunu kendiliginden halleder. */
+.kitap-ok-ileri {
+  inset-inline-end: 0;
+  justify-content: flex-end;
+}
+
+.kitap-ok-geri {
+  inset-inline-start: 0;
+  justify-content: flex-start;
+}
+
+.kitap-ok-govde {
+  display: flex;
+  height: 1.5rem;
+  width: 1.5rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--t-ok-yuvarlak);
+  background: var(--t-yuzey);
+  border: 1px solid var(--t-cizgi-guclu);
+  color: var(--t-vurgu);
+  box-shadow: var(--t-ok-golge);
+  transition:
+    background-color 0.15s ease,
+    transform 0.075s ease;
+}
+
+.kitap-ok:hover .kitap-ok-govde {
+  background: var(--t-yuzey-vurgu);
+}
+
+.kitap-ok:active .kitap-ok-govde {
+  transform: scale(0.95);
+}
+
+/* Chevron kaynakta hep saga bakiyor; yon degiskenle aynalaniyor.
+   Sira onemli: en spesifik kural (RTL + geri) en sonda. */
+.kitap-ok-simge {
+  width: 0.8rem;
+  height: 0.8rem;
+  --ok-flip: 1;
+  transform: scaleX(var(--ok-flip));
+}
+
+[dir="rtl"] .kitap-ok-simge {
+  --ok-flip: -1;
+}
+
+.kitap-ok-geri .kitap-ok-simge {
+  --ok-flip: -1;
+}
+
+[dir="rtl"] .kitap-ok-geri .kitap-ok-simge {
+  --ok-flip: 1;
+}
+
+/* Asagi ok — alt seridin ORTASINDA, icerigin disinda: hicbir urunu ya da
+   fiyati ortemiyor. */
+.kitap-ok-asagi {
+  position: absolute;
+  inset-inline-start: 50%;
+  top: 50%;
+  z-index: 10;
+  display: flex;
+  height: 2.75rem;
+  width: 2.75rem;
+  transform: translate(-50%, -50%);
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  background: transparent;
+}
+
+[dir="rtl"] .kitap-ok-asagi {
+  transform: translate(50%, -50%);
+}
+
+/* Kenar oklarinin --ok-flip zincirine BILEREK girmiyor: asagi her iki yazma
+   yonunde de asagidir, Arapca'da aynalanmamali. */
+.kitap-ok-simge-asagi {
+  width: 0.8rem;
+  height: 0.8rem;
+}
+
+/* --- Alt serit: "Menuye don", asagi ok ve sayfa numarasi --- */
+.alt-serit {
+  position: relative;
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0 0.75rem;
+  min-height: 2.9rem;
+  background: var(--t-yuzey);
+  border-top: 1px solid var(--t-cizgi-guclu);
+}
+
+.alt-serit-baglanti {
+  display: flex;
+  min-height: 2.75rem;
+  align-items: center;
+  padding-inline: 0.5rem;
+  border-radius: var(--t-yuvarlak-kucuk);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  white-space: nowrap;
+  color: var(--t-solgun);
+  text-decoration: none;
+  transition:
+    color 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.alt-serit-baglanti:hover {
+  color: var(--t-metin);
+  background: var(--t-yuzey-vurgu);
+}
+
+.sayfa-numarasi {
+  flex-shrink: 0;
+  padding-inline: 0.25rem;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  color: var(--t-vurgu);
+}
+
+/* Onizleme kabi: tema sarmalayicisi. Kendi bir gorunumu yok — yalnizca alt
+   agacta --t-* degiskenlerini yeniden tanimlayip <html> uzerindeki aktif
+   temayi kendi alt agacinda eziyor. Ekranlar yuksekliklerini kendileri
+   belirliyor, sarmalayici araya girmiyor. */
+.onizleme-kabi {
+  display: block;
+}
+
+/* Kapak sayfasindaki tema motifi — satir basinda kucuk isaret. */
+.icindekiler-motif {
+  width: 1.1rem;
+  height: 1.1rem;
+  flex-shrink: 0;
+  color: var(--t-vurgu);
 }

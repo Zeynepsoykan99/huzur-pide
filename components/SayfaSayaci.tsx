@@ -35,6 +35,17 @@ export function SayfaSayaci({
   dil,
   baslangicNo,
   baslangicSlug,
+  /**
+   * Dil onekinden sonraki yol oneki. Uretimde bos; onizlemede "/onizleme/gece"
+   * gibi bir deger alip adres cubugunu kendi rotasinda tutuyor.
+   */
+  yolOneki = "",
+  /**
+   * Kaydirdikca adres cubugu guncellensin mi? Uretimde evet — paylasilan link
+   * dogru sayfayi gostersin diye. Onizlemede hayir: onizleme rotasinda
+   * `menu/<slug>` diye bir adres yok, yazilsa yenilemede 404 olurdu.
+   */
+  adresiGuncelle = true,
 }: {
   kabId: string;
   /** Sayfa sırasına göre slug/no çiftleri. */
@@ -44,6 +55,8 @@ export function SayfaSayaci({
   baslangicNo: number;
   /** Açılış sayfasının slug'ı; adres hafızasını kurmak için. */
   baslangicSlug: string;
+  yolOneki?: string;
+  adresiGuncelle?: boolean;
 }) {
   const [aktifNo, setAktifNo] = useState(baslangicNo);
   const [oncekiBaslangic, setOncekiBaslangic] = useState(baslangicNo);
@@ -74,8 +87,8 @@ export function SayfaSayaci({
     const kap = document.getElementById(kabId);
     if (kap) sayfayaKaydir(kap, baslangicNo);
     // Gözlemci açılış sayfasını görüp adresi gereksiz yere yeniden yazmasın.
-    sonYazilanRef.current = `/${dil}/menu/${baslangicSlug}`;
-  }, [kabId, baslangicNo, dil, baslangicSlug]);
+    sonYazilanRef.current = `/${dil}${yolOneki}/menu/${baslangicSlug}`;
+  }, [kabId, baslangicNo, dil, baslangicSlug, yolOneki]);
 
   useEffect(() => {
     const kap = document.getElementById(kabId);
@@ -104,7 +117,8 @@ export function SayfaSayaci({
 
         // replaceState kullanılıyor, pushState değil: geri tuşu 7 sayfalık
         // bir yığınla dolmasın, müşteri geri deyince menüden çıkabilsin.
-        const hedef = `/${dil}/menu/${sayfa.slug}`;
+        if (!adresiGuncelle) return;
+        const hedef = `/${dil}${yolOneki}/menu/${sayfa.slug}`;
         if (sonYazilanRef.current !== hedef) {
           sonYazilanRef.current = hedef;
           window.history.replaceState(null, "", hedef);
@@ -115,7 +129,7 @@ export function SayfaSayaci({
 
     bolumler.forEach((b) => gozlemci.observe(b));
     return () => gozlemci.disconnect();
-  }, [kabId, sayfalar, dil]);
+  }, [kabId, sayfalar, dil, yolOneki, adresiGuncelle]);
 
   return <>{aktifNo}</>;
 }
