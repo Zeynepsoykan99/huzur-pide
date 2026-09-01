@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { AnaSecimEkrani } from "@/components/ekranlar";
 import { ui } from "@/data/arayuz";
 import { DILLER, gecerliDil } from "@/data/menu";
+import { aktifTema } from "@/data/menuKaynak";
 
 /**
  * Ekran: Ana secim — Menu mu, Organizasyon mu.
@@ -25,5 +26,6 @@ export async function generateMetadata({
 export default async function AnaSecimSayfasi({ params }: PageProps<"/[dil]/secim">) {
   const { dil } = await params;
   if (!gecerliDil(dil)) notFound();
-  return <AnaSecimEkrani dil={dil} />;
+  const tema = await aktifTema();
+  return <AnaSecimEkrani dil={dil} tema={tema} />;
 }

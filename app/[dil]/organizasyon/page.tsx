@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { OrganizasyonEkrani } from "@/components/ekranlar";
 import { ui } from "@/data/arayuz";
 import { DILLER, gecerliDil } from "@/data/menu";
+import { aktifTema } from "@/data/menuKaynak";
 
 /**
  * Organizasyon sayfasi — dugun, nisan, kina, mevlit ve toplu yemek.
@@ -28,5 +29,6 @@ export default async function OrganizasyonSayfasi({
 }: PageProps<"/[dil]/organizasyon">) {
   const { dil } = await params;
   if (!gecerliDil(dil)) notFound();
-  return <OrganizasyonEkrani dil={dil} />;
+  const tema = await aktifTema();
+  return <OrganizasyonEkrani dil={dil} tema={tema} />;
 }

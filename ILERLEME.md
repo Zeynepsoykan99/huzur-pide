@@ -3,7 +3,7 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 15 tamamlandı (dalda, push onayı bekliyor) — Çini Levha temasi projenin tamamina uygulandi, dort temali yapi kuruldu. Asama 14 canlida. Bekleyen: QR adresi karari, organizasyon icerigi, eksik fotograflar
+**Güncel aşama:** Aşama 16 tamamlandı (dalda, push onayı bekliyor) — admin paneli çalışıyor: tema, fiyat ve ürün ekleme. Menü Firestore'dan besleniyor, hâlâ statik. Aşama 15 (Çini Levha) da aynı dalda. Bekleyen: Firebase Storage / fotoğraf yükleme, QR adresi, organizasyon içeriği
 **Son güncelleme:** 2026-08-28
 
 ### Genel Durum
@@ -28,6 +28,7 @@ Numaralandırma rapor başlıklarıyla aynı: aşağıdaki her satırın karşı
 | 13 | "Düble" → "Duble" yazım düzeltmesi | **Tamamlandı** |
 | 14 | Her kategori tek sayfa + aşağı ok ipucu | **Tamamlandı** |
 | 15 | Çini Levha teması + dört temalı yapı | **Tamamlandı** (dalda) |
+| 16 | Admin paneli — Firebase (Firestore + Auth) | **Tamamlandı** (dalda) |
 
 ### Aşama 1 Adımları
 
@@ -2575,5 +2576,173 @@ hatasıyla derleme başarısız oldu, tekrarında geçti. Üretim ekranları bun
 etkilenmiyor (yalnızca aktif temanın aileleri).
 
 **Sıradaki adım:** Push onayı bekleniyor.
+
+=== RAPOR SONU ===
+
+---
+
+## Aşama 16 — Admin Paneli: Firebase (Firestore + Authentication) · 2026-09-01
+
+=== RAPOR BAŞLANGICI ===
+
+**Adım:** Aşama 16 — Menü verisinin Firestore'a taşınması ve mekân sahibinin
+tema, fiyat ve ürün yönetebildiği panelin kurulması (tamamı)
+
+**Durum:** Dalda (`panel/firebase`), push onayı bekleniyor. Üretim (`main`)
+değişmedi. Firebase Storage kurulmadı — fotoğraf yükleme sonraki aşamaya
+bırakıldı.
+
+---
+
+**1 — Alınan kararlar**
+
+| Karar | Sonuç |
+|---|---|
+| Yeni ürünün çevirileri | Dört dil alanı; yalnızca Türkçe zorunlu, boşlar menüde Türkçe'ye düşüyor |
+| Giriş | E-posta + şifre, panelde kayıt ekranı yok; hesaplar yalnızca konsoldan |
+| Hata koruması | Kaydetmeden önce özet + üç kattan fazla fark veya sıfırda kırmızı uyarı |
+| Fotoğraf | Storage yok; ürün fotoğrafsız ekleniyor, çalışmayan alan gösterilmiyor |
+| Panel arayüzü | Menü temasından ayrı, sade yönetim arayüzü |
+
+**2 — Ücretsiz sınırlar (firebase.google.com/pricing)**
+
+| Servis | Sınır | Kullanımımız | Doluluk |
+|---|---|---|---|
+| Firestore depolama | 1 GiB | 37 belge ≈ 45 KB | %0,004 |
+| Firestore okuma | 50.000/gün | Tam yeniden üretim ~740; günde 20 düzenleme ≈ 15.000 | %30'un altı |
+| Firestore yazma | 20.000/gün | Fiyat değişikliği = 1 yazma | %0,25 |
+| Authentication | 50.000 aylık kullanıcı | 1 hesap | %0,002 |
+
+Müşteri menüyü açtığında Firestore'a **gidilmiyor** — sayfalar statik. Okuma
+yalnızca derlemede ve panelden bir şey değişince yeniden üretimde oluyor.
+
+**3 — Taşıma**
+
+Taşımadan önce `data/menu.ts` iki biçimde yedeklendi (`.ts` kopyası +
+makine okunur `.json`). Taşıma idempotent: belge kimlikleri mevcut `slug` ve
+`id` değerleri.
+
+Doğrulama betiği Firestore'u `data/menu.ts` ile **alan alan** karşılaştırıyor
+— sayı tutması yetmiyor, her alanın değeri kıyaslanıyor:
+
+| Ölçüm | Sonuç |
+|---|---|
+| Kategori | 5 / 5 |
+| Ürün | **31 / 31** |
+| Fiyat hücresi | 43 |
+| Teyit edilmemiş fiyat | **4 / 4** |
+| Alan farkı | **0** |
+
+Dört dildeki adlar, açıklamalar, görsel bilgileri ve `dogrulandi` işaretleri
+aynen taşındı.
+
+**4 — Güvenlik**
+
+Kurallar Firebase Rules API'siyle yayına alındı ve yayındaki kümenin az önce
+yüklenen küme olduğu geri okunarak doğrulandı.
+
+Mimarinin özü: **tarayıcıdan Firestore'a hiç yazılmıyor.** Bütün yazmalar
+Server Action'lardan Admin SDK ile geçiyor, bu yüzden istemciye sıfır yazma
+izni verilebiliyor.
+
+İstemci SDK'sıyla — yani mekân sahibinin tarayıcısındaki koşullarda —
+yapılan testler:
+
+| Deneme | Beklenen | Sonuç |
+|---|---|---|
+| Ürün okuma | izin verilir | 31 belge okundu |
+| `urunler` yazma | reddedilir | permission-denied |
+| `ayarlar` yazma | reddedilir | permission-denied |
+| `kategoriler` yazma | reddedilir | permission-denied |
+| `yoneticiler` yazma | reddedilir | permission-denied |
+| `yoneticiler` okuma | reddedilir | permission-denied |
+
+**6/6 geçti.**
+
+Panel erişimi ayrıca sınandı:
+
+| Deneme | Sonuç |
+|---|---|
+| Girişsiz `/panel` | Giriş formu; panel içeriği HTML'de **yok** |
+| Girişsiz `/panel/fiyatlar`, `/tema`, `/urun-ekle` | 307 yönlendirme, içerik sızmıyor |
+| Yetkisiz hesapla **doğru şifreyle** giriş | Reddedildi: "Bu hesabın panele erişim yetkisi yok." |
+| Yönetici hesabıyla giriş | Panel açıldı |
+
+İki kademeli yetki: giriş yapmak yetmiyor, `yoneticiler/{uid}` belgesi de
+gerekiyor. Ayrıca her Server Action kendi içinde yetkiyi yeniden doğruluyor —
+sayfa korumasına tek başına güvenilmiyor, çünkü bir Server Action doğrudan da
+çağrılabilir.
+
+Test için geçici iki hesap açıldı (biri yönetici, biri değil), testler
+bitince ikisi de silindi. Mekân sahibinin hesabının şifresine dokunulmadı.
+
+**5 — Gizli bilgiler**
+
+| Değer | Yer | Gizli mi |
+|---|---|---|
+| `NEXT_PUBLIC_FIREBASE_*` | `.env.local` | Hayır — tarayıcıya zaten gidiyor |
+| `FIREBASE_SERVICE_ACCOUNT` | `.env.local` (sunucu) | **Evet** |
+
+`.env.local` yoksayılıyor (`.gitignore:19`), ek olarak `*serviceAccount*.json`
+ve `*firebase-adminsdk*.json` kalıpları eklendi; dördü de tek tek sınandı.
+Commit geçmişi `private_key` ve `BEGIN PRIVATE KEY` için tarandı: **temiz**.
+Servis hesabı dosyası proje klasörüne hiç kopyalanmadı.
+
+**6 — Panel**
+
+Menü temasından **ayrı** bir yönetim arayüzü (`--p-*` değişkenleri).
+Gerekçeler `panel.css` başında: tema panelden değiştiği için panel de onu
+giyseydi şekil değiştirirdi; menü tipografisi vitrin tipografisi, form için
+yanlış; ve panel `--t-*`'ye bağlanırsa tema değişiklikleri paneli kırar.
+
+Dört ekran, hepsi Türkçe, iri dokunma hedefli:
+**Giriş** (yalnızca e-posta ve şifre) · **Ana ekran** (üç büyük düğme) ·
+**Fiyatlar** · **Yeni ürün** · **Menü görünümü**.
+
+**7 — Doğrulama (390×844, üretim derlemesi)**
+
+| Test | Sonuç |
+|---|---|
+| Fiyat değişikliği menüye yansıyor mu | Kıymalı 1 Hamur 200 → **265 ₺**, ekranda doğrulandı; diğer fiyatlar değişmedi |
+| Kaydetme özeti | "Kıymalı · 1 Hamur 200 ₺ → 265 ₺" |
+| Büyük değişim uyarısı | 200 → 2.000 girildi, satır kırmızı ve uyarı çıktı; geri alındı |
+| Yeni ürün menüde görünüyor mu | Salatalar'a eklendi, menüde **123 ₺** ve yer tutucusuyla göründü |
+| Tema değişikliği | Gece Ocağı seçildi → `tema-gece`, zemin `rgb(20,16,13)`, başlık Playfair Display; sonra Çini'ye geri alındı |
+| Kategori tıklama, ekranda görünen içerik (AR + RU) | 10/10 |
+| 4 dil × 6 ekran | 24/24 |
+| JS kapalıyken menü | Ham HTML'de 31 ürün adı ve 5 dikey kaydırma kutusu var, ok yok |
+| Konsol | **0 hata** |
+| `tsc` · `lint` · `build` | temiz, **150 statik sayfa** |
+
+**Yakalanan ve düzeltilen sorun.** Tema panelden seçilebilir olunca dört
+temanın font modülü de derlemeye giriyor ve Next hepsini `<link rel=preload>`
+ile çağırıyordu — ölçüldü: **46 font ön yüklemesi**. Bir QR menüde bu
+gereksiz yük. Tema fontlarında `preload: false` yapıldı; sonuç **0 ön
+yükleme**, ve tarayıcı yalnızca aktif temanın ailelerini indiriyor (Gece'de
+ölçüldü: Playfair Display + Inter, başka aile inmedi).
+
+**Testlerin izi silindi:** test ürünü silindi, değiştirilen fiyat yedekteki
+değerine döndürüldü, tema Çini'ye alındı, test hesapları kaldırıldı. Taşıma
+doğrulaması tekrar çalıştırıldı: **fark 0**, tek yönetici kaldı.
+
+**Eklenen / değiştirilen başlıca dosyalar:**
+
+| Dosya | İş |
+|---|---|
+| `data/menuKaynak.ts` | **Yeni** — menü ve tema Firestore'dan; `cache()` ile aynı render'da tek okuma |
+| `lib/firebase-sunucu.ts` · `firebase-istemci.ts` | Admin SDK (server-only) ve yalnızca Auth için istemci |
+| `lib/oturum.ts` | httpOnly oturum çerezi, iki kademeli yetki |
+| `app/panel/**` | Panelin dört ekranı, Server Action'lar, kendi CSS'i |
+| `firestore.rules` · `storage.rules` | İstemciye sıfır yazma izni |
+| `betikler/**` | Yedek, taşıma, taşıma doğrulama, kural testi, yönetici ekleme, test hesapları, temizlik |
+| `data/tema.ts` | Aktif tema sabiti kaldırıldı; seçilebilir temalar (Zeytin hariç) |
+| `app/[dil]/layout.tsx` ve sayfalar | Tema ve içerik Firestore'dan; sayfalar statik kaldı |
+
+`data/menu.ts` içeriğine dokunulmadı; tipler ve saf yardımcılar oradan
+kullanılmaya devam ediyor, yedeği de repoda.
+
+**Sıradaki adım:** Push onayı bekleniyor. Sonrasında Firebase Storage (Blaze)
+kurulursa fotoğraf yükleme eklenecek — veri yapısındaki `gorsel` alanı ve
+panel akışı bunun için hazır bırakıldı.
 
 === RAPOR SONU ===

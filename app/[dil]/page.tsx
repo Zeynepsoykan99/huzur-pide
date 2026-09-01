@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { DilSecimEkrani } from "@/components/ekranlar";
 import { DILLER, gecerliDil } from "@/data/menu";
+import { aktifTema } from "@/data/menuKaynak";
 
 /**
  * Ekran: Dil secimi — uygulamanin ilk acilis ekrani.
@@ -19,5 +20,6 @@ export function generateStaticParams() {
 export default async function DilSecimSayfasi({ params }: PageProps<"/[dil]">) {
   const { dil } = await params;
   if (!gecerliDil(dil)) notFound();
-  return <DilSecimEkrani dil={dil} />;
+  const tema = await aktifTema();
+  return <DilSecimEkrani dil={dil} tema={tema} />;
 }

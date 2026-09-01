@@ -17,7 +17,7 @@ import { config } from "dotenv";
 import { cert, getApps, initializeApp } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
 import { MENU } from "../data/menu";
-import { AKTIF_TEMA } from "../data/tema";
+import { VARSAYILAN_TEMA } from "../data/tema";
 
 config({ path: ".env.local" });
 
@@ -70,12 +70,12 @@ async function main() {
   });
 
   // Aktif tema: bugünkü sabit değer taşınıyor.
-  toplu.set(db.collection("ayarlar").doc("genel"), { tema: AKTIF_TEMA });
+  toplu.set(db.collection("ayarlar").doc("genel"), { tema: VARSAYILAN_TEMA });
 
   await toplu.commit();
 
   console.log("Firestore'a yazildi:");
-  console.table({ kategoriSayisi, urunSayisi, fiyatHucresi, tema: AKTIF_TEMA });
+  console.table({ kategoriSayisi, urunSayisi, fiyatHucresi, tema: VARSAYILAN_TEMA });
   console.log("Simdi dogrulama: npx tsx betikler/tohum-dogrula.ts");
 }
 

@@ -1,4 +1,4 @@
-import { AKTIF_TEMA, type TemaKodu } from "@/data/tema";
+import { VARSAYILAN_TEMA, type TemaKodu } from "@/data/tema";
 
 /**
  * Temanın imza motifi — marka işareti, başlık ayracı ve 404 ekranında aynı
@@ -8,7 +8,8 @@ import { AKTIF_TEMA, type TemaKodu } from "@/data/tema";
  * değişiyor, böylece tema değiştiğinde ekranda "eski temadan kalma" tek bir
  * öğe kalmıyor. Hepsi `currentColor` kullanıyor, rengi temadan geliyor.
  *
- * `tema` verilmezse aktif tema kullanılıyor; önizleme rotası açıkça veriyor.
+ * `tema` her zaman dışarıdan veriliyor (sayfa Firestore'dan okuyor);
+ * varsayılan yalnızca emniyet değeri.
  */
 
 /** Çini Levha: İznik sekiz köşeli yıldızı. */
@@ -95,7 +96,7 @@ const MOTIFLER: Record<TemaKodu, () => React.ReactElement> = {
 
 export function TemaMotifi({
   className,
-  tema = AKTIF_TEMA,
+  tema = VARSAYILAN_TEMA,
 }: {
   className?: string;
   tema?: TemaKodu;

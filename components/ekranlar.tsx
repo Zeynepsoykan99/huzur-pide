@@ -12,13 +12,9 @@ import {
   DIL_ADI,
   DIL_BAYRAGI,
   DIL_YONU,
-  MENU,
-  SAYFALAR,
   fiyatYaz,
   icerikMetni,
-  kategorininSayfasi,
   metin,
-  sayfaNumarasi,
   type DilKodu,
   type MenuSayfasi,
   type Urun,
@@ -35,7 +31,12 @@ import type { TemaKodu } from "@/data/tema";
  *
  * Ekranlar temayı BİLMİYOR: renk, yazı tipi ve ölçüler --t-* değişkenlerinden
  * geliyor. Tek istisna `TemaMotifi`, o da hangi temanın motifini basacağını
- * parametreyle alabiliyor (önizleme için).
+ * parametreyle alıyor.
+ *
+ * MENÜ İÇERİĞİNİ DE BİLMİYOR: sayfalar dışarıdan `sayfalar` propuyla geliyor.
+ * İçerik Firestore'da (bkz. `data/menuKaynak.ts`); ekranlar onu nereden
+ * geldiğini bilmeden basıyor. Böylece hem üretim rotaları hem önizleme rotası
+ * aynı bileşenleri kullanabiliyor.
  */
 
 /** Motif için tema aktarımı — verilmezse aktif tema. */
@@ -231,9 +232,10 @@ export function AnaSecimEkrani({
    ========================================================================= */
 export function KategoriListesiEkrani({
   dil,
+  sayfalar,
   tema,
   yolOneki = "",
-}: MotifProps & { dil: DilKodu; yolOneki?: string }) {
+}: MotifProps & { dil: DilKodu; sayfalar: MenuSayfasi[]; yolOneki?: string }) {
   // Onizlemede kategori basina ayri bir rota yok; hepsi tek menu ekranini
   // aciyor. Uretimde her kategori kendi adresine gidiyor.
   const onizleme = yolOneki !== "";
@@ -250,25 +252,27 @@ export function KategoriListesiEkrani({
 
         <nav aria-label={ui("menuKategorileri", dil)}>
           <ul className="icindekiler">
-            {MENU.map((kategori) => (
-              <li key={kategori.slug}>
+            {sayfalar.map((sayfa) => (
+              <li key={sayfa.slug}>
                 {/* Her kategori tek sayfa: slug'ı kategori slug'ının aynısı. */}
                 <Link
                   href={
                     onizleme
                       ? `/${dil}${yolOneki}/menu`
-                      : `/${dil}/menu/${kategorininSayfasi(kategori).slug}`
+                      : `/${dil}/menu/${sayfa.slug}`
                   }
                   className="icindekiler-satir odak"
                 >
                   <span className="icindekiler-no" aria-hidden="true">
-                    {String(sayfaNumarasi(kategori)).padStart(2, "0")}
+                    {String(sayfa.no).padStart(2, "0")}
                   </span>
-                  <span className="icindekiler-ad">{metin(kategori.ad, dil)}</span>
+                  <span className="icindekiler-ad">
+                    {metin(sayfa.kategori.ad, dil)}
+                  </span>
                   <span className="nokta" aria-hidden="true" />
                   <span className="icindekiler-sayfa">
                     <span className="sr-only">{ui("sayfa", dil)} </span>
-                    {sayfaNumarasi(kategori)}
+                    {sayfa.no}
                   </span>
                 </Link>
               </li>
@@ -426,11 +430,17 @@ function Yaprak({ sayfa, dil, tema }: MotifProps & { sayfa: MenuSayfasi; dil: Di
 
 export function MenuKitabiEkrani({
   dil,
+  sayfalar,
   acilis,
   tema,
   yolOneki = "",
-}: MotifProps & { dil: DilKodu; acilis: MenuSayfasi; yolOneki?: string }) {
-  const sayfaListesi = SAYFALAR.map((s) => ({ slug: s.slug, no: s.no }));
+}: MotifProps & {
+  dil: DilKodu;
+  sayfalar: MenuSayfasi[];
+  acilis: MenuSayfasi;
+  yolOneki?: string;
+}) {
+  const sayfaListesi = sayfalar.map((s) => ({ slug: s.slug, no: s.no }));
   // Onizlemede `menu/<slug>` diye bir rota yok; dil degistirme baglantisi
   // oradaki tek menu ekranina gitmeli.
   const onizleme = yolOneki !== "";
@@ -446,7 +456,7 @@ export function MenuKitabiEkrani({
           kategori değiştirmek için menüye dönmesi gerekmiyor. */}
       <div className="kitap-alani">
         <div id={KAP_ID} className="kitap" data-acilis={acilis.no}>
-          {SAYFALAR.map((s) => (
+          {sayfalar.map((s) => (
             <Yaprak key={s.no} sayfa={s} dil={dil} tema={tema} />
           ))}
         </div>
@@ -506,7 +516,7 @@ export function MenuKitabiEkrani({
             adresiGuncelle={!onizleme}
           />
           {" / "}
-          {SAYFALAR.length}
+          {sayfalar.length}
         </p>
       </div>
     </div>

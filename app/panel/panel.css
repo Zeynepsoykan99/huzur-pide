@@ -1,0 +1,540 @@
+/* ===========================================================================
+   PANEL ARAYÜZÜ
+
+   Menünün temasından BİLİNÇLİ OLARAK ayrı. Üç gerekçe:
+
+   1. Temayı panelden değiştiriyoruz; panel de o temayı giyseydi sahip tema
+      değiştirdikçe panelin kendisi şekil değiştirirdi. Gece Ocağı seçilince
+      panel koyulaşır, form doldurmak zorlaşırdı.
+   2. Menü tipografisi vitrin tipografisi (Cormorant, Reem Kufi). Form
+      etiketi, rakam kutusu ve düğme için yanlış; burada okunaklı sistem
+      fontu ve iri rakam gerekiyor.
+   3. Panel --t-* değişkenlerine bağlanırsa tema değişkenlerinde ileride
+      yapılacak her değişiklik paneli de kırar.
+
+   Aynı aileden görünüyor (sıcak nötr zemin, tek vurgu rengi, Huzur Pide
+   markası) ama kendi değişkenleriyle: --p-*.
+
+   Mekân sahibinin teknik bilgisi yok: iri dokunma hedefleri, büyük punto,
+   her ekranda tek iş, teknik terim yok.
+   =========================================================================== */
+
+.panel {
+  --p-zemin: #f4f1ec;
+  --p-yuzey: #ffffff;
+  --p-metin: #1c1a17;
+  --p-solgun: #5d5850;
+  --p-cizgi: #ded8cf;
+  --p-vurgu: #1a4a8d;
+  --p-vurgu-koyu: #12356b;
+  --p-uyari: #b23b26;
+  --p-uyari-zemin: #fdf0ed;
+  --p-basari: #1f6b45;
+  --p-basari-zemin: #eef7f1;
+
+  min-height: 100dvh;
+  background: var(--p-zemin);
+  color: var(--p-metin);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.panel * {
+  box-sizing: border-box;
+}
+
+/* --- Üst şerit --- */
+.panel-ust {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 1rem;
+  background: var(--p-yuzey);
+  border-bottom: 1px solid var(--p-cizgi);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.panel-marka {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--p-metin);
+  text-decoration: none;
+}
+
+.panel-marka-motif {
+  width: 1.35rem;
+  height: 1.35rem;
+  color: var(--p-vurgu);
+}
+
+.panel-govde {
+  width: 100%;
+  max-width: 40rem;
+  margin-inline: auto;
+  padding: 1.25rem 1rem 3rem;
+}
+
+.panel-baslik {
+  margin: 0 0 0.35rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.panel-aciklama {
+  margin: 0 0 1.5rem;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--p-solgun);
+}
+
+/* --- Büyük yönlendirme düğmeleri (ana ekran) --- */
+.panel-menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.panel-buyuk-dugme {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  width: 100%;
+  min-height: 4.5rem;
+  padding: 1rem 1.1rem;
+  background: var(--p-yuzey);
+  border: 1px solid var(--p-cizgi);
+  border-radius: 0.75rem;
+  text-decoration: none;
+  color: var(--p-metin);
+  text-align: start;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.panel-buyuk-dugme:hover {
+  border-color: var(--p-vurgu);
+  background: #fbfaf8;
+}
+
+.panel-buyuk-dugme-ad {
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.panel-buyuk-dugme-alt {
+  display: block;
+  margin-top: 0.15rem;
+  font-size: 0.875rem;
+  font-weight: 400;
+  color: var(--p-solgun);
+}
+
+.panel-ok {
+  margin-inline-start: auto;
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+  color: var(--p-vurgu);
+}
+
+/* --- Kart / bölüm --- */
+.panel-kart {
+  background: var(--p-yuzey);
+  border: 1px solid var(--p-cizgi);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.panel-kart-baslik {
+  margin: 0 0 0.75rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+/* --- Form --- */
+.panel-alan {
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.panel-etiket {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.panel-etiket-not {
+  font-weight: 400;
+  color: var(--p-solgun);
+}
+
+.panel-girdi,
+.panel-secim {
+  display: block;
+  width: 100%;
+  min-height: 3rem;
+  padding: 0.6rem 0.75rem;
+  font-size: 1.05rem;
+  font-family: inherit;
+  color: var(--p-metin);
+  background: var(--p-yuzey);
+  border: 1px solid var(--p-cizgi);
+  border-radius: 0.5rem;
+}
+
+.panel-girdi:focus,
+.panel-secim:focus {
+  outline: 2px solid var(--p-vurgu);
+  outline-offset: 1px;
+  border-color: var(--p-vurgu);
+}
+
+/* Fiyat kutusu: rakam iri ve tabular, elle girmesi kolay olsun. */
+.panel-fiyat-girdi {
+  font-variant-numeric: tabular-nums;
+  font-size: 1.15rem;
+  font-weight: 600;
+  text-align: end;
+  min-height: 3rem;
+  padding: 0.5rem 0.6rem;
+  width: 100%;
+  color: var(--p-metin);
+  background: var(--p-yuzey);
+  border: 1px solid var(--p-cizgi);
+  border-radius: 0.5rem;
+  font-family: inherit;
+}
+
+.panel-fiyat-girdi:focus {
+  outline: 2px solid var(--p-vurgu);
+  outline-offset: 1px;
+}
+
+/* Değişmiş alan gözle görünsün. */
+.panel-fiyat-girdi[data-degisti="evet"] {
+  border-color: var(--p-vurgu);
+  background: #f2f6fb;
+}
+
+/* --- Düğmeler --- */
+.panel-dugme {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 3rem;
+  padding: 0.65rem 1.25rem;
+  font-size: 1rem;
+  font-weight: 700;
+  font-family: inherit;
+  color: #ffffff;
+  background: var(--p-vurgu);
+  border: 1px solid var(--p-vurgu);
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+
+.panel-dugme:hover:not(:disabled) {
+  background: var(--p-vurgu-koyu);
+  border-color: var(--p-vurgu-koyu);
+}
+
+.panel-dugme:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.panel-dugme-ikincil {
+  color: var(--p-metin);
+  background: var(--p-yuzey);
+  border-color: var(--p-cizgi);
+}
+
+.panel-dugme-ikincil:hover:not(:disabled) {
+  background: #f3f1ee;
+  border-color: var(--p-solgun);
+}
+
+.panel-dugme-satiri {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+
+/* --- Bildirimler --- */
+.panel-bildirim {
+  padding: 0.8rem 0.9rem;
+  border-radius: 0.5rem;
+  font-size: 0.95rem;
+  line-height: 1.45;
+  margin-bottom: 1rem;
+  border: 1px solid;
+}
+
+.panel-bildirim-basari {
+  color: var(--p-basari);
+  background: var(--p-basari-zemin);
+  border-color: #bcdcc9;
+}
+
+.panel-bildirim-hata {
+  color: var(--p-uyari);
+  background: var(--p-uyari-zemin);
+  border-color: #f0c4bb;
+}
+
+/* --- Fiyat listesi --- */
+.panel-kategori-basligi {
+  margin: 1.5rem 0 0.5rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--p-vurgu-koyu);
+}
+
+.panel-urun {
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--p-cizgi);
+}
+
+.panel-urun:last-child {
+  border-bottom: 0;
+}
+
+.panel-urun-ad {
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1.3;
+  margin-bottom: 0.5rem;
+}
+
+.panel-fiyat-izgara {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.panel-fiyat-hucre {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.panel-fiyat-etiket {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--p-solgun);
+}
+
+/* "Teyit edilmedi" rozeti — taşınan dogrulandi işaretinin karşılığı. */
+.panel-rozet {
+  display: inline-block;
+  margin-inline-start: 0.4rem;
+  padding: 0.1rem 0.4rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--p-uyari);
+  background: var(--p-uyari-zemin);
+  border: 1px solid #f0c4bb;
+  border-radius: 0.25rem;
+  vertical-align: 0.1em;
+}
+
+/* --- Kaydetme özeti --- */
+.panel-ozet {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: rgba(28, 26, 23, 0.45);
+  padding: 1rem;
+}
+
+.panel-ozet-kutu {
+  width: 100%;
+  max-width: 34rem;
+  max-height: 80dvh;
+  overflow-y: auto;
+  background: var(--p-yuzey);
+  border-radius: 0.9rem;
+  padding: 1.1rem;
+}
+
+.panel-ozet-satir {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--p-cizgi);
+  font-size: 0.95rem;
+}
+
+.panel-ozet-satir:last-of-type {
+  border-bottom: 0;
+}
+
+.panel-ozet-degisim {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* Büyük fark uyarısı: üç kattan fazla değişim ya da sıfır. */
+.panel-ozet-satir[data-buyuk="evet"] {
+  color: var(--p-uyari);
+}
+
+.panel-ozet-uyari {
+  margin: 0.75rem 0 0;
+  padding: 0.7rem 0.8rem;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: var(--p-uyari);
+  background: var(--p-uyari-zemin);
+  border: 1px solid #f0c4bb;
+  border-radius: 0.5rem;
+}
+
+/* --- Tema kartları --- */
+.panel-tema-listesi {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.panel-tema-karti {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  width: 100%;
+  padding: 0.9rem 1rem;
+  background: var(--p-yuzey);
+  border: 2px solid var(--p-cizgi);
+  border-radius: 0.75rem;
+  text-align: start;
+  font-family: inherit;
+  color: var(--p-metin);
+  cursor: pointer;
+}
+
+.panel-tema-karti[aria-pressed="true"] {
+  border-color: var(--p-vurgu);
+  background: #f2f6fb;
+}
+
+.panel-tema-ornek {
+  width: 3rem;
+  height: 3rem;
+  flex-shrink: 0;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.panel-tema-ornek svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.panel-tema-ad {
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.panel-tema-tarif {
+  display: block;
+  margin-top: 0.15rem;
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: var(--p-solgun);
+}
+
+.panel-tema-secili {
+  margin-inline-start: auto;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--p-vurgu);
+  white-space: nowrap;
+}
+
+/* --- Giriş ekranı --- */
+.panel-giris {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.panel-giris-kutu {
+  width: 100%;
+  max-width: 22rem;
+}
+
+.panel-giris-tepe {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 1.75rem;
+}
+
+.panel-giris-motif {
+  width: 2.75rem;
+  height: 2.75rem;
+  color: var(--p-vurgu);
+  margin-bottom: 0.6rem;
+}
+
+.panel-giris-ad {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.panel-giris-alt {
+  margin: 0.3rem 0 0;
+  font-size: 0.9rem;
+  color: var(--p-solgun);
+}
+
+/* --- Yardımcılar --- */
+.panel-not {
+  margin: 1rem 0 0;
+  padding: 0.75rem 0.85rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--p-solgun);
+  background: #efece7;
+  border-radius: 0.5rem;
+}
+
+.panel-bos {
+  padding: 2rem 1rem;
+  text-align: center;
+  color: var(--p-solgun);
+}

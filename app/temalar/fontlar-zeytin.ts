@@ -17,6 +17,11 @@ const lora = Lora({
   subsets: ["latin", "latin-ext", "cyrillic"],
   weight: ["400", "500", "600", "700"],
   display: "swap",
+  // preload KAPALI: dort temanin da modulu derlemeye giriyor; acik
+  // birakilsaydi Next dordunun de dosyalarini <link rel=preload> ile
+  // cagirirdi (olculdu: 46 on yukleme). Kapatilinca tarayici yalnizca
+  // eslesen CSS kuralinin istedigi aileyi indiriyor.
+  preload: false,
   variable: "--font-lora",
   fallback: ["Georgia", "Cambria", "serif"],
 });
@@ -25,6 +30,11 @@ const nunito = Nunito_Sans({
   subsets: ["latin", "latin-ext", "cyrillic"],
   weight: ["400", "600", "700"],
   display: "swap",
+  // preload KAPALI: dort temanin da modulu derlemeye giriyor; acik
+  // birakilsaydi Next dordunun de dosyalarini <link rel=preload> ile
+  // cagirirdi (olculdu: 46 on yukleme). Kapatilinca tarayici yalnizca
+  // eslesen CSS kuralinin istedigi aileyi indiriyor.
+  preload: false,
   variable: "--font-nunito",
   fallback: ["system-ui", "Segoe UI", "Arial", "sans-serif"],
 });
@@ -33,6 +43,11 @@ const naskh = Noto_Naskh_Arabic({
   subsets: ["arabic", "latin"],
   weight: ["400", "500", "600", "700"],
   display: "swap",
+  // preload KAPALI: dort temanin da modulu derlemeye giriyor; acik
+  // birakilsaydi Next dordunun de dosyalarini <link rel=preload> ile
+  // cagirirdi (olculdu: 46 on yukleme). Kapatilinca tarayici yalnizca
+  // eslesen CSS kuralinin istedigi aileyi indiriyor.
+  preload: false,
   variable: "--font-naskh",
   fallback: ["Times New Roman", "serif"],
 });
@@ -40,6 +55,11 @@ const naskh = Noto_Naskh_Arabic({
 const notoArabicZ = Noto_Sans_Arabic({
   subsets: ["arabic", "latin"],
   display: "swap",
+  // preload KAPALI: dort temanin da modulu derlemeye giriyor; acik
+  // birakilsaydi Next dordunun de dosyalarini <link rel=preload> ile
+  // cagirirdi (olculdu: 46 on yukleme). Kapatilinca tarayici yalnizca
+  // eslesen CSS kuralinin istedigi aileyi indiriyor.
+  preload: false,
   variable: "--font-noto-arabic",
   fallback: ["Segoe UI", "Tahoma", "sans-serif"],
 });

@@ -1,8 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { notFound } from "next/navigation";
-import { AKTIF_TEMA_FONTLARI } from "@/app/temalar/aktif";
+import { TEMA_FONTLARI } from "@/app/temalar/aktif";
 import { DILLER, DIL_YONU, gecerliDil } from "@/data/menu";
-import { AKTIF_TEMA_SINIFI } from "@/data/tema";
+import { aktifTema } from "@/data/menuKaynak";
 import "../globals.css";
 
 /**
@@ -16,8 +16,15 @@ import "../globals.css";
  *
  * TEMA da burada: `<html>` üzerindeki `tema-*` sınıfı bütün --t-* renk ve
  * yazı tipi değişkenlerini belirliyor. Ekranların hiçbiri temayı bilmiyor.
- * Yazı tipleri `aktif.ts` üzerinden geliyor; üretimde yalnızca aktif temanın
- * aileleri iniyor.
+ *
+ * Hangi temanın geçerli olduğu Firestore'dan (`ayarlar/genel.tema`) okunuyor —
+ * panelden değiştirilebilsin diye. Okuma müşteri isteğinde değil, sayfa
+ * üretilirken oluyor; tema değişince panel `revalidatePath` ile bütün
+ * ekranları yeniden ürettiriyor.
+ *
+ * Yazı tipleri: dört tema modülü de derlemeye giriyor ama `<html>` üzerine
+ * yalnızca aktif temanın değişkenleri konuyor, bu yüzden yalnızca onun
+ * dosyaları iniyor.
  *
  * `/` adresi next.config.ts içinde `/tr`'ye yönlendiriliyor.
  */
@@ -47,11 +54,13 @@ export default async function KokLayout({
   const { dil } = await params;
   if (!gecerliDil(dil)) notFound();
 
+  const tema = await aktifTema();
+
   return (
     <html
       lang={dil}
       dir={DIL_YONU[dil]}
-      className={`${AKTIF_TEMA_SINIFI} ${AKTIF_TEMA_FONTLARI}`}
+      className={`tema-${tema} ${TEMA_FONTLARI[tema]}`}
     >
       <body className="min-h-dvh">{children}</body>
     </html>

@@ -9,7 +9,8 @@ import {
   MenuKitabiEkrani,
   OrganizasyonEkrani,
 } from "@/components/ekranlar";
-import { DILLER, SAYFALAR, gecerliDil, type DilKodu } from "@/data/menu";
+import { DILLER, gecerliDil, type DilKodu } from "@/data/menu";
+import { sayfalar } from "@/data/menuKaynak";
 import { TEMA_ADI, TEMA_KODLARI, gecerliTema, type TemaKodu } from "@/data/tema";
 
 /**
@@ -69,13 +70,14 @@ export default async function OnizlemeEkrani({
 
   // Onizlemedeki baglantilar onizlemenin icinde kalsin.
   const yolOneki = `/onizleme/${tema}`;
+  const liste = await sayfalar();
   const ortak = { dil, tema, yolOneki };
 
   const govde = {
     diller: <DilSecimEkrani {...ortak} />,
     secim: <AnaSecimEkrani {...ortak} />,
-    liste: <KategoriListesiEkrani {...ortak} />,
-    menu: <MenuKitabiEkrani {...ortak} acilis={SAYFALAR[0]} />,
+    liste: <KategoriListesiEkrani {...ortak} sayfalar={liste} />,
+    menu: <MenuKitabiEkrani {...ortak} sayfalar={liste} acilis={liste[0]} />,
     organizasyon: <OrganizasyonEkrani {...ortak} />,
     bulunamadi: <BulunamadiEkrani {...ortak} />,
   }[ekran];
