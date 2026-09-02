@@ -3,7 +3,7 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 21 tamamlandı — Kuzu Izgara Porsiyon'un fotoğrafı eklendi ve **Izgara kategorisi tamamlandı: 14 ürünün 14'ü de fotoğraflı**. Fotoğrafsız ürün 10'dan 9'a indi; kalanların yedisi içecek. (Aşama 19'da eklenen dokuz ızgara fotoğrafı üretimde canlı; Aşama 20-21 push bekliyor.) Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
+**Güncel aşama:** Aşama 21 tamamlandı ve **üretimde canlı** — Kuzu Izgara Porsiyon'un fotoğrafı eklendi ve **Izgara kategorisi tamamlandı: 14 ürünün 14'ü de fotoğraflı**. Fotoğrafsız ürün 10'dan 9'a indi; kalanların yedisi içecek. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
 **Son güncelleme:** 2026-09-02
 
 ### Genel Durum
@@ -3818,11 +3818,67 @@ değişmedi.
 
 ### 21.9 Sıradaki adım
 
-Push ve deploy onay bekliyor. **Aşama 20'nin değişikliği de hâlâ push
-edilmemiş durumda** — tavuk ve kuzu birlikte yayına çıkacak.
+Push ve deploy **tamamlandı** — Aşama 20 ve 21 tek commit'te (`b137201`),
+sonuçlar 21.10'da. Firestore ile canlı derleme arasındaki fark kapandı.
 
 Fotoğrafsız kalan dokuz ürün: içeceklerin tamamı (7), Künefe, Çoban Salata.
 Yedisi içecek olduğu için ürün fotoğrafı olarak değeri en düşük grup;
 Kapalı Pide ve Izgara, yani menünün asıl iki kategorisi artık tam.
+
+### 21.10 Canlı doğrulama · 2026-09-02
+
+Aşama 20 ve 21 tek commit'te birleştirildi (`b137201`) ve `main`'e push
+edildi; Vercel dağıtımı **50 saniyede** tamamlandı (iki yeni dosya 404
+verirken 200'e dönene kadar yoklandı — kuzu 40. saniyede, tavuk 50.).
+
+**Dosyalar.** İkisi de canlıda, boyutları yereldekiyle **byte'ı byte'ına
+aynı**: `tavuk-izgara-kg.webp` 74.842 B, `kuzu-izgara-porsiyon.webp`
+55.470 B.
+
+**Ekranda — iki yeni fotoğraf.** Izgara sayfasının 14 satırı tarayıcıda tek
+tek okundu:
+
+| # | Ürün | Dosya |
+|---|---|---|
+| 4 | Kuzu Izgara Porsiyon | `kuzu-izgara-porsiyon.webp` |
+| 8 | Tavuk Izgara 1 KG | `tavuk-izgara-kg.webp` |
+
+İkisi de doğru üründe ve `naturalWidth > 0` — gerçekten boyandı. Kuzu
+Porsiyon (tabakta, lavaş üstünde pirzola) ile Kuzu 1 KG (ızgara üstünde
+toplu pirzola) ekranda birbirinden ayırt ediliyor.
+
+**Yer tutucu kalmadı — dört dilde.** TR, EN, AR, RU: her birinde
+fotoğraflı satır **14**, yer tutucu **0**, ve 14'ünün 14'ü de boyandı.
+Izgara kategorisi canlıda tam.
+
+**Sayfa yapısı ve sayaç.** Dört dilde de beş levha, hayalet numaralar 1-5,
+başlıklar sırasıyla Kapalı Pide / Izgara / Salatalar / Tatlı / İçecekler.
+Izgara tek sayfa, sayaç doğru:
+
+```
+TR  Menüye dön · Sayfa 2 / 5
+EN  Back to menu · Page 2 / 5
+AR  العودة إلى القائمة · صفحة 2 / 5
+RU  Назад в меню · Страница 2 / 5
+```
+
+**Sığma — Aşama 19, 20 ve 21'in yerel ölçümleriyle birebir aynı.**
+Masaüstünde (1280×1000) dört dil de **1276 px**, satırlar `91×13 + 90`,
+yuva 68×68. Telefonda (390×844):
+
+| Dil | Toplam | Metin yüzünden büyüyen satır |
+|---|---|---|
+| TR | 1276 px | yok |
+| EN | 1294 px | 12 (Saç Kavurma) |
+| AR (rtl) | 1294 px | 12 (Saç Kavurma) |
+| RU | 1366 px | 6, 7, 10, 11, 12 |
+
+Dört dilde, iki genişlikte: yatay taşma **0**, kırpılan ürün adı **0**,
+saran fiyat **0**. Büyüyen satırlar üç aşamadır aynı satırlar ve sebep yine
+uzun adın iki satıra sarması — yuva her satırda 68 px. Arapça sayfada RTL
+aynalaması doğru: yuva sağda, fiyat solda, sayaç sol altta.
+
+**Konsol.** Dört dil, iki genişlik gezildi: **0 hata, 0 uyarı.** Ağ
+kaydında başarısız istek yok.
 
 === RAPOR SONU ===
