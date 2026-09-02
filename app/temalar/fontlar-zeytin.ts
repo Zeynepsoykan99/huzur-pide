@@ -1,6 +1,10 @@
 import { Lora, Noto_Naskh_Arabic, Noto_Sans_Arabic, Nunito_Sans } from "next/font/google";
 
 /**
+ * NOT: Bu modul su an HICBIR YERDEN IMPORT EDILMIYOR — Zeytin panelde
+ * secenek olmadigi icin fontlari derlemeye alinmiyor (bkz. aktif.ts).
+ * Zeytin secilebilir yapilirsa buradaki ZEYTIN_FONTLARI yeniden baglanacak.
+ *
  * Zeytin yazi tipleri — bahce ve sofra dili.
  *
  * Kapsamlar dogrulandi:

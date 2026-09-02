@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { notFound } from "next/navigation";
-import { TEMA_FONTLARI } from "@/app/temalar/aktif";
+import { temaFontlari } from "@/app/temalar/aktif";
 import { DILLER, DIL_YONU, gecerliDil } from "@/data/menu";
 import { aktifTema } from "@/data/menuKaynak";
 import "../globals.css";
@@ -60,7 +60,7 @@ export default async function KokLayout({
     <html
       lang={dil}
       dir={DIL_YONU[dil]}
-      className={`tema-${tema} ${TEMA_FONTLARI[tema]}`}
+      className={`tema-${tema} ${temaFontlari(tema)}`}
     >
       <body className="min-h-dvh">{children}</body>
     </html>
