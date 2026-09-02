@@ -504,17 +504,33 @@ export const MENU: Kategori[] = [
           yukseklik: 450,
         },
       },
-      { id: "kuzu-izgara-porsiyon", ad: {
+      {
+        id: "kuzu-izgara-porsiyon",
+        ad: {
           tr: "Kuzu Izgara Porsiyon",
           en: "Grilled Lamb Portion",
           ar: "لحم ضأن مشوي حصة",
-          ru: "Баранина на гриле, порция",
-        }, icerik: {
+          ru: "Баранина на гриле, порция"
+        },
+        icerik: {
           tr: "Izgarada kuzu eti",
           en: "Grilled lamb",
           ar: "لحم ضأن مشوي",
-          ru: "Баранина на гриле",
-        }, fiyatlar: tek(550), gorsel: null },
+          ru: "Баранина на гриле"
+        },
+        fiyatlar: tek(550),
+        gorsel: {
+          src: "/urunler/kuzu-izgara-porsiyon.webp",
+          alt: {
+            tr: "Lavaş üstünde ızgara kuzu pirzola",
+            en: "Grilled lamb chops on flatbread",
+            ar: "ريش ضأن مشوية على خبز اللافاش",
+            ru: "Бараньи рёбрышки на гриле на лаваше",
+          },
+          genislik: 800,
+          yukseklik: 450,
+        },
+      },
       {
         id: "kofte-izgara-kg",
         ad: {
@@ -596,17 +612,33 @@ export const MENU: Kategori[] = [
           yukseklik: 450,
         },
       },
-      { id: "tavuk-izgara-kg", ad: {
+      {
+        id: "tavuk-izgara-kg",
+        ad: {
           tr: "Tavuk Izgara 1 KG",
           en: "Grilled Chicken 1 KG",
           ar: "دجاج مشوي 1 كغ",
-          ru: "Курица на гриле 1 кг",
-        }, icerik: {
+          ru: "Курица на гриле 1 кг"
+        },
+        icerik: {
           tr: "Izgarada tavuk eti",
           en: "Grilled chicken",
           ar: "دجاج مشوي",
-          ru: "Курица на гриле",
-        }, fiyatlar: tek(700), gorsel: null },
+          ru: "Курица на гриле"
+        },
+        fiyatlar: tek(700),
+        gorsel: {
+          src: "/urunler/tavuk-izgara-kg.webp",
+          alt: {
+            tr: "Izgarada tavuk parçaları",
+            en: "Chicken pieces on the grill",
+            ar: "قطع دجاج على الشواية",
+            ru: "Кусочки курицы на гриле",
+          },
+          genislik: 800,
+          yukseklik: 450,
+        },
+      },
       {
         id: "tavuk-porsiyon",
         ad: {

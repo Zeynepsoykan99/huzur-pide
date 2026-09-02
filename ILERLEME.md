@@ -3,7 +3,7 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 19 tamamlandı ve **üretimde canlı** — Izgara kategorisine dokuz fotoğraf eklendi; kategorinin 14 ürününden 12'si artık fotoğraflı. Fotoğrafsız ürün 20'den 11'e indi. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
+**Güncel aşama:** Aşama 21 tamamlandı — Kuzu Izgara Porsiyon'un fotoğrafı eklendi ve **Izgara kategorisi tamamlandı: 14 ürünün 14'ü de fotoğraflı**. Fotoğrafsız ürün 10'dan 9'a indi; kalanların yedisi içecek. (Aşama 19'da eklenen dokuz ızgara fotoğrafı üretimde canlı; Aşama 20-21 push bekliyor.) Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
 **Son güncelleme:** 2026-09-02
 
 ### Genel Durum
@@ -32,6 +32,8 @@ Numaralandırma rapor başlıklarıyla aynı: aşağıdaki her satırın karşı
 | 17 | Önizleme rotasının kaldırılması, üretime çıkış, canlı doğrulama | **Tamamlandı** |
 | 18 | Kapalı Pide'nin dört eksik fotoğrafı | **Tamamlandı** |
 | 19 | Izgara kategorisinin dokuz fotoğrafı | **Tamamlandı** |
+| 20 | Tavuk Izgara 1 KG fotoğrafı | **Tamamlandı** |
+| 21 | Kuzu Izgara Porsiyon fotoğrafı — Izgara tamamlandı | **Tamamlandı** |
 
 ### Bekleyenler
 
@@ -44,7 +46,7 @@ satırları o günün kaydı olarak duruyor, güncel liste burası.
 | 2 | Organizasyon sayfasının içeriği | **Bilgi** — sayfada ne yazacağı (metin, varsa görsel, iletişim bilgisi) senden gelecek | Rota `/[dil]/organizasyon` ayakta, içerik boş (Aşama 4) |
 | 3 | QR kodunun bakacağı adres | **Karar** — senin kararın: kök `https://huzur-pide.vercel.app` mi, doğrudan `.../tr` mi | Önerim `/tr`: yönlendirme atlanır, sayfa daha hızlı açılır. Kök adres her iki durumda da çalışmaya devam eder (Aşama 5) |
 | 4 | Vercel Hobby planının ticari kullanıma kapalı olması | **Karar + hesap** — Pro'ya geçmek ya da bilerek Hobby'de kalmak; kapsamın hangi plana girdiği ancak Vercel panelinden görülür | "Devam et, sorumluluk bende" demiştin ve öyle yapıldı. Site canlı ve çalışıyor; bu bir plan/şart sorunu, teknik bir arıza değil (Aşama 5) |
-| 5 | 11 ürünün fotoğrafı | **Bilgi** — 31 üründen 11'inin görseli yok | Kalanlar: içeceklerin tamamı (7), Kuzu Izgara Porsiyon, Tavuk Izgara 1 KG, Künefe, Çoban Salata. Kapalı Pide **tamamlandı** (6/6, Aşama 18); Izgara 14 üründen 12'si fotoğraflı (Aşama 19) — kalan ikisi için klasörde dosya gelmedi. Panelden yüklemek için 1 numaralı satır gerekiyor |
+| 5 | 9 ürünün fotoğrafı | **Bilgi** — 31 üründen 9'unun görseli yok | Kalanlar: içeceklerin tamamı (7), Künefe, Çoban Salata. Kapalı Pide **tamamlandı** (6/6, Aşama 18), Izgara **tamamlandı** (14/14, Aşama 19-21). Kalan dokuzun yedisi içecek — ürün fotoğrafı olarak değeri en düşük grup. Panelden yüklemek için 1 numaralı satır gerekiyor |
 | 6 | Arapça çevirilerin kontrolü | **Kişi** — ana dili Arapça olan birinin gözden geçirmesi | Özellikle Türkçe adın harf çevirisiyle yazıldığı kalemler: كاشارلي, كاريشيك, ساتش كافورما (Aşama 3) |
 | 7 | 4 teyit edilmemiş fiyat | **Bilgi** — dört hücrenin doğru fiyatı senden gelecek | Kıymalı / 1 Hamur · Kaşarlı / 1 Hamur · Kaşarlı / Duble · Kabak Tatlısı. Şu an menüde bir değer görünüyor, ama teyitli değil (Aşama 2) |
 
@@ -3507,5 +3509,320 @@ sürümlerin (1920w, 3840w) hiçbiri istenmedi.
 
 **Konsol.** Dört dil gezildi: **0 hata, 0 uyarı.** Ağ kaydında başarısız
 istek yok.
+
+=== RAPOR SONU ===
+
+## Aşama 20 — Tavuk Izgara 1 KG Fotoğrafı · 2026-09-02
+
+=== RAPOR BAŞLANGICI ===
+
+**Tarih:** 2026-09-02 · **Dal:** `main` · **Kaynak:** `yeni-gorseller/` (iki yeni dosya, biri kullanıldı)
+
+Izgara'da fotoğrafsız kalan iki ürün için dosya geldi. **Biri eklendi, biri
+reddedildi.** Izgara 14 üründen 13'ü fotoğraflı; fotoğrafsız ürün toplamı
+**11'den 10'a** indi — hedeflenen 9 değil, çünkü ikinci dosya kullanılabilir
+değildi.
+
+### 20.1 Eşleştirme ve filigran denetimi
+
+Aşama 19'da bir dosyada başka bir işletmenin logosu çıktığı için bu turda
+denetim baştan yapıldı: iki dosya da açıldı, çeyreklere bölünüp büyütülerek
+tarandı.
+
+| Dosya | Kaynak | Görülen | Ürün | Sonuç |
+|---|---|---|---|---|
+| `tavuk ızgara 1kg.jpg` | 640×640 | Izgara telinde bol tavuk parçası, duman | Tavuk Izgara 1 KG | **Temiz** |
+| `kuzu ızgara porsiyon.webp` | 640×640 | Beyaz tabakta üç kuzu pirzola, biberiye | Kuzu Izgara Porsiyon | **Reddedildi** |
+
+Eşleştirmelerin ikisi de netti: kalan iki fotoğrafsız ürünle birebir
+örtüşüyorlardı, başka adaya uyma ihtimali yoktu.
+
+**`tavuk ızgara 1kg.jpg` — temiz.** Dört çeyreğe bölünüp 2× büyütülerek
+tarandı; logo, filigran, köşe amblemi ya da gömülü yazı yok.
+
+**`kuzu ızgara porsiyon.webp` — iki ayrı kusur, kullanılamaz.**
+
+1. **Stok site filigranı.** Görüntünün içine gömülü, çapraz tekrarlanan
+   **"pngtree"** yazısı ve bir **©** işareti; sağ üstte, sağ ortada ve sol
+   altta ayrı ayrı görünüyor. Bir stok fotoğraf sitesinin ücretsiz
+   önizleme sürümü.
+2. **Şeffaflık dama tahtası piksel olarak basılmış.** Dosyada gerçek alfa
+   kanalı yok (`channels=3`, saydam piksel %0), yani arka plandaki
+   gri-beyaz kareler şeffaflık değil — boyanmış piksel. Görüntünün
+   **%20,6'sı** bu dama tahtası. Siteye konsa arka planda gri kareler
+   görünürdü.
+
+**Kırpmak kurtarmıyor.** 800×450 merkezden kırpma denendi: filigran hâlâ üç
+yerde, dama tahtası iki köşede duruyor. Aşama 19'daki logo tek bir köşedeydi
+ve kadrajın dışında bırakılabilmişti; bu filigran görüntünün tamamına
+yayılmış durumda.
+
+**Filigran silme önerilmedi.** O filigran bir lisans işareti; kaldırmak
+fotoğrafı kullanma hakkı vermiyor. Doğru yol lisanslı (filigransız) sürümü
+almak ya da başka bir fotoğraf bulmak. Karar soruldu: **tavuk eklendi, kuzu
+atlandı.**
+
+### 20.2 Dönüşüm
+
+Aşama 2, 18 ve 19'daki ayar korundu: **800×450, webp kalite 78, merkezden
+kırpma** (`sharp`, `fit: cover`).
+
+| Dosya | Kaynak ölçü | Sonuç |
+|---|---|---|
+| `tavuk-izgara-kg.webp` | 640×640 | 800×450 · 74.842 B |
+
+Adlandırma ürün id'siyle birebir — Aşama 19'da kurulan düzen. Kırpma sonrası
+dosya tekrar açılıp kadrajın konuyu kesmediği ve filigran içermediği
+görüldü.
+
+### 20.3 Alt metin
+
+Mevcut düzen korundu: alt metin fotoğrafta görüneni anlatıyor. "1 KG"
+kardeşleriyle aynı kalıpta ("Izgarada dana eti", "Izgarada kuzu pirzola",
+"Izgarada pişen köfteler"):
+
+| TR | EN | AR | RU |
+|---|---|---|---|
+| Izgarada tavuk parçaları | Chicken pieces on the grill | قطع دجاج على الشواية | Кусочки курицы на гриле |
+
+`tavuk-porsiyon`'un metninden ("Lavaşlı ızgara tavuk porsiyonu") ayrı —
+ekran okuyucuda iki tavuk kalemi karışmıyor.
+
+### 20.4 Firestore ve sıra
+
+Aşama 19'da öğrenilen ders uygulandı: **Firestore önce, derleme sonra.**
+Sayfalar derleme anındaki veriyle statikleştiği için ters sırada fotoğraf
+ekranda çıkmıyor.
+
+`tohum.ts` kullanılmadı. `gorsel-guncelle.ts` tek satır bildirdi —
+`tavuk-izgara-kg`, `yok → /urunler/tavuk-izgara-kg.webp`. Üzerine yazılan
+kayıt yok. Ardından `tohum-dogrula.ts`:
+
+```
+kategori 5/5 · urun 31/31 · teyitEdilmemisFiyat 4/4 · tema cini
+TASIMA DOGRULANDI — hicbir alanda fark yok.
+```
+
+Veri dosyası tarafında da ayrıştırıp karşılaştırıldı:
+
+```
+gorsel HARIC her sey ayni mi: EVET
+toplam urun: 31 -> 31 · gorselli: 20 -> 21 · gorselsiz: 11 -> 10
+izgara: 14 -> 14 urun · izgara gorselsiz: 2 -> 1
+izgarada gorselsiz kalan: kuzu-izgara-porsiyon
+```
+
+### 20.5 Doğrulama — ekranda
+
+Üretim derlemesi yerelde ayağa kaldırıldı, dört dil tarayıcıda açıldı.
+
+Izgara'nın 14 satırı tek tek okundu: 13 fotoğrafın 13'ü de doğru üründe ve
+`naturalWidth > 0` — 8. satır **Tavuk Izgara 1 KG → `tavuk-izgara-kg.webp`**.
+Tek yer tutucu 4. satır, Kuzu Izgara Porsiyon. Dört dilde de alt metin
+dilin kendi karşılığını veriyor.
+
+**Sayfa yapısı ve sayaç.** Beş levha, hayalet numaralar 1-5, Izgara tek
+sayfa. Sayaç dört dilde de doğru: `Sayfa 2 / 5` · `Page 2 / 5` ·
+`صفحة 2 / 5` · `Страница 2 / 5`.
+
+**Sığma — Aşama 19'un ölçümüyle birebir aynı.** Masaüstünde (1280×1000) dört
+dil de **1276 px** (`91×13 + 90`). Telefonda (390×844) TR 1276 · EN 1294 ·
+AR 1294 · RU 1366 px; büyüyen satırlar Aşama 19'daki ile aynı satırlar
+(EN/AR 12; RU 6, 7, 10, 11, 12) ve sebep yine metin sarması.
+
+Tavuk satırının kendisi ölçüldü: yükseklik **91 px**, gövde **45 px** — yani
+yuva belirliyor, fotoğraf eklenmesi satırı büyütmedi. Yer tutucuyken de
+91 px idi. Dört dilde, iki genişlikte yatay taşma 0, kırpılan ad 0, saran
+fiyat 0.
+
+**`sizes`.** `components/UrunGorseli.tsx:75` → `sizes="68px"`, yerinde; bu
+dosyaya dokunulmadı. Tarayıcı `w=96` sürümünü indirdi (68px yuvanın 2×
+karşılığı).
+
+### 20.6 Denetimler
+
+```
+npx tsc --noEmit   → temiz (çıkış 0)
+npm run lint       → temiz (çıktı yok)
+npm run build      → başarılı, 38 statik sayfa
+tarayıcı konsolu   → 0 hata, 0 uyarı (dört dil)
+```
+
+### 20.7 Değişen dosyalar
+
+| Dosya | Değişiklik |
+|---|---|
+| `public/urunler/tavuk-izgara-kg.webp` | yeni — 74.842 B |
+| `data/menu.ts` | `tavuk-izgara-kg` ürününde `gorsel: null` → görsel nesnesi |
+| `ILERLEME.md` | özet, aşama tablosu, bekleyenler (11 → 10) ve bu rapor |
+| Firestore `urunler` | `tavuk-izgara-kg` belgesinin yalnızca `gorsel` alanı |
+
+`components/UrunGorseli.tsx`, `app/globals.css` ve diğer içerik alanları
+değişmedi. `kuzu ızgara porsiyon.webp` klasörde bırakıldı, kullanılmadı.
+
+### 20.8 Sıradaki adım
+
+Push ve deploy onay bekliyor.
+
+**Kuzu Izgara Porsiyon** için filigransız bir fotoğraf gerekiyor — ızgarada
+fotoğrafsız kalan tek ürün o. Kalan fotoğrafsızlar: içeceklerin tamamı (7),
+Kuzu Izgara Porsiyon, Künefe, Çoban Salata — toplam 10.
+
+=== RAPOR SONU ===
+
+## Aşama 21 — Kuzu Izgara Porsiyon Fotoğrafı: Izgara Tamamlandı · 2026-09-02
+
+=== RAPOR BAŞLANGICI ===
+
+**Tarih:** 2026-09-02 · **Dal:** `main` · **Kaynak:** `yeni-gorseller/kuzu ızgara2.jpg`
+
+Aşama 20'de filigranlı çıktığı için reddedilen Kuzu Izgara Porsiyon
+fotoğrafının yerine temiz bir dosya geldi. Eklendi ve **Izgara kategorisi
+tamamlandı: 14 ürünün 14'ü de fotoğraflı.** Fotoğrafsız ürün toplamı
+**10'dan 9'a** indi.
+
+### 21.1 Dosya ve içerik doğrulaması
+
+Klasördeki yeni dosya `kuzu ızgara2.jpg` (800×800, 160.892 B). Reddedilen
+`kuzu ızgara porsiyon.webp` da klasörde duruyor; karışmaması için ikisi de
+ölçüldü, yenisi zaman damgasından ayırt edildi (16:39).
+
+**Dosya adı "porsiyon" demiyor** — sadece "kuzu ızgara2". Bu yüzden hedef
+ürün ada değil içeriğe bakılarak doğrulandı: fotoğrafta beyaz tabakta,
+lavaş üstünde **üç kuzu pirzola**, yanında yeşil soğan, marul ve çeri
+domates var. Servis edilmiş tek kişilik bir tabak, yani **Porsiyon**.
+
+Ayrım önemliydi: `kuzu-izgara-kg` zaten ızgara üstünde toplu pirzola
+gösteriyor. Yeni fotoğraf tabakta servis hâlini gösterdiği için iki kalem
+ekranda birbirine karışmıyor.
+
+### 21.2 Filigran denetimi — temiz
+
+Aşama 19 (başka restoranın logosu) ve Aşama 20 (pngtree filigranı)
+sonrasında denetim iki katmanlı yapıldı.
+
+**Görsel tarama.** Dosya dört çeyreğe artı bir merkez bölgeye bölünüp 2×
+büyütülerek incelendi. Beş bölgenin hiçbirinde stok filigranı, telif
+işareti, işletme logosu ya da gömülü yazı yok.
+
+**Sayısal tarama.** Aşama 20'de reddedilen dosyayla aynı ölçütler:
+
+| Ölçüt | Bu dosya | Aşama 20'de reddedilen |
+|---|---|---|
+| Dama tahtası gri tonundaki piksel | **%0,02** | %20,6 |
+| Tamamen nötr gri piksel | %0,35 | — |
+| Alfa kanalı | yok (JPEG) | yok (sahte şeffaflık basılmış) |
+
+Kenar bantları da ayrı ayrı ölçüldü (üst/alt/sol/sağ, 40px): standart
+sapmalar 28,7-81,0 aralığında ve birbirinden farklı — yani dört kenarda da
+doğal fotoğraf değişkenliği var, düz bir filigran şeridi yok.
+
+*Not — ilk ölçüm yanlıştı, düzeltildi.* `sharp(...).extract(...).stats()`
+zinciri `extract`'i yok sayıp orijinal görüntünün istatistiğini veriyor;
+dört kenar da birebir aynı sayıyı döndürünce fark edildi. Doğrusu önce
+kırpıp tampona yazmak, sonra o tamponu ölçmek.
+
+### 21.3 Dönüşüm
+
+Aşama 2, 18, 19 ve 20'deki ayar korundu: **800×450, webp kalite 78,
+merkezden kırpma** (`sharp`, `fit: cover`).
+
+| Dosya | Kaynak ölçü | Sonuç |
+|---|---|---|
+| `kuzu-izgara-porsiyon.webp` | 800×800 | 800×450 · 55.470 B |
+
+Adlandırma ürün id'siyle birebir. Kırpma sonrası dosya tekrar açıldı: üç
+pirzola da kadrajda, konu kesilmemiş, filigran yok.
+
+### 21.4 Alt metin
+
+Porsiyon kardeşleriyle aynı kalıpta — fotoğrafta görüneni anlatıyor:
+
+| TR | EN | AR | RU |
+|---|---|---|---|
+| Lavaş üstünde ızgara kuzu pirzola | Grilled lamb chops on flatbread | ريش ضأن مشوية على خبز اللافاش | Бараньи рёбрышки на гриле на лаваше |
+
+`kuzu-izgara-kg`'nin metninden ("Izgarada kuzu pirzola") ayrı; ekran
+okuyucuda iki kuzu kalemi karışmıyor.
+
+### 21.5 Firestore ve sıra
+
+Aşama 19'un dersi yine uygulandı: **Firestore önce, derleme sonra.**
+
+`tohum.ts` kullanılmadı. `gorsel-guncelle.ts` tek satır bildirdi —
+`kuzu-izgara-porsiyon`, `yok → /urunler/kuzu-izgara-porsiyon.webp`. Üzerine
+yazılan kayıt yok. `tohum-dogrula.ts`:
+
+```
+kategori 5/5 · urun 31/31 · teyitEdilmemisFiyat 4/4 · tema cini
+TASIMA DOGRULANDI — hicbir alanda fark yok.
+```
+
+Veri dosyası ayrıştırılıp son commit ile karşılaştırıldı (Aşama 20'nin
+henüz push edilmemiş değişikliği dahil):
+
+```
+gorsel HARIC her sey ayni mi: EVET
+toplam urun: 31 -> 31 · gorselli: 20 -> 22 · gorselsiz: 11 -> 9
+izgara: 14 -> 14 urun · izgara gorselsiz: 2 -> 0
+izgarada gorselsiz kalan: (bos)
+```
+
+### 21.6 Doğrulama — ekranda
+
+Üretim derlemesi yerelde ayağa kaldırıldı, dört dil tarayıcıda açıldı.
+
+**Izgara'da yer tutucu kalmadı.** Dört dilde de: fotoğraflı satır **14**,
+yer tutucu **0**, ve 14'ünün 14'ü `naturalWidth > 0` — hepsi gerçekten
+boyandı. 4. satır **Kuzu Izgara Porsiyon → `kuzu-izgara-porsiyon.webp`**,
+alt metin dört dilde kendi karşılığını veriyor.
+
+**Sayfa yapısı ve sayaç.** Beş levha, hayalet numaralar 1-5, Izgara tek
+sayfa. Sayaç dört dilde de doğru: `Sayfa 2 / 5` · `Page 2 / 5` ·
+`صفحة 2 / 5` · `Страница 2 / 5`.
+
+**Sığma — Aşama 19 ve 20'nin ölçümüyle birebir aynı.** Masaüstünde
+(1280×1000) dört dil de **1276 px** (`91×13 + 90`). Telefonda (390×844)
+TR 1276 · EN 1294 · AR 1294 · RU 1366 px; büyüyen satırlar yine aynı
+satırlar (EN/AR 12; RU 6, 7, 10, 11, 12), sebep yine metin sarması.
+
+Kuzu porsiyon satırı ölçüldü: AR'da yükseklik 91 px / gövde 45 px, RU'da
+91 px / gövde 67 px — ikisinde de gövde 68px'lik yuvanın altında, yani
+**yuva belirliyor**. Yer tutucuyken de 91 px idi; fotoğraf satırı
+büyütmedi. Dört dilde, iki genişlikte yatay taşma 0, kırpılan ad 0, saran
+fiyat 0.
+
+**`sizes`.** `components/UrunGorseli.tsx:75` → `sizes="68px"`, yerinde; bu
+dosyaya dokunulmadı. Tarayıcı `w=96` sürümünü indirdi.
+
+### 21.7 Denetimler
+
+```
+npx tsc --noEmit   → temiz (çıkış 0)
+npm run lint       → temiz (çıktı yok)
+npm run build      → başarılı, 38 statik sayfa
+tarayıcı konsolu   → 0 hata, 0 uyarı (dört dil)
+```
+
+### 21.8 Değişen dosyalar
+
+| Dosya | Değişiklik |
+|---|---|
+| `public/urunler/kuzu-izgara-porsiyon.webp` | yeni — 55.470 B |
+| `data/menu.ts` | `kuzu-izgara-porsiyon` ürününde `gorsel: null` → görsel nesnesi |
+| `ILERLEME.md` | özet, aşama tablosu, bekleyenler (10 → 9) ve bu rapor |
+| Firestore `urunler` | `kuzu-izgara-porsiyon` belgesinin yalnızca `gorsel` alanı |
+
+`components/UrunGorseli.tsx`, `app/globals.css` ve diğer içerik alanları
+değişmedi.
+
+### 21.9 Sıradaki adım
+
+Push ve deploy onay bekliyor. **Aşama 20'nin değişikliği de hâlâ push
+edilmemiş durumda** — tavuk ve kuzu birlikte yayına çıkacak.
+
+Fotoğrafsız kalan dokuz ürün: içeceklerin tamamı (7), Künefe, Çoban Salata.
+Yedisi içecek olduğu için ürün fotoğrafı olarak değeri en düşük grup;
+Kapalı Pide ve Izgara, yani menünün asıl iki kategorisi artık tam.
 
 === RAPOR SONU ===
