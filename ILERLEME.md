@@ -3,7 +3,7 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 19 tamamlandı — Izgara kategorisine dokuz fotoğraf eklendi; kategorinin 14 ürününden 12'si artık fotoğraflı. Fotoğrafsız ürün 20'den 11'e indi. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
+**Güncel aşama:** Aşama 19 tamamlandı ve **üretimde canlı** — Izgara kategorisine dokuz fotoğraf eklendi; kategorinin 14 ürününden 12'si artık fotoğraflı. Fotoğrafsız ürün 20'den 11'e indi. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
 **Son güncelleme:** 2026-09-02
 
 ### Genel Durum
@@ -3432,10 +3432,80 @@ değişmedi.
 
 ### 19.11 Sıradaki adım
 
-Push ve deploy bekliyor (19.5'teki gerekçeyle geciktirilmemeli).
+Push ve deploy **tamamlandı** — `c6174de`, sonuçlar 19.12'de. 19.5'teki
+risk (Firestore güncel, derleme değil) böylece kapandı.
 
 Izgara'da fotoğrafı gelmeyen iki ürün: **Kuzu Izgara Porsiyon** ve **Tavuk
 Izgara 1 KG**. Kalan fotoğrafsızlar: içeceklerin tamamı (7), Künefe, Çoban
 Salata — toplam 11.
+
+### 19.12 Canlı doğrulama · 2026-09-02
+
+`c6174de` `main`'e push edildi, Vercel dağıtımı **40 saniyede** tamamlandı
+(yeni bir dosya 404 verirken 200'e dönene kadar yoklandı).
+
+**Dosyalar.** Dokuz webp de canlıda, boyutları yereldekiyle **byte'ı
+byte'ına aynı** (36.300 · 57.786 · 39.902 · 29.084 · 74.452 · 57.274 ·
+79.830 · 42.726 · 43.500 B). Ağ kaydında `/urunler/` isteklerinin hepsi
+başarılı, tek bir 404 yok.
+
+**Ekranda — ürün/fotoğraf eşleşmesi.** Izgara sayfasının 14 satırı tarayıcıda
+tek tek okundu; 12 fotoğrafın 12'si de doğru üründe ve `naturalWidth > 0`,
+yani gerçekten boyandı:
+
+| # | Ürün | Dosya |
+|---|---|---|
+| 1 | Et Izgara 1 KG | `et-izgara-kg.webp` |
+| 2 | Et Izgara Porsiyon | `et-izgara-porsiyon.webp` |
+| 3 | Kuzu Izgara 1 KG | `kuzu-izgara-kg.webp` |
+| 4 | Kuzu Izgara Porsiyon | yer tutucu (dosya yok) |
+| 5 | Köfte Izgara 1 KG | `kofte-izgara-kg.webp` |
+| 6 | Köfte Izgara Porsiyon | `kofte-izgara.webp` (eski) |
+| 7 | Köfte Izgara 1,5 Porsiyon | `kofte-izgara-bucuk-porsiyon.webp` |
+| 8 | Tavuk Izgara 1 KG | yer tutucu (dosya yok) |
+| 9 | Tavuk Porsiyon | `tavuk-porsiyon.webp` |
+| 10 | Karışık Izgara 1 KG | `karisik-izgara-kg.webp` |
+| 11 | Karışık Izgara Porsiyon | `karisik-izgara.webp` (eski, korundu) |
+| 12 | Saç Kavurma | `sac-kavurma.webp` |
+| 13 | Et Şiş | `et-sis.webp` (eski) |
+| 14 | Tavuk Şiş | `tavuk-sis.webp` |
+
+Karışık Izgara 1 KG'nin karesi ekranda ayrıca kontrol edildi: kırpılan
+"NİZAM Pide Salonu" amblemi görünmüyor.
+
+**Sayfa yapısı ve sayaç.** Dört dilde de beş levha, başlıklar sırasıyla
+Kapalı Pide / Izgara / Salatalar / Tatlı / İçecekler, hayalet numaralar 1-5.
+Izgara **tek sayfa** ve sayaç dört dilde de doğru:
+
+```
+TR  Menüye dön · Sayfa 2 / 5
+EN  Back to menu · Page 2 / 5
+AR  العودة إلى القائمة · صفحة 2 / 5
+RU  Назад в меню · Страница 2 / 5
+```
+
+**Taşma — dört dil, iki genişlik.** Masaüstünde (1280×1000) dört dil de
+birebir aynı: 14 satır **1276 px**, satırlar `91×13 + 90`, yuva 68×68.
+Telefonda (390×844):
+
+| Dil | Toplam | Metin yüzünden büyüyen satır |
+|---|---|---|
+| TR | 1276 px | yok |
+| EN | 1294 px | 12 (Saç Kavurma) |
+| AR (rtl) | 1294 px | 12 (Saç Kavurma) |
+| RU | 1366 px | 6, 7, 10, 11, 12 |
+
+Dört dilde, iki genişlikte de: **yatay taşma 0**, kırpılan ürün adı **0**,
+saran fiyat **0**. Büyüyen satırların sebebi yerel ölçümdeki ile aynı —
+gövde yüksekliği 68px'lik yuvayı aşıyor, yani belirleyen uzun adın iki
+satıra sarması, fotoğraf değil. Arapça sayfada RTL aynalaması doğru: yuva
+satırın sağında, fiyat solda, sayaç sol altta.
+
+**`sizes`.** Tarayıcı her fotoğraf için `w=96` sürümünü indirdi — 68px'lik
+yuvanın 2× karşılığı. `sizes="68px"` canlıda da çalışıyor; ölçekli
+sürümlerin (1920w, 3840w) hiçbiri istenmedi.
+
+**Konsol.** Dört dil gezildi: **0 hata, 0 uyarı.** Ağ kaydında başarısız
+istek yok.
 
 === RAPOR SONU ===
