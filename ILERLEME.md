@@ -3,8 +3,8 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 16 tamamlandı (dalda, push onayı bekliyor) — admin paneli çalışıyor: tema, fiyat ve ürün ekleme. Menü Firestore'dan besleniyor, hâlâ statik. Aşama 15 (Çini Levha) da aynı dalda. Bekleyen: Firebase Storage / fotoğraf yükleme, QR adresi, organizasyon içeriği
-**Son güncelleme:** 2026-08-28
+**Güncel aşama:** Aşama 17 tamamlandı — Çini Levha teması, admin paneli ve Firestore'dan beslenen menü **üretimde canlı** (`main`). Yedi başlık canlı adres üzerinden doğrulandı; fiyat ve tema testleri geri alındı, menüde iz yok. Bekleyen: Firebase Storage / fotoğraf yükleme, QR adresi, organizasyon içeriği
+**Son güncelleme:** 2026-09-02
 
 ### Genel Durum
 
@@ -27,8 +27,9 @@ Numaralandırma rapor başlıklarıyla aynı: aşağıdaki her satırın karşı
 | 12 | Üretime çıkış ve canlı doğrulama | **Tamamlandı** |
 | 13 | "Düble" → "Duble" yazım düzeltmesi | **Tamamlandı** |
 | 14 | Her kategori tek sayfa + aşağı ok ipucu | **Tamamlandı** |
-| 15 | Çini Levha teması + dört temalı yapı | **Tamamlandı** (dalda) |
-| 16 | Admin paneli — Firebase (Firestore + Auth) | **Tamamlandı** (dalda) |
+| 15 | Çini Levha teması + dört temalı yapı | **Tamamlandı** |
+| 16 | Admin paneli — Firebase (Firestore + Auth) | **Tamamlandı** |
+| 17 | Önizleme rotasının kaldırılması, üretime çıkış, canlı doğrulama | **Tamamlandı** |
 
 ### Aşama 1 Adımları
 
@@ -2744,5 +2745,193 @@ kullanılmaya devam ediyor, yedeği de repoda.
 **Sıradaki adım:** Push onayı bekleniyor. Sonrasında Firebase Storage (Blaze)
 kurulursa fotoğraf yükleme eklenecek — veri yapısındaki `gorsel` alanı ve
 panel akışı bunun için hazır bırakıldı.
+
+=== RAPOR SONU ===
+
+---
+
+## 17. Önizleme rotasının kaldırılması, üretime çıkış ve canlı doğrulama
+
+=== RAPOR BAŞLANGICI ===
+
+**Tarih:** 2026-09-02 · **Dal:** `panel/firebase` → `main` · **Canlı:** https://huzur-pide.vercel.app
+
+### 17.1 Önizleme rotasının font kırılganlığı — çözüm
+
+**Sorun.** `app/[dil]/onizleme/[tema]/**` rotası dört temayı da aynı derlemede
+gösterebilmek için dört temanın font modülünü birden içeri alıyordu. Bunun iki
+bedeli vardı: derlemeye **16 `@font-face` ailesi** giriyordu ve statik sayfa
+sayısı 150'ye çıkıyordu. Daha kötüsü, tema artık Firestore'dan geldiği için
+önizleme rotası "derleme anında bilinen tema" varsayımıyla çalışıyordu —
+yani panelden tema değiştirildiğinde önizleme ile gerçek menü ayrışabiliyordu.
+
+**Karar: rota kaldırıldı, yerine bir şey konmadı.** Gerekçesi şu: önizlemenin
+tek işi "tema nasıl görünüyor" sorusunu yanıtlamaktı, ve o soruyu artık
+**panelin tema ekranı** yanıtlıyor — üç kart, tıklayınca canlı menü gerçekten
+o temaya geçiyor ve beğenilmezse tek tıkla geri alınıyor. İkinci bir mekanizma
+tutmak, aynı işi iki yerde ve biri kırılgan biçimde yapmak demekti.
+
+**Kaldırılanlar:** `app/[dil]/onizleme/**`, `app/temalar/tum-fontlar.ts`,
+`app/fonts/Marcellus-Regular.woff2`. `app/temalar/aktif.ts` yalnızca
+seçilebilir üç temanın fontunu tanıyacak biçimde yeniden yazıldı;
+`fontlar-zeytin.ts` kodda duruyor ama hiçbir yerden import edilmiyor
+(dosyanın başında neden durduğu yazılı).
+
+**Ölçülen sonuç:** `@font-face` ailesi **16 → 12**, statik sayfa **150 → 38**.
+Derlenmiş CSS'teki aileler tek tek listelenerek doğrulandı.
+
+### 17.2 Üretime çıkış — ve yolda çıkan gerçek arıza
+
+`panel/firebase` → `main` birleştirmesi: 103 dosya, +11203 / −1382.
+
+Vercel derlemesi geçti, ama **çalışma anında render edilen her rota 500
+döndü**: `/panel`, `/panel/*` ve 404 sayfaları. Statik menü sayfaları 200
+dönüyordu. Yani sorun veride ya da menüde değil, sunucu tarafında bir modül
+yüklemesindeydi.
+
+**Elenenler (varsayımla değil, sınayarak):**
+
+- *Eksik ortam değişkeni mi?* Yerelde ortam değişkenleri kaldırılıp
+  çalıştırıldı — sayfalar yine 200 döndü. Eleme.
+- *Birden fazla kök layout mu?* Next belgeleri `app/[dil]/layout.tsx` ve
+  `app/panel/layout.tsx` birlikteliğini açıkça destekliyor. Eleme.
+- *`firebase-admin` paketlenmesi mi?* Next'in otomatik "external" listesinde
+  zaten var. Eleme.
+
+**Teşhis.** Sadece boolean döndüren geçici bir tanı uç noktası
+(`app/api/tani/route.ts`) yayına alındı ve gerçek nedeni verdi:
+
+```
+Failed to load external module firebase-admin/auth:
+ERR_REQUIRE_ESM: require() of ES Module .../jose/dist/webapi/index.js
+from .../jwks-rsa/src/utils.js not supported.
+```
+
+Zincir: `firebase-admin@14.3.0` → `jwks-rsa@4.1.0` → `jose@^6.1.3`.
+jose 6 saf ESM (`"type": "module"`), `require` girişi yok; jwks-rsa ise CJS ve
+onu `require` ediyor. **Yerelde görünmemesinin sebebi**, kullandığımız Node
+sürümünün `require(esm)` desteği: aynı çağrı yerelde çalışıyor, Vercel'in
+çalışma ortamında çalışmıyordu.
+
+**Çözüm.** jwks-rsa jose'dan yalnızca `importJWK` ve `exportSPKI`
+kullanıyor; ikisi de jose 5'te var ve jose 5 hem CJS hem ESM yayınlıyor.
+`package.json`'a tek satır:
+
+```json
+"overrides": { "jose": "^5.10.0" }
+```
+
+Yerelde doğrulandı (`require("jose")` → iki fonksiyon da mevcut, jwks-rsa
+altında jose 5.10.0), tanı uç noktası kaldırıldı, push edildi. Üretim:
+`/panel = 200`, olmayan sayfa = `404`, `/api/tani = 404`.
+
+**Not:** `overrides` bir bağımlılığın bağımlılığını sabitlemek demek, bedava
+değil. Burada haklı çünkü (a) kullanılan API yüzeyi iki fonksiyondan ibaret,
+(b) alternatif, hatayı `firebase-admin` düzeltene kadar panelin hiç
+çalışmaması. `firebase-admin` bunu kendi tarafında çözdüğünde satır
+kaldırılmalı.
+
+### 17.3 Canlı doğrulama — yedi başlık
+
+Ölçüt her yerde **ekranda görünen içerik**; adresin doğru olması tek başına
+yeterli sayılmadı. Telefon boyutu 390×844.
+
+**1. Dört dil, bütün ekranlar, Çini uygulanmış.** 4 dil × 6 ekran = **24/24
+sayfa 200**. `<html>` sınıfı hepsinde `tema-cini`; `--t-zemin` `#f6f2e9`,
+gövde zemini ölçülerek `rgb(246, 242, 233)` okundu. Başlıklar dile göre doğru:
+Menü / Menu / القائمة / Меню, Organizasyon / Events / المناسبات / Банкеты.
+Arapça ekranlarda `dir="rtl"`, diğer üçünde `ltr`.
+
+**2. Kategori tıklama — görünen içerikle.** Dört dilde de içindekiler
+listesindeki beş satır tek tek **gerçekten tıklandı**, her tıklamadan sonra
+ekrandaki sayfa ölçüldü:
+
+| # | Sayfa | Başlık (TR) | Ürün | İlk ürün | Sayaç |
+|---|---|---|---|---|---|
+| 1 | kapali-pide | Kapalı Pide Çeşitleri | 6 | Kıymalı | 1 / 5 |
+| 2 | izgara | Izgara Çeşitleri | 14 | Et Izgara 1 KG | 2 / 5 |
+| 3 | salatalar | Salatalar | 1 | Çoban Salata | 3 / 5 |
+| 4 | tatlilar | Tatlı Çeşitleri | 3 | Künefe | 4 / 5 |
+| 5 | icecekler | İçecekler | 7 | Kola | 5 / 5 |
+
+Her tıklamada hedef sayfa ekrana **tam** oturdu (görünen genişlik = ekran
+genişliği). Dört dilde de **hatalı sonuç 0**. İngilizce ve Rusça'da başlıklar
+ve ürün adları da çevrilmiş hâlleriyle okundu (Closed Pide / Закрытая пиде,
+Grilled Beef 1 KG / Говядина на гриле 1 кг). Rusça'da yatay taşma yok.
+
+**3. Oklar, yatay akış, aşağı ok, Arapça yön.** Aşağı ok ipucu beş sayfada da
+gerçek taşmayla eşleşti: Izgara (703 px taşma) ve İçecekler (64 px) ok
+gösterdi, taşması olmayan üç sayfa göstermedi — **beş sayfada da doğru**.
+Arapça'da: `dir="rtl"`, 2. sayfa 1. sayfanın **solunda**, ileri oku ekranın
+**solunda** ve chevron aynalanmış (`matrix(-1,0,0,1,0,0)`), geri oku sağda ve
+aynalanmamış. İleri okuna basıldığında `scrollLeft` **−390**'a gitti (RTL'de
+negatif doğru), 2. sayfa tam hizalandı, başlık المشويات, sayaç «صفحة 2 / 5»,
+adres `/ar/menu/izgara`.
+
+**4. Panel canlıda açılıyor, girişsiz erişilemiyor.**
+
+- Girişsizken `/panel/fiyatlar` → **307 ile `/panel`'e** düşüyor, ekranda
+  yalnızca giriş formu var. Sayfada tek bir fiyat kutusu yok, panel içeriği
+  sızmıyor (arama: "Kıymalı", "Kaydet", "Çıkış", "Yeni ürün" → hiçbiri yok).
+- **Giriş yapmak tek başına yetmiyor:** yönetici işareti olmayan hesapla
+  doğru şifreyle giriş denendi, ekranda çıkan **"Bu hesabın panele erişim
+  yetkisi yok."** — panel açılmadı.
+- Yetkili hesapla giriş yapıldığında panel açıldı; oturum çerezi JavaScript'e
+  görünmüyor (`document.cookie` boş — `httpOnly` çalışıyor).
+- Testler **sahibin hesabına dokunulmadan** yapıldı: iki geçici hesap açıldı,
+  testler bitince silindi. Sonda **tek yönetici kaldı** (sahip).
+
+**5. Fiyat değişikliği — canlıya yansıdı, geri alındı.**
+Panelde 31 ürün ve **43 fiyat kutusu** listelendi (yedekle birebir).
+Kola 80 → 85 yazıldı; kaydetmeden önce özet çıktı: **"Kola 80 ₺ → 85 ₺"**.
+Onaylandıktan ~4 sn sonra canlı menüde, tarayıcıda okunan değer **85 ₺**;
+dört dilde de yansımıştı. Ardından 80'e döndürüldü. Firestore'dan geri
+okundu: `Kola [{"sutun":"tek","tutar":80,"dogrulandi":true}]`, canlı sayfada
+da `80 ₺`. **İz yok.**
+
+**6. Tema değişikliği — canlıya yansıdı, Çini'ye geri alındı.**
+Tema ekranında **üç seçenek** var (Çini Levha, Gece Ocağı, Mürekkep);
+**Zeytin listede yok** — istendiği gibi. Gece Ocağı seçildi: beş örnek
+sayfanın hepsi `tema-gece` oldu; menüde ölçülen değerler zemin `#14100d`,
+metin `#f6ece1`, başlık fontu **Playfair Display** — yani gerçekten koyu
+temaya geçti, yalnız sınıf adı değişmedi. Çini'ye geri alındı: **4 dil × 5
+ekran = 20/20 sayfa yeniden `tema-cini`**, `ayarlar/genel` → `{"tema":"cini"}`.
+
+**7. Konsol.** Menü ve seçim ekranlarında **0 hata**. İki bulgu:
+
+- *Bayrak ön yükleme uyarısı (zararsız).* `/tr/secim` sayfasında dört bayrak
+  SVG'si için "preloaded but not used" uyarısı çıkıyor. Sebebi: sayfadaki
+  `/tr` bağlantısı Next tarafından önceden getiriliyor, React de o sayfanın
+  bayrak görsellerini `<head>`'e ön yükleme olarak taşıyor. Dört küçük SVG
+  erkenden indiriliyor; dil ekranına dönüldüğünde zaten hazır oluyorlar.
+  Hata değil, davranış doğru — **düzeltilmedi.**
+- *Panelde favicon 404 (düzeltildi).* Panelin kendi kök layout'u olduğu için
+  müşteri tarafındaki `icons` tanımı ona miras kalmıyordu; tarayıcı
+  `/favicon.ico` deneyip 404 alıyor ve panelin **her** sayfasında konsola hata
+  düşüyordu. `app/panel/layout.tsx`'e `icons: { icon: "/favicon.svg" }`
+  eklendi, nedeni yorumda yazılı.
+
+### 17.4 Eski adresler
+
+`/tr/menu/kapali-pide-1` → **307** (yönlendirme yaşıyor),
+olmayan bir sayfa (`/tr/menu/yokboyle`) → **404**.
+
+### 17.5 Değişen dosyalar
+
+| Dosya | İş |
+|---|---|
+| `app/[dil]/onizleme/**` | **Silindi** — işi panelin tema ekranı yapıyor |
+| `app/temalar/tum-fontlar.ts` · `app/fonts/Marcellus-Regular.woff2` | **Silindi** — yalnız önizleme kullanıyordu |
+| `app/temalar/aktif.ts` | Yalnızca seçilebilir üç temanın fontu |
+| `package.json` | `overrides: { "jose": "^5.10.0" }` — üretimdeki ESM/CJS çakışması |
+| `app/panel/layout.tsx` | Panelin kendi ikon tanımı (favicon 404'ü) |
+
+`tsc`, `eslint`: **temiz**.
+
+### 17.6 Sıradaki adım
+
+Firebase Storage (Blaze) kurulursa fotoğraf yükleme eklenecek — veri
+yapısındaki `gorsel` alanı ve panel akışı hazır. Ayrıca QR adresi ve
+organizasyon sayfasının gerçek içeriği bekliyor.
 
 === RAPOR SONU ===

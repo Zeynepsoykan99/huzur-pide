@@ -15,6 +15,10 @@ import "./panel.css";
 export const metadata: Metadata = {
   title: "Yönetim · Huzur Pide",
   robots: { index: false, follow: false },
+  // Ayrı bir kök layout olduğu için müşteri tarafındaki ikon tanımı buraya
+  // MİRAS KALMIYOR. Yazılmazsa tarayıcı /favicon.ico deneyip 404 alıyor ve
+  // panelin her sayfasında konsola hata düşüyor.
+  icons: { icon: "/favicon.svg" },
 };
 
 export default function PanelLayout({ children }: LayoutProps<"/panel">) {
