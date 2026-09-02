@@ -3152,7 +3152,27 @@ gerektirir. İkisi de bu aşamada yapılmadı.
 
 Firestore: dört ürün belgesinin yalnızca `gorsel` alanı.
 
-### 18.8 Sıradaki adım
+### 18.8 Canlı doğrulama
+
+Push (`be89fe5`) sonrası Vercel dağıtımı beklendi, kontroller **canlı adres
+üzerinden** tekrarlandı: https://huzur-pide.vercel.app
+
+| Kontrol | Sonuç |
+|---|---|
+| Dört dosya canlıda | ✓ dördü de 200 · image/webp · yerel boyutlarla birebir |
+| Telefonda (390×844) doğru üründe mi | ✓ altı satırın altısında da doğru görsel |
+| Masaüstünde (1280×900), Arapça RTL | ✓ fotoğraflar sağ sütunda, düzen bozulmadı |
+| Alt metinler dört dilde | ✓ tr/en/ar/ru — on iki metnin hepsi doğru |
+| Kitabın yapısı | ✓ 5 sayfa yerinde, 11 fotoğraf + 20 yer tutucu = 31 ürün |
+| Kırık görsel | ✓ yok |
+| Taşma ve sayfa sayacı | ✓ taşma yok, sayaç "1 / 5" değişmedi |
+| Konsol | ✓ 0 hata, 0 uyarı |
+| `sizes` canlı HTML'de | ✓ `68px` — masaüstünde inen dosya 207 px → **68 px** |
+
+Kapalı Pide sayfasında artık hiç yer tutucu yok: altı ürünün altısı da
+fotoğraflı.
+
+### 18.9 Sıradaki adım
 
 Fotoğrafsız ürün 24'ten **20'ye** indi: ızgaralardan 11'i, içeceklerin
 tamamı (7), Künefe, Çoban Salata. Kalanlar için Storage (Blaze) kurulursa
