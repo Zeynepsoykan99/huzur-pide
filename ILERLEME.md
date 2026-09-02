@@ -3,7 +3,7 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 21 tamamlandı ve **üretimde canlı** — Kuzu Izgara Porsiyon'un fotoğrafı eklendi ve **Izgara kategorisi tamamlandı: 14 ürünün 14'ü de fotoğraflı**. Fotoğrafsız ürün 10'dan 9'a indi; kalanların yedisi içecek. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
+**Güncel aşama:** Aşama 22 tamamlandı — Çoban Salata, Fanta, Ayran ve Su'nun fotoğrafları eklendi; fotoğrafsız ürün 9'dan **5'e** indi ve **Salatalar kategorisi tamamlandı**. Künefe dosyasında başka bir işletmenin logosu çıktığı için kullanılmadı; Kola, Soda, Komposto ve Meyveli Soda için dosya gelmedi. Aşama 21'e kadarki her şey üretimde canlı, Aşama 22 push bekliyor. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
 **Son güncelleme:** 2026-09-02
 
 ### Genel Durum
@@ -34,6 +34,7 @@ Numaralandırma rapor başlıklarıyla aynı: aşağıdaki her satırın karşı
 | 19 | Izgara kategorisinin dokuz fotoğrafı | **Tamamlandı** |
 | 20 | Tavuk Izgara 1 KG fotoğrafı | **Tamamlandı** |
 | 21 | Kuzu Izgara Porsiyon fotoğrafı — Izgara tamamlandı | **Tamamlandı** |
+| 22 | Çoban Salata ve üç içeceğin fotoğrafı | **Tamamlandı** — Künefe ve dört içecek dosya bekliyor |
 
 ### Bekleyenler
 
@@ -46,7 +47,7 @@ satırları o günün kaydı olarak duruyor, güncel liste burası.
 | 2 | Organizasyon sayfasının içeriği | **Bilgi** — sayfada ne yazacağı (metin, varsa görsel, iletişim bilgisi) senden gelecek | Rota `/[dil]/organizasyon` ayakta, içerik boş (Aşama 4) |
 | 3 | QR kodunun bakacağı adres | **Karar** — senin kararın: kök `https://huzur-pide.vercel.app` mi, doğrudan `.../tr` mi | Önerim `/tr`: yönlendirme atlanır, sayfa daha hızlı açılır. Kök adres her iki durumda da çalışmaya devam eder (Aşama 5) |
 | 4 | Vercel Hobby planının ticari kullanıma kapalı olması | **Karar + hesap** — Pro'ya geçmek ya da bilerek Hobby'de kalmak; kapsamın hangi plana girdiği ancak Vercel panelinden görülür | "Devam et, sorumluluk bende" demiştin ve öyle yapıldı. Site canlı ve çalışıyor; bu bir plan/şart sorunu, teknik bir arıza değil (Aşama 5) |
-| 5 | 9 ürünün fotoğrafı | **Bilgi** — 31 üründen 9'unun görseli yok | Kalanlar: içeceklerin tamamı (7), Künefe, Çoban Salata. Kapalı Pide **tamamlandı** (6/6, Aşama 18), Izgara **tamamlandı** (14/14, Aşama 19-21). Kalan dokuzun yedisi içecek — ürün fotoğrafı olarak değeri en düşük grup. Panelden yüklemek için 1 numaralı satır gerekiyor |
+| 5 | 5 ürünün fotoğrafı | **Bilgi** — 31 üründen 5'inin görseli yok | Kalanlar: **Künefe**, Kola, Soda, Komposto, Meyveli Soda. Kapalı Pide (6/6), Izgara (14/14) ve Salatalar (1/1) **tamamlandı**; İçecekler 7'de 3, Tatlılar 3'te 2. Künefe için gelen dosyada başka bir işletmenin logosu vardı, kullanılmadı (Aşama 22) — temiz bir dosya gerekiyor. Dört içeceğin dosyası hiç gelmedi. Panelden yüklemek için 1 numaralı satır gerekiyor |
 | 6 | Arapça çevirilerin kontrolü | **Kişi** — ana dili Arapça olan birinin gözden geçirmesi | Özellikle Türkçe adın harf çevirisiyle yazıldığı kalemler: كاشارلي, كاريشيك, ساتش كافورما (Aşama 3) |
 | 7 | 4 teyit edilmemiş fiyat | **Bilgi** — dört hücrenin doğru fiyatı senden gelecek | Kıymalı / 1 Hamur · Kaşarlı / 1 Hamur · Kaşarlı / Duble · Kabak Tatlısı. Şu an menüde bir değer görünüyor, ama teyitli değil (Aşama 2) |
 
@@ -3880,5 +3881,222 @@ aynalaması doğru: yuva sağda, fiyat solda, sayaç sol altta.
 
 **Konsol.** Dört dil, iki genişlik gezildi: **0 hata, 0 uyarı.** Ağ
 kaydında başarısız istek yok.
+
+=== RAPOR SONU ===
+
+## Aşama 22 — Çoban Salata ve Üç İçeceğin Fotoğrafı · 2026-09-02
+
+=== RAPOR BAŞLANGICI ===
+
+**Tarih:** 2026-09-02 · **Dal:** `main` · **Kaynak:** `yeni-gorseller/` (dört yeni dosya) + proje kökünde bulunan bir dosya
+
+Fotoğrafsız dokuz ürün için dosya beklendi; **beş dosya geldi, dördü
+kullanıldı.** Fotoğrafsız ürün **9'dan 5'e** indi, **Salatalar kategorisi
+tamamlandı.** Künefe'nin dosyasında başka bir işletmenin logosu çıktı ve
+kullanılmadı; dört içeceğin dosyası hiç gelmedi.
+
+### 22.1 Envanter — beklenen dokuz, gelen beş
+
+Dokuz fotoğrafsız ürün vardı (yedi içecek, Künefe, Çoban Salata). Klasörde
+dört yeni dosya bulundu (17:16-17:19). Beşinci dosya `yeni-gorseller/`
+içinde değil, **proje kökünde** duruyordu — `git status` yakaladı, ilk
+listede görünmemişti. İşlenmeden önce klasöre taşındı.
+
+| Dosya | Konum | Kaynak ölçü | Görülen içerik | Ürün | Sonuç |
+|---|---|---|---|---|---|
+| `çoban salata` | klasör | 800×600 | Ahşap kâsede doğranmış domates, salatalık, kırmızı soğan, maydanoz | Çoban Salata | **Eklendi** |
+| `fanta.jpg` | klasör | 1650×1650 | Beyaz zeminde Fanta kutusu | Fanta | **Eklendi** (karar) |
+| `ayran.jpg` | klasör | 450×607 | Desenli örtü üstünde köpüklü ayran bardağı | Ayran | **Eklendi** (karar) |
+| `su.jpg` | **kök** | 1000×1000 | Beyaz zeminde etiketsiz pet şişe | Su | **Eklendi** (karar) |
+| `künefe.jpg` | klasör | 2500×2500 | Bakır tepside künefe, peynir uzuyor | Künefe | **Reddedildi** |
+
+`çoban salata` dosyasının uzantısı yoktu; sihirli baytından (`ffd8ff…`)
+gerçek JPEG olduğu doğrulandı, uzantıya güvenilmedi.
+
+**Dosyası hiç gelmeyen dört ürün: Kola, Soda, Komposto, Meyveli Soda.**
+
+### 22.2 Filigran denetimi
+
+Beş dosya da çeyreklere bölünüp büyütülerek tarandı.
+
+**`künefe.jpg` — reddedildi.** Tepsi kenarına gömülü **"ORHAN KIRATLI ·
+BAKLAVA & FISTIK"** yazısı ve amblemi var. Aşama 19'daki NİZAM logosundan
+farkı önemli: o köşedeydi ve merkez kırpma dışında kalıyordu, bu ise
+**standart 800×450 merkez kırpmanın tam içinde**. Kırpılmadı, sorulup
+**atlanmasına karar verildi.** Logosuz bir alternatif kadraj (logonun
+sağından, peynirin uzadığı an) önizleme olarak üretilip gösterildi ama
+uygulanmadı — tüm tatlı yerine yakın detay gösterdiği için tercih edilmedi.
+
+**`çoban salata` — temiz.** Dört çeyrekte de filigran, logo, yazı yok.
+
+**`ayran.jpg` — filigran yok.** Dört çeyrek temiz. Sorun başka: 16:9 merkez
+kırpma bardağın köpüğünü ve tabanını kesiyor, geriye orta kesit kalıyor;
+kaynak 450px genişlik, sert güneş ışığı, arkada fotoğrafçının gölgesi.
+Menüdeki diğer fotoğrafların kalitesinin belirgin altında. Bildirildi,
+**kırpılmış haliyle kullanılmasına karar verildi.**
+
+**`fanta.jpg` — stok filigranı yok**, ama Coca-Cola'nın resmi ürün görseli:
+FANTA logosu, ®, ambalaj tasarımı. **`su.jpg` — temiz ve markasız** (şişe
+etiketsiz). Marka ambalajı sorusu kendi başına karara bağlanmadı, soruldu;
+**ikisinin de kullanılmasına karar verildi.**
+
+**Biçim uyumu — bilinen bir taviz.** Fanta ve Su beyaz zeminli dikey ürün
+çekimleri (%70,5 ve %88,6 beyaz zemin); menüdeki diğer 23 fotoğraf bağlam
+içinde yatay yemek fotoğrafı. 16:9 merkez kırpma ikisinde de şişenin/kutunun
+orta bandını bırakıyor, kapak ve taban kadraj dışında kalıyor. Karar
+verilirken bu gösterildi.
+
+Sahte şeffaflık (dama tahtası) hiçbir dosyada yok — beşi de alfa kanalsız
+gerçek JPEG.
+
+### 22.3 Dönüşüm
+
+Önceki aşamalardaki ayar korundu: **800×450, webp kalite 78, merkezden
+kırpma** (`sharp`, `fit: cover`).
+
+| Dosya | Kaynak ölçü | Sonuç |
+|---|---|---|
+| `coban-salata.webp` | 800×600 | 800×450 · 67.680 B |
+| `fanta.webp` | 1650×1650 | 800×450 · 12.370 B |
+| `ayran.webp` | 450×607 | 800×450 · 30.094 B |
+| `su.webp` | 1000×1000 | 800×450 · 5.096 B |
+
+Fanta ve Su'nun dosyaları çok küçük (12 KB ve 5 KB) — beyaz zeminin büyük
+kısmı sıkıştırmada neredeyse bedava. Dördü de kırpma sonrası açılıp
+kontrol edildi.
+
+### 22.4 Alt metinler
+
+Fotoğrafta görüneni anlatan mevcut kalıp korundu:
+
+| Ürün | TR | EN | AR | RU |
+|---|---|---|---|---|
+| Çoban Salata | Ahşap kâsede çoban salata | Shepherd's salad in a wooden bowl | سلطة الراعي في وعاء خشبي | Пастуший салат в деревянной миске |
+| Fanta | Fanta kutusu | Can of Fanta | علبة فانتا | Банка Фанты |
+| Ayran | Köpüklü ayran bardağı | Glass of ayran with foam | كوب عيران بالرغوة | Стакан айрана с пенкой |
+| Su | Pet şişede su | Bottle of water | زجاجة ماء | Бутылка воды |
+
+### 22.5 Veri dosyasında bir tuzak: `icerik: null`
+
+Görsel alanını yazan betik ilk denemede **hata verip durdu**: `icerik
+bulunamadi`. Sebep, betiğin `icerik`in her zaman nesne olduğunu varsayması;
+oysa Kola, Fanta ve Su'da `icerik: null`. Betik dosyayı ancak döngü
+bittikten sonra yazdığı için **yarım yazma olmadı**, `data/menu.ts` bozulmadı.
+
+Betik `icerik: null` durumunu tanıyacak şekilde düzeltildi ve o satır
+olduğu gibi korundu — üç üründe `icerik: null` çıktıda da `icerik: null`.
+
+### 22.6 Firestore ve sıra
+
+Aşama 19'un dersi uygulandı: **Firestore önce, derleme sonra.** İki tur
+çalıştırıldı (önce Çoban Salata, sonra üç içecek); ikisinde de `tohum.ts`
+kullanılmadı, `gorsel-guncelle.ts` yalnızca `gorsel` alanına dokundu ve her
+satır `yok → yeni` oldu — üzerine yazılan kayıt yok.
+
+```
+kategori 5/5 · urun 31/31 · teyitEdilmemisFiyat 4/4 · tema cini
+TASIMA DOGRULANDI — hicbir alanda fark yok.
+```
+
+Veri dosyası ayrıştırılıp son commit ile karşılaştırıldı:
+
+```
+gorsel HARIC her sey ayni mi: EVET
+toplam urun: 31 -> 31 · gorselli: 22 -> 26 · gorselsiz: 9 -> 5
+```
+
+### 22.7 Doğrulama — ekranda
+
+Üretim derlemesi yerelde ayağa kaldırıldı, dört dil tarayıcıda açıldı.
+
+**Eşleşme.** İçecekler sayfasının yedi satırı okundu: `2. Fanta →
+fanta.webp`, `4. Ayran → ayran.webp`, `7. Su → su.webp`, üçü de
+`naturalWidth > 0`. Kola, Soda, Komposto, Meyveli Soda yer tutucu.
+Salatalar'da `Çoban Salata → coban-salata.webp`. Alt metinler dört dilde
+kendi karşılığını veriyor.
+
+**Kategori durumu (dört dilde de aynı):**
+
+| Kategori | Ürün | Fotoğraf | Yer tutucu |
+|---|---|---|---|
+| Kapalı Pide | 6 | 6 | 0 |
+| Izgara | 14 | 14 | 0 |
+| Salatalar | 1 | **1** | **0** |
+| Tatlılar | 3 | 2 | 1 (Künefe) |
+| İçecekler | 7 | 3 | 4 |
+
+**Sayfa yapısı ve sayaç.** Beş levha, hayalet numaralar 1-5. Salatalar
+`3 / 5`, Tatlılar `4 / 5`, İçecekler `5 / 5` — dört dilde de doğru.
+
+*Yanlış alarm, not düşülüyor:* İçecekler sayfasındayken Tatlılar'ın iki
+fotoğrafı ölçümde "kırık" göründü. Tatlılar sayfası açılıp bakıldığında
+ikisi de sağlam çıktı — sebep tembel yükleme: ekran dışındaki levhanın
+görselleri henüz inmemişti. Gerçek bir arıza değil.
+
+### 22.8 İçecekler'de satır yüksekliği — ölçüldü, değişmedi
+
+Fotoğraf eklenmeden önce temel değerler kaydedilmişti; sonra aynı ölçüm
+tekrarlandı.
+
+| Ekran / dil | Önce | Sonra | Fark |
+|---|---|---|---|
+| Masaüstü 1280×1000 · TR | 638 px | **638 px** | 0 |
+| Telefon 390×844 · TR | 638 px | **638 px** | 0 |
+| Telefon 390×844 · EN | 638 px | **638 px** | 0 |
+| Telefon 390×844 · AR (rtl) | 638 px | **638 px** | 0 |
+| Telefon 390×844 · RU | 677 px | **677 px** | 0 |
+
+Satır yükseklikleri de birebir aynı: TR/EN/AR `91×6 + 90`, RU
+`91·91·91·112·91·109·90`. RU'da 4. (Айран) ve 6. (Мейвели сода) satırların
+yüksek olması fotoğraftan değil, uzun Rusça adın iki satıra sarmasından —
+gövde yüksekliği 68px'lik yuvayı aşıyor. Bu iki satır fotoğraf gelmeden
+önce de aynı yükseklikteydi.
+
+Sebep yapısal: yuva fotoğraflı da fotoğrafsız da **68×68**. Yer tutucu
+Aşama 12'de bilerek gerçek görselle birebir aynı ölçüde yapılmıştı; bu
+ölçüm o kararın hâlâ işlediğini gösteriyor.
+
+Dört dilde, iki genişlikte: yatay taşma **0**, kırpılan ürün adı **0**,
+saran fiyat **0**.
+
+### 22.9 `sizes` ve denetimler
+
+`components/UrunGorseli.tsx:75` → `sizes="68px"`, **yerinde**; dosyaya
+dokunulmadı.
+
+```
+npx tsc --noEmit   → temiz (çıkış 0)
+npm run lint       → temiz (çıktı yok)
+npm run build      → başarılı, 38 statik sayfa
+tarayıcı konsolu   → 0 hata, 0 uyarı (dört dil)
+```
+
+### 22.10 Değişen dosyalar
+
+| Dosya | Değişiklik |
+|---|---|
+| `public/urunler/coban-salata.webp` | yeni — 67.680 B |
+| `public/urunler/fanta.webp` | yeni — 12.370 B |
+| `public/urunler/ayran.webp` | yeni — 30.094 B |
+| `public/urunler/su.webp` | yeni — 5.096 B |
+| `data/menu.ts` | dört üründe `gorsel: null` → görsel nesnesi; yalnızca bu alan |
+| `ILERLEME.md` | özet, aşama tablosu, bekleyenler (9 → 5) ve bu rapor |
+| Firestore `urunler` | dört belgenin yalnızca `gorsel` alanı |
+
+`components/UrunGorseli.tsx`, `app/globals.css` ve diğer içerik alanları
+değişmedi. Proje kökündeki `su.jpg` `yeni-gorseller/` içine taşındı, kök
+temiz.
+
+### 22.11 Sıradaki adım
+
+Push ve deploy onay bekliyor.
+
+Fotoğrafsız kalan beş ürün ve neden:
+
+- **Künefe** — gelen dosyada başka bir işletmenin logosu var, temiz bir
+  fotoğraf gerekiyor
+- **Kola, Soda, Komposto, Meyveli Soda** — dosya hiç gelmedi
+
+Kapalı Pide, Izgara ve Salatalar kategorileri tam.
 
 === RAPOR SONU ===

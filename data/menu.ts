@@ -809,17 +809,33 @@ export const MENU: Kategori[] = [
     slug: "salatalar",
     ad: { tr: "Salatalar", en: "Salads", ar: "السلطات", ru: "Салаты" },
     sutunlar: TEK_SUTUN,
-    urunler: [{ id: "coban-salata", ad: {
+    urunler: [{
+        id: "coban-salata",
+        ad: {
           tr: "Çoban Salata",
           en: "Çoban Salata (Shepherd's Salad)",
           ar: "سلطة الراعي",
-          ru: "Чобан салата (пастуший салат)",
-        }, icerik: {
+          ru: "Чобан салата (пастуший салат)"
+        },
+        icerik: {
           tr: "Domates, salatalık, soğan, yeşil biber, maydanoz, zeytinyağı",
           en: "Tomato, cucumber, onion, green pepper, parsley, olive oil",
           ar: "طماطم، خيار، بصل، فلفل أخضر، بقدونس، زيت زيتون",
-          ru: "Помидоры, огурцы, лук, зелёный перец, петрушка, оливковое масло",
-        }, fiyatlar: tek(100), gorsel: null }],
+          ru: "Помидоры, огурцы, лук, зелёный перец, петрушка, оливковое масло"
+        },
+        fiyatlar: tek(100),
+        gorsel: {
+          src: "/urunler/coban-salata.webp",
+          alt: {
+            tr: "Ahşap kâsede çoban salata",
+            en: "Shepherd's salad in a wooden bowl",
+            ar: "سلطة الراعي في وعاء خشبي",
+            ru: "Пастуший салат в деревянной миске",
+          },
+          genislik: 800,
+          yukseklik: 450,
+        },
+      }],
   },
 
   /* ---------------------------------------------------------------- 4 */
@@ -915,12 +931,28 @@ export const MENU: Kategori[] = [
           ar: "كولا",
           ru: "Кола",
         }, icerik: null, fiyatlar: tek(80), gorsel: null },
-      { id: "fanta", ad: {
+      {
+        id: "fanta",
+        ad: {
           tr: "Fanta",
           en: "Fanta",
           ar: "فانتا",
-          ru: "Фанта",
-        }, icerik: null, fiyatlar: tek(80), gorsel: null },
+          ru: "Фанта"
+        },
+        icerik: null,
+        fiyatlar: tek(80),
+        gorsel: {
+          src: "/urunler/fanta.webp",
+          alt: {
+            tr: "Fanta kutusu",
+            en: "Can of Fanta",
+            ar: "علبة فانتا",
+            ru: "Банка Фанты",
+          },
+          genislik: 800,
+          yukseklik: 450,
+        },
+      },
       { id: "soda", ad: {
           tr: "Soda",
           en: "Sparkling Mineral Water",
@@ -932,17 +964,33 @@ export const MENU: Kategori[] = [
           ar: "مياه معدنية فوارة",
           ru: "Газированная минеральная вода",
         }, fiyatlar: tek(40), gorsel: null },
-      { id: "ayran", ad: {
+      {
+        id: "ayran",
+        ad: {
           tr: "Ayran",
           en: "Ayran (Yogurt Drink)",
           ar: "عيران (مشروب اللبن)",
-          ru: "Айран (кисломолочный напиток)",
-        }, icerik: {
+          ru: "Айран (кисломолочный напиток)"
+        },
+        icerik: {
           tr: "Yoğurt, su, tuz",
           en: "Yogurt, water, salt",
           ar: "لبن، ماء، ملح",
-          ru: "Йогурт, вода, соль",
-        }, fiyatlar: tek(50), gorsel: null },
+          ru: "Йогурт, вода, соль"
+        },
+        fiyatlar: tek(50),
+        gorsel: {
+          src: "/urunler/ayran.webp",
+          alt: {
+            tr: "Köpüklü ayran bardağı",
+            en: "Glass of ayran with foam",
+            ar: "كوب عيران بالرغوة",
+            ru: "Стакан айрана с пенкой",
+          },
+          genislik: 800,
+          yukseklik: 450,
+        },
+      },
       { id: "komposto", ad: {
           tr: "Komposto",
           en: "Komposto (Fruit Compote)",
@@ -965,12 +1013,28 @@ export const MENU: Kategori[] = [
           ar: "مياه معدنية فوارة بنكهة الفواكه",
           ru: "Газированная минеральная вода с фруктовым вкусом",
         }, fiyatlar: tek(40), gorsel: null },
-      { id: "su", ad: {
+      {
+        id: "su",
+        ad: {
           tr: "Su",
           en: "Water",
           ar: "ماء",
-          ru: "Вода",
-        }, icerik: null, fiyatlar: tek(10), gorsel: null },
+          ru: "Вода"
+        },
+        icerik: null,
+        fiyatlar: tek(10),
+        gorsel: {
+          src: "/urunler/su.webp",
+          alt: {
+            tr: "Pet şişede su",
+            en: "Bottle of water",
+            ar: "زجاجة ماء",
+            ru: "Бутылка воды",
+          },
+          genislik: 800,
+          yukseklik: 450,
+        },
+      },
     ],
   },
 ];
