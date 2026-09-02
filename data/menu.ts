@@ -423,39 +423,87 @@ export const MENU: Kategori[] = [
     },
     sutunlar: TEK_SUTUN,
     urunler: [
-      { id: "et-izgara-kg", ad: {
+      {
+        id: "et-izgara-kg",
+        ad: {
           tr: "Et Izgara 1 KG",
           en: "Grilled Beef 1 KG",
           ar: "لحم بقري مشوي 1 كغ",
-          ru: "Говядина на гриле 1 кг",
-        }, icerik: {
+          ru: "Говядина на гриле 1 кг"
+        },
+        icerik: {
           tr: "Izgarada dana eti",
           en: "Grilled beef",
           ar: "لحم بقري مشوي",
-          ru: "Говядина на гриле",
-        }, fiyatlar: tek(1500), gorsel: null },
-      { id: "et-izgara-porsiyon", ad: {
+          ru: "Говядина на гриле"
+        },
+        fiyatlar: tek(1500),
+        gorsel: {
+          src: "/urunler/et-izgara-kg.webp",
+          alt: {
+            tr: "Izgarada dana eti",
+            en: "Beef on the grill",
+            ar: "لحم بقري على الشواية",
+            ru: "Говядина на гриле",
+          },
+          genislik: 800,
+          yukseklik: 450,
+        },
+      },
+      {
+        id: "et-izgara-porsiyon",
+        ad: {
           tr: "Et Izgara Porsiyon",
           en: "Grilled Beef Portion",
           ar: "لحم بقري مشوي حصة",
-          ru: "Говядина на гриле, порция",
-        }, icerik: {
+          ru: "Говядина на гриле, порция"
+        },
+        icerik: {
           tr: "Izgarada dana eti",
           en: "Grilled beef",
           ar: "لحم بقري مشوي",
-          ru: "Говядина на гриле",
-        }, fiyatlar: tek(500), gorsel: null },
-      { id: "kuzu-izgara-kg", ad: {
+          ru: "Говядина на гриле"
+        },
+        fiyatlar: tek(500),
+        gorsel: {
+          src: "/urunler/et-izgara-porsiyon.webp",
+          alt: {
+            tr: "Tabakta ızgara dana eti",
+            en: "Grilled beef on a plate",
+            ar: "لحم بقري مشوي في طبق",
+            ru: "Говядина на гриле на тарелке",
+          },
+          genislik: 800,
+          yukseklik: 450,
+        },
+      },
+      {
+        id: "kuzu-izgara-kg",
+        ad: {
           tr: "Kuzu Izgara 1 KG",
           en: "Grilled Lamb 1 KG",
           ar: "لحم ضأن مشوي 1 كغ",
-          ru: "Баранина на гриле 1 кг",
-        }, icerik: {
+          ru: "Баранина на гриле 1 кг"
+        },
+        icerik: {
           tr: "Izgarada kuzu eti",
           en: "Grilled lamb",
           ar: "لحم ضأن مشوي",
-          ru: "Баранина на гриле",
-        }, fiyatlar: tek(1700), gorsel: null },
+          ru: "Баранина на гриле"
+        },
+        fiyatlar: tek(1700),
+        gorsel: {
+          src: "/urunler/kuzu-izgara-kg.webp",
+          alt: {
+            tr: "Izgarada kuzu pirzola",
+            en: "Lamb chops on the grill",
+            ar: "ريش ضأن على الشواية",
+            ru: "Бараньи рёбрышки на гриле",
+          },
+          genislik: 800,
+          yukseklik: 450,
+        },
+      },
       { id: "kuzu-izgara-porsiyon", ad: {
           tr: "Kuzu Izgara Porsiyon",
           en: "Grilled Lamb Portion",
@@ -467,17 +515,33 @@ export const MENU: Kategori[] = [
           ar: "لحم ضأن مشوي",
           ru: "Баранина на гриле",
         }, fiyatlar: tek(550), gorsel: null },
-      { id: "kofte-izgara-kg", ad: {
+      {
+        id: "kofte-izgara-kg",
+        ad: {
           tr: "Köfte Izgara 1 KG",
           en: "Grilled Köfte 1 KG (Meatballs)",
           ar: "كفتة مشوية 1 كغ",
-          ru: "Кёфте на гриле 1 кг (котлетки)",
-        }, icerik: {
+          ru: "Кёфте на гриле 1 кг (котлетки)"
+        },
+        icerik: {
           tr: "Izgarada dana kıymalı köfte",
           en: "Grilled beef meatballs",
           ar: "كفتة لحم بقري مشوية",
-          ru: "Котлетки из говяжьего фарша на гриле",
-        }, fiyatlar: tek(1300), gorsel: null },
+          ru: "Котлетки из говяжьего фарша на гриле"
+        },
+        fiyatlar: tek(1300),
+        gorsel: {
+          src: "/urunler/kofte-izgara-kg.webp",
+          alt: {
+            tr: "Izgarada pişen köfteler",
+            en: "Köfte cooking on the grill",
+            ar: "كفتة تُشوى على الشواية",
+            ru: "Кёфте жарятся на гриле",
+          },
+          genislik: 800,
+          yukseklik: 450,
+        },
+      },
       {
         id: "kofte-izgara-porsiyon",
         ad: {
@@ -511,16 +575,26 @@ export const MENU: Kategori[] = [
           tr: "Köfte Izgara 1,5 Porsiyon (8-9 adet)",
           en: "Grilled Köfte 1.5 Portion (8-9 pieces)",
           ar: "كفتة مشوية حصة ونصف (8-9 قطع)",
-          ru: "Кёфте на гриле, 1,5 порции (8-9 шт.)",
+          ru: "Кёфте на гриле, 1,5 порции (8-9 шт.)"
         },
         icerik: {
           tr: "Izgarada dana kıymalı köfte, 8-9 adet",
           en: "Grilled beef meatballs, 8-9 pieces",
           ar: "كفتة لحم بقري مشوية، 8-9 قطع",
-          ru: "Котлетки из говяжьего фарша на гриле, 8-9 шт.",
+          ru: "Котлетки из говяжьего фарша на гриле, 8-9 шт."
         },
         fiyatlar: tek(500),
-              gorsel: null,
+        gorsel: {
+          src: "/urunler/kofte-izgara-bucuk-porsiyon.webp",
+          alt: {
+            tr: "Salatalı ızgara köfte tabağı",
+            en: "Grilled köfte plate with salad",
+            ar: "طبق كفتة مشوية مع سلطة",
+            ru: "Тарелка кёфте на гриле с салатом",
+          },
+          genislik: 800,
+          yukseklik: 450,
+        },
       },
       { id: "tavuk-izgara-kg", ad: {
           tr: "Tavuk Izgara 1 KG",
@@ -533,33 +607,59 @@ export const MENU: Kategori[] = [
           ar: "دجاج مشوي",
           ru: "Курица на гриле",
         }, fiyatlar: tek(700), gorsel: null },
-      { id: "tavuk-porsiyon", ad: {
+      {
+        id: "tavuk-porsiyon",
+        ad: {
           tr: "Tavuk Porsiyon",
           en: "Chicken Portion",
           ar: "دجاج حصة",
-          ru: "Курица, порция",
-        }, icerik: {
+          ru: "Курица, порция"
+        },
+        icerik: {
           tr: "Izgarada tavuk eti",
           en: "Grilled chicken",
           ar: "دجاج مشوي",
-          ru: "Курица на гриле",
-        }, fiyatlar: tek(350), gorsel: null },
+          ru: "Курица на гриле"
+        },
+        fiyatlar: tek(350),
+        gorsel: {
+          src: "/urunler/tavuk-porsiyon.webp",
+          alt: {
+            tr: "Lavaşlı ızgara tavuk porsiyonu",
+            en: "Grilled chicken portion with flatbread",
+            ar: "حصة دجاج مشوي مع خبز اللافاش",
+            ru: "Порция курицы на гриле с лавашем",
+          },
+          genislik: 800,
+          yukseklik: 450,
+        },
+      },
       {
         id: "karisik-izgara-kg",
         ad: {
           tr: "Karışık Izgara 1 KG",
           en: "Mixed Grill 1 KG",
           ar: "مشاوي مشكلة 1 كغ",
-          ru: "Ассорти на гриле 1 кг",
+          ru: "Ассорти на гриле 1 кг"
         },
         icerik: {
           tr: "Izgarada dana eti, kuzu eti, köfte ve tavuk",
           en: "Grilled beef, lamb, meatballs and chicken",
           ar: "لحم بقري وضأن وكفتة ودجاج مشوية",
-          ru: "Говядина, баранина, котлетки и курица на гриле",
+          ru: "Говядина, баранина, котлетки и курица на гриле"
         },
         fiyatlar: tek(1700),
-              gorsel: null,
+        gorsel: {
+          src: "/urunler/karisik-izgara-kg.webp",
+          alt: {
+            tr: "Bulgur pilavlı karışık ızgara",
+            en: "Mixed grill with bulgur pilaf",
+            ar: "مشاوي مشكلة مع برغل",
+            ru: "Ассорти на гриле с булгуром",
+          },
+          genislik: 800,
+          yukseklik: 450,
+        },
       },
       {
         id: "karisik-izgara-porsiyon",
@@ -588,17 +688,33 @@ export const MENU: Kategori[] = [
           yukseklik: 450,
         },
       },
-      { id: "sac-kavurma", ad: {
+      {
+        id: "sac-kavurma",
+        ad: {
           tr: "Saç Kavurma",
           en: "Saç Kavurma (Beef Sautéed on a Griddle)",
           ar: "ساتش كافورما (لحم مقلي على الصاج)",
-          ru: "Сач кавурма (мясо с саджа)",
-        }, icerik: {
+          ru: "Сач кавурма (мясо с саджа)"
+        },
+        icerik: {
           tr: "Sacda kavrulmuş dana eti, biber, domates, soğan",
           en: "Beef sautéed on a griddle with pepper, tomato and onion",
           ar: "لحم بقري مقلي على الصاج مع الفلفل والطماطم والبصل",
-          ru: "Говядина, жаренная на садже с перцем, помидорами и луком",
-        }, fiyatlar: tek(500), gorsel: null },
+          ru: "Говядина, жаренная на садже с перцем, помидорами и луком"
+        },
+        fiyatlar: tek(500),
+        gorsel: {
+          src: "/urunler/sac-kavurma.webp",
+          alt: {
+            tr: "Sacda dana eti kavurma",
+            en: "Beef sautéed on a griddle pan",
+            ar: "لحم بقري مقلي على الصاج",
+            ru: "Говядина, жаренная на садже",
+          },
+          genislik: 800,
+          yukseklik: 450,
+        },
+      },
       {
         id: "et-sis",
         ad: {
@@ -626,17 +742,33 @@ export const MENU: Kategori[] = [
           yukseklik: 450,
         },
       },
-      { id: "tavuk-sis", ad: {
+      {
+        id: "tavuk-sis",
+        ad: {
           tr: "Tavuk Şiş",
           en: "Tavuk Şiş (Chicken Skewer)",
           ar: "شيش دجاج",
-          ru: "Тавук шиш (шашлык из курицы)",
-        }, icerik: {
+          ru: "Тавук шиш (шашлык из курицы)"
+        },
+        icerik: {
           tr: "Şişe dizilmiş tavuk eti, ızgarada",
           en: "Grilled chicken on skewers",
           ar: "قطع دجاج مشوية على السيخ",
-          ru: "Курица на шампуре, на гриле",
-        }, fiyatlar: tek(300), gorsel: null },
+          ru: "Курица на шампуре, на гриле"
+        },
+        fiyatlar: tek(300),
+        gorsel: {
+          src: "/urunler/tavuk-sis.webp",
+          alt: {
+            tr: "Tavuk şiş",
+            en: "Chicken skewer",
+            ar: "شيش دجاج",
+            ru: "Шашлык из курицы",
+          },
+          genislik: 800,
+          yukseklik: 450,
+        },
+      },
     ],
   },
 
