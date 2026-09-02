@@ -1,105 +1,52 @@
 import Link from "next/link";
 import { DilKontrolu } from "@/components/DilKontrolu";
+import { TemaMotifi } from "@/components/TemaMotifi";
 import { ui } from "@/data/arayuz";
 import type { DilKodu } from "@/data/menu";
+import type { TemaKodu } from "@/data/tema";
 
 /**
- * Her menü sayfasının üstünde duran "Huzur Pide" başlığı ve dil değiştirme
- * kontrolü.
+ * Menü tarafındaki ekranların üstünde duran marka ve dil değiştirme kontrolü.
  *
  * Başlığa basıldığında o dilin ana seçim ekranına dönülüyor — QR menüde geri
  * tuşu her zaman elverişli olmuyor, başlığın kendisi çıkış yolu oluyor.
- * Dil seçim ekranına dönmek için başlıktaki dil kontrolü var.
+ *
+ * NOT: ana seçim ve dil seçim ekranları bunu KULLANMIYOR. O ikisi kitabın
+ * dilinden ayrı, kendi ferah kompozisyonlarında duruyor.
  */
 export function UstBaslik({
   dil,
-  altBaslik,
   /** Dil önekinden SONRAKİ yol. Dil değiştirilince aynı sayfada kalınır. */
   yol,
   /**
-   * Menü kitabında kullanılan sıkışık varyant: dikey boşluklar ve logo
-   * küçültülüyor, ayraç kalkıyor. Kitap ekran yüksekliğine sığmak zorunda,
-   * başlığa harcanan her piksel ürün satırlarından gidiyor.
+   * Menü kitabında kullanılan sıkışık varyant: dikey boşluklar kısılıyor.
+   * Kitap ekran yüksekliğine sığmak zorunda, şeride harcanan her piksel
+   * ürün satırlarından gidiyor.
    */
   sikisik = false,
+  /** Onizlemede baska bir temanin motifini basmak icin. */
+  tema,
+  /** Onizlemede baglantilari onizlemenin icinde tutar. */
+  yolOneki = "",
 }: {
   dil: DilKodu;
-  altBaslik?: string;
   yol: string;
   sikisik?: boolean;
+  tema?: TemaKodu;
+  yolOneki?: string;
 }) {
-  if (sikisik) {
-    // Telefonda dikey dolgu kisildi (16/8 -> 6/0): kitap ekran yuksekligine
-    // sigmak zorunda ve seritten kazanilan her piksel urun satirlarina
-    // gidiyor. md ustunde eski deger.
-    return (
-      <header className="flex shrink-0 flex-col items-center px-4 pt-1.5 pb-0
-                         text-center md:pt-4 md:pb-2">
-        <Link
-          href={`/${dil}/secim`}
-          aria-label={ui("anaEkranaDon", dil)}
-          className="flex items-center gap-2.5 rounded-xl px-3 py-1.5 outline-hidden
-                     transition-colors duration-150 hover:bg-cream-200/50
-                     focus-visible:outline-solid focus-visible:outline-2
-                     focus-visible:outline-offset-2 focus-visible:outline-cocoa-900"
-        >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/logo.svg"
-            alt=""
-            aria-hidden="true"
-            width={32}
-            height={32}
-            className="h-7 w-7"
-          />
-          <span className="font-display text-lg leading-none tracking-wide text-cocoa-900">
-            Huzur Pide
-          </span>
-        </Link>
-        <DilKontrolu aktifDil={dil} yol={yol} sikisik />
-      </header>
-    );
-  }
-
   return (
-    <header className="flex flex-col items-center pt-8 pb-6 text-center sm:pt-10">
+    <header className={`ust-serit ${sikisik ? "ust-serit-sikisik" : ""}`}>
       <Link
-        href={`/${dil}/secim`}
+        href={`/${dil}${yolOneki}/secim`}
         aria-label={ui("anaEkranaDon", dil)}
-        className="flex flex-col items-center rounded-2xl px-4 py-2 outline-hidden
-                   transition-colors duration-150 hover:bg-cream-200/40
-                   focus-visible:outline-solid focus-visible:outline-2
-                   focus-visible:outline-offset-2 focus-visible:outline-cocoa-900"
+        className="ust-marka odak"
       >
-        {/* Logo dekoratif: yanindaki metin ayni bilgiyi veriyor. */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/logo.svg"
-          alt=""
-          aria-hidden="true"
-          width={48}
-          height={48}
-          className="h-11 w-11 sm:h-12 sm:w-12"
-        />
-        <span className="mt-2 font-display text-2xl leading-none tracking-wide text-cocoa-900 sm:text-3xl">
-          Huzur Pide
-        </span>
+        {/* Marka isareti dekoratif: yanindaki metin ayni bilgiyi veriyor. */}
+        <TemaMotifi className="ust-marka-motif" tema={tema} />
+        <span className="ust-marka-adi">Huzur Pide</span>
       </Link>
-
       <DilKontrolu aktifDil={dil} yol={yol} />
-
-      {/* Ince ayrac */}
-      <div className="mt-5 flex w-full max-w-[11rem] items-center gap-3" aria-hidden="true">
-        <span className="h-px flex-1 bg-gradient-to-r from-transparent to-latte-400" />
-        <span className="h-1.5 w-1.5 rotate-45 bg-latte-500" />
-        <span className="h-px flex-1 bg-gradient-to-l from-transparent to-latte-400" />
-      </div>
-
-      {altBaslik ? (
-        <p className="mt-4 text-xs font-semibold tracking-[0.18em] text-cocoa-700 uppercase">
-          {altBaslik}
-        </p>
-      ) : null}
     </header>
   );
 }

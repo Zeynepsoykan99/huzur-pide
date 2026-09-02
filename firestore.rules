@@ -1,0 +1,50 @@
+rules_version = '2';
+
+// ===========================================================================
+// Firestore güvenlik kuralları
+//
+// Temel karar: TARAYICIDAN HİÇBİR YAZMA YAPILMIYOR. Panelin bütün yazma
+// işlemleri Server Action içinden Admin SDK ile geçiyor; Admin SDK bu
+// kuralların dışında çalışır. Bu yüzden istemci tarafı için kurallar en katı
+// hâlinde bırakılabiliyor: menü herkese okunur, kimse yazamaz.
+//
+// Böylece paneldeki bir hata ya da çalınmış bir istemci anahtarı bile veriyi
+// değiştiremiyor — yazma yetkisi yalnızca sunucudaki servis hesabında.
+//
+// Konsola yükleme: Firebase Console > Firestore Database > Rules > yapıştır
+// ve Publish. (Ya da `firebase deploy --only firestore:rules`.)
+// ===========================================================================
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Menü içeriği: müşteri menüsü zaten herkese açık, okuma serbest.
+    match /kategoriler/{belge} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /urunler/{belge} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // Aktif tema burada. Okunabilir olmalı, yazma yine yalnız sunucudan.
+    match /ayarlar/{belge} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // Yönetici listesi: istemciye hiç açılmıyor. Kimin panele girebildiği
+    // bilgisi dışarıdan okunacak bir şey değil.
+    match /yoneticiler/{belge} {
+      allow read, write: if false;
+    }
+
+    // Yukarıda sayılmayan her yol kapalı. Yeni bir koleksiyon eklenirse
+    // kuralı da bilinçli olarak yazılsın diye burası açık bırakılmıyor.
+    match /{belge=**} {
+      allow read, write: if false;
+    }
+  }
+}

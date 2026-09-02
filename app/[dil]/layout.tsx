@@ -1,7 +1,8 @@
 import type { Metadata, Viewport } from "next";
-import localFont from "next/font/local";
 import { notFound } from "next/navigation";
+import { temaFontlari } from "@/app/temalar/aktif";
 import { DILLER, DIL_YONU, gecerliDil } from "@/data/menu";
+import { aktifTema } from "@/data/menuKaynak";
 import "../globals.css";
 
 /**
@@ -13,16 +14,20 @@ import "../globals.css";
  * daha ilk baytta `dir="rtl"` ile geliyor — sayfa önce soldan sağa çizilip
  * sonra aynalanmıyor.
  *
+ * TEMA da burada: `<html>` üzerindeki `tema-*` sınıfı bütün --t-* renk ve
+ * yazı tipi değişkenlerini belirliyor. Ekranların hiçbiri temayı bilmiyor.
+ *
+ * Hangi temanın geçerli olduğu Firestore'dan (`ayarlar/genel.tema`) okunuyor —
+ * panelden değiştirilebilsin diye. Okuma müşteri isteğinde değil, sayfa
+ * üretilirken oluyor; tema değişince panel `revalidatePath` ile bütün
+ * ekranları yeniden ürettiriyor.
+ *
+ * Yazı tipleri: dört tema modülü de derlemeye giriyor ama `<html>` üzerine
+ * yalnızca aktif temanın değişkenleri konuyor, bu yüzden yalnızca onun
+ * dosyaları iniyor.
+ *
  * `/` adresi next.config.ts içinde `/tr`'ye yönlendiriliyor.
  */
-const marcellus = localFont({
-  src: "../fonts/Marcellus-Regular.woff2",
-  weight: "400",
-  style: "normal",
-  display: "swap",
-  variable: "--font-marcellus",
-  fallback: ["Georgia", "Cambria", "serif"],
-});
 
 export const metadata: Metadata = {
   title: "Huzur Pide",
@@ -31,7 +36,8 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#F5EFE6",
+  /* Adres çubuğunun rengi de temadan: Çini Levha'nın porselen zemini. */
+  themeColor: "#F6F2E9",
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
@@ -48,11 +54,15 @@ export default async function KokLayout({
   const { dil } = await params;
   if (!gecerliDil(dil)) notFound();
 
+  const tema = await aktifTema();
+
   return (
-    <html lang={dil} dir={DIL_YONU[dil]} className={marcellus.variable}>
-      <body className="min-h-dvh bg-cream-50 bg-gradient-to-b from-cream-50 to-cream-100 font-body text-cocoa-900 antialiased">
-        {children}
-      </body>
+    <html
+      lang={dil}
+      dir={DIL_YONU[dil]}
+      className={`tema-${tema} ${temaFontlari(tema)}`}
+    >
+      <body className="min-h-dvh">{children}</body>
     </html>
   );
 }

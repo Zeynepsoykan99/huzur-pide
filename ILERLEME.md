@@ -3,7 +3,7 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 14 **canlıda** (`main`, `9e4abc5`) — kitap 5 sayfa, her kategori tek sayfada; sığmayan sayfa dikey kayıyor, alt şeritte aşağı ok ipucu. Bekleyen: QR adresi kararı, organizasyon içeriği, font kararı, eksik fotoğraflar 10 sayfalık kitap, kaydırma çubuğu gizli, oklar dört dilde çalışıyor, Kapalı Pide 2 sayfa. Bekleyen: QR adresi kararı, organizasyon içeriği, font kararı, eksik fotoğraflar
+**Güncel aşama:** Aşama 16 tamamlandı (dalda, push onayı bekliyor) — admin paneli çalışıyor: tema, fiyat ve ürün ekleme. Menü Firestore'dan besleniyor, hâlâ statik. Aşama 15 (Çini Levha) da aynı dalda. Bekleyen: Firebase Storage / fotoğraf yükleme, QR adresi, organizasyon içeriği
 **Son güncelleme:** 2026-08-28
 
 ### Genel Durum
@@ -27,6 +27,8 @@ Numaralandırma rapor başlıklarıyla aynı: aşağıdaki her satırın karşı
 | 12 | Üretime çıkış ve canlı doğrulama | **Tamamlandı** |
 | 13 | "Düble" → "Duble" yazım düzeltmesi | **Tamamlandı** |
 | 14 | Her kategori tek sayfa + aşağı ok ipucu | **Tamamlandı** |
+| 15 | Çini Levha teması + dört temalı yapı | **Tamamlandı** (dalda) |
+| 16 | Admin paneli — Firebase (Firestore + Auth) | **Tamamlandı** (dalda) |
 
 ### Aşama 1 Adımları
 
@@ -2419,5 +2421,328 @@ adres üzerinde tekrarlandı:
 **Sıradaki adım:** Bekleyen içerik kararları: QR adresi, organizasyon içeriği,
 font kararı, eksik fotoğraflar, 4 teyit edilmemiş fiyat, Arapça çevirilerin
 gözden geçirilmesi.
+
+=== RAPOR SONU ===
+
+---
+
+## Aşama 15 — Çini Levha Teması ve Dört Temalı Yapı · 2026-08-30
+
+=== RAPOR BAŞLANGICI ===
+
+**Adım:** Aşama 15 — Seçilen Çini Levha yönünün projenin tamamına uygulanması,
+tema altyapısının kurulması, iki yeni temanın eklenmesi (tamamı)
+
+---
+
+**1 — Tema altyapısı**
+
+Bir tema artık üç parçadan oluşuyor: `app/temalar/temalar.css` içinde bir
+değişken bloğu, kendi yazı tipi modülü (`fontlar-*.ts`) ve kendi motifi
+(`components/TemaMotifi.tsx`).
+
+Ekranlar temayı **bilmiyor** — yalnızca `--t-*` değişkenlerini kullanıyorlar.
+Hangi temanın geçerli olduğunu `<html>` üzerindeki `tema-*` sınıfı belirliyor;
+kök layout onu `data/tema.ts` içindeki `AKTIF_TEMA` sabitinden okuyor. Tema
+değiştirmek iki satır: `data/tema.ts` ve `app/temalar/aktif.ts`.
+
+**Yazı tipleri bilinçli olarak ayrı tutuldu.** `aktif.ts` tek bir tema modülü
+import ediyor; dördü birden import edilseydi dört takım yazı tipi yayına
+girerdi. Üretimde yalnızca Çini'nin dört ailesi iniyor. Önizleme rotası
+`tum-fontlar.ts` üzerinden hepsini yüklüyor, o dosya üretim ekranlarına hiç
+girmiyor.
+
+**Yakalanan mimari hata.** Tema farkları önce `.tema-cini .levha` gibi torun
+seçicilerle yazılmıştı. `<html>` aktif temayı taşıdığı için bu kurallar
+önizleme sarmalayıcısının **içinde de** eşleşiyordu — Mürekkep, Çini'nin levha
+çerçevesini çiziyordu. Yapısal farkların tamamı değişkene taşındı
+(`--t-levha-cizgi`, `--t-baslik-hiza`, `--t-kart-cizgi`, `--t-gorsel-golge`
+vb.); `globals.css` içinde kalan tema torun seçicisi sayısı **0**.
+
+**2 — Dört tema**
+
+| Tema | Karakter | Yazı tipleri (Latin+Kiril / Arapça) |
+|---|---|---|
+| **Çini Levha** (aktif) | İznik levhası: porselen, kobalt, mercan | Cormorant + IBM Plex Sans / Reem Kufi + IBM Plex Sans Arabic |
+| **Gece Ocağı** | Akşam, ateşin karşısı; koyu ve sıcak | Playfair Display + Inter / Amiri + Noto Sans Arabic |
+| **Mürekkep** | Matbaa afişi; kalın kurallar, süsleme yok | Oswald + Source Sans 3 / Cairo + Noto Kufi Arabic |
+| **Zeytin** | Bahçe ve sofra; yumuşak, sakin, organik | Lora + Nunito Sans / Noto Naskh Arabic + Noto Sans Arabic |
+
+**Gece Ocağı silinmedi, dalda da bırakılmadı:** ana kodda `.tema-gece` bloğu ve
+`fontlar-gece.ts` olarak yaşıyor, her derlemede derleniyor. Aktif etmek için
+tek satır yeterli.
+
+Not: eski başlık fontu Marcellus'ta Kiril ve Arapça yoktu; Rusça ve Arapça
+başlıklar sistem serifine düşüyordu. Dört temanın dördü de bu boşluğu kapatıyor
+— kapsamlar Google Fonts CSS API'sinden tek tek doğrulandı.
+
+**3 — Ana seçim ekranı bağımsızlaştı**
+
+Kitabın dilinden tamamen ayrıldı: sıkışık şerit yok, sayaç yok, ok yok, levha
+çerçevesi yok, **dil kontrolü de yok** (senin kararın). Ortalanmış motif,
+"Huzur Pide", ince ayraç ve iki iri buton. Sunucudan gelen HTML üzerinde dört
+dilde doğrulandı — `dil-secenek`, `sayfa-numarasi`, `kitap-ok` ve `class="kitap"`
+sayıları **0**, `secim-karti` var. Akış aynı: dil seçimi → ana seçim → menü.
+
+Bu kural dört temanın hepsinde geçerli.
+
+**4 — Rusça ad sütunu sıkışması (boyut küçültmeden)**
+
+Çok fiyatlı tabloda ürün adı, gövde fontu yerine temanın **başlık fontunu**
+kullanıyor (Çini'de Cormorant). Aynı tarayıcıda A/B ölçüldü — punto,
+satır yüksekliği ve görsel ölçüsü sabit tutularak yalnızca font ailesi
+değiştirildi:
+
+| Ürün | Gövde fontuyla | Başlık fontuyla | Kazanç |
+|---|---|---|---|
+| Кыймалы (с фаршем) | 2 | 2 | — |
+| Кашарлы (с сыром) | 2 | 2 | — |
+| Суджуклу (с суджуком) | 3 | **2** | 1 satır |
+| Кыйма и кашар (фарш и сыр) | 4 | **3** | 1 satır |
+| Карышык (ассорти) | 2 | 2 | — |
+| Лахмаджун (тонкая лепёшка…) | 4 | 4 | — |
+| **Toplam** | **17 satır** | **15 satır** | **2 satır** |
+
+Ölçüler değişmedi: ad 17px, açıklama 13px, fiyat 13px, başlık 28px, görsel
+56×56. En uzun ad (Лахмаджун, 34 karakter) hâlâ 4 satır — sayfa artık dikey
+kaydığı için bu bir bozulma değil.
+
+**5 — Karo deseni yumuşatıldı**
+
+Karo ölçüsü 1,4rem → **0,75rem**, opaklık %5,5 → **%3**. Yakından doku
+hissediliyor, uzaktan düz zemin okunuyor.
+
+**6 — Doğrulama (390×844, üretim derlemesi)**
+
+| Test | Sonuç |
+|---|---|
+| Kategori listesinden gerçek tıklama (4 dil × 5 kategori) — adres, görünen bölüm, başlık, ürünler, sayaç, aşağı ok | **20/20** |
+| Her ölçümde görüş alanında tek sayfa, tam 390 px | 20/20 |
+| Yan oklar 1→5 ve 5→1 (4 dil) | **32/32** |
+| Uçlarda ok gizlenmesi | 8/8 |
+| Arapça yön: ileri = sola, geri = sağa, aşağı ok ortada (x=195) ve aynalanmamış | doğru |
+| Dikey kaydırma yatay konumu bozuyor mu | hayır — 390 sabit |
+| Aşağı ok dipte gizleniyor, yukarı dönünce geliyor | doğru |
+| Yatay taşma (belge ve gövde) | 0 |
+| Kaydırma çubuğu | görünmüyor; kurallar yayına giden CSS'te |
+| Konsol | **0 hata** (yalnızca 404 testinin kendi 404'ü) |
+| `tsc` · `lint` · `build` | temiz, **150 statik sayfa** |
+
+**JavaScript kapalıyken** (sunucudan gelen ham HTML, üç dilde): 31 ürün adı ve
+5 dikey kaydırma kutusu var, yan ok ve aşağı ok **yok**. Menü görünüyor ve
+kaydırılıyor; yalnızca ipucu kontrolleri kayboluyor — bugünkü davranışın
+aynısı.
+
+**7 — Kontrast (WCAG AA), dört tema**
+
+Gerçek render edilmiş renkler üzerinden, saydamlıklar zemine düzleştirilerek,
+Rusça sayfada ölçüldü. Her temada 11 öğe: başlık, ürün adı, açıklama, fiyat,
+sütun başlığı, marka, pasif/aktif dil düğmesi, "menüye dön", sayaç ve yer
+tutucu ikonu (metin dışı, eşik 3:1).
+
+| Tema | Geçen | En düşük ölçüm |
+|---|---|---|
+| Çini Levha | **11/11** | Fiyat 5,30 (eşik 4,5) |
+| Gece Ocağı | **11/11** | Yer tutucu ikonu 5,77 (eşik 3,0) |
+| Mürekkep | **11/11** | Yer tutucu ikonu 4,49 (eşik 3,0) |
+| Zeytin | **11/11** | Yer tutucu ikonu 3,99 (eşik 3,0) |
+
+Gece'de önceki önizlemede 2,84:1 kalan yer tutucu ikonu düz renge çekilip
+açıldı: **5,77:1**.
+
+**Değiştirilen dosyalar:**
+
+| Dosya | Durum |
+|---|---|
+| `app/temalar/` | **Yeni** — `temalar.css` (dört tema), dört font modülü, `aktif.ts`, `tum-fontlar.ts` |
+| `data/tema.ts` | **Yeni** — tema kodları, adlar, `AKTIF_TEMA` |
+| `components/TemaMotifi.tsx` | **Yeni** — dört motif, logo yerine |
+| `components/ekranlar.tsx` | **Yeni** — altı ekranın tamamı tek yerde |
+| `app/[dil]/not-found.tsx` | **Yeni** — 404 |
+| `app/[dil]/onizleme/[tema]/` | **Yeni** — dört tema × altı ekran önizlemesi |
+| `app/globals.css` | Bileşen katmanı tema değişkenlerine taşındı |
+| `app/[dil]/layout.tsx` | Tema sınıfı ve aktif tema fontları |
+| Sayfa dosyaları (5) | İnce sarmalayıcıya indi |
+| `components/UstBaslik.tsx` · `DilKontrolu.tsx` · `UrunGorseli.tsx` · `SayfaSayaci.tsx` | Tema değişkenleri, `tema` ve `yolOneki` aktarımı |
+| `onizleme-gorselleri/` | Mürekkep, Zeytin ve uygulanmış Çini görüntüleri |
+
+`data/menu.ts` ve `data/arayuz.ts` içeriğine dokunulmadı: ürün, fiyat, çeviri
+ve açıklamalar aynı. Rotalar, yatay akış, sayfa yapısı, oklar ve RTL davranışı
+değişmedi.
+
+**Bilinen not:** önizleme rotası dört temanın yazı tiplerini de çektiği için
+derleme sırasında 16 Google Fonts ailesi indiriliyor; bir kez geçici ağ
+hatasıyla derleme başarısız oldu, tekrarında geçti. Üretim ekranları bundan
+etkilenmiyor (yalnızca aktif temanın aileleri).
+
+**Sıradaki adım:** Push onayı bekleniyor.
+
+=== RAPOR SONU ===
+
+---
+
+## Aşama 16 — Admin Paneli: Firebase (Firestore + Authentication) · 2026-09-01
+
+=== RAPOR BAŞLANGICI ===
+
+**Adım:** Aşama 16 — Menü verisinin Firestore'a taşınması ve mekân sahibinin
+tema, fiyat ve ürün yönetebildiği panelin kurulması (tamamı)
+
+**Durum:** Dalda (`panel/firebase`), push onayı bekleniyor. Üretim (`main`)
+değişmedi. Firebase Storage kurulmadı — fotoğraf yükleme sonraki aşamaya
+bırakıldı.
+
+---
+
+**1 — Alınan kararlar**
+
+| Karar | Sonuç |
+|---|---|
+| Yeni ürünün çevirileri | Dört dil alanı; yalnızca Türkçe zorunlu, boşlar menüde Türkçe'ye düşüyor |
+| Giriş | E-posta + şifre, panelde kayıt ekranı yok; hesaplar yalnızca konsoldan |
+| Hata koruması | Kaydetmeden önce özet + üç kattan fazla fark veya sıfırda kırmızı uyarı |
+| Fotoğraf | Storage yok; ürün fotoğrafsız ekleniyor, çalışmayan alan gösterilmiyor |
+| Panel arayüzü | Menü temasından ayrı, sade yönetim arayüzü |
+
+**2 — Ücretsiz sınırlar (firebase.google.com/pricing)**
+
+| Servis | Sınır | Kullanımımız | Doluluk |
+|---|---|---|---|
+| Firestore depolama | 1 GiB | 37 belge ≈ 45 KB | %0,004 |
+| Firestore okuma | 50.000/gün | Tam yeniden üretim ~740; günde 20 düzenleme ≈ 15.000 | %30'un altı |
+| Firestore yazma | 20.000/gün | Fiyat değişikliği = 1 yazma | %0,25 |
+| Authentication | 50.000 aylık kullanıcı | 1 hesap | %0,002 |
+
+Müşteri menüyü açtığında Firestore'a **gidilmiyor** — sayfalar statik. Okuma
+yalnızca derlemede ve panelden bir şey değişince yeniden üretimde oluyor.
+
+**3 — Taşıma**
+
+Taşımadan önce `data/menu.ts` iki biçimde yedeklendi (`.ts` kopyası +
+makine okunur `.json`). Taşıma idempotent: belge kimlikleri mevcut `slug` ve
+`id` değerleri.
+
+Doğrulama betiği Firestore'u `data/menu.ts` ile **alan alan** karşılaştırıyor
+— sayı tutması yetmiyor, her alanın değeri kıyaslanıyor:
+
+| Ölçüm | Sonuç |
+|---|---|
+| Kategori | 5 / 5 |
+| Ürün | **31 / 31** |
+| Fiyat hücresi | 43 |
+| Teyit edilmemiş fiyat | **4 / 4** |
+| Alan farkı | **0** |
+
+Dört dildeki adlar, açıklamalar, görsel bilgileri ve `dogrulandi` işaretleri
+aynen taşındı.
+
+**4 — Güvenlik**
+
+Kurallar Firebase Rules API'siyle yayına alındı ve yayındaki kümenin az önce
+yüklenen küme olduğu geri okunarak doğrulandı.
+
+Mimarinin özü: **tarayıcıdan Firestore'a hiç yazılmıyor.** Bütün yazmalar
+Server Action'lardan Admin SDK ile geçiyor, bu yüzden istemciye sıfır yazma
+izni verilebiliyor.
+
+İstemci SDK'sıyla — yani mekân sahibinin tarayıcısındaki koşullarda —
+yapılan testler:
+
+| Deneme | Beklenen | Sonuç |
+|---|---|---|
+| Ürün okuma | izin verilir | 31 belge okundu |
+| `urunler` yazma | reddedilir | permission-denied |
+| `ayarlar` yazma | reddedilir | permission-denied |
+| `kategoriler` yazma | reddedilir | permission-denied |
+| `yoneticiler` yazma | reddedilir | permission-denied |
+| `yoneticiler` okuma | reddedilir | permission-denied |
+
+**6/6 geçti.**
+
+Panel erişimi ayrıca sınandı:
+
+| Deneme | Sonuç |
+|---|---|
+| Girişsiz `/panel` | Giriş formu; panel içeriği HTML'de **yok** |
+| Girişsiz `/panel/fiyatlar`, `/tema`, `/urun-ekle` | 307 yönlendirme, içerik sızmıyor |
+| Yetkisiz hesapla **doğru şifreyle** giriş | Reddedildi: "Bu hesabın panele erişim yetkisi yok." |
+| Yönetici hesabıyla giriş | Panel açıldı |
+
+İki kademeli yetki: giriş yapmak yetmiyor, `yoneticiler/{uid}` belgesi de
+gerekiyor. Ayrıca her Server Action kendi içinde yetkiyi yeniden doğruluyor —
+sayfa korumasına tek başına güvenilmiyor, çünkü bir Server Action doğrudan da
+çağrılabilir.
+
+Test için geçici iki hesap açıldı (biri yönetici, biri değil), testler
+bitince ikisi de silindi. Mekân sahibinin hesabının şifresine dokunulmadı.
+
+**5 — Gizli bilgiler**
+
+| Değer | Yer | Gizli mi |
+|---|---|---|
+| `NEXT_PUBLIC_FIREBASE_*` | `.env.local` | Hayır — tarayıcıya zaten gidiyor |
+| `FIREBASE_SERVICE_ACCOUNT` | `.env.local` (sunucu) | **Evet** |
+
+`.env.local` yoksayılıyor (`.gitignore:19`), ek olarak `*serviceAccount*.json`
+ve `*firebase-adminsdk*.json` kalıpları eklendi; dördü de tek tek sınandı.
+Commit geçmişi `private_key` ve `BEGIN PRIVATE KEY` için tarandı: **temiz**.
+Servis hesabı dosyası proje klasörüne hiç kopyalanmadı.
+
+**6 — Panel**
+
+Menü temasından **ayrı** bir yönetim arayüzü (`--p-*` değişkenleri).
+Gerekçeler `panel.css` başında: tema panelden değiştiği için panel de onu
+giyseydi şekil değiştirirdi; menü tipografisi vitrin tipografisi, form için
+yanlış; ve panel `--t-*`'ye bağlanırsa tema değişiklikleri paneli kırar.
+
+Dört ekran, hepsi Türkçe, iri dokunma hedefli:
+**Giriş** (yalnızca e-posta ve şifre) · **Ana ekran** (üç büyük düğme) ·
+**Fiyatlar** · **Yeni ürün** · **Menü görünümü**.
+
+**7 — Doğrulama (390×844, üretim derlemesi)**
+
+| Test | Sonuç |
+|---|---|
+| Fiyat değişikliği menüye yansıyor mu | Kıymalı 1 Hamur 200 → **265 ₺**, ekranda doğrulandı; diğer fiyatlar değişmedi |
+| Kaydetme özeti | "Kıymalı · 1 Hamur 200 ₺ → 265 ₺" |
+| Büyük değişim uyarısı | 200 → 2.000 girildi, satır kırmızı ve uyarı çıktı; geri alındı |
+| Yeni ürün menüde görünüyor mu | Salatalar'a eklendi, menüde **123 ₺** ve yer tutucusuyla göründü |
+| Tema değişikliği | Gece Ocağı seçildi → `tema-gece`, zemin `rgb(20,16,13)`, başlık Playfair Display; sonra Çini'ye geri alındı |
+| Kategori tıklama, ekranda görünen içerik (AR + RU) | 10/10 |
+| 4 dil × 6 ekran | 24/24 |
+| JS kapalıyken menü | Ham HTML'de 31 ürün adı ve 5 dikey kaydırma kutusu var, ok yok |
+| Konsol | **0 hata** |
+| `tsc` · `lint` · `build` | temiz, **150 statik sayfa** |
+
+**Yakalanan ve düzeltilen sorun.** Tema panelden seçilebilir olunca dört
+temanın font modülü de derlemeye giriyor ve Next hepsini `<link rel=preload>`
+ile çağırıyordu — ölçüldü: **46 font ön yüklemesi**. Bir QR menüde bu
+gereksiz yük. Tema fontlarında `preload: false` yapıldı; sonuç **0 ön
+yükleme**, ve tarayıcı yalnızca aktif temanın ailelerini indiriyor (Gece'de
+ölçüldü: Playfair Display + Inter, başka aile inmedi).
+
+**Testlerin izi silindi:** test ürünü silindi, değiştirilen fiyat yedekteki
+değerine döndürüldü, tema Çini'ye alındı, test hesapları kaldırıldı. Taşıma
+doğrulaması tekrar çalıştırıldı: **fark 0**, tek yönetici kaldı.
+
+**Eklenen / değiştirilen başlıca dosyalar:**
+
+| Dosya | İş |
+|---|---|
+| `data/menuKaynak.ts` | **Yeni** — menü ve tema Firestore'dan; `cache()` ile aynı render'da tek okuma |
+| `lib/firebase-sunucu.ts` · `firebase-istemci.ts` | Admin SDK (server-only) ve yalnızca Auth için istemci |
+| `lib/oturum.ts` | httpOnly oturum çerezi, iki kademeli yetki |
+| `app/panel/**` | Panelin dört ekranı, Server Action'lar, kendi CSS'i |
+| `firestore.rules` · `storage.rules` | İstemciye sıfır yazma izni |
+| `betikler/**` | Yedek, taşıma, taşıma doğrulama, kural testi, yönetici ekleme, test hesapları, temizlik |
+| `data/tema.ts` | Aktif tema sabiti kaldırıldı; seçilebilir temalar (Zeytin hariç) |
+| `app/[dil]/layout.tsx` ve sayfalar | Tema ve içerik Firestore'dan; sayfalar statik kaldı |
+
+`data/menu.ts` içeriğine dokunulmadı; tipler ve saf yardımcılar oradan
+kullanılmaya devam ediyor, yedeği de repoda.
+
+**Sıradaki adım:** Push onayı bekleniyor. Sonrasında Firebase Storage (Blaze)
+kurulursa fotoğraf yükleme eklenecek — veri yapısındaki `gorsel` alanı ve
+panel akışı bunun için hazır bırakıldı.
 
 === RAPOR SONU ===

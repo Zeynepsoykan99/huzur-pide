@@ -27,58 +27,39 @@ const YER_TUTUCULAR: Record<string, (p: { className?: string }) => React.ReactEl
 };
 
 /**
- * Fotoğrafı olmayan ürünler için yer tutucu.
- *
- * Gerçek görselle birebir aynı ölçüde duruyor (mobilde kare, md üstünde 16:9),
- * böylece fotoğraf eklendiğinde satır hizası hiç değişmiyor. Beyaz kutu ya da
- * "resim yok" ikonu değil, paletin kendi dokusundan sessiz bir işaret.
- *
- * Bilgi taşımadığı için ekran okuyucudan gizli.
- */
-function YerTutucu({ kategoriSlug }: { kategoriSlug: string }) {
-  const Ikon = YER_TUTUCULAR[kategoriSlug] ?? YerTutucuPide;
-  return (
-    <span className="urun-gorsel-yer-tutucu" aria-hidden="true">
-      {/*
-        Yukseklige gore olcekleniyor, genislige gore degil: yuva mobilde kare
-        (80px), md ustunde 16:9 (208x117). Genislige gore olceklenseydi kare
-        viewBox'li ikon genis yuvada asagi tasardi.
-      */}
-      <Ikon className="h-[52%] w-auto" />
-    </span>
-  );
-}
-
-/**
  * Ürün görseli — fotoğraf varsa `next/image`, yoksa kategorisinin yer tutucusu.
  *
- * `sizes` CSS'teki gerçek ölçüleri söylüyor; tarayıcı srcset'ten doğru boyu
- * bununla seçiyor, telefona masaüstü boyutunda dosya inmiyor. İki ölçü var:
- * çok fiyatlı pide tablosunda görsel telefonda 56px (satırı üç fiyat sütunuyla
- * paylaşıyor), diğer sayfalarda 80px. md üstünde ikisi de 208px.
+ * Yuva her iki durumda da aynı ölçüde: fotoğraf eklendiğinde satır hizası
+ * değişmiyor. Yer tutucu beyaz kutu ya da "resim yok" ikonu değil, temanın
+ * kendi renginde sessiz bir işaret — ölçü ve renk `--t-*` değişkenlerinden.
  */
 export function UrunGorseli({
   urun,
   dil,
   kategoriSlug,
-  /** Çok fiyatlı tablo satırı: görsel telefonda 80px değil 56px. */
-  dar = false,
 }: {
   urun: Urun;
   dil: DilKodu;
   kategoriSlug: string;
-  dar?: boolean;
 }) {
-  if (!urun.gorsel) return <YerTutucu kategoriSlug={kategoriSlug} />;
+  if (!urun.gorsel) {
+    const Ikon = YER_TUTUCULAR[kategoriSlug] ?? YerTutucuPide;
+    return (
+      <span className="gorsel-yuvasi" aria-hidden="true">
+        <Ikon className="yer-tutucu-ikon" />
+      </span>
+    );
+  }
 
   return (
-    <Image
-      src={urun.gorsel.src}
-      alt={metin(urun.gorsel.alt, dil)}
-      width={urun.gorsel.genislik}
-      height={urun.gorsel.yukseklik}
-      sizes={dar ? "(min-width: 768px) 208px, 56px" : "(min-width: 768px) 208px, 80px"}
-      className="urun-gorsel"
-    />
+    <span className="gorsel-yuvasi">
+      <Image
+        src={urun.gorsel.src}
+        alt={metin(urun.gorsel.alt, dil)}
+        width={urun.gorsel.genislik}
+        height={urun.gorsel.yukseklik}
+        sizes="(min-width: 768px) 208px, 68px"
+      />
+    </span>
   );
 }
