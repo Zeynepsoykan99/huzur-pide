@@ -3,7 +3,7 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 17 tamamlandı — Çini Levha teması, admin paneli ve Firestore'dan beslenen menü **üretimde canlı** (`main`). Yedi başlık canlı adres üzerinden doğrulandı; fiyat ve tema testleri geri alındı, menüde iz yok. Bekleyen: Firebase Storage / fotoğraf yükleme, QR adresi, organizasyon içeriği
+**Güncel aşama:** Aşama 17 tamamlandı — Çini Levha teması, admin paneli ve Firestore'dan beslenen menü **üretimde canlı** (`main`). Yedi başlık canlı adres üzerinden doğrulandı; fiyat ve tema testleri geri alındı, menüde iz yok. Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
 **Son güncelleme:** 2026-09-02
 
 ### Genel Durum
@@ -30,6 +30,48 @@ Numaralandırma rapor başlıklarıyla aynı: aşağıdaki her satırın karşı
 | 15 | Çini Levha teması + dört temalı yapı | **Tamamlandı** |
 | 16 | Admin paneli — Firebase (Firestore + Auth) | **Tamamlandı** |
 | 17 | Önizleme rotasının kaldırılması, üretime çıkış, canlı doğrulama | **Tamamlandı** |
+
+### Bekleyenler
+
+Bu bölüm bekleyen her işin tek yeri; raporların içindeki eski "karar bekleyen"
+satırları o günün kaydı olarak duruyor, güncel liste burası.
+
+| # | Bekleyen iş | Ne bekliyor | Ayrıntı |
+|---|---|---|---|
+| 1 | Firebase Storage / Blaze planı | **Hesap** — Firebase projesinin Blaze'e (kredi kartı bağlı, kullandıkça öde) geçirilmesi senin hesabından yapılacak bir işlem | Fotoğraf yükleme buna bağlı; veri yapısındaki `gorsel` alanı ve panel akışı hazır bekliyor (Aşama 16) |
+| 2 | Organizasyon sayfasının içeriği | **Bilgi** — sayfada ne yazacağı (metin, varsa görsel, iletişim bilgisi) senden gelecek | Rota `/[dil]/organizasyon` ayakta, içerik boş (Aşama 4) |
+| 3 | QR kodunun bakacağı adres | **Karar** — senin kararın: kök `https://huzur-pide.vercel.app` mi, doğrudan `.../tr` mi | Önerim `/tr`: yönlendirme atlanır, sayfa daha hızlı açılır. Kök adres her iki durumda da çalışmaya devam eder (Aşama 5) |
+| 4 | Vercel Hobby planının ticari kullanıma kapalı olması | **Karar + hesap** — Pro'ya geçmek ya da bilerek Hobby'de kalmak; kapsamın hangi plana girdiği ancak Vercel panelinden görülür | "Devam et, sorumluluk bende" demiştin ve öyle yapıldı. Site canlı ve çalışıyor; bu bir plan/şart sorunu, teknik bir arıza değil (Aşama 5) |
+| 5 | 24 ürünün fotoğrafı | **Bilgi** — 31 üründen 24'ünün görseli sende yok/gelmedi | Eksikler: Kaşarlı, Sucuklu, Lahmacun, Künefe, Çoban Salata, içeceklerin tamamı, ızgaraların çoğu. Panelden yüklemek için 1 numaralı satır gerekiyor (Aşama 2) |
+| 6 | Arapça çevirilerin kontrolü | **Kişi** — ana dili Arapça olan birinin gözden geçirmesi | Özellikle Türkçe adın harf çevirisiyle yazıldığı kalemler: كاشارلي, كاريشيك, ساتش كافورما (Aşama 3) |
+| 7 | 4 teyit edilmemiş fiyat | **Bilgi** — dört hücrenin doğru fiyatı senden gelecek | Kıymalı / 1 Hamur · Kaşarlı / 1 Hamur · Kaşarlı / Duble · Kabak Tatlısı. Şu an menüde bir değer görünüyor, ama teyitli değil (Aşama 2) |
+
+1, 2, 3 ve 5 bittiğinde menü tamamlanmış olur; 4 ve 6 teknik olarak engel değil,
+biri hukuki/ticari, diğeri dil kalitesi.
+
+### İleride Kaldırılacak
+
+Geçici olduğunu bilerek koyduğumuz, koşulu gerçekleştiğinde silinmesi gereken
+şeyler.
+
+**`package.json` → `overrides: { "jose": "^5.10.0" }`**
+
+- **Neden var:** `firebase-admin@14.3.0` → `jwks-rsa@4.1.0` → `jose@^6` zinciri
+  Vercel'in çalışma ortamında `ERR_REQUIRE_ESM` verip panelin bütün dinamik
+  rotalarını 500'e düşürüyordu (jose 6 saf ESM, jwks-rsa CJS ve onu `require`
+  ediyor). jose 5 hem CJS hem ESM yayınlıyor ve jwks-rsa'nın kullandığı iki
+  fonksiyonu (`importJWK`, `exportSPKI`) içeriyor. Tam teşhis: Aşama 17,
+  başlık 17.2.
+- **Neden kalıcı değil:** `overrides` bir bağımlılığın bağımlılığını bizim
+  sabitlememiz demek. `firebase-admin` kendi zincirini düzelttiğinde bu satır
+  yalnızca jose'u eskitmeye yarar; güvenlik yaması gelirse de arada kalırız.
+- **Ne zaman kalkacak:** `firebase-admin` (veya `jwks-rsa`) sorunu kendi
+  tarafında çözüp CJS uyumlu bir jose sürümüne geçtiğinde.
+- **Nasıl kontrol edilir:** `firebase-admin` güncellendiğinde satır silinir,
+  `npm install` çalıştırılır, panel üretimde açılıyor mu diye bakılır
+  (`/panel` 200 dönmeli). Dönmüyorsa satır geri konur.
+- **İşareti:** `package.json` içinde `overrides`'ın hemen üstündeki `"//"`
+  yorum satırı.
 
 ### Aşama 1 Adımları
 

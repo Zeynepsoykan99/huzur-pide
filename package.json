@@ -33,6 +33,7 @@
     "sharp@0.34.5": true,
     "unrs-resolver@1.12.2": true
   },
+  "//": "GEÇİCİ ÇÖZÜM — aşağıdaki jose 5 sabitlemesi kalıcı değil. firebase-admin 14.3.0 → jwks-rsa 4.1.0 → jose 6 (saf ESM) zinciri Vercel'in çalışma ortamında ERR_REQUIRE_ESM veriyordu; jwks-rsa jose'dan yalnızca importJWK ve exportSPKI kullanıyor, ikisi de jose 5'te var. firebase-admin bunu kendi tarafında çözdüğünde bu satır ve overrides bloğu kaldırılmalı. Ayrıntı: ILERLEME.md → 17.2 ve 'İleride Kaldırılacak'.",
   "overrides": {
     "jose": "^5.10.0"
   }
