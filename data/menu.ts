@@ -272,8 +272,17 @@ export const MENU: Kategori[] = [
           { sutun: "hamur15", tutar: 300, dogrulandi: true },
           { sutun: "duble", tutar: 400, dogrulandi: false },
         ],
-        // Sitede "Peynirli Pide" görseli var ama o farklı bir ürün; kullanılmadı.
-              gorsel: null,
+        gorsel: {
+          src: "/urunler/kasarli-pide.webp",
+          alt: {
+            tr: "Kaşarlı pide",
+            en: "Pide with kaşar cheese",
+            ar: "بيدة بجبن كاشار",
+            ru: "Пиде с сыром кашар",
+          },
+          genislik: 800,
+          yukseklik: 450,
+        },
       },
       {
         id: "sucuklu",
@@ -294,7 +303,17 @@ export const MENU: Kategori[] = [
           { sutun: "hamur15", tutar: 300, dogrulandi: true },
           { sutun: "duble", tutar: 400, dogrulandi: true },
         ],
-              gorsel: null,
+        gorsel: {
+          src: "/urunler/sucuklu-pide.webp",
+          alt: {
+            tr: "Sucuklu pide",
+            en: "Pide with Turkish sausage",
+            ar: "بيدة بالسجق التركي",
+            ru: "Пиде с суджуком",
+          },
+          genislik: 800,
+          yukseklik: 450,
+        },
       },
       {
         id: "kiyma-kasar",
@@ -315,7 +334,17 @@ export const MENU: Kategori[] = [
           { sutun: "hamur15", tutar: 330, dogrulandi: true },
           { sutun: "duble", tutar: 440, dogrulandi: true },
         ],
-              gorsel: null,
+        gorsel: {
+          src: "/urunler/kiyma-kasar-pide.webp",
+          alt: {
+            tr: "Kıymalı kaşarlı pide",
+            en: "Pide with minced beef and cheese",
+            ar: "بيدة بلحم مفروم وجبن",
+            ru: "Пиде с фаршем и сыром",
+          },
+          genislik: 800,
+          yukseklik: 450,
+        },
       },
       {
         id: "karisik",
@@ -368,7 +397,17 @@ export const MENU: Kategori[] = [
           { sutun: "hamur15", tutar: null, dogrulandi: true },
           { sutun: "duble", tutar: null, dogrulandi: true },
         ],
-              gorsel: null,
+        gorsel: {
+          src: "/urunler/lahmacun.webp",
+          alt: {
+            tr: "Lahmacun",
+            en: "Thin flatbread with minced meat",
+            ar: "لحم بعجين",
+            ru: "Тонкая лепёшка с фаршем",
+          },
+          genislik: 800,
+          yukseklik: 450,
+        },
       },
     ],
   },

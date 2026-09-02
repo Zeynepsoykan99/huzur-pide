@@ -3,7 +3,7 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 17 tamamlandı — Çini Levha teması, admin paneli ve Firestore'dan beslenen menü **üretimde canlı** (`main`). Yedi başlık canlı adres üzerinden doğrulandı; fiyat ve tema testleri geri alındı, menüde iz yok. Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
+**Güncel aşama:** Aşama 18 tamamlandı — Kapalı Pide kategorisinin dört eksik fotoğrafı eklendi, kategori artık tam: altı ürünün altısı da fotoğraflı. Fotoğrafsız ürün 24'ten 20'ye indi. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
 **Son güncelleme:** 2026-09-02
 
 ### Genel Durum
@@ -30,6 +30,7 @@ Numaralandırma rapor başlıklarıyla aynı: aşağıdaki her satırın karşı
 | 15 | Çini Levha teması + dört temalı yapı | **Tamamlandı** |
 | 16 | Admin paneli — Firebase (Firestore + Auth) | **Tamamlandı** |
 | 17 | Önizleme rotasının kaldırılması, üretime çıkış, canlı doğrulama | **Tamamlandı** |
+| 18 | Kapalı Pide'nin dört eksik fotoğrafı | **Tamamlandı** |
 
 ### Bekleyenler
 
@@ -42,7 +43,7 @@ satırları o günün kaydı olarak duruyor, güncel liste burası.
 | 2 | Organizasyon sayfasının içeriği | **Bilgi** — sayfada ne yazacağı (metin, varsa görsel, iletişim bilgisi) senden gelecek | Rota `/[dil]/organizasyon` ayakta, içerik boş (Aşama 4) |
 | 3 | QR kodunun bakacağı adres | **Karar** — senin kararın: kök `https://huzur-pide.vercel.app` mi, doğrudan `.../tr` mi | Önerim `/tr`: yönlendirme atlanır, sayfa daha hızlı açılır. Kök adres her iki durumda da çalışmaya devam eder (Aşama 5) |
 | 4 | Vercel Hobby planının ticari kullanıma kapalı olması | **Karar + hesap** — Pro'ya geçmek ya da bilerek Hobby'de kalmak; kapsamın hangi plana girdiği ancak Vercel panelinden görülür | "Devam et, sorumluluk bende" demiştin ve öyle yapıldı. Site canlı ve çalışıyor; bu bir plan/şart sorunu, teknik bir arıza değil (Aşama 5) |
-| 5 | 24 ürünün fotoğrafı | **Bilgi** — 31 üründen 24'ünün görseli sende yok/gelmedi | Eksikler: Kaşarlı, Sucuklu, Lahmacun, Künefe, Çoban Salata, içeceklerin tamamı, ızgaraların çoğu. Panelden yüklemek için 1 numaralı satır gerekiyor (Aşama 2) |
+| 5 | 20 ürünün fotoğrafı | **Bilgi** — 31 üründen 20'sinin görseli yok | Kalanlar: ızgaralardan 11'i, içeceklerin tamamı (7), Künefe, Çoban Salata. Kapalı Pide kategorisi **tamamlandı** — altı ürünün altısı da fotoğraflı (Aşama 18). Panelden yüklemek için 1 numaralı satır gerekiyor |
 | 6 | Arapça çevirilerin kontrolü | **Kişi** — ana dili Arapça olan birinin gözden geçirmesi | Özellikle Türkçe adın harf çevirisiyle yazıldığı kalemler: كاشارلي, كاريشيك, ساتش كافورما (Aşama 3) |
 | 7 | 4 teyit edilmemiş fiyat | **Bilgi** — dört hücrenin doğru fiyatı senden gelecek | Kıymalı / 1 Hamur · Kaşarlı / 1 Hamur · Kaşarlı / Duble · Kabak Tatlısı. Şu an menüde bir değer görünüyor, ama teyitli değil (Aşama 2) |
 
@@ -2975,5 +2976,187 @@ olmayan bir sayfa (`/tr/menu/yokboyle`) → **404**.
 Firebase Storage (Blaze) kurulursa fotoğraf yükleme eklenecek — veri
 yapısındaki `gorsel` alanı ve panel akışı hazır. Ayrıca QR adresi ve
 organizasyon sayfasının gerçek içeriği bekliyor.
+
+=== RAPOR SONU ===
+
+---
+
+## Aşama 18 — Kapalı Pide'nin Dört Eksik Fotoğrafı · 2026-09-02
+
+=== RAPOR BAŞLANGICI ===
+
+**Tarih:** 2026-09-02 · **Dal:** `main` · **Kaynak:** `yeni-gorseller/` (dört webp)
+
+Kaşarlı, Sucuklu, Kıyma & Kaşar ve Lahmacun'un fotoğrafı eklendi. Storage
+henüz yok, bu yüzden panelden değil, mevcut yedi fotoğrafla aynı yoldan:
+proje dosyası olarak. Kapalı Pide kategorisi bununla **tamamlandı** — altı
+ürünün altısı da fotoğraflı.
+
+### 18.1 Eşleştirme — sıraya değil içeriğe bakıldı
+
+Kaynak dosyalar `preview.webp`, `preview (1).webp`, `preview (2).webp`,
+`preview (3).webp` adlarını taşıyordu. "Dosya sırası" burada güvenilir bir
+ölçüt değil: Windows Gezgini `preview (1)`'i başa, indirme sırası
+`preview`'i başa koyuyor — iki okuma iki farklı eşleştirme veriyor. Bu
+yüzden dördü de tek tek açılıp **içeriğinden** tanındı:
+
+| Kaynak | Görülen | Eşlendiği ürün |
+|---|---|---|
+| `preview.webp` | Peynir dolgulu, kesitinden peynir uzayan kapalı pide | Kaşarlı |
+| `preview (1).webp` | Dilimlenmiş sucuk ve peynir görünen kapalı pide | Sucuklu |
+| `preview (2).webp` | Kıyma dolgulu kapalı pide, üst üste üç dilim | Kıyma & Kaşar |
+| `preview (3).webp` | Üst üste dizili lahmacun, yanında limon ve ayran | Lahmacun |
+
+İçerikten çıkan sıra, verilen listeyle birebir aynı çıktı.
+
+**Kıyma & Kaşar için bir çekince — onaylandı.** O fotoğrafta yalnızca kıyma
+görünüyor, kaşar görünmüyor; veri dosyasının kendi kuralı ise "benzer bir
+ürünün fotoğrafı kullanılmaz" diyor ve menüde zaten kıyma dolgulu bir
+"Kıymalı" fotoğrafı var. Soruldu, **kullanılmasına karar verildi**: kapalı
+pidede kaşar eriyor, kesitte görünmemesi olağan. Not: bu dördün içinde en
+düşük kaliteli kaynak bu (1280×720 ama yumuşak).
+
+### 18.2 Dönüşüm
+
+Mevcut yedi fotoğrafın ayarı Aşama 2'den belliydi ve aynen uygulandı:
+**800×450, webp kalite 78, merkezden kırpma** (`sharp`, `fit: cover`).
+
+| Dosya | Kaynak ölçü | Sonuç |
+|---|---|---|
+| `kasarli-pide.webp` | 1344×896 | 800×450 · 33.966 B |
+| `sucuklu-pide.webp` | 1000×667 | 800×450 · 53.902 B |
+| `kiyma-kasar-pide.webp` | 1280×720 | 800×450 · 27.920 B |
+| `lahmacun.webp` | 1250×833 | 800×450 · 83.734 B |
+
+Adlandırma mevcut düzeni izliyor: Kapalı Pide ürünleri `<id>-pide.webp`
+(`kiymali-pide`, `karisik-pide` gibi), pide olmayan Lahmacun ise sade
+`lahmacun.webp` (`et-sis`, `sutlac` gibi). Kırpma sonrası dördü de tekrar
+açılıp kadrajın konuyu kesmediği görüldü.
+
+### 18.3 Alt metinler
+
+Mevcut yedi fotoğrafın düzeni korundu: **TR = ürün adı, EN/AR/RU = adın
+değil anlamın çevirisi** (örn. "Kıymalı pide" / "Pide with minced beef").
+Dört metin de yeni yazıldığı için önce onaya sunuldu, onaylandıktan sonra
+girildi.
+
+| Ürün | TR | EN | AR | RU |
+|---|---|---|---|---|
+| Kaşarlı | Kaşarlı pide | Pide with kaşar cheese | بيدة بجبن كاشار | Пиде с сыром кашар |
+| Sucuklu | Sucuklu pide | Pide with Turkish sausage | بيدة بالسجق التركي | Пиде с суджуком |
+| Kıyma & Kaşar | Kıymalı kaşarlı pide | Pide with minced beef and cheese | بيدة بلحم مفروم وجبن | Пиде с фаршем и сыром |
+| Lahmacun | Lahmacun | Thin flatbread with minced meat | لحم بعجين | Тонкая лепёшка с фаршем |
+
+Kaşarlı'nın üstündeki eskimiş yorum satırı (*"Sitede 'Peynirli Pide'
+görseli var ama o farklı bir ürün; kullanılmadı"*) kaldırıldı — artık
+ürünün kendi fotoğrafı var.
+
+### 18.4 Firestore — neden `tohum.ts` kullanılmadı
+
+Menü artık Firestore'dan besleniyor, dosyayı güncellemek tek başına yetmiyor.
+Ama elimizdeki `tohum.ts` **menünün tamamını** yazıyor: adlar, açıklamalar,
+bütün fiyat hücreleri, kategori sırası. Panelden yapılmış bir fiyat
+düzeltmesi olsaydı onu sessizce geri alırdı.
+
+Bunun yerine `betikler/gorsel-guncelle.ts` yazıldı: `update()` ile
+**yalnızca `gorsel` alanına** dokunuyor, belgenin geri kalanına elini
+sürmüyor. Önce ne yapacağını yazıyor, farksızsa hiç yazmıyor.
+
+Çalıştırmadan önce Firestore okundu: 31 ürün, 7 fotoğraf, dört hedefin
+dördü de `null` — yani dosyayla birebir aynı, arada kaymış bir şey yok.
+Betik tam dört alan değiştirdi, başka hiçbir şeye dokunmadı.
+
+Ardından `tohum-dogrula.ts` (alan alan karşılaştırma) çalıştırıldı:
+
+```
+kategori 5/5 · urun 31/31 · teyitEdilmemisFiyat 4/4 · tema cini
+TASIMA DOGRULANDI — hicbir alanda fark yok.
+```
+
+Teyit edilmemiş fiyat sayısı 4'te kaldı, tema `cini` kaldı — fiyatlara ve
+temaya dokunulmadığının kanıtı.
+
+### 18.5 Doğrulama — ekranda
+
+Üretim derlemesi alınıp `next start` ile sunuldu; kontrol dosya varlığıyla
+değil, **ekranda görünen içerikle** yapıldı.
+
+| Kontrol | Sonuç |
+|---|---|
+| Dört fotoğraf doğru üründe mi (masaüstü 1280×900) | ✓ altı satırın altısında da doğru görsel |
+| Aynısı telefonda (390×844) | ✓ altısı da görünür, 54×54 px |
+| Alt metinler dört dilde | ✓ tr/en/ar/ru — hepsi doğru dilde geldi |
+| Arapça RTL düzeni | ✓ `dir="rtl"`, bozulma yok |
+| Yatay/dikey taşma | ✓ her iki genişlikte de yok |
+| Sayfa sayısı ve sığma | ✓ Kapalı Pide yine tek sayfa, "1 / 5" değişmedi |
+| Konsol | ✓ 0 hata, 0 uyarı |
+| `tsc` · `eslint` · `npm run build` | ✓ üçü de temiz |
+
+Sığmanın bozulmaması beklenen davranıştı: yer tutucu ikon ile fotoğraf
+**aynı ölçüdeki yuvayı** paylaşıyor (`UrunGorseli`), satır yüksekliği
+fotoğraf gelince değişmiyor. Ölçüldü, öyle olduğu görüldü.
+
+### 18.6 Fotoğraf sütunu — sorulan varsayım doğru çıkmadı
+
+Kontrol listesinde "kapalı pide tablosunda telefonda fotoğraf sütunu
+gizliydi, bu dördü telefonda görünmeyecek" deniyordu. **Ölçüm bunu
+doğrulamadı:** sütunu gizleyen bir kural yok, `globals.css` içindeki iki
+`display: none` yalnızca kaydırma çubuğuna ait. Fotoğraflar telefonda da
+görünüyor (yukarıdaki 390×844 satırı).
+
+Ama beklenmedik başka bir şey çıktı: **sütun masaüstünde de büyümüyor.**
+Tabloda `colgroup` sütuna `md:w-52` (208 px) veriyor, `UrunGorseli` de
+`sizes="(min-width: 768px) 208px, 68px"` diyor — ikisi de masaüstünde geniş
+bir görsel bekliyor. Oysa `.pide-gorsel-hucre { width: 3.5rem }` hücreye
+doğrudan genişlik verdiği için `col` genişliğini eziyor; sonuç her
+genişlikte 54×54 px.
+
+İki sonucu var:
+
+1. Masaüstü için tasarlanmış geniş görsel hiç devreye girmiyor.
+2. `sizes` hâlâ 208 px dediği için masaüstünde **207 px genişliğinde dosya
+   indirilip 54 px'lik kutuya basılıyor** — gereksiz indirme. Telefonda
+   68 px iniyor, orada sorun yok.
+
+**Bu ikincisi düzeltildi.** `sizes` gerçek ölçüye çekildi: `"68px"`. Yuvanın
+üst sınırı bu — tek sütunlu listede 4.25rem (68px), pide tablosunda 3.5rem
+(56px). Görünen ölçü değişmedi, yalnızca boşuna inen bayt kalktı. Nedeni
+dosyada yorum olarak duruyor; sütun ileride gerçekten genişletilirse bu
+değerin de birlikte güncellenmesi gerektiği not düşüldü.
+
+*Bu değerin ikinci kez kayması.* Aşama 8'de de aynı sebep vardı: Aşama 6'da
+yuva büyütülürken `sizes` güncellenmemişti, orada düzeltilip `dar` prop'u
+eklenmişti. Aşama 15-16'da bileşen tema ve Firestore için yeniden yazılırken
+`dar` prop'u düşmüş, 208 px varsayımı geri gelmiş. Yorumun asıl işi bunun
+üçüncü kez olmasını engellemek.
+
+**Sütunun masaüstünde genişletilmesi ayrı bir karar — ertelendi.** Bu bir QR
+menüsü, müşterinin neredeyse tamamı telefondan bakıyor; 54 px'lik kare
+fotoğrafı "ürünü gösteren" değil "satırı işaretleyen" bir öğe yapıyor,
+özellikle Lahmacun gibi detaylı bir karede ne olduğu seçilmiyor. Masaüstünde
+sütunu genişletmek (`.pide-gorsel-hucre`'ye `md:` karşılığı vermek)
+amaçlanan tasarım gibi duruyor; telefonda büyütmek ise satır yüksekliklerini
+artıracağı için Kapalı Pide'nin tek sayfaya sığmasının yeniden ölçülmesini
+gerektirir. İkisi de bu aşamada yapılmadı.
+
+### 18.7 Değişen dosyalar
+
+| Dosya | İş |
+|---|---|
+| `public/urunler/kasarli-pide.webp` · `sucuklu-pide.webp` · `kiyma-kasar-pide.webp` · `lahmacun.webp` | **Yeni** — 800×450 webp, kalite 78 |
+| `data/menu.ts` | Dört ürünün `gorsel` alanı dolduruldu, eskimiş bir yorum kaldırıldı |
+| `betikler/gorsel-guncelle.ts` | **Yeni** — Firestore'da yalnızca `gorsel` alanını eşitler |
+| `components/UrunGorseli.tsx` | `sizes` gerçek ölçüye çekildi (18.6), nedeni yorumda |
+| `.gitignore` | `/yeni-gorseller/` — ham fotoğraf kaynakları repoya girmiyor |
+| `ILERLEME.md` | Bekleyenler 5. satır: 24 → 20; bu rapor |
+
+Firestore: dört ürün belgesinin yalnızca `gorsel` alanı.
+
+### 18.8 Sıradaki adım
+
+Fotoğrafsız ürün 24'ten **20'ye** indi: ızgaralardan 11'i, içeceklerin
+tamamı (7), Künefe, Çoban Salata. Kalanlar için Storage (Blaze) kurulursa
+panelden yükleme açılabilir — Bekleyenler bölümündeki 1 numaralı satır.
+Ayrıca 18.6'daki fotoğraf sütunu kararı bekliyor.
 
 === RAPOR SONU ===

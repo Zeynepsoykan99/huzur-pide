@@ -44,6 +44,10 @@ yarn-error.log*
 _preview.html
 /*.png
 
+# Urun fotograflarinin ham kaynaklari. Islenmis (800x450 webp) halleri
+# public/urunler/ altinda repoda duruyor; ham dosyalarin repoda isi yok.
+/yeni-gorseller/
+
 # Vercel (vercel link tarafindan eklendi)
 .vercel
 

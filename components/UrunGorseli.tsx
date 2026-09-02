@@ -51,6 +51,20 @@ export function UrunGorseli({
     );
   }
 
+  /**
+   * `sizes` yuvanın GERÇEK ölçüsü: tek sütunlu listede 4.25rem (68px), pide
+   * tablosunda 3.5rem (56px) — üst sınır 68px.
+   *
+   * Önceden `"(min-width: 768px) 208px, 68px"` yazıyordu; tablodaki
+   * `colgroup`'un `md:w-52` (208px) sınıfına güveniyordu. Ama hücre
+   * genişliğini `.pide-gorsel-hucre` (3.5rem) doğrudan verdiği için o sınıf
+   * eziliyor ve sütun masaüstünde de büyümüyor. Sonuç: masaüstünde 207px
+   * genişliğinde dosya inip 54px'lik kutuya basılıyordu. Görünen ölçü
+   * değişmedi, yalnızca boşuna inen bayt kalktı.
+   *
+   * Sütun masaüstünde gerçekten genişletilirse bu değer de birlikte
+   * güncellenmeli.
+   */
   return (
     <span className="gorsel-yuvasi">
       <Image
@@ -58,7 +72,7 @@ export function UrunGorseli({
         alt={metin(urun.gorsel.alt, dil)}
         width={urun.gorsel.genislik}
         height={urun.gorsel.yukseklik}
-        sizes="(min-width: 768px) 208px, 68px"
+        sizes="68px"
       />
     </span>
   );
