@@ -3,7 +3,7 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 24 tamamlandı — karşılama sayfasındaki Menü butonu artık **doğrudan menüye** gidiyor; araya giren dil seçim ekranı kaldırıldı, çünkü dil hem karşılamanın bayrak şeridinden hem menünün üst şeridinden seçilebiliyordu. Aşama 23'e kadarki her şey üretimde canlı, Aşama 24 push bekliyor. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
+**Güncel aşama:** Aşama 24 tamamlandı — karşılama sayfasındaki Menü butonu artık **doğrudan menüye** gidiyor; araya giren dil seçim ekranı kaldırıldı, çünkü dil hem karşılamanın bayrak şeridinden hem menünün üst şeridinden seçilebiliyordu. Aşama 24 dahil her şey **üretimde canlı**. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
 **Son güncelleme:** 2026-09-02
 
 ### Genel Durum
@@ -4412,7 +4412,7 @@ değişmedi.
 
 ### 23.9 Sıradaki adım
 
-Push ve deploy onay bekliyor.
+Push ve deploy **tamamlandı** — `bc9dd55`, sonuçlar 24.7'de.
 
 `huzurpide3.webp` (menü kapağı tasarımı) kullanılmadı — planda önerilmişti,
 karar açıkça verilmedi ve öneri uygulandı. İstenirse Menü butonu bloğuna arka
@@ -4639,5 +4639,48 @@ içeriği, fiyatlar, çeviriler ve panel değişmedi.
 Push ve deploy onay bekliyor.
 
 Fotoğrafsız beş ürün duruyor: Künefe, Kola, Soda, Komposto, Meyveli Soda.
+
+### 24.7 Canlı doğrulama · 2026-09-03
+
+`bc9dd55` `main`'e push edildi, Vercel dağıtımı **50 saniyede** tamamlandı
+(`/tr/dil` eski hedefini bırakıp `/tr/menu`'ye dönene kadar yoklandı).
+
+**Menü butonu — dört dilde de ekranda denendi.** Adres kontrolüyle
+yetinilmedi; her dilde karşılama açılıp butona tıklandı ve gelen sayfaya
+bakıldı:
+
+| Karşılama | Buton | Açılan sayfa |
+|---|---|---|
+| `/tr` | Menü | `/tr/menu` · `lang="tr" dir="ltr"` · "Menü" · beş kategori Türkçe |
+| `/en` | Menu | `/en/menu` · "Menu" |
+| `/ar` | القائمة | `/ar/menu` · `dir="rtl"` · "القائمة" · kategoriler Arapça, düzen aynalanmış |
+| `/ru` | Меню | `/ru/menu` · "Меню" |
+
+Hiçbirinde araya dil seçim ekranı girmiyor.
+
+**Bayrak şeridi çalışıyor.** `/tr`'de Rusça bayrağına tıklandı → `/ru`,
+`lang="ru"`, aktif bayrak `Русский`, slogan `Из печи на ваш стол`, başlıklar
+`Наша кухня · Банкеты · Контакты`, buton metni `Меню` — ve **buton hedefi de
+`/ru/menu` oldu**, yani şeritten dil değiştirmek butonu da birlikte
+taşıyor.
+
+**Menü butonunun oku duruyor.** Silinen CSS bloğunun ortasında kalan
+`.lang-arrow` kuralı korunmuştu; canlıda ölçüldü: ok **16×16 px**, görünür,
+rengi `rgb(26, 74, 141)` (temanın vurgusu), dönüşüm LTR'de birim matris.
+Hem hero'daki hem sayfa sonundaki butonda var. Ekran görüntüsüyle de
+görüldü.
+
+**Eski rotalar doğru yönleniyor** — hepsi 307:
+
+```
+/                  → /tr
+/tr/dil            → /tr/menu        /en/dil  → /en/menu
+/ar/dil            → /ar/menu        /ru/dil  → /ru/menu
+/tr/secim          → /tr             /ar/secim → /ar
+/tr/organizasyon   → /tr
+```
+
+**Konsol.** Dört dil gezildi: **0 hata, 0 uyarı.** Ağ kaydındaki isteklerin
+hepsi 200, başarısız istek yok.
 
 === RAPOR SONU ===
