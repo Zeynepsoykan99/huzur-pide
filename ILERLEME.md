@@ -3,7 +3,7 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 23 tamamlandı — **uygulamanın akışı değişti.** QR artık dil seçimine değil, mekânın görselleriyle kurulmuş bir **karşılama sayfasına** açılıyor; dil seçimi "Menü" butonundan sonraya taşındı, Menü/Organizasyon seçim ekranı ile organizasyon sayfası kaldırıldı. Aşama 22'ye kadarki her şey üretimde canlı, Aşama 23 push bekliyor. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
+**Güncel aşama:** Aşama 23 tamamlandı — **uygulamanın akışı değişti.** QR artık dil seçimine değil, mekânın görselleriyle kurulmuş bir **karşılama sayfasına** açılıyor; dil seçimi "Menü" butonundan sonraya taşındı, Menü/Organizasyon seçim ekranı ile organizasyon sayfası kaldırıldı. Aşama 23 dahil her şey **üretimde canlı**. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
 **Son güncelleme:** 2026-09-02
 
 ### Genel Durum
@@ -4090,7 +4090,7 @@ temiz.
 
 ### 22.11 Sıradaki adım
 
-Push ve deploy onay bekliyor.
+Push ve deploy **tamamlandı** — `d441e4b`, sonuçlar 23.10'da.
 
 Fotoğrafsız kalan beş ürün ve neden:
 
@@ -4418,5 +4418,72 @@ karar açıkça verilmedi ve öneri uygulandı. İstenirse Menü butonu bloğuna
 plan olarak eklenmesi küçük bir değişiklik.
 
 Fotoğrafsız beş ürün duruyor: Künefe, Kola, Soda, Komposto, Meyveli Soda.
+
+### 23.10 Canlı doğrulama · 2026-09-03
+
+`d441e4b` `main`'e push edildi, Vercel dağıtımı **40 saniyede** tamamlandı.
+
+**Görseller.** Üçü de canlıda, boyutları yereldekiyle **byte'ı byte'ına aynı**:
+`dukkan.webp` 81.214 B · `firin.webp` 219.256 B · `dis-gorunum.webp` 113.728 B.
+Dört dilde de üçü birden `naturalWidth > 0` — gerçekten boyandı.
+
+**QR açılınca karşılama geliyor.** `https://huzur-pide.vercel.app/` istendi,
+307 ile `/tr`'ye düştü ve karşılama sayfası açıldı. Dört dilin dördü de 200 ve
+`<html lang/dir>` doğru: `tr/ltr` · `en/ltr` · `ar/rtl` · `ru/ltr`.
+
+Dört dilde içerik tam — slogan, üç başlık, menü butonu ve saat satırı her
+dilde kendi karşılığını veriyor:
+
+| Dil | Başlıklar | Buton | Saat |
+|---|---|---|---|
+| TR | Lezzetlerimiz · Organizasyon · İletişim | Menü | Her gün 07:00 – 23:00 |
+| EN | What we cook · Events · Contact | Menu | Every day 07:00 – 23:00 |
+| AR | أطباقنا · المناسبات · اتصل بنا | القائمة | كل يوم 07:00 – 23:00 |
+| RU | Наша кухня · Банкеты · Контакты | Меню | Ежедневно 07:00 – 23:00 |
+
+**Akış canlıda yürütüldü.** `/tr` → hero'daki Menü butonu → `/tr/dil` → Arapça
+kartı → `/ar/menu`. Dil ekranındaki dört kart da doğrudan kendi menüsüne
+gidiyor (`/tr/menu`, `/en/menu`, `/ar/menu`, `/ru/menu`). Menü butonu dört
+dilde de `/[dil]/dil` hedefli ve **hero'daki kopya kaydırmadan ekranda** —
+hem 390×844'te hem 1280×900'de ölçüldü.
+
+**İletişim bağlantıları çalışıyor.** Dört dilde de aynı üç `href`:
+
+```
+tel:+903628541854                        gecerli E.164 bicimi (+90 + 10 hane)
+https://www.instagram.com/huzurpide55    HTTP 200, yonlendirmesiz
+https://www.google.com/maps/search/?…    HTTP 200
+```
+
+Instagram ve harita adresleri ayrıca istek atılarak doğrulandı, ikisi de 200
+döndü. Instagram ve harita `target="_blank" rel="noopener noreferrer"` ile
+açılıyor; çalışma saatleri bağlantı değil, düz satır.
+
+**Bayrak şeridi telefonda tek satırda.** 390px'te dört bayrak da aynı hizada
+(`bayrakTekSatir: true`), şerit yüksekliği 40px. 1280px'te de tek satır.
+Bulunulan dil `aria-current` + çerçeveyle işaretli.
+
+**Arapça'da düzen doğru.** Ölçüldü:
+
+| Kontrol | Sonuç |
+|---|---|
+| `<html>` | `lang="ar" dir="rtl"` |
+| Bayrak sırası | aynalandı (ilk bayrak sağda) |
+| Satır ikonları | sağ başta |
+| İleri ok | `matrix(-1, 0, 0, 1, 0, 0)` — aynalandı |
+| Telefon | `(0362) 854 18 54`, `bdi dir="ltr"` — parantez solda |
+| Saat | `كل يوم` sağda, LTR bloğu solunda `07:00 – 23:00` sırasında |
+| Yatay taşma | 0 |
+
+**Eski rotalar doğru yönleniyor.** Dört adres de 307 ile kendi dilinin
+karşılama sayfasına gidiyor: `/tr/secim` → `/tr` · `/tr/organizasyon` → `/tr` ·
+`/ar/secim` → `/ar` · `/ar/organizasyon` → `/ar`.
+
+**Menü kitabı bozulmadı.** Beş levha, sayaç `Sayfa 2 / 5`, ızgara 14 üründe 14
+fotoğraf, toplam yükseklik **1276 px** — Aşama 19-22'deki ölçümlerle birebir
+aynı. `sizes="68px"` yerinde, üst marka bağlantısı `/tr` (karşılama).
+
+**Konsol.** Dört dil ve iki genişlik gezildi: **0 hata, 0 uyarı.** Ağ kaydında
+başarısız istek yok.
 
 === RAPOR SONU ===
