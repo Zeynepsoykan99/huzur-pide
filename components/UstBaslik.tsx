@@ -8,10 +8,10 @@ import type { TemaKodu } from "@/data/tema";
 /**
  * Menü tarafındaki ekranların üstünde duran marka ve dil değiştirme kontrolü.
  *
- * Başlığa basıldığında o dilin ana seçim ekranına dönülüyor — QR menüde geri
+ * Başlığa basıldığında o dilin karşılama sayfasına dönülüyor — QR menüde geri
  * tuşu her zaman elverişli olmuyor, başlığın kendisi çıkış yolu oluyor.
  *
- * NOT: ana seçim ve dil seçim ekranları bunu KULLANMIYOR. O ikisi kitabın
+ * NOT: karşılama ve dil seçim ekranları bunu KULLANMIYOR. O ikisi kitabın
  * dilinden ayrı, kendi ferah kompozisyonlarında duruyor.
  */
 export function UstBaslik({
@@ -38,7 +38,7 @@ export function UstBaslik({
   return (
     <header className={`ust-serit ${sikisik ? "ust-serit-sikisik" : ""}`}>
       <Link
-        href={`/${dil}${yolOneki}/secim`}
+        href={`/${dil}${yolOneki}`}
         aria-label={ui("anaEkranaDon", dil)}
         className="ust-marka odak"
       >

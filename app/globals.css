@@ -116,7 +116,7 @@
 }
 
 /* ---------------------------------------------------------------------------
-   Ekran: dil secimi ve ana secim (kitaptan bagimsiz, ferah kompozisyon)
+   Ekran: dil secimi (kitaptan bagimsiz, ferah kompozisyon)
    --------------------------------------------------------------------------- */
 .giris-ekrani {
   display: flex;
@@ -199,7 +199,7 @@
   opacity: 0.85;
 }
 
-/* Kart — dil secenekleri ve ana secim butonlari ayni govdeyi kullaniyor. */
+/* Kart — dil secenekleri bu govdeyi kullaniyor. */
 .kart {
   display: flex;
   align-items: center;
@@ -287,39 +287,8 @@
   margin-top: 1.4rem;
 }
 
-/* --- Ana secim: iki buyuk buton --- */
-.secim-listesi {
-  list-style: none;
-  margin: 1.5rem 0 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.9rem;
-}
-
-.secim-karti {
-  padding: 1.4rem 1.15rem;
-  gap: 1rem;
-}
-
-.secim-ikonu {
-  width: 2.6rem;
-  height: 2.6rem;
-  flex-shrink: 0;
-  color: var(--t-vurgu);
-}
-
-.secim-basligi {
-  flex: 1;
-  font-family: var(--t-baslik-font);
-  font-weight: var(--t-baslik-kalinlik);
-  font-size: 1.5rem;
-  line-height: 1.15;
-  color: var(--t-baslik-renk);
-}
-
 /* ---------------------------------------------------------------------------
-   Ekran: kategori listesi ve organizasyon (ust serit + dikey icerik)
+   Ekran: kategori listesi (ust serit + dikey icerik)
    --------------------------------------------------------------------------- */
 .menu-sayfa {
   min-height: 100dvh;
@@ -511,33 +480,6 @@
 }
 
 /* --- Bos durum (organizasyon) --- */
-.hazirlaniyor {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.9rem;
-  padding: 3rem 1rem;
-  border: var(--t-kart-cizgi);
-  border-radius: var(--t-yuvarlak);
-  background: var(--t-yuzey);
-  outline: var(--t-kart-dis-cizgi);
-  outline-offset: var(--t-kart-dis-bosluk);
-}
-
-.hazirlaniyor-ikon {
-  width: 3rem;
-  height: 3rem;
-  color: var(--t-vurgu);
-  opacity: 0.75;
-}
-
-.hazirlaniyor-metin {
-  margin: 0;
-  text-align: center;
-  font-size: 0.9375rem;
-  color: var(--t-solgun);
-}
-
 .orta-baglanti {
   display: flex;
   justify-content: center;
@@ -1050,4 +992,362 @@
   height: 1.1rem;
   flex-shrink: 0;
   color: var(--t-vurgu);
+}
+
+/* ---------------------------------------------------------------------------
+   Ekran: karsilama (QR okutulunca gelen ilk sayfa)
+
+   Uc gorselli blok + bir iletisim bolumu. Gorseller tam genislik arka plan,
+   yazilar ustlerinde duruyor.
+
+   YON BAGIMLI OLCU YOK: her yerde margin-inline / padding-inline / inset-inline
+   kullaniliyor, boylece Arapca'da duzen kendiliginden aynaliyor. Tek yon
+   bagimli sey ileri chevron'u (.lang-arrow) ve o da zaten aynalaniyor.
+   --------------------------------------------------------------------------- */
+.karsilama {
+  display: flex;
+  min-height: 100dvh;
+  flex-direction: column;
+  background-color: var(--t-zemin);
+  background-image: var(--t-desen);
+  background-size: var(--t-desen-boy);
+  background-position: var(--t-desen-konum);
+}
+
+/* --- Dil seridi: sayfanin en ustu --- */
+/* Dort dil telefonda TEK satira sigmali: ikinci satira kirilinca 3+1 gibi
+   dengesiz duruyordu. Olculer buna gore kisildi; yine de sigmayan bir dil
+   eklenirse flex-wrap devreye girip duzeni bozmadan alt satira geciriyor. */
+.kars-bayraklar {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  padding: 0.5rem 0.4rem;
+  background: var(--t-yuzey);
+  border-bottom: 1px solid var(--t-cizgi);
+}
+
+.kars-bayrak {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.3rem 0.45rem;
+  border-radius: var(--t-yuvarlak-kucuk);
+  text-decoration: none;
+  color: var(--t-solgun);
+  font-size: 0.75rem;
+  line-height: 1;
+  white-space: nowrap;
+  border: 1px solid transparent;
+}
+
+.kars-bayrak:hover {
+  background: var(--t-yuzey-vurgu);
+  color: var(--t-metin);
+}
+
+/* Bulunulan dil: cerceve + koyu metin. Yalnizca renk kullanilmadi, sekil de
+   fark ediyor — renk korlugunde de ayirt edilebilsin diye. */
+.kars-bayrak[aria-current="true"] {
+  border-color: var(--t-vurgu);
+  color: var(--t-baslik-renk);
+  font-weight: 600;
+}
+
+.kars-bayrak-simge {
+  width: 1.1rem;
+  height: auto;
+  flex-shrink: 0;
+  border-radius: 1px;
+}
+
+/* --- Gorselli blok: gorsel + perde + icerik --- */
+.kars-blok {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  min-height: 17rem;
+  padding: 2.75rem 1.5rem;
+}
+
+.kars-hero {
+  /* Hero telefonda ekranin buyuk kismini kaplasin ama menu butonu
+     kaydirilmadan gorunsun: 68dvh ikisini birlikte tutuyor. */
+  min-height: 68dvh;
+}
+
+.kars-gorsel {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/*
+ * Karartma perdesi — DEKORATIF DEGIL, KONTRAST ICIN.
+ *
+ * Fotograflarin kendi parlakligi bolgeden bolgeye degisiyor (firin gorseli
+ * alev yuzunden yer yer neredeyse beyaz). Sabit bir opaklik yerine ustte
+ * daha koyu, ortada en koyu bir gradyan kullaniliyor: metin bandinin
+ * arkasi her fotografta ayni koyuluga iniyor.
+ *
+ * Degerler OLCUMLE bulundu, gozle degil:
+ *   0,62-0,74-0,68 -> en dar nokta 6,85:1. Esigi rahat geciyordu ama
+ *      fotograflar o kadar karariyordu ki mekan zor seciliyordu.
+ *   0,46-0,60-0,54 -> firin blogunda 4,22:1'e dustu ve KALDI; alevler
+ *      metnin arkasinda neredeyse beyaz.
+ *   0,52-0,66-0,60 -> su anki. En dar nokta yine firin blogu, 5,6:1.
+ *
+ * Orta durak en koyu: metin bandi tam orada duruyor. Bu degerler
+ * degistirilirse kontrast yeniden olculmeli — ozellikle firin gorseli,
+ * uc bloktan en parlagi o.
+ */
+.kars-perde {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    to bottom,
+    rgba(9, 18, 33, 0.52) 0%,
+    rgba(9, 18, 33, 0.66) 45%,
+    rgba(9, 18, 33, 0.6) 100%
+  );
+}
+
+.kars-icerik {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  max-width: 26rem;
+  margin-inline: auto;
+}
+
+.kars-motif {
+  width: 3rem;
+  height: 3rem;
+  color: #fff;
+  opacity: 0.92;
+  margin-bottom: 0.85rem;
+}
+
+.kars-marka {
+  margin: 0;
+  font-family: var(--t-baslik-font);
+  font-weight: var(--t-baslik-kalinlik);
+  font-size: clamp(2.25rem, 11vw, 3.25rem);
+  line-height: 1.05;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+.kars-slogan {
+  margin: 0.75rem 0 0;
+  font-size: 1rem;
+  /* Tam beyaz, yari saydam degil: saydamlik kontrast payini yiyordu. */
+  color: #fff;
+}
+
+.kars-baslik {
+  margin: 0;
+  font-family: var(--t-baslik-font);
+  font-weight: var(--t-baslik-kalinlik);
+  font-size: clamp(1.5rem, 6.5vw, 2rem);
+  line-height: 1.15;
+  letter-spacing: 0.04em;
+  color: #fff;
+}
+
+/* Iletisim bolumu gorselsiz: baslik temanin kendi rengini aliyor. */
+.kars-baslik-koyu {
+  color: var(--t-baslik-renk);
+}
+
+.kars-ayrac {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  max-width: 9rem;
+  margin-top: 0.75rem;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.kars-iletisim .kars-ayrac {
+  color: inherit;
+}
+
+.kars-metin {
+  margin: 1rem 0 0;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #fff;
+  text-wrap: pretty;
+}
+
+/* --- Menu butonu --- */
+.kars-menu-dugmesi {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 1.75rem;
+  padding: 0.95rem 1.6rem;
+  text-decoration: none;
+  font-family: var(--t-baslik-font);
+  font-weight: var(--t-baslik-kalinlik);
+  font-size: 1.375rem;
+  letter-spacing: 0.03em;
+  color: var(--t-baslik-renk);
+  background: var(--t-yuzey);
+  border: 1px solid var(--t-yuzey);
+  border-radius: var(--t-yuvarlak);
+  box-shadow: 0 2px 10px rgba(9, 18, 33, 0.35);
+  transition:
+    background-color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.kars-menu-dugmesi:hover {
+  background: #fff;
+}
+
+.kars-menu-dugmesi:active {
+  transform: scale(0.985);
+}
+
+.kars-menu-dugmesi .lang-arrow {
+  width: 1rem;
+  height: 1rem;
+}
+
+.kars-menu-ikon {
+  width: 1.6rem;
+  height: 1.6rem;
+  flex-shrink: 0;
+  color: var(--t-vurgu);
+}
+
+/* Sayfanin sonundaki tekrar: gorsel uzerinde degil, duz zeminde. */
+.kars-menu-alt {
+  margin-top: 2rem;
+  border-color: var(--t-cizgi-guclu);
+  box-shadow: var(--t-golge);
+}
+
+/* --- Iletisim --- */
+.kars-iletisim {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  max-width: 26rem;
+  margin-inline: auto;
+  padding: 2.75rem 1.5rem 1rem;
+}
+
+.kars-iletisim-listesi {
+  list-style: none;
+  width: 100%;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.kars-satir {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  width: 100%;
+  /* text-align: start — Arapca'da saga yaslaniyor, ayri kural gerekmiyor. */
+  text-align: start;
+  padding: 0.85rem 1rem;
+  text-decoration: none;
+  color: var(--t-metin);
+  background: var(--t-yuzey);
+  border: var(--t-kart-cizgi);
+  border-radius: var(--t-yuvarlak);
+  box-shadow: var(--t-golge);
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+a.kars-satir:hover {
+  background: var(--t-yuzey-vurgu);
+  border-color: var(--t-vurgu);
+}
+
+/* Calisma saatleri tiklanacak bir sey degil: imlec ve hover yok. */
+.kars-satir-dural {
+  cursor: default;
+}
+
+.kars-satir-ikon {
+  width: 1.4rem;
+  height: 1.4rem;
+  flex-shrink: 0;
+  color: var(--t-vurgu);
+}
+
+.kars-satir-govde {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.kars-satir-etiket {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--t-solgun);
+}
+
+.kars-satir-deger {
+  font-size: 0.9375rem;
+  line-height: 1.35;
+  color: var(--t-metin);
+}
+
+.kars-satir-ek {
+  font-size: 0.8125rem;
+  color: var(--t-vurgu);
+}
+
+.kars-dipnot {
+  flex-shrink: 0;
+  padding: 1.25rem 1rem 1.5rem;
+  text-align: center;
+  font-size: 0.6875rem;
+  color: var(--t-solgun);
+  opacity: 0.85;
+}
+
+/* Genis ekranda bloklar biraz daha ferah; olculer buyuyor, duzen degismiyor. */
+@media (min-width: 48rem) {
+  .kars-blok {
+    min-height: 22rem;
+    padding: 4rem 2rem;
+  }
+
+  .kars-hero {
+    min-height: 70dvh;
+  }
+
+  .kars-icerik,
+  .kars-iletisim {
+    max-width: 34rem;
+  }
 }

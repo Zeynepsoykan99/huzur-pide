@@ -1,12 +1,26 @@
+import Image from "next/image";
 import Link from "next/link";
 import { AsagiOk } from "@/components/AsagiOk";
-import { PideIkonu, SofraIkonu } from "@/components/Ikonlar";
+import {
+  InstagramIkonu,
+  KonumIkonu,
+  PideIkonu,
+  SaatIkonu,
+  TelefonIkonu,
+} from "@/components/Ikonlar";
 import { SayfaOklari } from "@/components/SayfaOklari";
 import { SayfaSayaci } from "@/components/SayfaSayaci";
 import { TemaMotifi } from "@/components/TemaMotifi";
 import { UrunGorseli } from "@/components/UrunGorseli";
 import { UstBaslik } from "@/components/UstBaslik";
 import { ui } from "@/data/arayuz";
+import {
+  GORSEL_ALT,
+  ILETISIM,
+  LEZZETLER_METNI,
+  MEKAN_GORSELLERI,
+  ORGANIZASYON_METNI,
+} from "@/data/karsilama";
 import {
   DILLER,
   DIL_ADI,
@@ -133,7 +147,7 @@ export function DilSecimEkrani({
               return (
                 <Link
                   key={hedef}
-                  href={`/${hedef}${yolOneki}/secim`}
+                  href={`/${hedef}${yolOneki}/menu`}
                   hrefLang={hedef}
                   data-lang={hedef}
                   data-dir={DIL_YONU[hedef]}
@@ -172,57 +186,200 @@ export function DilSecimEkrani({
 }
 
 /* =========================================================================
-   2 — Ana seçim: Menü mü, Organizasyon mu.
+   2 — Karşılama. QR okutulunca gelen İLK ekran.
 
-   Kitabın dilinden TAMAMEN ayrı: sıkışık üst şerit yok, sayfa sayacı yok, ok
-   yok, levha çerçevesi yok, dil kontrolü yok. Yalnızca iki iri buton.
-   Bu kural bütün temalarda geçerli.
+   Akıştaki yeri: QR → BURASI → "Menü" butonu → dil seçimi → menü kitabı.
+
+   Dil seçiminden ÖNCE geldiği için hangi dilde görüneceği baştan belli değil.
+   Çözüm: sayfanın dört dilde ayrı kopyası var (`/tr`, `/en`, `/ar`, `/ru`),
+   QR kökü `/tr`'ye bakıyor ve en üstte dört bayraklı bir şerit duruyor —
+   Türkçe bilmeyen müşteri tek dokunuşla kendi diline geçiyor, sayfanın
+   tamamını okumak zorunda kalmıyor.
+
+   Görseller tam genişlik arka plan; yazılar üstlerinde, karartma perdesinin
+   üzerinde duruyor. Perde dekoratif değil, KONTRAST İÇİN: ölçüldü, gövde
+   metni 4,5:1'i, iri başlıklar 3:1'i geçiyor (bkz. `.kars-perde`).
    ========================================================================= */
-export function AnaSecimEkrani({
-  dil,
-  tema,
-  yolOneki = "",
-}: MotifProps & { dil: DilKodu; yolOneki?: string }) {
-  const kartlar = [
-    { yol: `/${dil}${yolOneki}/menu`, baslik: ui("menu", dil), Ikon: PideIkonu },
-    {
-      yol: `/${dil}${yolOneki}/organizasyon`,
-      baslik: ui("organizasyon", dil),
-      Ikon: SofraIkonu,
-    },
-  ];
+
+/** Görsel + karartma perdesi + üstünde içerik — üç bölümde de aynı iskelet. */
+function GorselliBolum({
+  gorsel,
+  alt,
+  oncelikli = false,
+  children,
+  sinif = "",
+}: {
+  gorsel: { src: string; genislik: number; yukseklik: number };
+  alt: string;
+  /** Hero'da true: LCP görseli, tembel yüklenmemeli. */
+  oncelikli?: boolean;
+  children: React.ReactNode;
+  sinif?: string;
+}) {
+  return (
+    <div className={`kars-blok ${sinif}`}>
+      <Image
+        src={gorsel.src}
+        alt={alt}
+        width={gorsel.genislik}
+        height={gorsel.yukseklik}
+        sizes="100vw"
+        priority={oncelikli}
+        className="kars-gorsel"
+      />
+      <div className="kars-perde" aria-hidden="true" />
+      <div className="kars-icerik">{children}</div>
+    </div>
+  );
+}
+
+export function KarsilamaEkrani({ dil, tema }: MotifProps & { dil: DilKodu }) {
+  const menuYolu = `/${dil}/dil`;
 
   return (
-    <div className="giris-ekrani">
-      <div className="giris-govde">
-        <header className="giris-tepe">
-          <Link href={`/${dil}${yolOneki}`} aria-label={ui("dilSeciniz", dil)} className="odak">
-            <TemaMotifi className="giris-motif" tema={tema} />
+    <div className="karsilama">
+      {/* Dil şeridi: sayfanın EN üstünde, marka adından da önce. Türkçe
+          bilmeyen müşterinin ilk gördüğü şey kendi bayrağı olsun diye. */}
+      <nav className="kars-bayraklar" aria-label={ui("dilDegistir", dil)}>
+        {DILLER.map((hedef) => (
+          <Link
+            key={hedef}
+            href={`/${hedef}`}
+            hrefLang={hedef}
+            lang={hedef}
+            aria-current={hedef === dil ? "true" : undefined}
+            className="kars-bayrak odak"
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={`/flags/${DIL_BAYRAGI[hedef].kod}.svg`}
+              alt=""
+              aria-hidden="true"
+              className="kars-bayrak-simge"
+            />
+            <span className="kars-bayrak-ad">{DIL_ADI[hedef]}</span>
           </Link>
-          <p className="marka-adi">Huzur Pide</p>
-          <BaslikAyraci tema={tema} sinif="giris-ayrac" />
-        </header>
+        ))}
+      </nav>
 
-        <main>
-          {/* Ekranda ayrı bir başlık yok — iki buton kendini anlatıyor. Ekran
-              okuyucu için sayfanın ne olduğu yine de söylenmeli. */}
-          <h1 className="sr-only">Huzur Pide — {ui("bolumSecin", dil)}</h1>
+      <GorselliBolum
+        gorsel={MEKAN_GORSELLERI.dukkan}
+        alt={metin(GORSEL_ALT.dukkan, dil)}
+        oncelikli
+        sinif="kars-hero"
+      >
+        <TemaMotifi className="kars-motif" tema={tema} />
+        <h1 className="kars-marka">Huzur Pide</h1>
+        <p className="kars-slogan">{ui("slogan", dil)}</p>
 
-          <nav aria-label={ui("bolumSecin", dil)}>
-            <ul className="secim-listesi">
-              {kartlar.map(({ yol, baslik, Ikon }) => (
-                <li key={yol}>
-                  <Link href={yol} className="kart secim-karti odak">
-                    <Ikon className="secim-ikonu" />
-                    <span className="secim-basligi">{baslik}</span>
-                    <Ok />
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        </main>
-      </div>
+        {/* Menü butonu ilk ekranda, kaydırmadan görünüyor: QR menüde asıl
+            iş bu, müşteri aramak zorunda kalmamalı. */}
+        <Link href={menuYolu} className="kars-menu-dugmesi odak">
+          <PideIkonu className="kars-menu-ikon" />
+          <span>{ui("menu", dil)}</span>
+          <Ok />
+        </Link>
+      </GorselliBolum>
+
+      <main>
+        <GorselliBolum
+          gorsel={MEKAN_GORSELLERI.firin}
+          alt={metin(GORSEL_ALT.firin, dil)}
+        >
+          <h2 className="kars-baslik">{ui("lezzetler", dil)}</h2>
+          <BaslikAyraci tema={tema} sinif="kars-ayrac" />
+          <p className="kars-metin">{metin(LEZZETLER_METNI, dil)}</p>
+        </GorselliBolum>
+
+        <GorselliBolum
+          gorsel={MEKAN_GORSELLERI.disGorunum}
+          alt={metin(GORSEL_ALT.disGorunum, dil)}
+        >
+          <h2 className="kars-baslik">{ui("organizasyon", dil)}</h2>
+          <BaslikAyraci tema={tema} sinif="kars-ayrac" />
+          <p className="kars-metin">{metin(ORGANIZASYON_METNI, dil)}</p>
+        </GorselliBolum>
+
+        {/* İletişim görselsiz: telefon ve adres okunması gereken bilgi,
+            arka plan üstünde değil düz zeminde duruyor. */}
+        <section className="kars-iletisim">
+          <h2 className="kars-baslik kars-baslik-koyu">{ui("iletisim", dil)}</h2>
+          <BaslikAyraci tema={tema} sinif="kars-ayrac" />
+
+          <ul className="kars-iletisim-listesi">
+            <li>
+              <a href={ILETISIM.telefonBaglanti} className="kars-satir odak">
+                <TelefonIkonu className="kars-satir-ikon" />
+                <span className="kars-satir-govde">
+                  <span className="kars-satir-etiket">{ui("telefon", dil)}</span>
+                  {/* Numara her dilde aynı ve LTR: Arapça sayfada da soldan
+                      sağa okunmalı, yoksa parantez ve rakamlar yer değiştirir. */}
+                  <bdi className="kars-satir-deger" dir="ltr">
+                    {ILETISIM.telefon}
+                  </bdi>
+                </span>
+              </a>
+            </li>
+
+            <li>
+              <a
+                href={ILETISIM.instagramAdres}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="kars-satir odak"
+              >
+                <InstagramIkonu className="kars-satir-ikon" />
+                <span className="kars-satir-govde">
+                  <span className="kars-satir-etiket">Instagram</span>
+                  <bdi className="kars-satir-deger" dir="ltr">
+                    @{ILETISIM.instagramKullanici}
+                  </bdi>
+                </span>
+              </a>
+            </li>
+
+            <li>
+              <a
+                href={ILETISIM.haritaAdresi}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="kars-satir odak"
+              >
+                <KonumIkonu className="kars-satir-ikon" />
+                <span className="kars-satir-govde">
+                  <span className="kars-satir-etiket">{ui("adres", dil)}</span>
+                  <span className="kars-satir-deger">{ILETISIM.adres}</span>
+                  <span className="kars-satir-ek">{ui("yolTarifi", dil)}</span>
+                </span>
+              </a>
+            </li>
+
+            {/* Tıklanacak bir şey yok: bağlantı değil, düz satır. */}
+            <li className="kars-satir kars-satir-dural">
+              <SaatIkonu className="kars-satir-ikon" />
+              <span className="kars-satir-govde">
+                <span className="kars-satir-etiket">{ui("calismaSaatleri", dil)}</span>
+                <span className="kars-satir-deger">
+                  {ui("herGun", dil)}{" "}
+                  <bdi dir="ltr">{ILETISIM.saatler}</bdi>
+                </span>
+              </span>
+            </li>
+          </ul>
+
+          {/* Sayfa uzun; sonuna kadar okuyan müşteri yukarı dönmek zorunda
+              kalmasın diye menü butonu burada tekrarlanıyor. */}
+          <Link href={menuYolu} className="kars-menu-dugmesi kars-menu-alt odak">
+            <PideIkonu className="kars-menu-ikon" />
+            <span>{ui("menu", dil)}</span>
+            <Ok />
+          </Link>
+        </section>
+      </main>
+
+      <footer className="kars-dipnot">
+        <p>Huzur Pide · {ui("dijitalMenu", dil)}</p>
+      </footer>
     </div>
   );
 }
@@ -524,39 +681,6 @@ export function MenuKitabiEkrani({
 }
 
 /* =========================================================================
-   5 — Organizasyon
-   ========================================================================= */
-export function OrganizasyonEkrani({
-  dil,
-  tema,
-  yolOneki = "",
-}: MotifProps & { dil: DilKodu; yolOneki?: string }) {
-  return (
-    <div className="menu-sayfa">
-      <UstBaslik dil={dil} yol={`${yolOneki}/organizasyon`} tema={tema} yolOneki={yolOneki} />
-
-      <main className="sayfa-govdesi">
-        <div className="sayfa-basligi">
-          <h1 className="ekran-basligi">{ui("organizasyon", dil)}</h1>
-          <BaslikAyraci tema={tema} />
-        </div>
-
-        <div className="hazirlaniyor">
-          <SofraIkonu className="hazirlaniyor-ikon" />
-          <p className="hazirlaniyor-metin">{ui("yakinda", dil)}</p>
-        </div>
-
-        <nav className="orta-baglanti">
-          <Link href={`/${dil}${yolOneki}/secim`} className="alt-serit-baglanti odak">
-            {ui("anaEkranaDon", dil)}
-          </Link>
-        </nav>
-      </main>
-    </div>
-  );
-}
-
-/* =========================================================================
    6 — 404
 
    METİN UYDURULMADI: bu ekran için `data/arayuz.ts` içinde bir çeviri yok ve
@@ -577,7 +701,7 @@ export function BulunamadiEkrani({
         </span>
         <TemaMotifi className="bulunamadi-motif" tema={tema} />
         <nav className="orta-baglanti">
-          <Link href={`/${dil}${yolOneki}/secim`} className="alt-serit-baglanti odak">
+          <Link href={`/${dil}${yolOneki}`} className="alt-serit-baglanti odak">
             {ui("anaEkranaDon", dil)}
           </Link>
         </nav>

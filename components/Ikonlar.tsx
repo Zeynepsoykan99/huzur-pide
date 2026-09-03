@@ -39,42 +39,72 @@ export function PideIkonu({ className }: { className?: string }) {
   );
 }
 
-/**
- * Organizasyon kartı — üstten görünüm yuvarlak sofra: ortada servis tabağı,
- * çevresinde beş sandalye.
- *
- * İlk sürümde sandalyeler de daire çizilmişti ve bütün film makarası gibi
- * okunuyordu. Sandalyeler yuvarlak köşeli dikdörtgene çevrilip masaya doğru
- * döndürülünce sofra olduğu anlaşılır oldu.
- */
-export function SofraIkonu({ className }: { className?: string }) {
-  const sandalyeler = [
-    { x: 24, y: 4.5, d: 0 },
-    { x: 42.55, y: 17.97, d: 72 },
-    { x: 35.46, y: 39.78, d: 144 },
-    { x: 12.54, y: 39.78, d: 216 },
-    { x: 5.45, y: 17.97, d: 288 },
-  ];
+/* ---------------------------------------------------------------------------
+   Karsilama sayfasinin iletisim ikonlari.
+
+   PideIkonu ile ayni dil: ince kontur, yumusak uclar, `currentColor`. Ama
+   viewBox 24x24 — bunlar 48px'lik kart ikonu degil, satir basinda duran
+   ~20px'lik isaretler; 48'lik gridde cizilse cizgiler o olcude kalinlasirdi.
+
+   Hepsi dekoratif: yanlarindaki metin (telefon numarasi, adres, kullanici
+   adi) bilginin kendisi. Bu yuzden aria-hidden.
+   --------------------------------------------------------------------------- */
+
+export function TelefonIkonu({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 48 48" fill="none" aria-hidden="true" className={className}>
-      {/* Masa */}
-      <circle cx="24" cy="24" r="13" stroke="currentColor" strokeWidth="2.2" />
-      {/* Ortadaki servis tabagi */}
-      <circle cx="24" cy="24" r="4.5" stroke="currentColor" strokeWidth="1.8" />
-      {/* Sandalyeler — her biri masaya bakacak sekilde donduruldu */}
-      <g stroke="currentColor" strokeWidth="1.8">
-        {sandalyeler.map((s, i) => (
-          <rect
-            key={i}
-            x="-3.5"
-            y="-2.5"
-            width="7"
-            height="5"
-            rx="1.6"
-            transform={`translate(${s.x} ${s.y}) rotate(${s.d})`}
-          />
-        ))}
-      </g>
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className={className}>
+      <path
+        d="M6.5 3.5h3l1.5 4-2 1.5a12 12 0 0 0 6 6l1.5-2 4 1.5v3a2 2 0 0 1-2.2 2A16.5 16.5 0 0 1 4.5 5.7 2 2 0 0 1 6.5 3.5Z"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+export function InstagramIkonu({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className={className}>
+      <rect x="3.5" y="3.5" width="17" height="17" rx="5" stroke="currentColor" strokeWidth="1.7" />
+      <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="1.7" />
+      <circle cx="17.2" cy="6.8" r="1.15" fill="currentColor" />
+    </svg>
+  );
+}
+
+/** Konum — damla ve icindeki delik. */
+export function KonumIkonu({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className={className}>
+      <path
+        d="M12 21s6.5-6.1 6.5-11a6.5 6.5 0 1 0-13 0c0 4.9 6.5 11 6.5 11Z"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinejoin="round"
+      />
+      <circle cx="12" cy="10" r="2.4" stroke="currentColor" strokeWidth="1.7" />
+    </svg>
+  );
+}
+
+/**
+ * Saat — kadran ve akrep/yelkovan.
+ *
+ * Ibreler 07:00'i gosteriyor: acilis saati. Rastgele bir aci yerine bilginin
+ * kendisini cizmek ikonu sayfanin geri kalanina bagliyor.
+ */
+export function SaatIkonu({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className={className}>
+      <circle cx="12" cy="12" r="8.5" stroke="currentColor" strokeWidth="1.7" />
+      <path
+        d="M12 7v5l-3 2"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   );
 }

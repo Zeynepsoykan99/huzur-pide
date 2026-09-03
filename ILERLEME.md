@@ -3,7 +3,7 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 22 tamamlandı — Çoban Salata, Fanta, Ayran ve Su'nun fotoğrafları eklendi; fotoğrafsız ürün 9'dan **5'e** indi ve **Salatalar kategorisi tamamlandı**. Künefe dosyasında başka bir işletmenin logosu çıktığı için kullanılmadı; Kola, Soda, Komposto ve Meyveli Soda için dosya gelmedi. Aşama 22 dahil her şey **üretimde canlı**. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
+**Güncel aşama:** Aşama 23 tamamlandı — **uygulamanın akışı değişti.** QR artık dil seçimine değil, mekânın görselleriyle kurulmuş bir **karşılama sayfasına** açılıyor; dil seçimi "Menü" butonundan sonraya taşındı, Menü/Organizasyon seçim ekranı ile organizasyon sayfası kaldırıldı. Aşama 22'ye kadarki her şey üretimde canlı, Aşama 23 push bekliyor. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
 **Son güncelleme:** 2026-09-02
 
 ### Genel Durum
@@ -35,6 +35,7 @@ Numaralandırma rapor başlıklarıyla aynı: aşağıdaki her satırın karşı
 | 20 | Tavuk Izgara 1 KG fotoğrafı | **Tamamlandı** |
 | 21 | Kuzu Izgara Porsiyon fotoğrafı — Izgara tamamlandı | **Tamamlandı** |
 | 22 | Çoban Salata ve üç içeceğin fotoğrafı | **Tamamlandı** — Künefe ve dört içecek dosya bekliyor |
+| 23 | Karşılama sayfası ve yeni akış | **Tamamlandı** |
 
 ### Bekleyenler
 
@@ -4165,5 +4166,257 @@ saran fiyat **0**.
 
 **Konsol.** Dört dil, iki genişlik gezildi: **0 hata, 0 uyarı.** Ağ
 kaydında başarısız istek yok.
+
+=== RAPOR SONU ===
+
+## Aşama 23 — Karşılama Sayfası ve Yeni Akış · 2026-09-03
+
+=== RAPOR BAŞLANGICI ===
+
+**Tarih:** 2026-09-03 · **Dal:** `main` · **Kaynak:** `yeni-gorseller/` (dört mekân görseli)
+
+Uygulamanın giriş akışı değişti.
+
+```
+Önce:  QR → dil seçimi → Menü/Organizasyon seçimi → menü
+Sonra: QR → KARŞILAMA → "Menü" butonu → dil seçimi → menü
+```
+
+Karşılama sayfası artık ilk ekran. Dil seçim ekranı **korundu**, yalnızca yeri
+ve adresi değişti. Menü/Organizasyon seçim ekranı ile organizasyon sayfası
+kaldırıldı; organizasyon içeriği karşılama sayfasının bir bölümü oldu.
+
+### 23.1 Görseller — dört dosya, üçü kullanıldı
+
+| Dosya | Ölçü | İçerik | Sonuç |
+|---|---|---|---|
+| `huzur pide.jpg` | 1080×1080 | Cepheden dükkân, tabela ve camlı teras | **Hero** |
+| `huzurpide4.jpg` | 1280×1024 | Kemerli taş fırın, odun ateşi, fırın küreği | **Lezzetler** |
+| `huzur pide2.webp` | 1360×1020 | Akşam ışığında geniş açı, otopark | **Organizasyon** |
+| `huzurpide3.webp` | 680×1020 | Menü kapağı tasarımı (fotoğraf değil) | Kullanılmadı |
+
+Klasörde ürün fotoğrafları da duruyor; mekân görselleri zaman damgasından ve
+içeriğinden ayırt edildi, ürünlere dokunulmadı.
+
+**Filigran denetimi — dördü de temiz.** Her dosya çeyreklere bölünüp
+büyütülerek tarandı. Stok filigranı, telif işareti, başka işletme logosu ve
+sahte şeffaflık yok; dama tahtası ölçümü dördünde de **%0,00**, EXIF telif
+alanı boş.
+
+Üç bulgu bildirildi, üçünde de karar alındı:
+
+1. **`huzur pide2.webp` — arka planda komşu işletmeler.** Bitişikteki binada
+   Opet bayi tabelası ve bir afiş var. Bunlar görüntüye basılmış filigran
+   değil, gerçek fotoğrafın arka planındaki gerçek komşular — Aşama 19'daki
+   NİZAM logosundan ve Aşama 20'deki pngtree filigranından farklı. **Araç
+   plakaları ayrıca kontrol edildi:** plaka kaynakta ~30×8 piksel, 6× lanczos
+   büyütmede bile karakterler çözülmüyor, okunabilir plaka yok. Kırpma
+   gerekmedi. Kullanılmasına karar verildi.
+2. **`huzurpide3.webp` — "Kahvaltı" yazıyor.** Menü kapağı tasarımının üstünde
+   "Kahvaltı · Pide · Izgara · Tatlı" geçiyor; dijital menüde kahvaltı
+   kategorisi yok. Kullanılmadı.
+3. **İlk `huzur pide4.jpg` 600×450'ydi** — tam genişlik arka plan için düşük
+   (390px'lik telefonda 3× ekran ~1170px istiyor). Bildirildi, yerine
+   1280×1024 olan `huzurpide4.jpg` geldi ve dar şeride gerek kalmadı.
+
+**Dönüşüm.** Ürün fotoğraflarından ayrı ele alındı: bunlar 68px'lik yuvaya
+değil tam genişlik arka plana giriyor.
+
+| Dosya | Kaynak | Sonuç |
+|---|---|---|
+| `mekan/dukkan.webp` | 1080×1080 | 1080×1080 · webp q75 · 81.214 B |
+| `mekan/firin.webp` | 1280×1024 | 1280×1024 · webp q75 · 219.256 B |
+| `mekan/dis-gorunum.webp` | 1360×1020 | 1360×1020 · webp q75 · 113.728 B |
+
+**Kırpma yok, büyütme yok** — üçü de kendi oranıyla, kaynak ölçüsünde. Kadrajı
+`object-fit: cover` belirliyor, responsive setleri `next/image` üretiyor
+(`sizes="100vw"`, hero'da `priority`). Kalite 78 değil **75**: arka planlar
+karartma perdesinin altında duruyor, fark görünmüyor, dosya küçülüyor.
+
+### 23.2 Karşılama sayfasının dili
+
+Mimari kısıt: `<html lang>` ve `dir` URL'nin ilk parçasından geliyor, bu yüzden
+uygulamanın tamamı `[dil]` altında. Dilsiz bir kök sayfa bu yapının dışında
+kalırdı.
+
+Seçilen çözüm (üç seçenek sunuldu, bu önerildi): **sayfa dört dilde ayrı
+statik kopya olarak üretiliyor** (`/tr`, `/en`, `/ar`, `/ru`), QR kökü `/tr`'ye
+bakıyor ve sayfanın **en üstünde dört bayraklı bir şerit** duruyor. Türkçe
+bilmeyen müşteri marka adını bile okumadan kendi diline geçebiliyor; Menü
+butonundan sonraki dil seçim ekranı ise istendiği gibi yerinde kaldı.
+
+Şerit telefonda tek satıra sığacak şekilde ölçüldü — ilk denemede 3+1 olarak
+kırılıyordu, ölçüler kısıldı. Bulunulan dil yalnızca renkle değil **çerçeveyle
+de** işaretleniyor (`aria-current` + kenarlık): renk körlüğünde de ayırt
+edilebilsin diye.
+
+### 23.3 Sayfa içeriği
+
+Yukarıdan aşağı: bayrak şeridi → hero (marka + slogan + **Menü butonu**) →
+Lezzetler → Organizasyon → İletişim → sayfa sonunda ikinci Menü butonu →
+dipnot.
+
+Menü butonu ilk ekranda, kaydırmadan görünüyor. Sayfa uzun olduğu için sonda
+tekrarlanıyor: sonuna kadar okuyan müşteri yukarı dönmek zorunda kalmıyor.
+
+**Pazarlama metinleri** onaydan geçti ve `data/karsilama.ts`'e yazıldı.
+Yalnızca mekânın gerçekten sunduğu şeyler anlatılıyor — pide, lahmacun,
+ızgara, tatlı ve özel gün organizasyonu. Kapasite, salon, ödül, "şehrin en
+iyisi" gibi doğrulanamayan hiçbir iddia yok. Dükkân tabelasında kahvaltı ve
+çorba da yazıyor ama dijital menüde o kategoriler bulunmadığı için metinlerde
+geçmiyor.
+
+**İletişim bilgileri** verildiği gibi, değiştirilmeden. Yalnızca "Her gün"
+etiketi çevrildi (`Every day` / `كل يوم` / `Ежедневно`); saatlerin kendisi dört
+dilde de `07:00 – 23:00`.
+
+| Bağlantı | Hedef |
+|---|---|
+| Telefon | `tel:+903628541854` — dokununca arama başlıyor |
+| Instagram | `https://www.instagram.com/huzurpide55` (`target="_blank"`, `rel="noopener noreferrer"`) |
+| Adres | Google Maps arama adresi — telefonda harita uygulamasına, masaüstünde tarayıcıya gidiyor |
+| Çalışma saatleri | bağlantı değil, düz satır |
+
+Harita için `geo:` şeması kullanılmadı: masaüstü tarayıcıda hiçbir şey açmıyor
+ve iOS'ta güvenilir değil.
+
+**İki yönlü metin.** Telefon numarası, Instagram kullanıcı adı ve saatler
+`<bdi dir="ltr">` içinde. Arapça sayfada denendi: `(0362) 854 18 54` parantezi
+solda kalıyor, saatler `كل يوم` etiketinin solunda kendi içinde `07:00 – 23:00`
+sırasında duruyor. `bdi` olmasa parantezler ve rakam grupları yer değiştirirdi.
+
+### 23.4 Kontrast — ölçüldü, iki kez ayarlandı
+
+Metinler fotoğrafın üstünde durduğu için kontrast gözle değil **ölçümle**
+belirlendi. Yöntem: metin `visibility: hidden` ile gizlendi, tam sayfa ekran
+görüntüsü alındı, her metin kutusunun arkasındaki **en açık piksel** bulundu ve
+WCAG oranı o en kötü durumla hesaplandı.
+
+| Perde | Sonuç |
+|---|---|
+| 0,62 – 0,74 – 0,68 | En dar nokta 6,85:1. Eşiği rahat geçiyordu ama fotoğraflar o kadar kararıyordu ki mekân zor seçiliyordu. |
+| 0,46 – 0,60 – 0,54 | Fırın bloğunda **4,22:1 → KALDI**. Alevler metnin arkasında neredeyse beyaz. |
+| **0,52 – 0,66 – 0,60** | Şu anki. Hepsi geçti. |
+
+Gövde metinleri ayrıca yarı saydamlıktan (%92-95) **tam beyaza** çekildi —
+saydamlık kontrast payını boşuna yiyordu.
+
+Son ölçüm (390px, Çini Levha teması):
+
+| Metin | Arkasındaki en açık zemin | Oran | Eşik | |
+|---|---|---|---|---|
+| Hero · Huzur Pide (43px/700) | rgb(89,100,112) | 6,03:1 | 3:1 | geçti |
+| Hero · slogan (16px) | rgb(49,55,66) | 11,96:1 | 4,5:1 | geçti |
+| Fırın · başlık (25px/700) | rgb(109,107,89) | 5,39:1 | 3:1 | geçti |
+| Fırın · metin (16px) | rgb(101,106,107) | 5,49:1 | 4,5:1 | geçti |
+| Dış görünüm · başlık | rgb(80,93,111) | 6,70:1 | 3:1 | geçti |
+| Dış görünüm · metin | rgb(90,102,88) | 6,04:1 | 4,5:1 | geçti |
+
+**Hepsi WCAG AA'yı geçiyor, en dar noktada bile eşiğin 1,22 katı pay var.**
+En dar yer fırın bloğu — perde değerleri değiştirilirse önce orası ölçülmeli.
+
+### 23.5 Rotalar
+
+| Rota | Önce | Sonra |
+|---|---|---|
+| `/` | → `/tr` | değişmedi |
+| `/[dil]` | dil seçimi | **karşılama** |
+| `/[dil]/dil` | — | **yeni** — dil seçimi buraya taşındı |
+| `/[dil]/secim` | Menü/Organizasyon | **silindi** → `/:dil` |
+| `/[dil]/organizasyon` | "yakında" | **silindi** → `/:dil` |
+| `/[dil]/menu`, `/[dil]/menu/[sayfa]` | — | değişmedi |
+| `/panel/*` | — | değişmedi |
+
+İki eski adres de karşılama sayfasına geliyor: `/secim`'in işi oradaki Menü
+butonuna devredildi, `/organizasyon`'un metni de o sayfanın içinde. Daha önce
+paylaşılmış linkler boş sayfaya değil doğru yere düşüyor.
+
+**Silinen kod:** `app/[dil]/secim/page.tsx` · `app/[dil]/organizasyon/page.tsx` ·
+`ekranlar.tsx` içinde `AnaSecimEkrani` ve `OrganizasyonEkrani` ·
+`Ikonlar.tsx` içinde `SofraIkonu` · `arayuz.ts` içinde `bolumSecin` ve
+`yakinda` · `globals.css` içinde `.secim-*` ve `.hazirlaniyor*` blokları.
+Hiçbiri artık kullanılmıyordu; kalsalardı ölü kod olurlardı.
+
+**Hedefi değişen bağlantılar:** dil kartları `/secim` → `/menu` (dil seçimi
+artık menü butonundan sonra geldiği için doğrudan menüye gitmeli) · menü
+kitabının üst markası ve 404'ün "ana ekrana dön" bağlantısı → `/[dil]`.
+
+### 23.6 Tasarım ve RTL
+
+Çini Levha'nın `--t-*` değişkenleri kullanıldı, sabit renk yazılmadı — tema
+değişince karşılama sayfası da birlikte değişiyor.
+
+**Yön bağımlı ölçü yok.** Yeni CSS `margin-inline`, `padding-inline`,
+`text-align: start` kullanıyor; `margin-left/right`, `left/right`,
+`text-align: left/right` hiç geçmiyor (tarandı, temiz). Tek yön bağımlı öge
+ileri chevron'u ve o zaten `[dir="rtl"]` altında aynalanıyor.
+
+Arapça sayfada doğrulandı: bayrak sırası ters, ikonlar sağda, metin sağa
+yaslı, ok sola bakıyor, iki yönlü alanlar doğru.
+
+Mobil öncelikli: hero telefonda `68dvh` — mekân görünsün ama Menü butonu
+kaydırılmadan ekranda kalsın diye ölçüldü.
+
+### 23.7 Doğrulama
+
+Firestore'a dokunulmadı: bu iş menü verisi değil, sayfa yapısı.
+
+```
+npx tsc --noEmit   → temiz (çıkış 0)
+npm run lint       → temiz (çıktı yok)
+npm run build      → başarılı, 34 statik sayfa
+tarayıcı konsolu   → 0 hata, 0 uyarı
+```
+
+Sayfa sayısı 38'den 34'e indi: `/secim` ve `/organizasyon` (4'er dil) kalktı,
+`/[dil]/dil` (4 dil) eklendi.
+
+**Akış uçtan uca yürütüldü:** `/tr` → Menü butonu → `/tr/dil` → Arapça kartı →
+`/ar/menu`. Yönlendirmeler kontrol edildi: `/` → `/tr` (307), `/tr/secim` →
+`/tr` (307), `/tr/organizasyon` → `/tr` (307).
+
+**Menü kitabı bozulmadı:** beş levha, sayaç `2 / 5`, ızgara 14 üründe 14
+fotoğraf, toplam yükseklik 1276 px — Aşama 19-22'deki ölçümlerle birebir aynı.
+`sizes="68px"` yerinde.
+
+Dört dilde karşılama sayfası içeriği tek tek okundu: marka, slogan, üç başlık,
+iki pazarlama metni, menü butonu, saatler ve üç görselin alt metni her dilde
+kendi karşılığını veriyor.
+
+*Kapsam dışı bir gözlem:* `/xx` gibi geçersiz bir dil kodu Next'in kendi 404
+sayfasını veriyor, `BulunamadiEkrani` değil. `app/[dil]/not-found.tsx` bu
+aşamada değiştirilmedi ve `notFound()` çağrıları da aynı kaldı — bu davranış
+önceden de böyleydi, bu değişiklikten kaynaklanmıyor. Konsoldaki
+`favicon.ico` 404'ü de Aşama 17'den beri bilinen kayıt.
+
+### 23.8 Değişen dosyalar
+
+| Dosya | Değişiklik |
+|---|---|
+| `public/mekan/*.webp` | yeni — üç mekân görseli (414.198 B) |
+| `data/karsilama.ts` | yeni — iletişim bilgileri, pazarlama metinleri, görsel tanımları |
+| `app/[dil]/dil/page.tsx` | yeni — dil seçim rotası |
+| `app/[dil]/page.tsx` | dil seçimi → karşılama |
+| `app/[dil]/secim/`, `app/[dil]/organizasyon/` | silindi |
+| `components/ekranlar.tsx` | `KarsilamaEkrani` eklendi; iki ekran silindi; bağlantı hedefleri |
+| `components/Ikonlar.tsx` | dört iletişim ikonu eklendi, `SofraIkonu` silindi |
+| `components/UstBaslik.tsx` | marka bağlantısı → `/[dil]` |
+| `data/arayuz.ts` | yedi yeni anahtar; iki kullanılmayan anahtar silindi |
+| `app/globals.css` | karşılama stilleri; kullanılmayan iki blok silindi |
+| `next.config.ts` | iki yönlendirme |
+| `ILERLEME.md` | özet, aşama tablosu ve bu rapor |
+
+Menü içeriği, fiyatlar, çeviriler, panel, menü kitabı, oklar ve sayfa yapısı
+değişmedi.
+
+### 23.9 Sıradaki adım
+
+Push ve deploy onay bekliyor.
+
+`huzurpide3.webp` (menü kapağı tasarımı) kullanılmadı — planda önerilmişti,
+karar açıkça verilmedi ve öneri uygulandı. İstenirse Menü butonu bloğuna arka
+plan olarak eklenmesi küçük bir değişiklik.
+
+Fotoğrafsız beş ürün duruyor: Künefe, Kola, Soda, Komposto, Meyveli Soda.
 
 === RAPOR SONU ===

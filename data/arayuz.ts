@@ -29,17 +29,34 @@ export const ARAYUZ = {
     ar: "المناسبات",
     ru: "Банкеты",
   },
-  bolumSecin: {
-    tr: "Bölüm seçin",
-    en: "Choose a section",
-    ar: "اختر القسم",
-    ru: "Выберите раздел",
+  lezzetler: {
+    tr: "Lezzetlerimiz",
+    en: "What we cook",
+    ar: "أطباقنا",
+    ru: "Наша кухня",
   },
-  yakinda: {
-    tr: "Bu bölüm hazırlanıyor.",
-    en: "This section is coming soon.",
-    ar: "هذا القسم قيد الإعداد.",
-    ru: "Этот раздел готовится.",
+  iletisim: {
+    tr: "İletişim",
+    en: "Contact",
+    ar: "اتصل بنا",
+    ru: "Контакты",
+  },
+  adres: { tr: "Adres", en: "Address", ar: "العنوان", ru: "Адрес" },
+  telefon: { tr: "Telefon", en: "Phone", ar: "الهاتف", ru: "Телефон" },
+  calismaSaatleri: {
+    tr: "Çalışma saatleri",
+    en: "Opening hours",
+    ar: "ساعات العمل",
+    ru: "Часы работы",
+  },
+  // Saatlerin kendisi (07:00–23:00) ceviri DEGIL, sabit veri. Cevrilen
+  // yalnizca "her gun" etiketi.
+  herGun: { tr: "Her gün", en: "Every day", ar: "كل يوم", ru: "Ежедневно" },
+  yolTarifi: {
+    tr: "Yol tarifi",
+    en: "Directions",
+    ar: "الاتجاهات",
+    ru: "Как добраться",
   },
   anaEkranaDon: {
     tr: "Ana ekrana dön",
