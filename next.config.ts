@@ -36,6 +36,16 @@ const nextConfig: NextConfig = {
       // linkler bos sayfaya degil, dogru yere dusuyor.
       { source: "/:dil/secim", destination: "/:dil", permanent: false },
       { source: "/:dil/organizasyon", destination: "/:dil", permanent: false },
+      // Ayri dil secim ekrani da kalkti: dil artik karsilama sayfasinin
+      // ustundeki bayrak seridinden, menu icinde de ust seritteki
+      // `DilKontrolu`'ndan seciliyor — ikincisi bulunulan sayfayi da
+      // koruyor, o ekran ise dili degistirip herkesi menunun basina atiyordu.
+      //
+      // Hedef /:dil DEGIL /:dil/menu: bu adrese gelen kisi menuye gitmek
+      // istiyordu, buton oraya "menuye gec" diye bakiyordu. Karsilamaya
+      // atmak bir adim geri gotururdu; oraya donmek isteyen zaten menunun
+      // ust seridindeki markadan tek dokunusla donuyor.
+      { source: "/:dil/dil", destination: "/:dil/menu", permanent: false },
       {
         source: "/:dil/menu/kapali-pide-:n(1|2|3)",
         destination: "/:dil/menu/kapali-pide",

@@ -25,7 +25,6 @@ import {
   DILLER,
   DIL_ADI,
   DIL_BAYRAGI,
-  DIL_YONU,
   fiyatYaz,
   icerikMetni,
   metin,
@@ -82,119 +81,16 @@ function BaslikAyraci({ tema, sinif = "baslik-alt" }: MotifProps & { sinif?: str
 }
 
 /* =========================================================================
-   1 — Dil seçimi. Uygulamanın ilk açılış ekranı.
+   1 — Karşılama. QR okutulunca gelen İLK ekran.
 
-   Kitabın dilinden bilinçli olarak ayrı: sıkışık şerit, sayfa sayacı ve ok
-   yok; ortalanmış, ferah bir kompozisyon.
-   ========================================================================= */
+   Akıştaki yeri: QR → BURASI → "Menü" butonu → menü kitabı.
 
-/** "Dil Seçiniz" ifadesinin dört dildeki hâli — başlığın altındaki satır. */
-const DIL_SECINIZ_HEPSI: Record<DilKodu, string> = {
-  tr: "Dil Seçiniz",
-  en: "Choose language",
-  ar: "اختر اللغة",
-  ru: "Выберите язык",
-};
-
-export function DilSecimEkrani({
-  dil,
-  tema,
-  yolOneki = "",
-}: MotifProps & { dil: DilKodu; /** Önizlemede bağlantıları kendi içinde tutar. */ yolOneki?: string }) {
-  return (
-    <div className="giris-ekrani">
-      <div className="giris-govde">
-        <header className="giris-tepe">
-          {/* Marka işareti temadan geliyor: tema değişince logo da değişiyor.
-              Dekoratif — hemen altındaki <h1> aynı bilgiyi veriyor. */}
-          <TemaMotifi className="giris-motif" tema={tema} />
-          <h1 className="marka-adi">Huzur Pide</h1>
-          <BaslikAyraci tema={tema} sinif="giris-ayrac" />
-          <p className="slogan">{ui("slogan", dil)}</p>
-        </header>
-
-        <main>
-          <h2 id="lang-heading" className="bolum-basligi">
-            {ui("dilSeciniz", dil)}
-          </h2>
-
-          {/* Diğer üç dildeki karşılığı; her biri kendi lang niteliğiyle.
-              Ayraç noktası kendi rengini almıyor, paragrafın rengini miras
-              alıyor — küçük bir nokta ayrı bir tonda AA eşiğini geçemiyordu. */}
-          <p className="diller-alt-satir">
-            {DILLER.filter((d) => d !== dil).map((d, i) => (
-              <span key={d}>
-                {i > 0 ? (
-                  <span aria-hidden="true" className="mx-1.5">
-                    ·
-                  </span>
-                ) : null}
-                <span lang={d} dir={DIL_YONU[d]}>
-                  {DIL_SECINIZ_HEPSI[d]}
-                </span>
-              </span>
-            ))}
-          </p>
-
-          <div
-            id="language-list"
-            role="group"
-            aria-labelledby="lang-heading"
-            className="dil-kartlari"
-          >
-            {DILLER.map((hedef) => {
-              const bayrak = DIL_BAYRAGI[hedef];
-              return (
-                <Link
-                  key={hedef}
-                  href={`/${hedef}${yolOneki}/menu`}
-                  hrefLang={hedef}
-                  data-lang={hedef}
-                  data-dir={DIL_YONU[hedef]}
-                  className="kart odak"
-                >
-                  <span className="flag-slot">
-                    {/* Bayrak dekoratif: yanındaki dil adı aynı bilgiyi veriyor. */}
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={`/flags/${bayrak.kod}.svg`}
-                      alt=""
-                      aria-hidden="true"
-                      className="flag"
-                    />
-                  </span>
-                  {/* Arapça etikette dir="rtl" YOK: tek yönlü bir metin, yön
-                      işareti olmadan da doğru render oluyor. dir verilseydi
-                      metin buton içinde sağa yaslanıp hizayı bozardı. */}
-                  <span className="lang-name" lang={hedef}>
-                    {DIL_ADI[hedef]}
-                  </span>
-                  <span className="sr-only">— {metin(bayrak.ulke, dil)}</span>
-                  <Ok />
-                </Link>
-              );
-            })}
-          </div>
-        </main>
-      </div>
-
-      <footer className="giris-dipnot">
-        <p>Huzur Pide · {ui("dijitalMenu", dil)}</p>
-      </footer>
-    </div>
-  );
-}
-
-/* =========================================================================
-   2 — Karşılama. QR okutulunca gelen İLK ekran.
-
-   Akıştaki yeri: QR → BURASI → "Menü" butonu → dil seçimi → menü kitabı.
-
-   Dil seçiminden ÖNCE geldiği için hangi dilde görüneceği baştan belli değil.
-   Çözüm: sayfanın dört dilde ayrı kopyası var (`/tr`, `/en`, `/ar`, `/ru`),
-   QR kökü `/tr`'ye bakıyor ve en üstte dört bayraklı bir şerit duruyor —
-   Türkçe bilmeyen müşteri tek dokunuşla kendi diline geçiyor, sayfanın
-   tamamını okumak zorunda kalmıyor.
+   Ayrı bir dil seçim ekranı YOK: dil, sayfanın en üstündeki bayrak
+   şeridinden seçiliyor. Sayfanın dört dilde ayrı kopyası var (`/tr`, `/en`,
+   `/ar`, `/ru`) ve QR kökü `/tr`'ye bakıyor — Türkçe bilmeyen müşteri tek
+   dokunuşla kendi diline geçiyor, sayfanın tamamını okumak zorunda
+   kalmıyor. Menüye girdikten sonra dil değiştirmek için üst şeritteki
+   `DilKontrolu` var; o, bulunulan sayfayı koruyarak dil değiştiriyor.
 
    Görseller tam genişlik arka plan; yazılar üstlerinde, karartma perdesinin
    üzerinde duruyor. Perde dekoratif değil, KONTRAST İÇİN: ölçüldü, gövde
@@ -234,7 +130,16 @@ function GorselliBolum({
 }
 
 export function KarsilamaEkrani({ dil, tema }: MotifProps & { dil: DilKodu }) {
-  const menuYolu = `/${dil}/dil`;
+  /**
+   * Buton DOGRUDAN menuye gidiyor, araya dil secim ekrani girmiyor.
+   *
+   * Dil secimi iki yerde tekrarlaniyordu: ustteki bayrak seridinde bir kez,
+   * butondan sonraki ekranda bir kez daha. Ikincisi kaldirildi — sayfanin
+   * dili zaten secilmis durumda, bu yuzden buton bulunulan dilin menusune
+   * gidiyor. Menu icinde dil degistirmek isteyen icin ust seritteki
+   * `DilKontrolu` var ve o, bulunulan sayfayi koruyor.
+   */
+  const menuYolu = `/${dil}/menu`;
 
   return (
     <div className="karsilama">
@@ -385,7 +290,7 @@ export function KarsilamaEkrani({ dil, tema }: MotifProps & { dil: DilKodu }) {
 }
 
 /* =========================================================================
-   3 — Kategori listesi ("içindekiler")
+   2 — Kategori listesi ("içindekiler")
    ========================================================================= */
 export function KategoriListesiEkrani({
   dil,
@@ -442,7 +347,7 @@ export function KategoriListesiEkrani({
 }
 
 /* =========================================================================
-   4 — Menü kitabı
+   3 — Menü kitabı
    ========================================================================= */
 
 const KAP_ID = "kitap";
@@ -681,7 +586,7 @@ export function MenuKitabiEkrani({
 }
 
 /* =========================================================================
-   6 — 404
+   4 — 404
 
    METİN UYDURULMADI: bu ekran için `data/arayuz.ts` içinde bir çeviri yok ve
    dört dile kendiliğinden metin eklenmedi. Dile bağlı olmayan bir kompozisyon

@@ -3,7 +3,7 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 23 tamamlandı — **uygulamanın akışı değişti.** QR artık dil seçimine değil, mekânın görselleriyle kurulmuş bir **karşılama sayfasına** açılıyor; dil seçimi "Menü" butonundan sonraya taşındı, Menü/Organizasyon seçim ekranı ile organizasyon sayfası kaldırıldı. Aşama 23 dahil her şey **üretimde canlı**. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
+**Güncel aşama:** Aşama 24 tamamlandı — karşılama sayfasındaki Menü butonu artık **doğrudan menüye** gidiyor; araya giren dil seçim ekranı kaldırıldı, çünkü dil hem karşılamanın bayrak şeridinden hem menünün üst şeridinden seçilebiliyordu. Aşama 23'e kadarki her şey üretimde canlı, Aşama 24 push bekliyor. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
 **Son güncelleme:** 2026-09-02
 
 ### Genel Durum
@@ -36,6 +36,7 @@ Numaralandırma rapor başlıklarıyla aynı: aşağıdaki her satırın karşı
 | 21 | Kuzu Izgara Porsiyon fotoğrafı — Izgara tamamlandı | **Tamamlandı** |
 | 22 | Çoban Salata ve üç içeceğin fotoğrafı | **Tamamlandı** — Künefe ve dört içecek dosya bekliyor |
 | 23 | Karşılama sayfası ve yeni akış | **Tamamlandı** |
+| 24 | Menü butonu doğrudan menüye | **Tamamlandı** |
 
 ### Bekleyenler
 
@@ -4485,5 +4486,158 @@ aynı. `sizes="68px"` yerinde, üst marka bağlantısı `/tr` (karşılama).
 
 **Konsol.** Dört dil ve iki genişlik gezildi: **0 hata, 0 uyarı.** Ağ kaydında
 başarısız istek yok.
+
+=== RAPOR SONU ===
+
+## Aşama 24 — Menü Butonu Doğrudan Menüye · 2026-09-03
+
+=== RAPOR BAŞLANGICI ===
+
+**Tarih:** 2026-09-03 · **Dal:** `main`
+
+Aşama 23'te kurulan akışta dil seçimi iki kez soruluyordu: karşılama
+sayfasının üstündeki bayrak şeridinde bir kez, "Menü" butonuna basıldıktan
+sonra ayrı bir ekranda bir kez daha. İkincisi kaldırıldı.
+
+```
+Önce:  QR → KARŞILAMA → "Menü" → dil seçimi → menü
+Sonra: QR → KARŞILAMA → "Menü" → MENÜ
+```
+
+Menü butonu artık karşılama sayfasında bulunulan dilin menüsüne gidiyor:
+`/tr`'deki buton `/tr/menu`'ye, `/ar`'daki `/ar/menu`'ye.
+
+### 24.1 Asıl değişiklik tek satır
+
+`components/ekranlar.tsx` içinde `menuYolu` sabiti `/${dil}/dil`'den
+`/${dil}/menu`'ye çevrildi. Bu sabit hem hero'daki hem sayfa sonundaki Menü
+butonunu besliyor, ikisi birden düzeldi. Karşılama sayfasının içeriği,
+görselleri ve metinleri değişmedi.
+
+### 24.2 `/[dil]/dil` neden silindi
+
+Karar veri incelenerek verildi, tercihle değil. `DilKontrolu`
+(`components/DilKontrolu.tsx`) `UstBaslik`'in içinde ve `UstBaslik` **her iki
+menü ekranında da** var — hem kategori listesinde hem kitabın kendisinde.
+Dört dili de gösteriyor ve **bulunulan sayfayı koruyor.**
+
+Ölçüldü: `/tr/menu/izgara` sayfasındaki dil kontrolünün dört hedefi
+`/tr/menu/izgara`, `/en/menu/izgara`, `/ar/menu/izgara`, `/ru/menu/izgara`.
+Tıklandığında gerçekten `/ar/menu/izgara`'ya gidiyor, yani müşteri baktığı
+kategoriyi kaybetmiyor. Silinen ekran ise dili değiştirip herkesi menünün
+başına atıyordu — yani kaldırılan şey, kalanın daha kötü bir kopyasıydı.
+
+Dil değiştirme yolculuğun her noktasında duruyor:
+
+| Nerede | Ne sunuyor |
+|---|---|
+| Karşılama, üstteki bayrak şeridi | Menüye girmeden önce dil seçimi |
+| Her menü sayfası, üst şerit | Menü içinde dil değiştirme, sayfayı koruyarak |
+
+Değişiklikten sonra `/[dil]/dil`'e işaret eden **hiçbir bağlantı kalmıyordu**;
+tutulsaydı dört statik sayfa boşuna üretilir, `DilSecimEkrani` ve ona ait CSS
+bakımda kalırdı.
+
+**Yönlendirme: `/:dil/dil` → `/:dil/menu`.** Karşılamaya (`/:dil`) değil:
+o adrese gelen kişi menüye gitmek istiyordu, buton oraya "menüye geç" diye
+bakıyordu. Karşılamaya atmak bir adım geri götürürdü; oraya dönmek isteyen
+zaten menünün üst şeridindeki markadan tek dokunuşla dönüyor.
+
+Aşama 23'teki iki yönlendirme (`/secim`, `/organizasyon` → `/:dil`) farklı
+gerekçeye dayanıyordu: onların işi karşılama sayfasına taşınmıştı, bunun işi
+menüye taşındı.
+
+### 24.3 Silinen kod
+
+Silmeden önce her birinin başka kullanıcısı olmadığı tek tek doğrulandı:
+
+| Ne | Nerede |
+|---|---|
+| Rota dosyası | `app/[dil]/dil/page.tsx` |
+| `DilSecimEkrani` + `DIL_SECINIZ_HEPSI` | `ekranlar.tsx` (~103 satır) |
+| `DIL_YONU` importu | `ekranlar.tsx` — yalnızca o ekranda kullanılıyordu |
+| `dilSeciniz` anahtarı | `data/arayuz.ts` |
+| CSS — 15 kural | `.giris-*`, `.marka-adi`, `.slogan`, `.bolum-basligi`, `.kart` (+`:hover`, `:active`), `.flag-slot`, `.flag`, `.lang-name`, `.diller-alt-satir`, `.dil-kartlari` (158 satır) |
+
+**Bir tuzak, kontrol yakaladı.** Ölü CSS'i tek blok hâlinde silmeye
+çalışırken koyduğum güvenlik kontrolü durdurdu: `.lang-arrow` kuralı
+`.lang-name` ile `.diller-alt-satir` arasında, yani silinecek aralığın tam
+ortasında duruyordu. Karşılamanın Menü butonu o chevron'u kullanıyor —
+körlemesine silinseydi ok kaybolurdu. İki ayrı aralık hâlinde silindi,
+chevron korundu ve artık nerede kullanıldığını söyleyen yorumu güncellendi.
+
+Ayrıca `Ikonlar.tsx`'in başlık yorumu hâlâ "Ana seçim ekranındaki kart
+ikonları" diyordu; o ekran Aşama 23'te kalkmıştı ve `PideIkonu` artık
+karşılamanın Menü butonunda. Yanlış yönlendiren yorum düzeltildi.
+`ekranlar.tsx`'teki bölüm numaraları da sıralı hâle getirildi (1-2-3-4).
+
+**Korundu:** `.lang-arrow`, `slogan` arayüz anahtarı (karşılamada
+`kars-slogan` olarak duruyor — ölen yalnızca `.slogan` CSS sınıfıydı),
+`DIL_ADI`, `DIL_BAYRAGI`, `dilDegistir`, `DilKontrolu` ve `UstBaslik`.
+
+### 24.4 Doğrulama
+
+Firestore'a dokunulmadı.
+
+```
+npx tsc --noEmit   → temiz (çıkış 0)
+npm run lint       → temiz (çıktı yok)
+npm run build      → başarılı, 30 statik sayfa (34'ten)
+tarayıcı konsolu   → 0 hata, 0 uyarı
+```
+
+Sayfa sayısı 34'ten 30'a indi: `/[dil]/dil`'in dört kopyası kalktı.
+
+**Menü butonu — dört dilde de ekranda denendi.** Adres kontrolüyle
+yetinilmedi, her dilde butona tıklanıp açılan sayfaya bakıldı:
+
+| Karşılama | Buton tıklanınca | Açılan sayfa |
+|---|---|---|
+| `/tr` | `/tr/menu` | "Menü", beş kategori Türkçe |
+| `/en` | `/en/menu` | "Menu" |
+| `/ar` | `/ar/menu` | "القائمة", beş kategori Arapça |
+| `/ru` | `/ru/menu` | "Меню" |
+
+**Arapça menü RTL açılıyor.** `/ar/menu`: `lang="ar"`, `dir="rtl"`, başlık
+`القائمة`, kategori adları Arapça, numaralar ve sayfa sütunu aynalanmış,
+yatay taşma 0.
+
+**Bayrak şeridi çalışıyor.** `/tr`'de Arapça bayrağına tıklandı → `/ar`,
+`dir="rtl"`, slogan `من فرننا إلى مائدتك`, aktif bayrak `العربية` ve Menü
+butonunun hedefi de `/ar/menu` oldu.
+
+**Menü içinden geri dönüş çalışıyor.** `/tr/menu/izgara` üzerinde: üst marka
+`/tr` (karşılama), "Menüye dön" `/tr/menu`. Dil kontrolünden Arapça'ya
+geçildi → `/ar/menu/izgara`, `dir="rtl"`, başlık `المشويات`, sayaç
+`صفحة 2 / 5` — **sayfa korundu.**
+
+**Eski rotalar doğru yönleniyor:** `/tr/dil` → `/tr/menu` · `/ar/dil` →
+`/ar/menu` · `/tr/secim` → `/tr` · `/tr/organizasyon` → `/tr` · `/` → `/tr`
+(hepsi 307).
+
+**Menü kitabı bozulmadı:** beş levha, sayaç `Sayfa 2 / 5`, ızgara 14 üründe
+14 fotoğraf, toplam yükseklik **1276 px** — Aşama 19-23'teki ölçümlerle
+birebir aynı. `sizes="68px"` yerinde.
+
+### 24.5 Değişen dosyalar
+
+| Dosya | Değişiklik |
+|---|---|
+| `components/ekranlar.tsx` | `menuYolu` → `/menu`; `DilSecimEkrani` silindi; import ve bölüm numaraları |
+| `app/[dil]/dil/` | silindi |
+| `next.config.ts` | `/:dil/dil` → `/:dil/menu` yönlendirmesi |
+| `data/arayuz.ts` | `dilSeciniz` silindi |
+| `app/globals.css` | 15 ölü kural silindi (158 satır); chevron yorumu |
+| `components/Ikonlar.tsx` | eskimiş başlık yorumu düzeltildi |
+| `ILERLEME.md` | özet, aşama tablosu ve bu rapor |
+
+Karşılama sayfasının içeriği, görselleri ve metinleri, menü kitabı, menü
+içeriği, fiyatlar, çeviriler ve panel değişmedi.
+
+### 24.6 Sıradaki adım
+
+Push ve deploy onay bekliyor.
+
+Fotoğrafsız beş ürün duruyor: Künefe, Kola, Soda, Komposto, Meyveli Soda.
 
 === RAPOR SONU ===

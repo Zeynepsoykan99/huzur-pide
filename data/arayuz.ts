@@ -8,12 +8,6 @@ import type { Cevrilebilir, DilKodu } from "./menu";
  * panelde "Menüye dön" yazısını da düzenlenebilir kılardı.
  */
 export const ARAYUZ = {
-  dilSeciniz: {
-    tr: "Dil Seçiniz",
-    en: "Choose Language",
-    ar: "اختر اللغة",
-    ru: "Выберите язык",
-  },
   slogan: {
     tr: "Fırından sofranıza",
     en: "From our oven to your table",

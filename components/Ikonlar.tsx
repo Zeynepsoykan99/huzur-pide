@@ -1,15 +1,15 @@
 /**
- * Ana seçim ekranındaki kart ikonları.
+ * Uygulamanın ikonları.
  *
  * Logonun çizgi diliyle aynı: ince kontur, yumuşak uçlar. `currentColor`
- * kullanıyorlar, böylece kartın metin rengini alıyor ve hover'da metinle
- * birlikte koyulaşıyorlar.
+ * kullanıyorlar, böylece durdukları ögenin metin rengini alıyor ve hover'da
+ * metinle birlikte koyulaşıyorlar.
  *
- * İkisi de dekoratif: yanlarındaki başlık zaten ne olduğunu söylüyor.
+ * Hepsi dekoratif: yanlarındaki metin zaten ne olduğunu söylüyor.
  */
 
 /**
- * Menü kartı — fırından yeni çıkmış pide.
+ * Karşılama sayfasındaki Menü butonunun ikonu — fırından yeni çıkmış pide.
  *
  * İlk sürümde mercek şeklinin içinde ikinci bir mercek vardı ve 40px'te
  * göz gibi okunuyordu. İç mercek kaldırılıp yerine malzeme noktaları ve
