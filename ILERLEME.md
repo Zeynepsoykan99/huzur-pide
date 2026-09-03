@@ -3,7 +3,7 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 22 tamamlandı — Çoban Salata, Fanta, Ayran ve Su'nun fotoğrafları eklendi; fotoğrafsız ürün 9'dan **5'e** indi ve **Salatalar kategorisi tamamlandı**. Künefe dosyasında başka bir işletmenin logosu çıktığı için kullanılmadı; Kola, Soda, Komposto ve Meyveli Soda için dosya gelmedi. Aşama 21'e kadarki her şey üretimde canlı, Aşama 22 push bekliyor. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
+**Güncel aşama:** Aşama 22 tamamlandı — Çoban Salata, Fanta, Ayran ve Su'nun fotoğrafları eklendi; fotoğrafsız ürün 9'dan **5'e** indi ve **Salatalar kategorisi tamamlandı**. Künefe dosyasında başka bir işletmenin logosu çıktığı için kullanılmadı; Kola, Soda, Komposto ve Meyveli Soda için dosya gelmedi. Aşama 22 dahil her şey **üretimde canlı**. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
 **Son güncelleme:** 2026-09-02
 
 ### Genel Durum
@@ -3663,7 +3663,7 @@ değişmedi. `kuzu ızgara porsiyon.webp` klasörde bırakıldı, kullanılmadı
 
 ### 20.8 Sıradaki adım
 
-Push ve deploy onay bekliyor.
+Push ve deploy **tamamlandı** — `9e3ebdd`, sonuçlar 22.12'de.
 
 **Kuzu Izgara Porsiyon** için filigransız bir fotoğraf gerekiyor — ızgarada
 fotoğrafsız kalan tek ürün o. Kalan fotoğrafsızlar: içeceklerin tamamı (7),
@@ -4098,5 +4098,72 @@ Fotoğrafsız kalan beş ürün ve neden:
 - **Kola, Soda, Komposto, Meyveli Soda** — dosya hiç gelmedi
 
 Kapalı Pide, Izgara ve Salatalar kategorileri tam.
+
+### 22.12 Canlı doğrulama · 2026-09-03
+
+`9e3ebdd` `main`'e push edildi, Vercel dağıtımı **40 saniyede** tamamlandı
+(dört dosya 404 verirken 200'e dönene kadar yoklandı).
+
+**Dosyalar.** Dördü de canlıda, boyutları yereldekiyle **byte'ı byte'ına
+aynı**: `coban-salata.webp` 67.680 B · `fanta.webp` 12.370 B ·
+`ayran.webp` 30.094 B · `su.webp` 5.096 B.
+
+**Ekranda — eşleşme.** İçecekler sayfasının yedi satırı okundu:
+
+```
+1. Kola          -> YER TUTUCU
+2. Fanta         -> fanta.webp   [OK]
+3. Soda          -> YER TUTUCU
+4. Ayran         -> ayran.webp   [OK]
+5. Komposto      -> YER TUTUCU
+6. Meyveli Soda  -> YER TUTUCU
+7. Su            -> su.webp      [OK]
+```
+
+Salatalar'da `Çoban Salata → coban-salata.webp`, `naturalWidth 68`,
+`sizes="68px"`. Dördü de `naturalWidth > 0` — gerçekten boyandı.
+
+**Kategori durumu — dört dilde de aynı:**
+
+| Kategori | Ürün | Fotoğraf | Yer tutucu |
+|---|---|---|---|
+| Kapalı Pide | 6 | 6 | 0 |
+| Izgara | 14 | 14 | 0 |
+| Salatalar | 1 | 1 | 0 |
+| Tatlılar | 3 | 2 | 1 (Künefe) |
+| İçecekler | 7 | 3 | 4 |
+
+**Sayfa yapısı ve sayaç.** Beş levha, hayalet numaralar 1-5. Salatalar
+`3 / 5`, İçecekler `5 / 5` — dört dilde de doğru:
+
+```
+TR  Menüye dön · Sayfa 5 / 5
+EN  Back to menu · Page 5 / 5
+AR  العودة إلى القائمة · صفحة 5 / 5
+RU  Назад в меню · Страница 5 / 5
+```
+
+**İçecekler satır yüksekliği — canlıda da değişmedi.** 22.8'deki yerel
+ölçümle ve fotoğraf öncesi temel değerlerle birebir aynı:
+
+| Ekran / dil | Temel (fotoğraf öncesi) | Canlı |
+|---|---|---|
+| Masaüstü 1280×1000 · TR | 638 px | **638 px** |
+| Masaüstü · EN / AR / RU | 638 px | **638 px** |
+| Telefon 390×844 · RU | 677 px | **677 px** |
+
+Telefonda RU satırları `91·91·91·112·91·109·90` — 4. (Айран) ve 6.
+(Мейвели сода) satırların yüksekliği uzun Rusça adın sarmasından, gövde
+68px'lik yuvayı aşıyor. Fotoğraf gelmeden önce de aynıydı. Yuva her satırda
+68×68.
+
+Dört dilde, iki genişlikte: yatay taşma **0**, kırpılan ürün adı **0**,
+saran fiyat **0**.
+
+**`sizes`.** Tarayıcı dört fotoğraf için de `w=96` sürümünü indirdi —
+68px'lik yuvanın 2× karşılığı. Ölçekli sürümlerin hiçbiri istenmedi.
+
+**Konsol.** Dört dil, iki genişlik gezildi: **0 hata, 0 uyarı.** Ağ
+kaydında başarısız istek yok.
 
 === RAPOR SONU ===
