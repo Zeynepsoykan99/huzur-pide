@@ -3,7 +3,7 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 26 tamamlandı — Aşama 25'te eklenen **menü kapağı görseli karşılamadan kaldırıldı** (dosya diskte duruyor, kullanımdan çıktı). Aşama 25'in görsel kırpma düzeltmesi yerinde. Aşama 26 **henüz üretimde değil, push onayı bekliyor**; Aşama 25 dahil öncesi **üretimde canlı**. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
+**Güncel aşama:** Aşama 26 tamamlandı — Aşama 25'te eklenen **menü kapağı görseli karşılamadan kaldırıldı** (dosya diskte duruyor, kullanımdan çıktı). Aşama 25'in görsel kırpma düzeltmesi yerinde. Aşama 26 dahil her şey **üretimde canlı**. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
 **Son güncelleme:** 2026-09-04
 
 ### Genel Durum
@@ -38,7 +38,7 @@ Numaralandırma rapor başlıklarıyla aynı: aşağıdaki her satırın karşı
 | 23 | Karşılama sayfası ve yeni akış | **Tamamlandı** |
 | 24 | Menü butonu doğrudan menüye | **Tamamlandı** |
 | 25 | Görsel kırpması + menü kapağı | **Tamamlandı** |
-| 26 | Menü kapağının kaldırılması | **Tamamlandı** — push onayı bekliyor |
+| 26 | Menü kapağının kaldırılması | **Tamamlandı** |
 
 ### Bekleyenler
 
@@ -5051,8 +5051,49 @@ içeriği, fiyatlar, çeviriler ve panel değişmedi.
 
 ### 26.6 Sıradaki adım
 
-Push ve deploy onay bekliyor.
+Push edildi ve üretime çıktı; canlı doğrulama 26.7'de.
 
 Fotoğrafsız beş ürün duruyor: Künefe, Kola, Soda, Komposto, Meyveli Soda.
+
+### 26.7 Canlı doğrulama · 2026-09-04
+
+`df49f6d` push edildi, Vercel dağıtımı yaklaşık 40 saniyede tamamlandı.
+Doğrulama **https://huzur-pide.vercel.app** üzerinde yapıldı.
+
+**Görsel dört dilde de gitmiş.** Sayfa kaynağında `kars-kapak` geçmiyor,
+`menu-kapagi` isteği hiçbir dilde yok, `mekan/` altından yüklenen görsel
+sayısı 3.
+
+| Dil | Yön | mekan görseli | Kapak | Org→İletişim | Taşma | Yükseklik |
+|---|---|---|---|---|---|---|
+| `/tr` | ltr | 3 | yok | 44px | 0 | 1615 |
+| `/en` | ltr | 3 | yok | 44px | 0 | 1615 |
+| `/ar` | **rtl** | 3 | yok | 44px | 0 | 1615 |
+| `/ru` | ltr | 3 | yok | 44px | 0 | 1615 |
+
+**Sayfa akışı düzgün.** `<main>` içindeki sıra: iki görselli blok, sonra
+İletişim. Hero yukarıda, Menü butonu (iki tane, ikisi de `/tr/menu`) yerinde.
+Arapça'da `dir="rtl"` duruyor, iletişim ikonları metnin sağında, İletişim
+başlığı `اتصل بنا`, Menü butonu `/ar/menu`.
+
+**Boşluk yerinde.** Organizasyon bloğunun alt kenarı ile İletişim başlığı
+arası dört dilde ve iki ekranda da **44 piksel** — kapak eklenmeden önceki
+aralığın aynısı. Ekranda bakıldı: ne sıkışık ne boşlukta kalmış.
+
+Sayfa telefonda 2136 → **1615**, masaüstünde 2982 → **2462** piksele indi;
+aradaki fark kapağın kapladığı yer.
+
+**Diğer görseller bozulmadı.** Aşama 25'in kırpma düzeltmesi çalışıyor:
+
+| Blok | Telefon | Masaüstü |
+|---|---|---|
+| hero (dukkan) | 375×375 — %100 | 704×704 — %100, 750w |
+| firin | 375×300 — %100 | 704×563 — %100, 750w |
+| dis-gorunum | 375×281 — %99,8 | 704×528 — %99,8, 750w |
+
+**Konsolda hata yok.** Dört dil ve menü sayfası gezildi: **0 hata.**
+
+**Menü kitabı bozulmadı.** `/tr/menu/izgara`: beş levha, sayaç `Sayfa 2 / 5`,
+26 ürün fotoğrafı, `sizes="68px"` yerinde, yatay taşma 0.
 
 === RAPOR SONU ===
