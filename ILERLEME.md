@@ -3,7 +3,7 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 25 tamamlandı — karşılama sayfasındaki **görsellerin kırpılması bitti** (blok yüksekliği artık görselin kendi oranından geliyor) ve **menü kapağı** sayfaya eklendi. Aşama 25 dahil her şey **üretimde canlı**. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
+**Güncel aşama:** Aşama 26 tamamlandı — Aşama 25'te eklenen **menü kapağı görseli karşılamadan kaldırıldı** (dosya diskte duruyor, kullanımdan çıktı). Aşama 25'in görsel kırpma düzeltmesi yerinde. Aşama 26 **henüz üretimde değil, push onayı bekliyor**; Aşama 25 dahil öncesi **üretimde canlı**. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
 **Son güncelleme:** 2026-09-04
 
 ### Genel Durum
@@ -38,6 +38,7 @@ Numaralandırma rapor başlıklarıyla aynı: aşağıdaki her satırın karşı
 | 23 | Karşılama sayfası ve yeni akış | **Tamamlandı** |
 | 24 | Menü butonu doğrudan menüye | **Tamamlandı** |
 | 25 | Görsel kırpması + menü kapağı | **Tamamlandı** |
+| 26 | Menü kapağının kaldırılması | **Tamamlandı** — push onayı bekliyor |
 
 ### Bekleyenler
 
@@ -4945,5 +4946,113 @@ gidiyor.
 
 **`sizes` düzeltmesi üretimde çalışıyor:** masaüstünde üç görsel de 750w
 indiriyor. Düzeltme yapılmasaydı 704 piksellik yuvaya 1920w dosya inecekti.
+
+=== RAPOR SONU ===
+
+
+## Aşama 26 — Menü Kapağı Kaldırıldı · 2026-09-04
+
+=== RAPOR BAŞLANGICI ===
+
+**Tarih:** 2026-09-04 · **Dal:** `main` · **Durum:** push onayı bekliyor
+
+Aşama 25'te eklenen menü kapağı görseli (deri ciltli, altın logolu) karşılama
+sayfasından kaldırıldı. Aşama 25'in diğer işi — görsellerin kırpılmasının
+giderilmesi — **yerinde duruyor**, ona dokunulmadı.
+
+### 26.1 Kaldırılanlar
+
+| Ne | Nerede |
+|---|---|
+| `.kars-kapak` bloğu ve içindeki `<Image>` | `components/ekranlar.tsx` (18 satır) |
+| `.kars-kapak`, `.kars-kapak-gorsel` kuralları + açıklaması | `app/globals.css` |
+| Masaüstü medya sorgusundaki `.kars-kapak` seçicisi | `app/globals.css` |
+| `MEKAN_GORSELLERI.menuKapagi` | `data/karsilama.ts` |
+| `GORSEL_ALT.menuKapagi` — dört dildeki alt metin | `data/karsilama.ts` |
+
+Kaldırmadan sonra kod tabanında `kars-kapak` ve `menuKapagi` geçen **hiçbir
+satır kalmadı**; arandı, doğrulandı.
+
+Masaüstü medya sorgusunun açıklaması da düzeltildi: artık var olmayan kapağın
+"1265×1898 olurdu" örneğinden bahsediyordu.
+
+### 26.2 Dosya duruyor
+
+`public/mekan/menu-kapagi.webp` **silinmedi** — ileride gerekebilir.
+`MEKAN_GORSELLERI` açıklamasına bunu söyleyen bir not eklendi, dosyayı
+"sahipsiz kalmış" sanıp silen olmasın diye.
+
+### 26.3 Boşluk
+
+Kapak `padding: 2.5rem 1.5rem 0` ile Organizasyon bloğunun altında duruyordu.
+Kaldırılınca araya **yeni bir boşluk konmadı ve gerekmedi:** İletişim
+bölümünün kendi üst boşluğu (`.kars-iletisim`, `padding-top: 2.75rem`) zaten
+oradaydı ve Aşama 25 boyunca hiç değiştirilmemişti.
+
+Yani sayfa, kapak eklenmeden önceki — Aşama 23-24'te onaylanan — aralığına
+geri döndü. Ölçüldü: Organizasyon bloğunun alt kenarı ile "İletişim"
+başlığı arası **44 piksel**, dört dilde ve iki ekranda da aynı.
+
+| | Kapak varken | Kapak kaldırıldıktan sonra |
+|---|---|---|
+| Telefon sayfa yüksekliği | 2136px | **1615px** |
+| Masaüstü sayfa yüksekliği | 2982px | **2462px** |
+| Organizasyon → İletişim başlığı | 2,5rem + kapak + 2,75rem | **2,75rem (44px)** |
+
+### 26.4 Doğrulama
+
+**Görsel dört dilde de gitmiş.** Sayfada `mekan/` altından yüklenen görsel
+sayısı 4'ten **3'e** indi; `menu-kapagi` isteği hiçbir dilde yok.
+
+| Dil | Yön | mekan görseli | Kapak | Org→İletişim | Taşma | Yükseklik |
+|---|---|---|---|---|---|---|
+| `/tr` | ltr | 3 | yok | 44px | 0 | 1615 |
+| `/en` | ltr | 3 | yok | 44px | 0 | 1615 |
+| `/ar` | **rtl** | 3 | yok | 44px | 0 | 1615 |
+| `/ru` | ltr | 3 | yok | 44px | 0 | 1615 |
+
+**Akış düzgün.** `<main>` içindeki sıra: iki görselli blok, sonra İletişim.
+Hero yukarıda, Menü butonu sayfa sonunda — hepsi yerinde. Arapça'da `dir="rtl"`
+duruyor, iletişim ikonları metnin sağında, Menü butonu `/ar/menu`'ye gidiyor.
+
+**Diğer görseller bozulmadı** — Aşama 25'in kırpma düzeltmesi çalışmaya
+devam ediyor:
+
+| Blok | Telefon | Masaüstü |
+|---|---|---|
+| hero (dukkan) | 375×375 — %100 | 704×704 — %100 |
+| firin | 375×300 — %100 | 704×563 — %100 |
+| dis-gorunum | 375×281 — %99,8 | 704×528 — %99,8 |
+
+(%99,8 kırpma değil, 281,25'in 281'e yuvarlanması.)
+
+```
+npx tsc --noEmit   → temiz (çıkış 0)
+npm run lint       → temiz (çıktı yok)
+npm run build      → başarılı, 30 statik sayfa
+tarayıcı konsolu   → 0 hata
+```
+
+**Menü kitabı bozulmadı.** `/tr/menu/izgara`: beş levha, sayaç `Sayfa 2 / 5`,
+26 ürün fotoğrafı, `sizes="68px"` yerinde, yatay taşma 0.
+
+### 26.5 Değişen dosyalar
+
+| Dosya | Değişiklik |
+|---|---|
+| `components/ekranlar.tsx` | kapak bloğu silindi (−18 satır) |
+| `app/globals.css` | kapak kuralları ve seçicisi silindi, medya sorgusu açıklaması düzeltildi |
+| `data/karsilama.ts` | `menuKapagi` iki yerden silindi, dosyanın korunduğunu söyleyen not eklendi |
+| `ILERLEME.md` | özet, aşama tablosu ve bu rapor |
+
+Diğer görseller, metinler, iletişim bilgileri, akış, menü kitabı, menü
+içeriği, fiyatlar, çeviriler ve panel değişmedi.
+`public/mekan/menu-kapagi.webp` diskte duruyor.
+
+### 26.6 Sıradaki adım
+
+Push ve deploy onay bekliyor.
+
+Fotoğrafsız beş ürün duruyor: Künefe, Kola, Soda, Komposto, Meyveli Soda.
 
 === RAPOR SONU ===

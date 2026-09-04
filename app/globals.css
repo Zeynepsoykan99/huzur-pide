@@ -1141,32 +1141,6 @@
   box-shadow: var(--t-golge);
 }
 
-/*
- * Menu kapagi — arka plan DEGIL, kendi orayla duran bagimsiz gorsel.
- *
- * Dikey (680x1020) ve uzerinde okunmasi gereken yazilar var; arka plan
- * yapilsaydi telefonda %52'si, masaustunde %81'i kesilirdi. Burada hicbir
- * sey kirpilmiyor: `width/height: auto` + iki ust sinir goruntuyu kendi
- * oraninda kucultuyor.
- *
- * `max-height: 60vh` telefon icin: 20rem genislikte yukseklik 480px'e
- * cikiyor, ekranin tamamini kaplamasin diye.
- */
-.kars-kapak {
-  display: flex;
-  justify-content: center;
-  padding: 2.5rem 1.5rem 0;
-}
-
-.kars-kapak-gorsel {
-  width: auto;
-  height: auto;
-  max-width: min(100%, 20rem);
-  max-height: 60vh;
-  border-radius: var(--t-yuvarlak);
-  box-shadow: 0 2px 12px rgba(9, 18, 33, 0.22);
-}
-
 /* --- Iletisim --- */
 .kars-iletisim {
   display: flex;
@@ -1263,10 +1237,10 @@ a.kars-satir:hover {
 /*
  * Genis ekran: bloklar tam genislik yerine ORTALANMIS BIR SUTUNDA duruyor.
  *
- * Blogun orani gorselden geldigi icin, tam genislikte birakilsalardi
- * masaustunde hero 1265x1265, menu kapagi 1265x1898 olurdu — tek gorsel
- * ekrandan tasardi. Genislik sinirlanınca oran korunuyor, yukseklik makul
- * kaliyor: hero 704x704, firin 704x563, dis gorunum 704x528.
+ * Blogun orani gorselden geldigi icin, tam genislikte birakilsaydi
+ * masaustunde hero 1265x1265 olurdu — tek gorsel ekrandan tasardi. Genislik
+ * sinirlaninca oran korunuyor, yukseklik makul kaliyor: hero 704x704,
+ * firin 704x563, dis gorunum 704x528.
  *
  * Yanlarda kalan alan temanin kendi zemini ve deseni; blok kenari yuvarlanip
  * bilincli bir sutun gibi duruyor, kazara dar kalmis gibi degil.
@@ -1278,8 +1252,7 @@ a.kars-satir:hover {
    * icerigine gore 415px'e dusuyordu. Digerleri `<main>` icinde, yani blok
    * akisinda, orada `max-width` + otomatik kenar bosluk zaten calisiyor.
    */
-  .kars-blok,
-  .kars-kapak {
+  .kars-blok {
     width: 100%;
     max-width: 44rem;
     margin-inline: auto;

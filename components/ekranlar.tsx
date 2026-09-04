@@ -232,24 +232,6 @@ export function KarsilamaEkrani({ dil, tema }: MotifProps & { dil: DilKodu }) {
           <p className="kars-metin">{metin(ORGANIZASYON_METNI, dil)}</p>
         </GorselliBolum>
 
-        {/* Menü kapağı — diğer üç görselden farklı: arka plan DEĞİL.
-            Dikey oranlı ve üzerinde okunması gereken yazılar var, arka plan
-            yapılsaydı telefonda %52'si, masaüstünde %81'i kesilirdi. Kendi
-            oranında, bütün olarak duruyor; üstüne yazı konmuyor çünkü marka
-            adı ve alt yazılar zaten görselin kendisinde. */}
-        <div className="kars-kapak">
-          <Image
-            src={MEKAN_GORSELLERI.menuKapagi.src}
-            alt={metin(GORSEL_ALT.menuKapagi, dil)}
-            width={MEKAN_GORSELLERI.menuKapagi.genislik}
-            height={MEKAN_GORSELLERI.menuKapagi.yukseklik}
-            /* Genisligi `max-width: min(100%, 20rem)` sinirliyor; iki
-               ekranda da 20rem'e dayaniyor, viewport'la buyumuyor. */
-            sizes="20rem"
-            className="kars-kapak-gorsel"
-          />
-        </div>
-
         {/* İletişim görselsiz: telefon ve adres okunması gereken bilgi,
             arka plan üstünde değil düz zeminde duruyor. */}
         <section className="kars-iletisim">

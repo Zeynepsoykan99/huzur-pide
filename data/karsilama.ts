@@ -72,6 +72,10 @@ export const ORGANIZASYON_METNI: Cevrilebilir = {
  * Ürün fotoğraflarından ayrı bir klasörde (`/mekan/`): onlar 68px'lik yuvaya
  * giren 800×450 kareler, bunlar sayfa genişliğinde duran görseller.
  *
+ * `public/mekan/menu-kapagi.webp` bilerek listede DEĞİL: menü kapağı
+ * karşılamadan kaldırıldı ama dosya ileride gerekebileceği için duruyor.
+ * Kullanılmıyor diye silmeyin.
+ *
  * ÖLÇÜLER BURADA ÇÜNKÜ DÜZEN ONLARA BAĞLI. Blokların yüksekliği sabit değil,
  * görselin kendi oranından geliyor (`--kars-oran`) — böylece `object-fit:
  * cover` hiçbir şeyi kırpmıyor. Sabit yükseklik kullanıldığında masaüstünde
@@ -81,15 +85,6 @@ export const MEKAN_GORSELLERI = {
   dukkan: { src: "/mekan/dukkan.webp", genislik: 1080, yukseklik: 1080 },
   disGorunum: { src: "/mekan/dis-gorunum.webp", genislik: 1360, yukseklik: 1020 },
   firin: { src: "/mekan/firin.webp", genislik: 1280, yukseklik: 1024 },
-  /**
-   * Menü kapağı — diğer üçünden farklı ele alınıyor.
-   *
-   * Dikey (680×1020) ve üzerinde okunması gereken yazılar var. Arka plan
-   * olarak konsaydı telefonda %52'si, masaüstünde %81'i kesilir, altın logo
-   * ve yazılar giderdi. Bu yüzden arka plan değil, kendi oranında duran
-   * bağımsız bir öge; üstüne de yazı konmuyor, zaten kendi üzerinde var.
-   */
-  menuKapagi: { src: "/mekan/menu-kapagi.webp", genislik: 680, yukseklik: 1020 },
 } as const;
 
 /** Görsellerin alt metinleri — dekoratif değiller, mekânı anlatıyorlar. */
@@ -111,11 +106,5 @@ export const GORSEL_ALT: Record<keyof typeof MEKAN_GORSELLERI, Cevrilebilir> = {
     en: "A wood fire burning in the stone oven",
     ar: "نار الحطب تشتعل في الفرن الحجري",
     ru: "Дровяной огонь в каменной печи",
-  },
-  menuKapagi: {
-    tr: "Huzur Pide'nin menü kapağı",
-    en: "The Huzur Pide menu cover",
-    ar: "غلاف قائمة حضور بيدة",
-    ru: "Обложка меню Huzur Pide",
   },
 };
