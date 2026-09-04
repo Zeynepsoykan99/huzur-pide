@@ -3,7 +3,7 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 25 tamamlandı — karşılama sayfasındaki **görsellerin kırpılması bitti** (blok yüksekliği artık görselin kendi oranından geliyor) ve **menü kapağı** sayfaya eklendi. Aşama 25 **henüz üretimde değil, push onayı bekliyor**; Aşama 24 dahil öncesi **üretimde canlı**. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
+**Güncel aşama:** Aşama 25 tamamlandı — karşılama sayfasındaki **görsellerin kırpılması bitti** (blok yüksekliği artık görselin kendi oranından geliyor) ve **menü kapağı** sayfaya eklendi. Aşama 25 dahil her şey **üretimde canlı**. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
 **Son güncelleme:** 2026-09-04
 
 ### Genel Durum
@@ -37,7 +37,7 @@ Numaralandırma rapor başlıklarıyla aynı: aşağıdaki her satırın karşı
 | 22 | Çoban Salata ve üç içeceğin fotoğrafı | **Tamamlandı** — Künefe ve dört içecek dosya bekliyor |
 | 23 | Karşılama sayfası ve yeni akış | **Tamamlandı** |
 | 24 | Menü butonu doğrudan menüye | **Tamamlandı** |
-| 25 | Görsel kırpması + menü kapağı | **Tamamlandı** — push onayı bekliyor |
+| 25 | Görsel kırpması + menü kapağı | **Tamamlandı** |
 
 ### Bekleyenler
 
@@ -4885,8 +4885,65 @@ fiyatlara, çevirilere ve panele dokunulmadı.
 
 ### 25.10 Sıradaki adım
 
-Push ve deploy onay bekliyor.
+Push edildi ve üretime çıktı; canlı doğrulama 25.11'de.
 
 Fotoğrafsız beş ürün duruyor: Künefe, Kola, Soda, Komposto, Meyveli Soda.
+
+### 25.11 Canlı doğrulama · 2026-09-04
+
+`ac76795` push edildi, Vercel dağıtımı yaklaşık 30 saniyede tamamlandı.
+Doğrulama **https://huzur-pide.vercel.app** üzerinde yapıldı.
+
+**Dört görsel de tam.** Telefon 390px ve masaüstü 1280px:
+
+| Blok | Telefon | Masaüstü |
+|---|---|---|
+| hero (dukkan) | 375×375 — **%100** | 704×704 — **%100** |
+| firin | 375×300 — **%100** | 704×563 — **%100** |
+| dis-gorunum | 375×281 — **%99,8** | 704×528 — **%99,8** |
+| menü kapağı | 320×480 — **%100** | 320×480 — **%100** |
+
+%99,8 kırpma değil, ölçüm yuvarlaması: kutu 281,25 piksel yerine 281'e
+yuvarlanıyor. Kesilen alan bir pikselin altında.
+
+**Menü kapağı doğru yerde ve tam.** Organizasyon bölümü ile sayfa sonundaki
+Menü butonu arasında; oran 0,667 — kaynak dosyanın oranıyla birebir aynı, yani
+hiç kırpılmamış. İki ekranda da ortalı, üstünde yazı yok.
+
+**Metinler okunaklı — kontrast canlıda yeniden ölçüldü** (en açık piksel):
+
+| Metin | Eşik | Masaüstü | Telefon |
+|---|---|---|---|
+| Hero · Huzur Pide | 3:1 | **6,00** ✓ | **5,82** ✓ |
+| Hero · slogan | 4,5:1 | **12,01** ✓ | **10,91** ✓ |
+| Lezzetler · başlık | 3:1 | **6,45** ✓ | **5,50** ✓ |
+| Lezzetler · metin | 4,5:1 | **5,69** ✓ | **5,55** ✓ |
+| Organizasyon · başlık | 3:1 | **6,68** ✓ | **6,80** ✓ |
+| Organizasyon · metin | 4,5:1 | **5,89** ✓ | **6,05** ✓ |
+
+Hepsi AA'yı geçiyor. Hero başlığının fotoğraftaki beyaz tabelaya denk geldiği
+en riskli nokta canlıda 6,00:1.
+
+**Dört dilde düzen bozuk değil.** Telefonda dördü de aynı ölçüleri veriyor,
+yatay taşma 0:
+
+| Dil | Yön | Başlık | Bloklar | Kapak |
+|---|---|---|---|---|
+| `/tr` | ltr | Lezzetlerimiz | %100 / %100 / %99,8 | ortalı |
+| `/en` | ltr | What we cook | aynı | ortalı |
+| `/ar` | **rtl** | أطباقنا | aynı | ortalı |
+| `/ru` | ltr | Наша кухня | aynı, en dar blokta 36px boşluk | ortalı |
+
+Arapça'da `dir="rtl"`, iletişim satırlarında ikon metnin **sağında**, bayrak
+şeridi ters sırada, telefon numarası soldan sağa. Menü butonu `/ar/menu`'ye
+gidiyor.
+
+**Konsolda hata yok.** Dört dil ve menü sayfası gezildi: **0 hata, 0 uyarı.**
+
+**Menü kitabı bozulmadı.** `/tr/menu/izgara`: beş levha, sayaç `Sayfa 2 / 5`,
+26 ürün fotoğrafı, `sizes="68px"` yerinde, yatay taşma 0.
+
+**`sizes` düzeltmesi üretimde çalışıyor:** masaüstünde üç görsel de 750w
+indiriyor. Düzeltme yapılmasaydı 704 piksellik yuvaya 1920w dosya inecekti.
 
 === RAPOR SONU ===
