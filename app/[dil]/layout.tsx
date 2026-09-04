@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { notFound } from "next/navigation";
 import { temaFontlari } from "@/app/temalar/aktif";
 import { DILLER, DIL_YONU, gecerliDil } from "@/data/menu";
-import { aktifTema } from "@/data/menuKaynak";
+import { aktifRenkler, aktifTema } from "@/data/menuKaynak";
 import "../globals.css";
 
 /**
@@ -25,6 +25,15 @@ import "../globals.css";
  * Yazı tipleri: dört tema modülü de derlemeye giriyor ama `<html>` üzerine
  * yalnızca aktif temanın değişkenleri konuyor, bu yüzden yalnızca onun
  * dosyaları iniyor.
+ *
+ * RENKLER de panelden geliyor ama tema sınıfının yerine geçmiyor: yalnızca
+ * iki değişken (`--t-vurgu`, `--t-fiyat`) satır içi stille eziliyor, geri
+ * kalan her şey temadan. Satır içi stil sınıf kuralını yendiği için ayrı
+ * bir CSS sınıfı ya da tema kopyası gerekmiyor. Seçim yoksa stil de yok.
+ *
+ * Renkler yalnızca `data/renkler.ts` paletinden gelebiliyor; o paletin
+ * tamamı `betikler/renk-kontrast.ts` ile ölçülü, yani buradan sayfaya
+ * kontrastı AA'nın altında bir renk geçemiyor.
  *
  * `/` adresi next.config.ts içinde `/tr`'ye yönlendiriliyor.
  */
@@ -54,13 +63,21 @@ export default async function KokLayout({
   const { dil } = await params;
   if (!gecerliDil(dil)) notFound();
 
-  const tema = await aktifTema();
+  const [tema, renkler] = await Promise.all([aktifTema(), aktifRenkler()]);
 
   return (
     <html
       lang={dil}
       dir={DIL_YONU[dil]}
       className={`tema-${tema} ${temaFontlari(tema)}`}
+      style={
+        renkler
+          ? ({
+              "--t-vurgu": renkler.vurgu,
+              "--t-fiyat": renkler.fiyat,
+            } as React.CSSProperties)
+          : undefined
+      }
     >
       <body className="min-h-dvh">{children}</body>
     </html>

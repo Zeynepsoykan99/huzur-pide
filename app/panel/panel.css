@@ -316,6 +316,10 @@
 }
 
 .panel-urun-ad {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
   font-size: 1.05rem;
   font-weight: 600;
   line-height: 1.3;
@@ -537,4 +541,197 @@
   padding: 2rem 1rem;
   text-align: center;
   color: var(--p-solgun);
+}
+
+/* ---------------------------------------------------------------------------
+   Renk secimi
+
+   Tema kartlarinin altinda, ayni sayfada. Ayri bir ekran acilmadi: renk
+   secimi temanin bir parcasi ve panelin tamami "her ekranda tek is" diye
+   kuruldu; renk icin dorduncu bir buyuk dugme koymak o dengeyi bozardi.
+
+   Renk kutulari IRI (2,75rem): mekan sahibi telefondan giriyor ve secim
+   parmakla yapiliyor. Secili olan kalin cerceveyle isaretli — yalnizca
+   renkle isaretlenseydi renk korlugunde ayirt edilemezdi.
+   --------------------------------------------------------------------------- */
+.panel-renkler {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--p-cizgi);
+}
+
+.panel-renk-grup {
+  margin-top: 1.25rem;
+}
+
+.panel-renk-baslik {
+  display: block;
+  margin-bottom: 0.6rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--p-solgun);
+}
+
+.panel-renk-listesi {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.panel-renk-dugmesi {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.5rem 0.4rem;
+  min-width: 4.25rem;
+  background: var(--p-yuzey);
+  border: 2px solid var(--p-cizgi);
+  border-radius: 0.65rem;
+  font-family: inherit;
+  color: var(--p-metin);
+  cursor: pointer;
+}
+
+.panel-renk-dugmesi[aria-pressed="true"] {
+  border-color: var(--p-vurgu);
+  background: #f2f6fb;
+}
+
+.panel-renk-dugmesi:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.panel-renk-kutusu {
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 0.5rem;
+  /* Ince koyu cerceve: acik renkler beyaz zeminde kaybolmasin. */
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.panel-renk-ad {
+  font-size: 0.8rem;
+}
+
+/* --- Onizleme --------------------------------------------------------------
+   Kutu `tema-*` sinifiyla sarili ve renkleri satir ici stille aliyor: canli
+   menudeki duzenegin (bkz. app/[dil]/layout.tsx) birebir ayni. Bu yuzden
+   burada gorunen renk menude gorunecek renkle ayni, iki yerde ayri
+   tanimlanmiyor.
+
+   Yazi tipleri temanin degil panelin: tema fontlari yalnizca musteri
+   tarafindaki <html> uzerinde tanimli, burada yarim yuklenirdi.
+   --------------------------------------------------------------------------- */
+.panel-renk-onizleme-sarmal {
+  margin-top: 1.5rem;
+}
+
+.panel-onizleme {
+  padding: 1rem;
+  border-radius: 0.65rem;
+  border: 1px solid var(--p-cizgi);
+  background: var(--t-zemin);
+}
+
+.panel-onizleme-levha {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  border-radius: 0.5rem;
+  background: var(--t-yuzey);
+  border: 1px solid var(--t-cizgi);
+}
+
+.panel-onizleme-motif {
+  width: 1.5rem;
+  height: 1.5rem;
+  flex-shrink: 0;
+  color: var(--t-vurgu);
+}
+
+.panel-onizleme-ad {
+  flex: 1;
+  min-width: 0;
+  color: var(--t-metin);
+  font-weight: 600;
+}
+
+.panel-onizleme-fiyat {
+  flex-shrink: 0;
+  color: var(--t-fiyat);
+  font-weight: 700;
+}
+
+/* ---------------------------------------------------------------------------
+   Kategoriye atlama seridi
+
+   31 urun tek sayfada duruyor ve aranan urunu bulmak kaydirmayla oluyordu.
+   Serit sayfanin basinda; bagli oldugu bolumler `scroll-margin-top` ile
+   biraz asagi kayiyor ki kategori basligi ekranin en tepesine yapismasin.
+   --------------------------------------------------------------------------- */
+.panel-atlama {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+}
+
+.panel-atlama-baglanti {
+  padding: 0.4rem 0.7rem;
+  background: var(--p-yuzey);
+  border: 1px solid var(--p-cizgi);
+  border-radius: 999px;
+  font-size: 0.85rem;
+  color: var(--p-vurgu);
+  text-decoration: none;
+}
+
+.panel-atlama-baglanti:hover {
+  border-color: var(--p-vurgu);
+}
+
+.panel-govde section[id] {
+  scroll-margin-top: 0.75rem;
+}
+
+/* ---------------------------------------------------------------------------
+   Urun silme
+
+   Dugme urun adinin sagina, FIYAT KUTULARINDAN UZAGA konuyor: yanlislikla
+   dokunulan bir silme fiyat duzeltmekten cok daha pahali. Kirmizi da degil,
+   solgun — sayfada surekli goze batan bir tehlike dugmesi olmasin; tehlikeli
+   olan onay kutusundaki dugme ve o kirmizi.
+   --------------------------------------------------------------------------- */
+.panel-sil-dugmesi {
+  flex-shrink: 0;
+  padding: 0.35rem 0.6rem;
+  background: none;
+  border: 1px solid var(--p-cizgi);
+  border-radius: 0.4rem;
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: var(--p-solgun);
+  cursor: pointer;
+}
+
+.panel-sil-dugmesi:hover:not(:disabled) {
+  border-color: var(--p-uyari);
+  color: var(--p-uyari);
+}
+
+.panel-sil-dugmesi:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.panel-dugme-tehlike {
+  background: var(--p-uyari);
+  border-color: var(--p-uyari);
 }

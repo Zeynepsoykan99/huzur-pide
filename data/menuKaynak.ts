@@ -2,7 +2,8 @@ import "server-only";
 import { cache } from "react";
 import { db } from "@/lib/firebase-sunucu";
 import type { Kategori, MenuSayfasi, Urun } from "@/data/menu";
-import { TEMA_KODLARI, type TemaKodu } from "@/data/tema";
+import { TEMA_KODLARI, secilebilirTema, type TemaKodu } from "@/data/tema";
+import { renkleriCoz, type CozulmusRenkler, type TemaRenkSecimi } from "@/data/renkler";
 
 /**
  * Menünün ve aktif temanın KAYNAĞI — Firestore.
@@ -28,6 +29,13 @@ type MenuAnliki = {
   kategoriler: Kategori[];
   sayfalar: MenuSayfasi[];
   tema: TemaKodu;
+  /**
+   * Aktif temanın renkleri — panelden seçilen ya da temanın varsayılanı.
+   *
+   * `null` yalnızca aktif tema panelde seçilebilir olmadığında (Zeytin):
+   * onun bir paleti yok, temanın kendi renkleri geçerli kalıyor.
+   */
+  renkler: CozulmusRenkler | null;
 };
 
 /**
@@ -91,7 +99,22 @@ export const menuyuOku = cache(async (): Promise<MenuAnliki> => {
     ? (hamTema as TemaKodu)
     : "cini";
 
-  return { kategoriler, sayfalar, tema };
+  /**
+   * Renk seçimi TEMAYA GÖRE saklanıyor: `renkler[tema]`.
+   *
+   * Çini'nin porselen zeminine uyan koyu bir renk, Gece'nin neredeyse siyah
+   * zemininde okunmuyor. Tek bir alanda saklansaydı tema değiştirildiğinde
+   * o renk yeni temaya taşınır ve kontrastı düşürebilirdi. Böylece her tema
+   * yalnızca kendisi için ölçülmüş bir seçimle geliyor.
+   *
+   * Saklanan değer HEX DEĞİL, palet anahtarı; `renkleriCoz` tanımadığı
+   * anahtarı temanın varsayılanına düşürüyor.
+   */
+  const hamRenkler = ayarAnlik.exists ? ayarAnlik.data()?.renkler : undefined;
+  const secim: TemaRenkSecimi | undefined = hamRenkler?.[tema];
+  const renkler = secilebilirTema(tema) ? renkleriCoz(tema, secim) : null;
+
+  return { kategoriler, sayfalar, tema, renkler };
 });
 
 /* ---------------------------------------------------------------------------
@@ -121,3 +144,15 @@ export async function sayfaNumarasi(kategoriSlug: string): Promise<number> {
 export async function aktifTema(): Promise<TemaKodu> {
   return (await menuyuOku()).tema;
 }
+
+/** Aktif temanın renkleri. Seçilebilir olmayan temada `null`. */
+export async function aktifRenkler(): Promise<CozulmusRenkler | null> {
+  return (await menuyuOku()).renkler;
+}
+
+/** Panelin renk kutularını işaretlemek için — ham seçim, çözülmemiş hâliyle. */
+export const renkSecimi = cache(async (): Promise<TemaRenkSecimi> => {
+  const belge = await db().collection("ayarlar").doc("genel").get();
+  const tema = (await menuyuOku()).tema;
+  return (belge.data()?.renkler?.[tema] ?? {}) as TemaRenkSecimi;
+});

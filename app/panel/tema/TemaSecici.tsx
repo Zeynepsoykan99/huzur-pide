@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { TemaMotifi } from "@/components/TemaMotifi";
 import {
   SECILEBILIR_TEMALAR,
@@ -27,6 +28,7 @@ const ORNEK_RENK: Record<SecilebilirTema, { zemin: string; renk: string }> = {
 };
 
 export function TemaSecici({ baslangic }: { baslangic: TemaKodu }) {
+  const router = useRouter();
   const [secili, setSecili] = useState<TemaKodu>(baslangic);
   const [bildirim, setBildirim] = useState<
     { tur: "basari" | "hata"; metin: string } | null
@@ -45,6 +47,10 @@ export function TemaSecici({ baslangic }: { baslangic: TemaKodu }) {
           tur: "basari",
           metin: `Menü görünümü "${TEMA_ADI[tema]}" olarak değiştirildi.`,
         });
+        // Altındaki renk bölümü bu sayfanın sunucu tarafından geliyor ve her
+        // temanın kendi paleti var. Tazelenmezse yeni temanın altında eski
+        // temanın renkleri görünürdü.
+        router.refresh();
       } else {
         setSecili(oncekiTema);
         setBildirim({ tur: "hata", metin: sonuc.hata });

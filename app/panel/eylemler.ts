@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { db } from "@/lib/firebase-sunucu";
 import { oturumAc, oturumKapat, yoneticiGerekli } from "@/lib/oturum";
 import { secilebilirTema } from "@/data/tema";
+import { FIYAT_PALETI, VURGU_PALETI } from "@/data/renkler";
 
 /**
  * Panelin bütün yazma işlemleri.
@@ -65,6 +66,54 @@ export async function temayiDegistir(tema: string): Promise<EylemSonucu> {
     // seçim ekranları da yeniden üretilmeli.
     revalidatePath("/[dil]", "layout");
     return { ok: true, mesaj: "Tema değiştirildi." };
+  } catch (e) {
+    return { ok: false, hata: (e as Error).message };
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Renkler
+   --------------------------------------------------------------------------- */
+
+/**
+ * Temanın içindeki vurgu ve fiyat rengini değiştirir.
+ *
+ * SAKLANAN DEĞER HEX DEĞİL, PALET ANAHTARI ve anahtar burada paletle
+ * doğrulanıyor. Bu iki katmanın ikisi de gerekli: doğrulama olmasaydı
+ * Firestore'a düşen tanınmayan bir anahtar sayfada varsayılana düşerdi
+ * (sessiz), hex saklansaydı bozuk bir değer doğrudan sayfaya akardı.
+ *
+ * Paletin tamamı `betikler/renk-kontrast.ts` ile ölçülü olduğundan, buradan
+ * geçen her seçim WCAG AA'yı geçiyor — kontrast çalışma anında yeniden
+ * hesaplanmıyor, listeye girerken hesaplanmış oluyor.
+ *
+ * Seçim TEMAYA GÖRE yazılıyor (`renkler.<tema>`): bir temanın rengi başka
+ * temaya taşınmıyor, çünkü zeminleri farklı.
+ */
+export async function renkleriDegistir(
+  tema: string,
+  secim: { vurgu: string; fiyat: string },
+): Promise<EylemSonucu> {
+  try {
+    await yoneticiGerekli();
+    if (!secilebilirTema(tema)) {
+      return { ok: false, hata: "Geçersiz tema." };
+    }
+    if (!VURGU_PALETI[tema].some((r) => r.kod === secim.vurgu)) {
+      return { ok: false, hata: "Bu tema için geçersiz vurgu rengi." };
+    }
+    if (!FIYAT_PALETI[tema].some((r) => r.kod === secim.fiyat)) {
+      return { ok: false, hata: "Bu tema için geçersiz fiyat rengi." };
+    }
+
+    await db()
+      .collection("ayarlar")
+      .doc("genel")
+      .set({ renkler: { [tema]: secim } }, { merge: true });
+
+    // Renk temayla aynı kapsamda: karşılama sayfası da menü de etkileniyor.
+    revalidatePath("/[dil]", "layout");
+    return { ok: true, mesaj: "Renkler değiştirildi." };
   } catch (e) {
     return { ok: false, hata: (e as Error).message };
   }

@@ -3,7 +3,7 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 27 tamamlandı — hero görselindeki **yıldız motifi ve "HUZUR PİDE" başlığı kaldırıldı** (fotoğrafın kendi tabelasıyla çakışıyordu); slogan ve Menü butonu alta çekildi. Marka sekme adında ve alt bilgide duruyor, `h1` görsel olarak gizli hâlde korundu. Aşama 27 dahil her şey **üretimde canlı**. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
+**Güncel aşama:** Aşama 28 tamamlandı — panele **renk özelleştirme** eklendi (tema içinde vurgu ve fiyat rengi, temaya özel hazır palet, 27 rengin hepsi AA ölçülü), fiyat sayfasına kategoriye atlama ve **ürün silme** arayüzü geldi. Ürün fotoğrafı hâlâ engelli: Firebase Storage kurulmadı. Aşama 28 **henüz üretimde değil, push onayı bekliyor**; Aşama 27 dahil öncesi **üretimde canlı**. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
 **Son güncelleme:** 2026-09-04
 
 ### Genel Durum
@@ -40,6 +40,7 @@ Numaralandırma rapor başlıklarıyla aynı: aşağıdaki her satırın karşı
 | 25 | Görsel kırpması + menü kapağı | **Tamamlandı** |
 | 26 | Menü kapağının kaldırılması | **Tamamlandı** |
 | 27 | Hero'da yıldız ve marka başlığı kaldırıldı | **Tamamlandı** |
+| 28 | Panelde renk özelleştirme | **Tamamlandı** — push onayı bekliyor |
 
 ### Bekleyenler
 
@@ -5283,5 +5284,182 @@ yüksekliği görselin oranından geliyor, içerikten değil).
 
 **Menü kitabı bozulmadı.** `/tr/menu/izgara`: beş levha, sayaç `Sayfa 2 / 5`,
 26 ürün fotoğrafı, `sizes="68px"` yerinde, yatay taşma 0.
+
+=== RAPOR SONU ===
+
+
+## Aşama 28 — Panelde Renk Özelleştirme · 2026-09-04
+
+=== RAPOR BAŞLANGICI ===
+
+**Tarih:** 2026-09-04 · **Dal:** `main` · **Durum:** push onayı bekliyor
+
+Panele renk seçimi eklendi, fiyat sayfasının kullanılabilirliği düzeltildi.
+Ürün fotoğrafı hâlâ engelli — Storage kurulmadı.
+
+### 28.1 Durum tespiti
+
+Kod okumakla yetinilmedi, Storage ve Firestore'un canlı durumu denendi.
+
+| Özellik | Durum |
+|---|---|
+| Fiyat değiştirme | **Çalışıyor.** 31 ürün, kaydetmeden önce özet, üç kattan fazla değişimde uyarı, geçersiz sayı ayıklama, transaction + `revalidatePath` |
+| Yeni ürün ekleme | **Çalışıyor ama fotoğrafsız.** Kova `huzurpide.firebasestorage.app` için `exists()` → **false**; Storage kurulmamış |
+| Tema seçimi | **Çalışıyor.** Üç tema, `ayarlar/genel.tema`, `revalidatePath("/[dil]", "layout")` |
+
+Fiyat sayfasında bulunan üç eksik: 31 ürün tek uzun sayfada ve atlama yok;
+`urunSil` eylemi **kodda var ama arayüzü yok**; ürün adı/çevirisi panelden
+düzenlenemiyor (bu sonuncusu bu aşamanın kapsamı dışında bırakıldı).
+
+### 28.2 Renk özelleştirme — neden hazır palet
+
+Uygulamanın kendi kodundan çıkan bir kısıt kararı belirledi: **`--t-vurgu`
+iki yönde birden kullanılıyor.** Açık zeminlerde METİN rengi (motif, oklar,
+sıra numarası, ikonlar, odak halkası), `.dil-secenek-aktif` içinde ise ZEMİN
+rengi — üstünde `--t-yuzey` yazıyla. Bir vurgu rengi ikisini birden geçmek
+zorunda.
+
+Serbest renk seçicide bu iki yönlü kısıt her seçimde çalışma anında
+sınanırdı; paletteki renkler ise `betikler/renk-kontrast.ts` ile ÖNCEDEN
+ölçüldü. **AA garantisi çalışma anındaki bir kontrole değil, listenin
+kendisine dayanıyor** — palete geçmeyen renk hiç girmiyor. Ekranda uyarı,
+hata durumu ya da "bu renk olmaz" cevabı yok.
+
+Değiştirilebilen iki renk: **vurgu** (`--t-vurgu`) ve **fiyat**
+(`--t-fiyat`). `--t-baslik-renk` bilerek dışarıda: sekiz yerde ve Menü
+butonunun yazısında kullanılıyor, değişince "kişiselleştirme" değil "tema
+bozulmuş" gibi okunuyor.
+
+### 28.3 Saklama — iki savunma katmanı
+
+```
+ayarlar/genel = { tema: "cini", renkler: { cini: { vurgu: "kobalt", fiyat: "mercan" } } }
+```
+
+**Temaya göre anahtarlı.** Çini'nin porselen zeminine uyan koyu renk,
+Gece'nin neredeyse siyah zemininde okunmuyor. Tek alanda saklansaydı tema
+değiştirilince renk yeni temaya taşınır ve kontrastı düşürebilirdi. Böylece
+her tema yalnızca kendisi için ölçülmüş bir seçimle geliyor.
+
+**Hex değil, palet anahtarı.** Hex saklansaydı Firestore'a düşen bozuk bir
+değer doğrudan sayfaya akardı. Anahtar kodda aranıyor; tanınmayan anahtar
+temanın varsayılanına düşüyor — `gecerliTema()` / `VARSAYILAN_TEMA` için
+zaten kullanılan savunma. Ayrıca sunucu eylemi anahtarı yazmadan önce
+paletle doğruluyor.
+
+**Sayfaya iniş:** kök layout `<html>` üzerine satır içi stille yalnızca iki
+değişkeni yazıyor, geri kalan her şey temadan geliyor. Satır içi stil sınıf
+kuralını yendiği için ayrı bir CSS sınıfı ya da tema kopyası gerekmedi.
+
+**Tazeleme:** tema ile birebir aynı — `revalidatePath("/[dil]", "layout")`.
+Renk karşılama sayfasını da etkilediği için yalnızca menü değil bütün
+ekranlar.
+
+**Panel–menü tutarlılığı:** hexler tek modülde (`data/renkler.ts`); hem palet
+kutularını hem layout'u o besliyor. Panel önizlemesi de `tema-*` sınıfı +
+satır içi değişken düzeneğini kullanıyor, yani canlı menüdekiyle aynı yol.
+
+### 28.4 Kontrast — 27 renk ölçüldü
+
+`betikler/renk-kontrast.ts` her rengi **gerçekte indiği zeminlere** karşı
+ölçüyor: vurgu metin olarak sayfa zemini/yüzey/levha üstünde (4,5:1), vurgu
+zemin olarak üstündeki yüzey yazısıyla (4,5:1), odak halkası olarak (3:1);
+fiyat metin olarak yüzey ve levha üstünde (4,5:1).
+
+Zeminler betiğe **kopyalanmıyor, `temalar.css`ten okunuyor** — kopyalansaydı
+bir temanın zemini değiştiğinde betik eski değerle ölçmeye devam eder,
+geçmeyen bir rengi "geçti" diye onaylardı.
+
+**27 renk ölçüldü, 0 tanesi kaldı.** Her temanın en dar rengi:
+
+| Tema | En dar vurgu | En dar fiyat |
+|---|---|---|
+| Çini Levha | Mercan **5,30:1** | Mercan **5,74:1** |
+| Gece Ocağı | Bakır **6,26:1** | Gül **6,78:1** |
+| Mürekkep | Kırmızı **4,76:1** | Kırmızı **4,76:1** |
+
+Hepsi 4,5:1 eşiğinin üstünde. Palete renk eklemek isteyen betiği çalıştırır;
+geçmeyen renkte çıkış kodu 1.
+
+### 28.5 Fiyat sayfası
+
+**Kategoriye atlama şeridi** eklendi — beş bağlantı, beşi de hedefini buluyor.
+
+**Ürün silme arayüzü** eklendi; `urunSil` eylemi artık ölü değil. Silme
+düğmesi ürün adının sağında, fiyat kutularından uzakta ve solgun; tehlikeli
+görünen düğme onay kutusundaki. Onay kutusunda ürünün **adı** yazıyor.
+
+### 28.6 Doğrulama — panelde uçtan uca denendi
+
+Geçici test hesabıyla panele girildi (`betikler/test-hesaplari.ts`), iş
+bitince hesaplar silindi; mekân sahibinin hesabına dokunulmadı.
+
+| Ne denendi | Sonuç |
+|---|---|
+| Panele giriş | Giriş kutusu gitti, üç bölüm göründü |
+| Vurgu rengi Turkuaz seçildi | Önizleme `rgb(31,107,107)` oldu, "Renk değiştirildi." |
+| Menüde vurgu | `<html style="--t-vurgu:#1f6b6b">`, motif ve aktif dil turkuaz |
+| Fiyat rengi Yeşil seçildi | Menüde fiyat `rgb(47,107,69)` |
+| Tema Gece'ye çevrildi | Palet Gece'ye döndü (Amber/Altın/Bakır/Fıstık/Gül), seçim Gece'nin varsayılanına düştü, **Çini'nin turkuazı taşınmadı** |
+| Tema Çini'ye döndü | Turkuaz + Yeşil geri geldi — temaya göre saklama çalışıyor |
+| Yeni ürün eklendi | "ZZ Test Ürünü Silinecek" eklendi (31 → 32) |
+| Panelden silindi | Onay kutusunda ürün adı, silindi (32 → 31) |
+| Fiyat değiştirildi | 500 → 501, özet doğru, menüde **501 ₺** göründü |
+| Geri alındı | 500'e döndürüldü |
+
+**Canlı veri geri bırakıldı:** tema `cini`, renkler varsayılan
+(kobalt/mercan), 31 ürün, Et Izgara Porsiyon 500 ₺, test ürünü yok, test
+hesapları silindi. Teyit edilmemiş üç ürüne (Kıymalı, Kaşarlı, Kabak
+Tatlısı) **dokunulmadı** — kaydetmek "teyit edildi" işaretini değiştirirdi.
+
+```
+npx tsc --noEmit            → temiz (çıkış 0)
+npm run lint                → temiz (çıktı yok)
+npm run build               → başarılı, 30 statik sayfa
+npx tsx betikler/renk-kontrast.ts → 27 renk, 0 kaldı
+tarayıcı konsolu            → 0 hata
+```
+
+### 28.7 Ürün fotoğrafı — engel duruyor
+
+Storage kurulmadan panelden fotoğraflı ürün eklenemiyor. Kod tarafı hazır
+(`kova()`, `storageBucket`, `storage.rules`, `gorsel` alanı) ama kova yok.
+
+Firebase konsolunda yapılması gereken (bu adıma girilmedi):
+1. Firebase Console → Storage → Get started (Blaze planı gerekiyor)
+2. Kova adı `huzurpide.firebasestorage.app` olarak kalmalı — `.env.local` ve
+   Vercel'deki `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET` bu değeri gösteriyor
+3. Rules sekmesine `storage.rules` içeriği yapıştırılıp Publish
+
+Açıldıktan sonra yazılacaklar: `urunEkle`'ye dosya parametresi, sunucuda
+`sharp` ile 800×450 webp'ye çevirip kovaya yükleme, `next.config.ts` içine
+`images.remotePatterns` (şu an **yok**, o olmadan uzak görsel çalışmaz).
+
+### 28.8 Değişen dosyalar
+
+| Dosya | Değişiklik |
+|---|---|
+| `data/renkler.ts` | **yeni** — palet, çözümleme, savunma |
+| `betikler/renk-kontrast.ts` | **yeni** — kalıcı AA doğrulaması, zeminleri CSS'ten okuyor |
+| `app/panel/tema/RenkSecici.tsx` | **yeni** — renk kutuları ve önizleme |
+| `data/menuKaynak.ts` | renk okuma, `aktifRenkler()`, `renkSecimi()` |
+| `app/[dil]/layout.tsx` | `<html>` üzerine satır içi renk değişkenleri |
+| `app/panel/eylemler.ts` | `renkleriDegistir` |
+| `app/panel/tema/page.tsx` | renk bölümü, örnek ürün, `key={tema}` |
+| `app/panel/tema/TemaSecici.tsx` | tema değişince `router.refresh()` |
+| `app/panel/fiyatlar/FiyatFormu.tsx` | kategoriye atlama, silme arayüzü |
+| `app/panel/panel.css` | renk kutuları, önizleme, atlama şeridi, silme |
+| `ILERLEME.md` | özet, aşama tablosu ve bu rapor |
+
+Menü kitabı, yatay akış, oklar, sayfa yapısı; dört dil ve RTL; mevcut ürün,
+fiyat ve çeviri içeriği; panel girişsiz erişilemez kuralı ve "tarayıcıdan
+Firestore'a yazma yok" mimarisi değişmedi.
+
+### 28.9 Sıradaki adım
+
+Push ve deploy onay bekliyor.
+
+Storage açıldığında ürün fotoğrafı yükleme yazılacak.
+Fotoğrafsız beş ürün duruyor: Künefe, Kola, Soda, Komposto, Meyveli Soda.
 
 === RAPOR SONU ===

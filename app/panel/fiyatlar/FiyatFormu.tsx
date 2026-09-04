@@ -1,7 +1,8 @@
 "use client";
 
 import { useMemo, useState, useTransition } from "react";
-import { fiyatlariKaydet, type FiyatDegisikligi } from "../eylemler";
+import { useRouter } from "next/navigation";
+import { fiyatlariKaydet, urunSil, type FiyatDegisikligi } from "../eylemler";
 
 /**
  * Fiyat düzenleme formu.
@@ -51,7 +52,26 @@ function buyukDegisim(eski: number | null, yeni: number | null): boolean {
   return oran > 3 || oran < 1 / 3;
 }
 
+/** Kategori adindan baglanti hedefi — Turkce harfler id'de sorun cikarmasin. */
+function bolumKimligi(ad: string): string {
+  const harita: Record<string, string> = {
+    ç: "c", ğ: "g", ı: "i", ö: "o", ş: "s", ü: "u",
+    Ç: "c", Ğ: "g", İ: "i", Ö: "o", Ş: "s", Ü: "u",
+  };
+  return (
+    "bolum-" +
+    ad
+      .split("")
+      .map((h) => harita[h] ?? h)
+      .join("")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+  );
+}
+
 export function FiyatFormu({ satirlar }: { satirlar: FiyatSatiri[] }) {
+  const router = useRouter();
   /** anahtar: `${urunId}|${sutun}` -> kutudaki metin */
   const baslangic = useMemo(() => {
     const m: Record<string, string> = {};
@@ -65,6 +85,8 @@ export function FiyatFormu({ satirlar }: { satirlar: FiyatSatiri[] }) {
 
   const [degerler, setDegerler] = useState<Record<string, string>>(baslangic);
   const [ozetAcik, setOzetAcik] = useState(false);
+  /** Silinmek uzere onay bekleyen urun. `null` = onay kutusu kapali. */
+  const [silinecek, setSilinecek] = useState<FiyatSatiri | null>(null);
   const [bildirim, setBildirim] = useState<
     { tur: "basari" | "hata"; metin: string } | null
   >(null);
@@ -128,6 +150,26 @@ export function FiyatFormu({ satirlar }: { satirlar: FiyatSatiri[] }) {
     });
   }
 
+  /**
+   * Ürünü siler.
+   *
+   * ONAY ZORUNLU ve onay kutusunda ürünün ADI yazıyor: silme geri alınamıyor,
+   * bu yüzden tek dokunuşla olmuyor. Silme düğmesi de fiyat kutularından
+   * uzakta, satırın en sağında duruyor.
+   */
+  function sil(satir: FiyatSatiri) {
+    basla(async () => {
+      const sonuc = await urunSil(satir.urunId);
+      setSilinecek(null);
+      setBildirim(
+        sonuc.ok
+          ? { tur: "basari", metin: `"${satir.urunAdi}" silindi.` }
+          : { tur: "hata", metin: sonuc.hata },
+      );
+      if (sonuc.ok) router.refresh();
+    });
+  }
+
   // Kategoriye göre grupla — mekân sahibi menüdeki sırayla görsün.
   const gruplar = useMemo(() => {
     const g: { kategoriAdi: string; satirlar: FiyatSatiri[] }[] = [];
@@ -147,17 +189,42 @@ export function FiyatFormu({ satirlar }: { satirlar: FiyatSatiri[] }) {
         </p>
       ) : null}
 
+      {/* Kategoriye atlama: 31 ürün tek sayfada, kaydırarak aramak zordu. */}
+      {gruplar.length > 1 ? (
+        <nav className="panel-atlama" aria-label="Kategoriye git">
+          {gruplar.map((grup) => (
+            <a
+              key={grup.kategoriAdi}
+              href={`#${bolumKimligi(grup.kategoriAdi)}`}
+              className="panel-atlama-baglanti"
+            >
+              {grup.kategoriAdi}
+            </a>
+          ))}
+        </nav>
+      ) : null}
+
       {gruplar.map((grup) => (
-        <section key={grup.kategoriAdi}>
+        <section key={grup.kategoriAdi} id={bolumKimligi(grup.kategoriAdi)}>
           <h2 className="panel-kategori-basligi">{grup.kategoriAdi}</h2>
           <div className="panel-kart">
             {grup.satirlar.map((s) => (
               <div className="panel-urun" key={s.urunId}>
                 <div className="panel-urun-ad">
-                  {s.urunAdi}
-                  {s.fiyatlar.some((f) => !f.dogrulandi) ? (
-                    <span className="panel-rozet">teyit edilmedi</span>
-                  ) : null}
+                  <span>
+                    {s.urunAdi}
+                    {s.fiyatlar.some((f) => !f.dogrulandi) ? (
+                      <span className="panel-rozet">teyit edilmedi</span>
+                    ) : null}
+                  </span>
+                  <button
+                    type="button"
+                    className="panel-sil-dugmesi"
+                    disabled={bekliyor}
+                    onClick={() => setSilinecek(s)}
+                  >
+                    Sil
+                  </button>
                 </div>
                 <div
                   className="panel-fiyat-izgara"
@@ -276,6 +343,36 @@ export function FiyatFormu({ satirlar }: { satirlar: FiyatSatiri[] }) {
                 onClick={() => setOzetAcik(false)}
               >
                 Geri dön
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {silinecek ? (
+        <div className="panel-ozet" role="dialog" aria-modal="true">
+          <div className="panel-ozet-kutu">
+            <h2 className="panel-kart-baslik">Ürün silinsin mi?</h2>
+            <p className="panel-aciklama">
+              <strong>{silinecek.urunAdi}</strong> menüden tamamen kaldırılacak.
+              Bu işlem geri alınamaz.
+            </p>
+            <div className="panel-dugme-satiri">
+              <button
+                type="button"
+                className="panel-dugme panel-dugme-tehlike"
+                disabled={bekliyor}
+                onClick={() => sil(silinecek)}
+              >
+                {bekliyor ? "Siliniyor…" : "Evet, sil"}
+              </button>
+              <button
+                type="button"
+                className="panel-dugme panel-dugme-ikincil"
+                disabled={bekliyor}
+                onClick={() => setSilinecek(null)}
+              >
+                Vazgeç
               </button>
             </div>
           </div>
