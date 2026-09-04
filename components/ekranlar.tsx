@@ -97,7 +97,21 @@ function BaslikAyraci({ tema, sinif = "baslik-alt" }: MotifProps & { sinif?: str
    metni 4,5:1'i, iri başlıklar 3:1'i geçiyor (bkz. `.kars-perde`).
    ========================================================================= */
 
-/** Görsel + karartma perdesi + üstünde içerik — üç bölümde de aynı iskelet. */
+/**
+ * Görsel + karartma perdesi + üstünde içerik — üç bölümde de aynı iskelet.
+ *
+ * BLOĞUN YÜKSEKLİĞİ SABİT DEĞİL, görselin kendi oranından geliyor: en/boy
+ * `--kars-oran` olarak CSS'e veriliyor, görünmez `.kars-oran` parçası da onu
+ * `aspect-ratio` yapıyor. Kutunun oranı görselin oranına eşitlendiği için
+ * `object-fit: cover` hiçbir şeyi kırpmıyor.
+ *
+ * Oran bir TABAN: metin sığmazsa blok uzuyor, yazı kesilmiyor (bkz.
+ * `.kars-blok`). Dar telefonda Rusça metinle bu gerçekten oluyor.
+ *
+ * Önceden bloklarda sabit yükseklik vardı (`min-height: 17rem`, masaüstünde
+ * `22rem`) ve genişlik ekranla büyüyordu; masaüstünde kutu 1265×352, yani
+ * 3,59 oranına ulaşıp görselin %50-65'ini kesiyordu.
+ */
 function GorselliBolum({
   gorsel,
   alt,
@@ -113,16 +127,29 @@ function GorselliBolum({
   sinif?: string;
 }) {
   return (
-    <div className={`kars-blok ${sinif}`}>
+    <div
+      className={`kars-blok ${sinif}`}
+      style={
+        { "--kars-oran": `${gorsel.genislik} / ${gorsel.yukseklik}` } as React.CSSProperties
+      }
+    >
       <Image
         src={gorsel.src}
         alt={alt}
         width={gorsel.genislik}
         height={gorsel.yukseklik}
-        sizes="100vw"
+        /* Masaustunde blok tam genislik degil, 44rem'lik sutunda duruyor
+           (bkz. `.kars-blok` medya sorgusu). `100vw` birakilsaydi 1280px'lik
+           ekranda 704px'lik yuvaya 1280'lik dosya indirilirdi. */
+        sizes="(min-width: 48rem) 44rem, 100vw"
         priority={oncelikli}
         className="kars-gorsel"
       />
+      {/* Boş ve görünmez: bloğun yüksekliğine görselin oranından gelen
+          TABANI koyuyor. Metinle aynı grid hücresinde durduğu için satır
+          ikisinin büyüğü kadar oluyor — metin sığdıkça kırpma sıfır,
+          sığmadığında blok uzuyor ve yazı kesilmiyor. */}
+      <div className="kars-oran" aria-hidden="true" />
       <div className="kars-perde" aria-hidden="true" />
       <div className="kars-icerik">{children}</div>
     </div>
@@ -204,6 +231,24 @@ export function KarsilamaEkrani({ dil, tema }: MotifProps & { dil: DilKodu }) {
           <BaslikAyraci tema={tema} sinif="kars-ayrac" />
           <p className="kars-metin">{metin(ORGANIZASYON_METNI, dil)}</p>
         </GorselliBolum>
+
+        {/* Menü kapağı — diğer üç görselden farklı: arka plan DEĞİL.
+            Dikey oranlı ve üzerinde okunması gereken yazılar var, arka plan
+            yapılsaydı telefonda %52'si, masaüstünde %81'i kesilirdi. Kendi
+            oranında, bütün olarak duruyor; üstüne yazı konmuyor çünkü marka
+            adı ve alt yazılar zaten görselin kendisinde. */}
+        <div className="kars-kapak">
+          <Image
+            src={MEKAN_GORSELLERI.menuKapagi.src}
+            alt={metin(GORSEL_ALT.menuKapagi, dil)}
+            width={MEKAN_GORSELLERI.menuKapagi.genislik}
+            height={MEKAN_GORSELLERI.menuKapagi.yukseklik}
+            /* Genisligi `max-width: min(100%, 20rem)` sinirliyor; iki
+               ekranda da 20rem'e dayaniyor, viewport'la buyumuyor. */
+            sizes="20rem"
+            className="kars-kapak-gorsel"
+          />
+        </div>
 
         {/* İletişim görselsiz: telefon ve adres okunması gereken bilgi,
             arka plan üstünde değil düz zeminde duruyor. */}

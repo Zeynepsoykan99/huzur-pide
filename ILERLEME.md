@@ -3,8 +3,8 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 24 tamamlandı — karşılama sayfasındaki Menü butonu artık **doğrudan menüye** gidiyor; araya giren dil seçim ekranı kaldırıldı, çünkü dil hem karşılamanın bayrak şeridinden hem menünün üst şeridinden seçilebiliyordu. Aşama 24 dahil her şey **üretimde canlı**. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
-**Son güncelleme:** 2026-09-02
+**Güncel aşama:** Aşama 25 tamamlandı — karşılama sayfasındaki **görsellerin kırpılması bitti** (blok yüksekliği artık görselin kendi oranından geliyor) ve **menü kapağı** sayfaya eklendi. Aşama 25 **henüz üretimde değil, push onayı bekliyor**; Aşama 24 dahil öncesi **üretimde canlı**. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
+**Son güncelleme:** 2026-09-04
 
 ### Genel Durum
 
@@ -37,6 +37,7 @@ Numaralandırma rapor başlıklarıyla aynı: aşağıdaki her satırın karşı
 | 22 | Çoban Salata ve üç içeceğin fotoğrafı | **Tamamlandı** — Künefe ve dört içecek dosya bekliyor |
 | 23 | Karşılama sayfası ve yeni akış | **Tamamlandı** |
 | 24 | Menü butonu doğrudan menüye | **Tamamlandı** |
+| 25 | Görsel kırpması + menü kapağı | **Tamamlandı** — push onayı bekliyor |
 
 ### Bekleyenler
 
@@ -4682,5 +4683,210 @@ görüldü.
 
 **Konsol.** Dört dil gezildi: **0 hata, 0 uyarı.** Ağ kaydındaki isteklerin
 hepsi 200, başarısız istek yok.
+
+=== RAPOR SONU ===
+
+
+## Aşama 25 — Görsel Kırpması ve Menü Kapağı · 2026-09-04
+
+=== RAPOR BAŞLANGICI ===
+
+**Tarih:** 2026-09-04 · **Dal:** `main` · **Durum:** push onayı bekliyor
+
+İki iş yapıldı: karşılama sayfasındaki görsellerin kırpılması giderildi ve
+menü kapağı sayfaya eklendi.
+
+### 25.1 Kırpma ne kadardı — ölçüm
+
+Sorun sabit yükseklikten geliyordu. `.kars-blok` kuralında `min-height: 17rem`
+(masaüstünde `22rem`) vardı, genişlik ise ekranla birlikte büyüyordu.
+Masaüstünde kutu 1265×352 piksele, yani **3,59 oranına** çıkıyordu; hiçbir
+görselin oranı buna yakın değil, `object-fit: cover` de aradaki farkı keserek
+kapatıyordu.
+
+| Görsel | Kaynak (oran) | Telefon 390px | Masaüstü 1280px |
+|---|---|---|---|
+| dukkan (hero) | 1080×1080 (1,00) | %34,6 yatay kesik | %50,2 dikey kesik |
+| firin | 1280×1024 (1,25) | %9,4 dikey | %65,2 dikey |
+| dis-gorunum | 1360×1020 (1,33) | %3,2 dikey | %62,9 dikey |
+| menü kapağı (arka plan yapılsaydı) | 680×1020 (0,67) | %51,6 | %81,4 |
+
+Masaüstünde taş fırın görselinin **üçte ikisi** görünmüyordu.
+
+### 25.2 Seçilen çözüm
+
+Onaylanan yol: **blok oranını görselin oranına bağlamak, masaüstünde genişliği
+sınırlamak.** Görselin en/boy değeri bileşenden CSS'e `--kars-oran` olarak
+geçiyor, kutu da o oranı alıyor. Kutunun oranı görselin oranına eşit olunca
+`cover` hiçbir şeyi kesmiyor.
+
+Masaüstünde bloklar 44rem'lik ortalanmış bir sütunda duruyor. Sınırlanmasaydı
+oran korunurken yükseklik uçardı: hero 1265×1265 olurdu, tek görsel ekranı
+aşardı. Yanlarda kalan alan temanın kendi zemini; blok kenarı yuvarlatıldı ki
+bilinçli bir sütun gibi dursun.
+
+Hero'da dikey boşluk kısıldı (`2,75rem` → `1,25rem`, masaüstünde `3rem`).
+Telefonda kare görselle kutu 375×375 oluyor ve içerik — motif, marka adı,
+slogan, Menü butonu — bu yüksekliğin çoğunu dolduruyor.
+
+### 25.3 Yolda çıkan iki hata
+
+**Hero masaüstünde 704 yerine 415 piksel kalıyordu.** Hesaplanan biçimlere
+bakınca sebep çıktı: hero, `.karsilama` esnek kabının **doğrudan çocuğu** ve
+bir esnek ögeye `margin-inline: auto` verildiğinde karşı eksende esneme
+kapanıyor, öge içeriği kadar daralıyor. Diğer bloklar `<main>` içinde, yani
+normal blok akışında; orada `max-width` + otomatik kenar boşluğu zaten
+çalışıyor. `width: 100%` eklendi, hero 704×704'e oturdu.
+
+**Dar telefonda yazı kesiliyordu — asıl tehlikeli olan buydu.** 320 piksellik
+ekranda Rusça Organizasyon metni 269 piksel istiyor, oranın verdiği kutu ise
+229 piksel kalıyordu; `overflow: hidden` de aradaki 40 pikseli **kesiyordu.**
+Oran doğrudan `.kars-blok`a `aspect-ratio` olarak verildiği için kutu
+büyüyemiyordu.
+
+Düzeltme: **oran artık tavan değil taban.** Görünmez bir ara parça
+(`.kars-oran`) ile metin aynı grid hücresinde duruyor, satırın yüksekliği de
+ikisinin büyüğü oluyor. Metin sığdığı sürece yükseklik oranın verdiği değer —
+yani sıfır kırpma; sığmadığında blok uzuyor ve yazı kesilmiyor.
+
+Sıra bilinçli: **kırpılmış fotoğraf, kesilmiş yazıdan iyidir.** Bunun bedeli
+320px + Rusça gibi uç bir durumda %14,8 kırpma; ölçüldü, aşağıdaki tabloda var.
+
+Bir yan etki daha çıktı ve düzeltildi: boşluk bloktan içeriğe taşınınca,
+Tailwind preflight'ın verdiği `box-sizing: border-box` yüzünden boşluk
+`max-width`in içinde sayıldı ve masaüstünde metin ölçüsü 544'ten 480 piksele
+indi. `max-width`e boşluk eklendi, ölçü 544'e geri döndü.
+
+### 25.4 Menü kapağı
+
+`huzurpide3.webp` → `public/mekan/menu-kapagi.webp` (webp q75, 680×1020,
+98 KB, yeniden boyutlandırılmadı).
+
+Konum: **Organizasyon bölümünden sonra, sayfa sonundaki Menü butonunun
+üstünde.** Diğer üç görselden farklı ele alındı — arka plan **değil**. Dikey
+oranlı ve üzerinde okunması gereken yazılar var; arka plan yapılsaydı telefonda
+%52'si, masaüstünde %81'i kesilir, altın logo ve alt yazılar giderdi. Kendi
+oranında, bütün olarak duruyor. **Üstüne yazı konmadı:** marka adı ve alt
+satırlar zaten görselin kendisinde.
+
+Dört dilde alt metni var (`GORSEL_ALT.menuKapagi`).
+
+### 25.5 Kırpma — sonuç ölçümü
+
+Ölçüm üretim derlemesi üzerinde, tarayıcıda yapıldı. "Görünür", görselin
+ekranda duran yüzdesi.
+
+**Telefon 390px** (dört dilde de aynı):
+
+| Blok | Kutu | Görünür |
+|---|---|---|
+| hero (dukkan) | 375×375 | **%100** |
+| firin | 375×300 | **%100** |
+| dis-gorunum | 375×281 | **%100** |
+| menü kapağı | 320×480 | **%100**, oran 0,667 |
+
+**Masaüstü 1280px:**
+
+| Blok | Kutu | Görünür |
+|---|---|---|
+| hero | 704×704 | **%100** |
+| firin | 704×563 | **%100** |
+| dis-gorunum | 704×528 | **%100** |
+| menü kapağı | 320×480 | **%100** |
+
+Dükkân cephesindeki tabela, taş fırındaki ateş ve menü kapağındaki logo —
+üçü de tam görünüyor, ekranda bakılarak doğrulandı.
+
+**Uç durum, 320px + Rusça:** Organizasyon bloğu metne uyup 269 piksele uzuyor,
+görselin **%85,2'si** görünüyor. Yazı kesilmiyor. Diğer iki blok %100.
+
+### 25.6 Kontrast — yeniden ölçüldü
+
+Yöntem: metinler gizlenip tam sayfa ekran görüntüsü alındı, her metin
+kutusunun arkasındaki **en açık piksel** bulundu ve WCAG 2.1 oranı hesaplandı.
+En açık piksel, yani en kötü durum. Metinlerin hepsi tam beyaz (`#fff`).
+
+**Masaüstü 1280px:**
+
+| Metin | Boyut | Eşik | En açık | p99 | Sonuç |
+|---|---|---|---|---|---|
+| Hero · Huzur Pide | 52px/700 | 3:1 | **6,00** | 6,82 | ✓ |
+| Hero · slogan | 16px/400 | 4,5:1 | **12,01** | 12,08 | ✓ |
+| Lezzetler · başlık | 32px/700 | 3:1 | **6,46** | 7,27 | ✓ |
+| Lezzetler · metin | 16px/400 | 4,5:1 | **5,65** | 5,79 | ✓ |
+| Organizasyon · başlık | 32px/700 | 3:1 | **6,68** | 6,76 | ✓ |
+| Organizasyon · metin | 16px/400 | 4,5:1 | **5,84** | 7,97 | ✓ |
+
+**Telefon 390px:**
+
+| Metin | Boyut | Eşik | En açık | p99 | Sonuç |
+|---|---|---|---|---|---|
+| Hero · Huzur Pide | 43px/700 | 3:1 | **5,92** | 6,54 | ✓ |
+| Hero · slogan | 16px/400 | 4,5:1 | **7,74** | 12,01 | ✓ |
+| Lezzetler · başlık | 25px/700 | 3:1 | **4,75** | 5,39 | ✓ |
+| Lezzetler · metin | 16px/400 | 4,5:1 | **5,58** | 5,79 | ✓ |
+| Organizasyon · başlık | 25px/700 | 3:1 | **6,39** | 6,51 | ✓ |
+| Organizasyon · metin | 16px/400 | 4,5:1 | **6,16** | 6,70 | ✓ |
+
+**Hepsi AA'yı geçiyor.** En dar nokta telefonda taş fırın başlığı, 4,75:1 —
+eşiği 3:1 ama gövde metni eşiği olan 4,5:1'i bile aşıyor. `.kars-perde`
+değerlerine **dokunulmadı** (0,52 – 0,66 – 0,60); yeni düzende de yetiyor.
+
+Masaüstünde hero başlığı, fotoğrafın kendi beyaz tabelasının üstüne geliyor —
+en riskli nokta buydu, ölçüldü: **6,00:1**, rahat geçiyor.
+
+### 25.7 Dört dil ve RTL
+
+| Dil | Yön | Bloklar | Taşma | Kapak |
+|---|---|---|---|---|
+| `/tr` | ltr | 375×375, 375×300, 375×281 — hepsi %100 | 0 | ortalı |
+| `/en` | ltr | aynı, %100 | 0 | ortalı |
+| `/ar` | **rtl** | aynı, %100 | 0 | ortalı |
+| `/ru` | ltr | aynı, %100 | 0 | ortalı |
+
+Rusça en uzun metin: en dar blokta 36 piksel boşluk kalıyor (390px'te).
+
+**Arapça aynalama doğru.** `lang="ar"`, `dir="rtl"`; iletişim satırlarında ikon
+metnin **sağında**, bayrak şeridi ters sırada, telefon numarası soldan sağa
+okunuyor. Menü kapağı yön bağımsız — iki yönde de tam ortalı (27,6px / 27,6px).
+
+### 25.8 Doğrulama
+
+Firestore'a **dokunulmadı** — bu aşamada menü içeriği değişmedi.
+
+```
+npx tsc --noEmit   → temiz (çıkış 0)
+npm run lint       → temiz (çıktı yok)
+npm run build      → başarılı, 30 statik sayfa
+tarayıcı konsolu   → 0 hata
+```
+
+**Menü kitabı bozulmadı.** `/tr/menu/izgara`: beş levha, sayaç `Sayfa 2 / 5`,
+yatay taşma 0 ve ürün fotoğraflarında `sizes="68px"` **yerinde** — daha önce
+iki kez kaybolan değer bu, ayrıca kontrol edildi.
+
+**Bir not:** görsel isteklerinde `sizes` düzeltildi. Masaüstünde blok artık tam
+genişlik değil 704 piksel; `100vw` bırakılsaydı 1280px'lik ekrana 1280'lik
+dosya inerdi. Yeni değer `(min-width: 48rem) 44rem, 100vw`, menü kapağında
+`20rem`. Doğrulandı: masaüstünde hero 750w, telefonda 640w seçiyor.
+
+### 25.9 Değişen dosyalar
+
+| Dosya | Değişiklik |
+|---|---|
+| `app/globals.css` | `.kars-blok` grid yığınına döndü; `.kars-oran`, `.kars-kapak`, `.kars-kapak-gorsel`; boşluk bloktan içeriğe; masaüstü sütun genişliği |
+| `components/ekranlar.tsx` | `--kars-oran`, `.kars-oran` ara parçası, menü kapağı bloğu, `sizes` |
+| `data/karsilama.ts` | `MEKAN_GORSELLERI.menuKapagi` + dört dilde alt metin |
+| `public/mekan/menu-kapagi.webp` | yeni (680×1020, 98 KB) |
+| `ILERLEME.md` | özet, aşama tablosu ve bu rapor |
+
+Metinlere, iletişim bilgilerine, akışa, menü kitabına, menü içeriğine,
+fiyatlara, çevirilere ve panele dokunulmadı.
+
+### 25.10 Sıradaki adım
+
+Push ve deploy onay bekliyor.
+
+Fotoğrafsız beş ürün duruyor: Künefe, Kola, Soda, Komposto, Meyveli Soda.
 
 === RAPOR SONU ===

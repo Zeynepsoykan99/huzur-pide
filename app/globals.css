@@ -906,21 +906,71 @@
 }
 
 /* --- Gorselli blok: gorsel + perde + icerik --- */
+/*
+ * Blogun yuksekligi GORSELDEN geliyor, sabit degil.
+ *
+ * `--kars-oran` bilesende veriliyor (gorselin en/boy'u) ve gorunmez bir
+ * ara parcaya (`.kars-oran`) `aspect-ratio` olarak biniyor. Kutunun orani
+ * gorselin oranina esitlendigi icin `object-fit: cover` hicbir seyi
+ * kirpmiyor.
+ *
+ * ORAN TAVAN DEGIL TABAN. Ara parca ile metin AYNI grid hucresinde duruyor,
+ * satirin yuksekligi de ikisinin BUYUGU oluyor. Metin sigdigi surece
+ * yukseklik oranin verdigi deger — yani sifir kirpma. Sigmadiginda blok
+ * uzuyor ve az miktarda kirpma basliyor.
+ *
+ * Bu sira bilincli: kirpilmis fotograf, kesilmis yazidan iyidir. `aspect-ratio`
+ * dogrudan `.kars-blok`a verildiginde 320px'lik telefonda Rusca Organizasyon
+ * metni 269px istiyor, kutu 229px kaliyor ve `overflow: hidden` yaziyi
+ * kesiyordu. Olculdu.
+ *
+ * Onceden `min-height: 17rem` (masaustunde 22rem) vardi ve genislik ekranla
+ * buyuyordu: masaustunde kutu 1265x352, yani 3,59 oranina cikip gorselin
+ * %50-65'ini kesiyordu. Olculdu, bu yuzden degistirildi.
+ */
 .kars-blok {
   position: relative;
   isolation: isolate;
-  display: flex;
+  display: grid;
+  grid-template-areas: "yigin";
+  /* Dikeyde ortalama: `stretch` olsaydi ara parcanin `aspect-ratio`si
+     yok sayilirdi, cunku iki eksende birden gerilen kutuda oran calismaz. */
   align-items: center;
-  justify-content: center;
   overflow: hidden;
-  min-height: 17rem;
-  padding: 2.75rem 1.5rem;
 }
 
-.kars-hero {
-  /* Hero telefonda ekranin buyuk kismini kaplasin ama menu butonu
-     kaydirilmadan gorunsun: 68dvh ikisini birlikte tutuyor. */
-  min-height: 68dvh;
+.kars-blok > .kars-oran,
+.kars-blok > .kars-icerik {
+  grid-area: yigin;
+}
+
+/* Bos ve gorunmez; tek isi satira oranin verdigi tabani koymak. */
+.kars-oran {
+  width: 100%;
+  aspect-ratio: var(--kars-oran);
+}
+
+/*
+ * Ic bosluk BLOKTA DEGIL ICERIKTE.
+ *
+ * Blokta olsaydi ara parca ic kutuya sigar, genisligi bloktan `padding`
+ * kadar dar kalir ve oran kaydigi icin fotograf yine kirpilirdi. Blogun
+ * `padding`i sifir; boslugu metnin kendisi tasiyor.
+ */
+.kars-icerik {
+  padding: 2.25rem 1.5rem;
+}
+
+/*
+ * Hero'da dikey bosluk kisik.
+ *
+ * Telefonda kutu 375x375 oluyor (kare gorsel) ve icerik — motif, marka adi,
+ * slogan, Menu butonu — bu yuksekligin cogunu dolduruyor. Bosluk 2,75rem
+ * birakilsaydi icerik tasar, blok uzar ve cover yeniden kirpmaya baslardi.
+ * Kisilinca sifir kirpma korunuyor, Menu butonu da daha yukari geliyor.
+ */
+.kars-hero .kars-icerik {
+  padding-block: 1.25rem;
 }
 
 .kars-gorsel {
@@ -968,8 +1018,14 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  width: 100%;
-  max-width: 26rem;
+  /* `width: 100%` YOK: grid ogesi zaten hucreyi dolduruyor ve `padding`
+     eklendigi icin yuzde genislik kutuyu `padding` kadar tasirirdi. */
+
+  /* Tailwind preflight `box-sizing: border-box` veriyor, yani bosluk
+     `max-width`in ICINDE sayiliyor. Bosluk bloktan buraya tasindigi icin
+     metin olcusu 26rem'de kalsin diye ustune ekleniyor; eklenmeseydi
+     satirlar 3rem daralir, yazi baska turlu bolunurdu. */
+  max-width: calc(26rem + 3rem);
   margin-inline: auto;
 }
 
@@ -1085,6 +1141,32 @@
   box-shadow: var(--t-golge);
 }
 
+/*
+ * Menu kapagi — arka plan DEGIL, kendi orayla duran bagimsiz gorsel.
+ *
+ * Dikey (680x1020) ve uzerinde okunmasi gereken yazilar var; arka plan
+ * yapilsaydi telefonda %52'si, masaustunde %81'i kesilirdi. Burada hicbir
+ * sey kirpilmiyor: `width/height: auto` + iki ust sinir goruntuyu kendi
+ * oraninda kucultuyor.
+ *
+ * `max-height: 60vh` telefon icin: 20rem genislikte yukseklik 480px'e
+ * cikiyor, ekranin tamamini kaplamasin diye.
+ */
+.kars-kapak {
+  display: flex;
+  justify-content: center;
+  padding: 2.5rem 1.5rem 0;
+}
+
+.kars-kapak-gorsel {
+  width: auto;
+  height: auto;
+  max-width: min(100%, 20rem);
+  max-height: 60vh;
+  border-radius: var(--t-yuvarlak);
+  box-shadow: 0 2px 12px rgba(9, 18, 33, 0.22);
+}
+
 /* --- Iletisim --- */
 .kars-iletisim {
   display: flex;
@@ -1178,18 +1260,46 @@ a.kars-satir:hover {
   opacity: 0.85;
 }
 
-/* Genis ekranda bloklar biraz daha ferah; olculer buyuyor, duzen degismiyor. */
+/*
+ * Genis ekran: bloklar tam genislik yerine ORTALANMIS BIR SUTUNDA duruyor.
+ *
+ * Blogun orani gorselden geldigi icin, tam genislikte birakilsalardi
+ * masaustunde hero 1265x1265, menu kapagi 1265x1898 olurdu — tek gorsel
+ * ekrandan tasardi. Genislik sinirlanınca oran korunuyor, yukseklik makul
+ * kaliyor: hero 704x704, firin 704x563, dis gorunum 704x528.
+ *
+ * Yanlarda kalan alan temanin kendi zemini ve deseni; blok kenari yuvarlanip
+ * bilincli bir sutun gibi duruyor, kazara dar kalmis gibi degil.
+ */
 @media (min-width: 48rem) {
-  .kars-blok {
-    min-height: 22rem;
-    padding: 4rem 2rem;
+  /*
+   * `width: 100%` sart: hero, `.karsilama` flex kabinin DOGRUDAN cocugu ve
+   * `margin-inline: auto` verilince esnemeyi birakiyor — genisligi kendi
+   * icerigine gore 415px'e dusuyordu. Digerleri `<main>` icinde, yani blok
+   * akisinda, orada `max-width` + otomatik kenar bosluk zaten calisiyor.
+   */
+  .kars-blok,
+  .kars-kapak {
+    width: 100%;
+    max-width: 44rem;
+    margin-inline: auto;
+    border-radius: var(--t-yuvarlak);
   }
 
-  .kars-hero {
-    min-height: 70dvh;
+  .kars-icerik {
+    padding: 3rem 2rem;
   }
 
-  .kars-icerik,
+  .kars-hero .kars-icerik {
+    padding-block: 3rem;
+  }
+
+  /* Ayni gerekce: metin olcusu 34rem, bosluk onun disinda. Iletisim
+     bolumunun kendi boslugu farkli oldugu icin ayri duruyor. */
+  .kars-icerik {
+    max-width: calc(34rem + 4rem);
+  }
+
   .kars-iletisim {
     max-width: 34rem;
   }
