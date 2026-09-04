@@ -3,7 +3,7 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 27 tamamlandı — hero görselindeki **yıldız motifi ve "HUZUR PİDE" başlığı kaldırıldı** (fotoğrafın kendi tabelasıyla çakışıyordu); slogan ve Menü butonu alta çekildi. Marka sekme adında ve alt bilgide duruyor, `h1` görsel olarak gizli hâlde korundu. Aşama 27 **henüz üretimde değil, push onayı bekliyor**; Aşama 26 dahil öncesi **üretimde canlı**. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
+**Güncel aşama:** Aşama 27 tamamlandı — hero görselindeki **yıldız motifi ve "HUZUR PİDE" başlığı kaldırıldı** (fotoğrafın kendi tabelasıyla çakışıyordu); slogan ve Menü butonu alta çekildi. Marka sekme adında ve alt bilgide duruyor, `h1` görsel olarak gizli hâlde korundu. Aşama 27 dahil her şey **üretimde canlı**. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
 **Son güncelleme:** 2026-09-04
 
 ### Genel Durum
@@ -39,7 +39,7 @@ Numaralandırma rapor başlıklarıyla aynı: aşağıdaki her satırın karşı
 | 24 | Menü butonu doğrudan menüye | **Tamamlandı** |
 | 25 | Görsel kırpması + menü kapağı | **Tamamlandı** |
 | 26 | Menü kapağının kaldırılması | **Tamamlandı** |
-| 27 | Hero'da yıldız ve marka başlığı kaldırıldı | **Tamamlandı** — push onayı bekliyor |
+| 27 | Hero'da yıldız ve marka başlığı kaldırıldı | **Tamamlandı** |
 
 ### Bekleyenler
 
@@ -5229,8 +5229,59 @@ panel değişmedi.
 
 ### 27.9 Sıradaki adım
 
-Push ve deploy onay bekliyor.
+Push edildi ve üretime çıktı; canlı doğrulama 27.10'da.
 
 Fotoğrafsız beş ürün duruyor: Künefe, Kola, Soda, Komposto, Meyveli Soda.
+
+### 27.10 Canlı doğrulama · 2026-09-04
+
+`d4d81c6` push edildi, Vercel dağıtımı yaklaşık 40 saniyede tamamlandı.
+Doğrulama **https://huzur-pide.vercel.app** üzerinde yapıldı.
+
+**Yıldız ve marka yazısı dört dilde de gitmiş, hero düzgün duruyor:**
+
+| Dil | Yön | Yıldız | Marka yazısı | Slogan | Konum | Buton alt | Hero |
+|---|---|---|---|---|---|---|---|
+| `/tr` | ltr | yok | yok | Fırından sofranıza | %57,1 | 44px | %100 |
+| `/en` | ltr | yok | yok | From our oven to your table | %57,1 | 44px | %100 |
+| `/ar` | **rtl** | yok | yok | من فرننا إلى مائدتك | %57,1 | 44px | %100 |
+| `/ru` | ltr | yok | yok | Из печи на ваш стол | %57,1 | 44px | %100 |
+
+Slogan dört dilde de tek satır, yatay taşma 0. Ekranda bakıldı: tabela
+tamamen açıkta, slogan ve buton fotoğrafın ön planında dengeli duruyor.
+
+**Marka duruyor.** `h1` dört dilde de belgede ("Huzur Pide"), ekrandaki
+genişliği 1 piksel. Başlık dizisi **H1 → H2 → H2 → H2.** Sekme adı
+`Huzur Pide`, alt bilgi her dilde markayı gösteriyor:
+
+| Dil | Alt bilgi |
+|---|---|
+| `/tr` | Huzur Pide · Dijital Menü |
+| `/en` | Huzur Pide · Digital Menu |
+| `/ar` | Huzur Pide · القائمة الرقمية |
+| `/ru` | Huzur Pide · Цифровое меню |
+
+**Kontrast canlıda yeniden ölçüldü** (en açık piksel, en kötü durum):
+
+| Metin | Eşik | Masaüstü | Telefon |
+|---|---|---|---|
+| **Hero · slogan (taşındı)** | 4,5:1 | **10,34** ✓ | **8,19** ✓ |
+| Lezzetler · başlık | 3:1 | 6,45 ✓ | 4,84 ✓ |
+| Lezzetler · metin | 4,5:1 | 5,69 ✓ | 5,57 ✓ |
+| Organizasyon · başlık | 3:1 | 6,66 ✓ | 6,41 ✓ |
+| Organizasyon · metin | 4,5:1 | 5,89 ✓ | 6,06 ✓ |
+
+Hepsi AA'yı geçiyor. Diğer blokların kutu konumları (y491, y562, y769, y840)
+değişiklik öncesiyle birebir aynı — onlar hiç kıpırdamadı.
+
+**Hero görseli iki ekranda da %100 görünüyor:** telefon 375×375, masaüstü
+704×704. Sayfa yüksekliği telefonda 1615, masaüstünde 2462 — Aşama 26'daki
+değerlerle aynı, yani başlığın kalkması sayfa boyunu değiştirmedi (hero'nun
+yüksekliği görselin oranından geliyor, içerikten değil).
+
+**Konsolda hata yok.** Dört dil ve menü sayfası gezildi: **0 hata.**
+
+**Menü kitabı bozulmadı.** `/tr/menu/izgara`: beş levha, sayaç `Sayfa 2 / 5`,
+26 ürün fotoğrafı, `sizes="68px"` yerinde, yatay taşma 0.
 
 === RAPOR SONU ===
