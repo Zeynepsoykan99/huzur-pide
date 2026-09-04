@@ -3,7 +3,7 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 28 tamamlandı — panele **renk özelleştirme** eklendi (tema içinde vurgu ve fiyat rengi, temaya özel hazır palet, 27 rengin hepsi AA ölçülü), fiyat sayfasına kategoriye atlama ve **ürün silme** arayüzü geldi. Ürün fotoğrafı hâlâ engelli: Firebase Storage kurulmadı. Aşama 28 **henüz üretimde değil, push onayı bekliyor**; Aşama 27 dahil öncesi **üretimde canlı**. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
+**Güncel aşama:** Aşama 28 tamamlandı — panele **renk özelleştirme** eklendi (tema içinde vurgu ve fiyat rengi, temaya özel hazır palet, 27 rengin hepsi AA ölçülü), fiyat sayfasına kategoriye atlama ve **ürün silme** arayüzü geldi. Ürün fotoğrafı hâlâ engelli: Firebase Storage kurulmadı. Aşama 28 dahil her şey **üretimde canlı**. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
 **Son güncelleme:** 2026-09-04
 
 ### Genel Durum
@@ -40,7 +40,7 @@ Numaralandırma rapor başlıklarıyla aynı: aşağıdaki her satırın karşı
 | 25 | Görsel kırpması + menü kapağı | **Tamamlandı** |
 | 26 | Menü kapağının kaldırılması | **Tamamlandı** |
 | 27 | Hero'da yıldız ve marka başlığı kaldırıldı | **Tamamlandı** |
-| 28 | Panelde renk özelleştirme | **Tamamlandı** — push onayı bekliyor |
+| 28 | Panelde renk özelleştirme | **Tamamlandı** |
 
 ### Bekleyenler
 
@@ -5457,9 +5457,67 @@ Firestore'a yazma yok" mimarisi değişmedi.
 
 ### 28.9 Sıradaki adım
 
-Push ve deploy onay bekliyor.
+Push edildi ve üretime çıktı; canlı doğrulama 28.10'da.
 
 Storage açıldığında ürün fotoğrafı yükleme yazılacak.
 Fotoğrafsız beş ürün duruyor: Künefe, Kola, Soda, Komposto, Meyveli Soda.
+
+### 28.10 Canlı doğrulama · 2026-09-04
+
+`8f64a97` push edildi, Vercel dağıtımı yaklaşık 30 saniyede tamamlandı.
+Doğrulama **https://huzur-pide.vercel.app** üzerinde, geçici test hesabıyla
+yapıldı; iş bitince hesaplar silindi.
+
+**Renk özelliği canlıda.** Karşılama ve menü sayfalarının `<html>` etiketinde
+satır içi renk değişkenleri var:
+
+```
+<html lang="tr" dir="ltr" class="tema-cini …" style="--t-vurgu:#1a4a8d;--t-fiyat:#b23b26">
+```
+
+**Panelde renk bölümü çalışıyor.** `/panel/tema` altında beş vurgu, dört
+fiyat rengi; seçili olanlar Kobalt ve Mercan; önizlemede gerçek ürün
+(`Kıymalı · 200 ₺`) ve gerçek renk (`rgb(26,74,141)`).
+
+**Renk değişimi menüye yansıyor — üç sayfada da denendi.** Vurgu Patlıcan
+yapıldı, `revalidatePath("/[dil]", "layout")` sonrası:
+
+| Sayfa | Sonuç |
+|---|---|
+| `/tr/menu` | `--t-vurgu:#6b3a7a` |
+| `/tr` (karşılama) | `--t-vurgu:#6b3a7a` |
+| `/ar/menu/izgara` | `--t-vurgu:#6b3a7a` |
+
+Ekranda bakıldı: motif, sıra numaraları ve **aktif dil rozeti** patlıcan
+moruna döndü. Rozet iki yönlü kontrast durumunun ta kendisi — mor ZEMİN
+üstünde açık yazı — ve okunaklı; ölçümdeki 7,48:1 ekranda da doğrulandı.
+Başlıklar kobalt, sayfa numaraları mercan kaldı: yalnızca hedeflenen iki
+değişken değişti.
+
+**Geri alındı.** Kobalt'a döndürüldü, iki sayfada da `--t-vurgu:#1a4a8d`
+doğrulandı.
+
+**Fiyat sayfası canlıda:** 5 atlama bağlantısı, beşi de hedefini buluyor;
+31 ürün, 31 silme düğmesi, yatay taşma 0.
+
+**Güvenlik yerinde.** Yönetici olmayan geçerli bir hesapla giriş denendi:
+panele **girilemedi**, "Bu hesabın panele erişim yetkisi yok." mesajı çıktı,
+panel içeriği hiç yüklenmedi.
+
+**Canlı veri geri bırakıldı:**
+
+```
+ayarlar/genel: {"tema":"cini","renkler":{"cini":{"fiyat":"mercan","vurgu":"kobalt"}}}
+urun sayisi: 31
+yonetici sayisi: 1  (yalnizca mekan sahibi)
+```
+
+Renkler varsayılan olduğu için menünün görünümü değişmeden kaldı.
+
+**Bir not:** giriş sırasında konsolda bir kez `securetoken.googleapis.com`
+400 hatası görüldü. Sebebi tarayıcıda kalan ESKİ test hesabının yenileme
+belirteci — o hesap silinip aynı adla yeniden açılınca eski belirteç
+geçersiz kalıyor. Tarayıcı depolaması temizlenip taze girildiğinde hata
+tekrarlamadı; uygulamadan değil, test düzeneğinden geliyor.
 
 === RAPOR SONU ===
