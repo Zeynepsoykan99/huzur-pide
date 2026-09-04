@@ -944,6 +944,23 @@
   grid-area: yigin;
 }
 
+/*
+ * Hero'da icerik ORTADA DEGIL ALTTA.
+ *
+ * Fotografin kendi tabelasi karenin dikey ortasinda duruyor. Marka basligi
+ * kaldirilip icerik iki ogeye (slogan + buton) inince ortalama onlari tam
+ * tabelanin onune getirdi — kaldirilan cakismanin aynisi geri geldi.
+ * Ozellikle alta cekiliyor: tabela aciga cikiyor, slogan ve buton da
+ * fotografin sakin on planinda duruyor.
+ */
+.kars-hero {
+  align-items: end;
+}
+
+.kars-hero .kars-icerik {
+  padding-block-end: 2.75rem;
+}
+
 /* Bos ve gorunmez; tek isi satira oranin verdigi tabani koymak. */
 .kars-oran {
   width: 100%;
@@ -959,18 +976,6 @@
  */
 .kars-icerik {
   padding: 2.25rem 1.5rem;
-}
-
-/*
- * Hero'da dikey bosluk kisik.
- *
- * Telefonda kutu 375x375 oluyor (kare gorsel) ve icerik — motif, marka adi,
- * slogan, Menu butonu — bu yuksekligin cogunu dolduruyor. Bosluk 2,75rem
- * birakilsaydi icerik tasar, blok uzar ve cover yeniden kirpmaya baslardi.
- * Kisilinca sifir kirpma korunuyor, Menu butonu da daha yukari geliyor.
- */
-.kars-hero .kars-icerik {
-  padding-block: 1.25rem;
 }
 
 .kars-gorsel {
@@ -1029,27 +1034,32 @@
   margin-inline: auto;
 }
 
-.kars-motif {
-  width: 3rem;
-  height: 3rem;
-  color: #fff;
-  opacity: 0.92;
-  margin-bottom: 0.85rem;
-}
-
-.kars-marka {
-  margin: 0;
-  font-family: var(--t-baslik-font);
-  font-weight: var(--t-baslik-kalinlik);
-  font-size: clamp(2.25rem, 11vw, 3.25rem);
-  line-height: 1.05;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
-  color: #fff;
+/*
+ * Hero'daki `h1` — belgede var, ekranda yok.
+ *
+ * `display: none` DEGIL: o, ogeyi erisilebilirlik agacindan da siler, yani
+ * ekran okuyucu da gormez. Buradaki yontem ogeyi 1x1 piksele indirip
+ * gorunmez kiliyor ama okunabilir birakiyor.
+ *
+ * `white-space: nowrap` sart: 1 piksel genislikte metin her harfte bir
+ * satira boluneceginden bazi tarayicilar okumayi bozuyor.
+ */
+.kars-marka-gizli {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
 }
 
 .kars-slogan {
-  margin: 0.75rem 0 0;
+  /* Ust bosluk YOK: eskiden marka basligindan ayirmak icindi, o kalkti ve
+     slogan artik hero icerigin ilk ogesi. */
+  margin: 0;
   font-size: 1rem;
   /* Tam beyaz, yari saydam degil: saydamlik kontrast payini yiyordu. */
   color: #fff;
@@ -1259,17 +1269,11 @@ a.kars-satir:hover {
     border-radius: var(--t-yuvarlak);
   }
 
+  /* `box-sizing: border-box` yuzunden bosluk `max-width`in icinde sayiliyor;
+     metin olcusu 34rem kalsin diye ustune ekleniyor. Iletisim bolumunun
+     boslugu farkli oldugu icin o ayri duruyor. */
   .kars-icerik {
     padding: 3rem 2rem;
-  }
-
-  .kars-hero .kars-icerik {
-    padding-block: 3rem;
-  }
-
-  /* Ayni gerekce: metin olcusu 34rem, bosluk onun disinda. Iletisim
-     bolumunun kendi boslugu farkli oldugu icin ayri duruyor. */
-  .kars-icerik {
     max-width: calc(34rem + 4rem);
   }
 

@@ -200,8 +200,14 @@ export function KarsilamaEkrani({ dil, tema }: MotifProps & { dil: DilKodu }) {
         oncelikli
         sinif="kars-hero"
       >
-        <TemaMotifi className="kars-motif" tema={tema} />
-        <h1 className="kars-marka">Huzur Pide</h1>
+        {/* Marka adı EKRANDA YOK, belgede var.
+            Fotoğrafın kendi tabelasında zaten büyük harflerle "HUZUR PİDE"
+            yazıyor; üstüne bir de başlık binince ikisi çakışıyordu. Yazı
+            kaldırıldı ama `h1` duruyor: kaldırılsaydı sayfa `h2` ile
+            başlardı, yani başlık hiyerarşisi kırılırdı ve sayfanın adı ne
+            ekran okuyucuya ne arama motoruna kalırdı. Görünen marka için
+            sayfa sonundaki alt bilgi ve sekme adı var. */}
+        <h1 className="kars-marka-gizli">Huzur Pide</h1>
         <p className="kars-slogan">{ui("slogan", dil)}</p>
 
         {/* Menü butonu ilk ekranda, kaydırmadan görünüyor: QR menüde asıl

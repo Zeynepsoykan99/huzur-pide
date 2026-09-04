@@ -3,7 +3,7 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 26 tamamlandı — Aşama 25'te eklenen **menü kapağı görseli karşılamadan kaldırıldı** (dosya diskte duruyor, kullanımdan çıktı). Aşama 25'in görsel kırpma düzeltmesi yerinde. Aşama 26 dahil her şey **üretimde canlı**. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
+**Güncel aşama:** Aşama 27 tamamlandı — hero görselindeki **yıldız motifi ve "HUZUR PİDE" başlığı kaldırıldı** (fotoğrafın kendi tabelasıyla çakışıyordu); slogan ve Menü butonu alta çekildi. Marka sekme adında ve alt bilgide duruyor, `h1` görsel olarak gizli hâlde korundu. Aşama 27 **henüz üretimde değil, push onayı bekliyor**; Aşama 26 dahil öncesi **üretimde canlı**. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
 **Son güncelleme:** 2026-09-04
 
 ### Genel Durum
@@ -39,6 +39,7 @@ Numaralandırma rapor başlıklarıyla aynı: aşağıdaki her satırın karşı
 | 24 | Menü butonu doğrudan menüye | **Tamamlandı** |
 | 25 | Görsel kırpması + menü kapağı | **Tamamlandı** |
 | 26 | Menü kapağının kaldırılması | **Tamamlandı** |
+| 27 | Hero'da yıldız ve marka başlığı kaldırıldı | **Tamamlandı** — push onayı bekliyor |
 
 ### Bekleyenler
 
@@ -5095,5 +5096,141 @@ aradaki fark kapağın kapladığı yer.
 
 **Menü kitabı bozulmadı.** `/tr/menu/izgara`: beş levha, sayaç `Sayfa 2 / 5`,
 26 ürün fotoğrafı, `sizes="68px"` yerinde, yatay taşma 0.
+
+=== RAPOR SONU ===
+
+
+## Aşama 27 — Hero'da Yıldız ve Marka Başlığı Kaldırıldı · 2026-09-04
+
+=== RAPOR BAŞLANGICI ===
+
+**Tarih:** 2026-09-04 · **Dal:** `main` · **Durum:** push onayı bekliyor
+
+Hero görselinin üzerindeki yıldız motifi ve "HUZUR PİDE" başlığı kaldırıldı.
+Fotoğrafın kendi tabelasında zaten büyük harflerle "HUZUR PİDE" yazıyor,
+ikisi üst üste biniyordu. Slogan ve Menü butonu olduğu gibi kaldı.
+
+### 27.1 Kaldırılanlar
+
+| Ne | Nerede |
+|---|---|
+| `<TemaMotifi className="kars-motif">` — yıldız | `components/ekranlar.tsx` |
+| `.kars-motif` kuralı | `app/globals.css` |
+| `.kars-marka` kuralı | `app/globals.css` |
+| `.kars-hero .kars-icerik` boşluk geçersiz kılmaları (iki yerde) | `app/globals.css` |
+
+`TemaMotifi` bileşeni **silinmedi**: bölüm ayracında, "bulunamadı"
+ekranında, üst şeritte ve panelde kullanılmaya devam ediyor.
+
+Hero'nun kısılmış dikey boşluğu (Aşama 25'te `1,25rem`/`3rem`) de kaldırıldı:
+gerekçesi "içerik bu yüksekliğin çoğunu dolduruyor" idi, içerik iki ögeye
+inince o gerekçe kalmadı. Hero artık diğer bloklarla aynı boşluğu kullanıyor.
+
+### 27.2 Marka adı kayboldu mu — HAYIR
+
+Kontrol edildi. Marka karşılama sayfasında **iki yerde görünmeye devam
+ediyor**, üstelik fotoğraftaki tabela da duruyor:
+
+| Nerede | Ne yazıyor |
+|---|---|
+| Sekme adı / sayfa başlığı | `Huzur Pide` (dört dilde de) |
+| Sayfa sonundaki alt bilgi | `Huzur Pide · Dijital Menü` (dilinde) |
+| Fotoğrafın kendisi | Tabelada "HUZUR PİDE", artık **tamamen açıkta** |
+
+Bu yüzden sayfaya ayrıca küçük bir marka ibaresi **eklenmedi**; gerek yok.
+
+### 27.3 `h1` ekranda yok ama belgede duruyor
+
+Kaldırılan başlık sayfanın **tek `h1`'iydi.** Düpedüz silinseydi sayfa `h2`
+ile başlardı: başlık hiyerarşisi kırılır, sayfanın adı ne ekran okuyucuya ne
+arama motoruna kalırdı.
+
+Bu yüzden `h1` **duruyor, sadece görünmüyor** (`.kars-marka-gizli`).
+`display: none` kullanılmadı — o, ögeyi erişilebilirlik ağacından da siler.
+Bunun yerine öge 1×1 piksele indirilip kırpılıyor; ekranda hiçbir iz yok ama
+ekran okuyucu ve arama motoru okuyor.
+
+Doğrulandı: dört dilde de başlık dizisi **H1 → H2 → H2 → H2**, `h1` metni
+"Huzur Pide", ekrandaki genişliği 1 piksel.
+
+### 27.4 İçerik ortada değil ALTTA — ölçümle çıkan düzeltme
+
+İlk denemede içerik dikeyde ortalanmış hâlde bırakıldı ve **kaldırılan sorun
+geri geldi:** iki ögeye inen içerik (slogan + buton) tam tabelanın önüne
+oturdu. Ekran görüntüsüne bakılınca görüldü.
+
+Hero'nun içeriği alta çekildi (`align-items: end`, alt boşluk `2,75rem`).
+Tabela açığa çıktı, slogan ve buton fotoğrafın sakin ön planında duruyor.
+
+| | Ortalanmışken | Şimdi |
+|---|---|---|
+| Slogan bloğun ne kadar aşağısında | %35 — tabelanın üstünde | **%57,1** — tabelanın altında |
+| Butonun alt kenardan uzaklığı | 93px | **44px** |
+
+Bu, iki bloğun geri kalanını etkilemiyor: `align-items: end` yalnızca
+`.kars-hero`'ya veriliyor, diğer bloklar ortalanmış kalıyor.
+
+### 27.5 Kontrast — gerekliydi, ölçüldü
+
+**Gerekliydi:** slogan fotoğrafın başka bir yerine taşındı (gökyüzü/bina
+yerine terasın önü). Menü butonunun kendi opak zemini var, ondan
+etkilenmiyor; kaldırılan başlık ve yıldız için ölçecek bir şey kalmadı.
+
+| Metin | Eşik | Masaüstü | Telefon |
+|---|---|---|---|
+| **Hero · slogan (taşındı)** | 4,5:1 | **10,34** ✓ | **8,19** ✓ |
+| Lezzetler · başlık | 3:1 | — | 4,85 ✓ |
+| Lezzetler · metin | 4,5:1 | — | 5,61 ✓ |
+| Organizasyon · başlık | 3:1 | — | 6,41 ✓ |
+| Organizasyon · metin | 4,5:1 | — | 6,18 ✓ |
+
+Slogan telefonda **7,74 → 8,19'a yükseldi**, masaüstünde 12,01'den 10,34'e
+indi; ikisi de 4,5:1 eşiğinin çok üstünde. Diğer bloklar hiç kıpırdamadı —
+kutu konumları (y491, y562, y769, y840) değişiklik öncesiyle **birebir aynı**,
+ölçümler de öyle. `.kars-perde` değerlerine dokunulmadı.
+
+### 27.6 Dört dilde hero
+
+Dördünde de yıldız yok, marka yazısı yok, slogan tek satır, ölçüler aynı:
+
+| Dil | Yön | Slogan | Slogan konumu | Buton alt boşluk | Hero görünür |
+|---|---|---|---|---|---|
+| `/tr` | ltr | Fırından sofranıza | %57,1 | 44px | %100 |
+| `/en` | ltr | From our oven to your table | %57,1 | 44px | %100 |
+| `/ar` | **rtl** | من فرننا إلى مائدتك | %57,1 | 44px | %100 |
+| `/ru` | ltr | Из печи на ваш стол | %57,1 | 44px | %100 |
+
+Yatay taşma dört dilde de 0. Arapça'da `dir="rtl"` duruyor, buton ikonu sağda
+ok solda, alt bilgi `Huzur Pide · القائمة الرقمية`.
+
+### 27.7 Doğrulama
+
+```
+npx tsc --noEmit   → temiz (çıkış 0)
+npm run lint       → temiz (çıktı yok)
+npm run build      → başarılı, 30 statik sayfa
+tarayıcı konsolu   → 0 hata
+```
+
+Hero görseli iki ekranda da **%100 görünüyor** (telefon 375×375, masaüstü
+704×704) — Aşama 25'in kırpma düzeltmesi yerinde.
+
+### 27.8 Değişen dosyalar
+
+| Dosya | Değişiklik |
+|---|---|
+| `components/ekranlar.tsx` | yıldız ve görünen marka başlığı silindi, `h1` görsel olarak gizli hâle geldi |
+| `app/globals.css` | `.kars-motif` ve `.kars-marka` silindi, `.kars-marka-gizli` eklendi, hero içeriği alta çekildi, slogan üst boşluğu sıfırlandı, hero boşluk geçersiz kılmaları kaldırıldı |
+| `ILERLEME.md` | özet, aşama tablosu ve bu rapor |
+
+Slogan ve Menü butonunun kendisi, diğer görseller, diğer bölümler, metinler,
+iletişim bilgileri, akış, menü kitabı, menü içeriği, fiyatlar, çeviriler ve
+panel değişmedi.
+
+### 27.9 Sıradaki adım
+
+Push ve deploy onay bekliyor.
+
+Fotoğrafsız beş ürün duruyor: Künefe, Kola, Soda, Komposto, Meyveli Soda.
 
 === RAPOR SONU ===
