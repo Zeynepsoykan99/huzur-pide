@@ -3,7 +3,7 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 29 tamamlandı — Kapalı Pide tablosunda **ürün adı kendi satırına** alındı, fiyatlar altına indi, görsel 56px'ten 80px'e büyüdü. Dar telefonda 7 satıra bölünen adlar en fazla 2 satırda kalıyor. Ürün fotoğrafı hâlâ engelli: Firebase Storage kurulmadı. Aşama 29 **henüz üretimde değil, push onayı bekliyor**; Aşama 28 dahil öncesi **üretimde canlı**. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
+**Güncel aşama:** Aşama 29 tamamlandı — Kapalı Pide tablosunda **ürün adı kendi satırına** alındı, fiyatlar altına indi, görsel 56px'ten 80px'e büyüdü. Dar telefonda 7 satıra bölünen adlar en fazla 2 satırda kalıyor. Ürün fotoğrafı hâlâ engelli: Firebase Storage kurulmadı. Aşama 29 dahil her şey **üretimde canlı**. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
 **Son güncelleme:** 2026-09-04
 
 ### Genel Durum
@@ -41,7 +41,7 @@ Numaralandırma rapor başlıklarıyla aynı: aşağıdaki her satırın karşı
 | 26 | Menü kapağının kaldırılması | **Tamamlandı** |
 | 27 | Hero'da yıldız ve marka başlığı kaldırıldı | **Tamamlandı** |
 | 28 | Panelde renk özelleştirme | **Tamamlandı** |
-| 29 | Kapalı Pide tablosu — ad kendi satırında | **Tamamlandı** — push onayı bekliyor |
+| 29 | Kapalı Pide tablosu — ad kendi satırında | **Tamamlandı** |
 
 ### Bekleyenler
 
@@ -5697,9 +5697,56 @@ yapısı, oklar, sayaç ve dört dil desteği değişmedi.
 
 ### 29.11 Sıradaki adım
 
-Push ve deploy onay bekliyor.
+Push edildi ve üretime çıktı; canlı doğrulama 29.12'de.
 
 Firebase Storage hâlâ kurulu değil; ürün fotoğrafı yükleme onu bekliyor.
 Fotoğrafsız beş ürün duruyor: Künefe, Kola, Soda, Komposto, Meyveli Soda.
+
+### 29.12 Canlı doğrulama · 2026-09-05
+
+`16fa1cc` push edildi, Vercel dağıtımı yaklaşık 30 saniyede tamamlandı.
+Doğrulama **https://huzur-pide.vercel.app** üzerinde, 320px'te yapıldı.
+
+**Ürün adı dört dilde de kendi satırında.** Her ürün `<tbody>` içinde iki
+satır, ad `scope="rowgroup"`, ad kutusu fiyat satırının üstünde:
+
+| Dil | Ad genişliği | En çok satır | Ad fiyatın üstünde | Tablo | Dikey taşma |
+|---|---|---|---|---|---|
+| tr | 192px | **1** | evet | 621 | 292 |
+| en | 192px | 7 → **2** | evet | 699 | 370 |
+| ru | 192px | 7 → **2** | evet | 709 | 380 |
+| ar | 192px | 3 → **2** | evet | 665 | 335 |
+
+Altı ürün grubu, sütun hiza sapması dört dilde de **0px**, yatay taşma **0**.
+
+**Görsel gerçekten büyümüş:** Kapalı Pide'de yuva **80×80** (eskiden 56×56).
+İnen dosya `w=96` — plandaki öngörü doğrulandı, `sizes` 68→80 olmasına
+rağmen aynı aday indiği için ek bayt yok.
+
+**Arapça doğru aynalanıyor.** `dir="rtl"`; görsel sağda, ad solunda; fiyatlar
+sağdan sola (200 ₺ en sağda, `عجينة 1` başlığının altında); sütun başlıkları
+`عجينة 1 · عجينة 1.5 · دوبل` aynalanmış; sayfa sayacı ve ok solda. Ekranda
+bakıldı, ölçümle de doğrulandı (`gorselSagdaMi: true`,
+`ilkFiyatEnSagdaMi: true`, hiza sapması 0).
+
+**Diğer kategoriler bozulmamış.** Kitabın beş yaprağı tek tek incelendi:
+
+| Yaprak | Düzen | Ürün | Görsel yuvası |
+|---|---|---|---|
+| Kapalı Pide Çeşitleri | çok fiyatlı tablo | 6 | **80×80** (yeni) |
+| Izgara Çeşitleri | tek sütunlu liste | 14 | 68×68 (değişmedi) |
+| Salatalar | tek sütunlu liste | 1 | 68×68 |
+| Tatlı Çeşitleri | tek sütunlu liste | 3 | 68×68 |
+| İçecekler | tek sütunlu liste | 7 | 68×68 |
+
+Toplam 31 ürün, sayaç `Sayfa 2 / 5`, yatay taşma 0.
+
+**Konsolda hata yok.** Menü sayfalarında **0 hata, 0 uyarı**. Oturum
+geçmişinde görünen uyarılar `/panel` sayfasından (bayrak ön yüklemesi) ve
+silinmiş test hesabının belirtecinden geliyor; menüyle ilgisi yok, temiz
+gezinmede tekrarlamadı.
+
+Doğrulamalar mekân sahibinin seçtiği tema üzerinde yapıldı (Mürekkep +
+Yeşil vurgu / Lacivert fiyat); ayarlara dokunulmadı.
 
 === RAPOR SONU ===
