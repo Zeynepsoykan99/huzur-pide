@@ -3,7 +3,7 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 30 tamamlandı — panelin fiyat ekranına **ürün arama** eklendi; Türkçe harfler ASCII'ye katlandığı için `kiymali` yazınca **Kıymalı** bulunuyor. Ürün fotoğrafı hâlâ engelli: Firebase Storage kurulmadı. Aşama 30 **henüz üretimde değil, push onayı bekliyor**; Aşama 29 dahil öncesi **üretimde canlı**. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
+**Güncel aşama:** Aşama 30 tamamlandı — panelin fiyat ekranına **ürün arama** eklendi; Türkçe harfler ASCII'ye katlandığı için `kiymali` yazınca **Kıymalı** bulunuyor. Ürün fotoğrafı hâlâ engelli: Firebase Storage kurulmadı. Aşama 30 dahil her şey **üretimde canlı**. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
 **Son güncelleme:** 2026-09-04
 
 ### Genel Durum
@@ -42,7 +42,7 @@ Numaralandırma rapor başlıklarıyla aynı: aşağıdaki her satırın karşı
 | 27 | Hero'da yıldız ve marka başlığı kaldırıldı | **Tamamlandı** |
 | 28 | Panelde renk özelleştirme | **Tamamlandı** |
 | 29 | Kapalı Pide tablosu — ad kendi satırında | **Tamamlandı** |
-| 30 | Fiyat ekranında ürün arama | **Tamamlandı** — push onayı bekliyor |
+| 30 | Fiyat ekranında ürün arama | **Tamamlandı** |
 
 ### Bekleyenler
 
@@ -5890,9 +5890,64 @@ diğer panel ekranları ve menü tarafı değişmedi.
 
 ### 30.7 Sıradaki adım
 
-Push ve deploy onay bekliyor.
+Push edildi ve üretime çıktı; canlı doğrulama 30.8'de.
 
 Firebase Storage hâlâ kurulu değil; ürün fotoğrafı yükleme onu bekliyor.
 Fotoğrafsız beş ürün duruyor: Künefe, Kola, Soda, Komposto, Meyveli Soda.
+
+### 30.8 Canlı doğrulama · 2026-09-05
+
+`929fbf1` push edildi ve üretime çıktı. Doğrulama
+**https://huzur-pide.vercel.app/panel/fiyatlar** üzerinde, geçici test
+hesabıyla yapıldı; iş bitince hesaplar silindi.
+
+**Arama kutusu canlıda çalışıyor.** Etiket "Ürün ara", arama boşken 31 ürün,
+5 kategori başlığı, 5 atlama bağlantısı — normal davranış bozulmamış.
+
+| Yazılan | Durum satırı | Ürün | Kategori başlığı | Atlama şeridi | Rozet |
+|---|---|---|---|---|---|
+| `kiymali` | 31 üründen 1 tanesi | **Kıymalı** | yalnız "Kapalı Pide Çeşitleri" | gizli | 1 |
+| `IZGARA` | 31 üründen 10 tanesi | Et/Kuzu/Köfte Izgara… | yalnız "Izgara Çeşitleri" | gizli | 0 |
+| `ızgara` | 31 üründen 10 tanesi | aynı 10 ürün | aynı | gizli | 0 |
+| `kasarli` | 31 üründen 1 tanesi | **Kaşarlı** | yalnız "Kapalı Pide Çeşitleri" | gizli | 1 |
+| `zzz` | `"zzz" için sonuç yok.` | 0 | yok | gizli | 0 |
+| (boş) | — | **31** | **5** | **5** | 3 |
+
+**Türkçe karaktersiz arama doğru çalışıyor:** `kiymali` → Kıymalı,
+`kasarli` → Kaşarlı. Noktalı/noktasız i ayrımı da eşleşmeyi bozmuyor:
+`IZGARA` ve `ızgara` aynı 10 ürünü veriyor.
+
+**Rozetler arama sırasında kaybolmuyor:** `kiymali` ve `kasarli`
+aramalarında ilgili satır "teyit edilmedi" rozetiyle geldi.
+
+**Arama açıkken kaydetme — canlıda test edildi:**
+
+1. Arama boşken Et Izgara Porsiyon 500 → 503 yazıldı
+2. `kiymali` arandı — o satır **ekrandan kalktı** (ekranda 1 ürün: Kıymalı)
+3. Kaydet düğmesi hâlâ **"Kaydet (1 fiyat)"** diyordu
+4. Özet **"Et Izgara Porsiyon 500 ₺ → 503 ₺"** gösterdi
+5. Kaydedildi; canlı menüde **503 ₺** göründü
+6. Arama ile (`et izgara porsiyon`) bulunup 500'e geri alındı, kaydedildi;
+   canlı menüde **500 ₺** doğrulandı
+
+Gizli satırdaki değişiklik ne kayboldu ne de sessizce atıldı.
+
+Not: kaydetmenin hemen ardından ilk istek eski fiyatı gösterdi; `no-cache`
+başlığıyla yapılan istek yeniden üretilmiş sayfayı verdi. Bu
+`revalidatePath`in bilinen davranışı — sayfa geçersiz kılınıyor, sonraki
+ziyarette yeniden üretiliyor; kenar önbelleğindeki eski kopya kısa süre
+görülebiliyor.
+
+**Panelin geri kalanı bozulmamış:**
+
+| Ekran | Durum |
+|---|---|
+| `/panel/tema` | Üç tema kartı, seçili **Mürekkep**; renk bölümü yerinde, seçili **Yeşil + Lacivert**; önizleme gerçek ürünle (`Kıymalı`) ve gerçek renkle (`rgb(47,93,58)`) |
+| `/panel/urun-ekle` | Beş kategori seçeneği, ürün adı ve içindekiler alanları, çeviri bölümü, fotoğraf notu yerinde |
+| `/panel/fiyatlar` | Silme düğmeleri, atlama şeridi, kaydetme özeti çalışıyor |
+
+**Canlı veri geri bırakıldı:** 31 ürün, Et Izgara Porsiyon 500 ₺, mekân
+sahibinin tema ve renk ayarları olduğu gibi (Mürekkep + Yeşil/Lacivert),
+yönetici sayısı 1 (yalnızca mekân sahibi), test hesapları silindi.
 
 === RAPOR SONU ===
