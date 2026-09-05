@@ -3,7 +3,7 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 28 tamamlandı — panele **renk özelleştirme** eklendi (tema içinde vurgu ve fiyat rengi, temaya özel hazır palet, 27 rengin hepsi AA ölçülü), fiyat sayfasına kategoriye atlama ve **ürün silme** arayüzü geldi. Ürün fotoğrafı hâlâ engelli: Firebase Storage kurulmadı. Aşama 28 dahil her şey **üretimde canlı**. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
+**Güncel aşama:** Aşama 29 tamamlandı — Kapalı Pide tablosunda **ürün adı kendi satırına** alındı, fiyatlar altına indi, görsel 56px'ten 80px'e büyüdü. Dar telefonda 7 satıra bölünen adlar en fazla 2 satırda kalıyor. Ürün fotoğrafı hâlâ engelli: Firebase Storage kurulmadı. Aşama 29 **henüz üretimde değil, push onayı bekliyor**; Aşama 28 dahil öncesi **üretimde canlı**. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
 **Son güncelleme:** 2026-09-04
 
 ### Genel Durum
@@ -41,6 +41,7 @@ Numaralandırma rapor başlıklarıyla aynı: aşağıdaki her satırın karşı
 | 26 | Menü kapağının kaldırılması | **Tamamlandı** |
 | 27 | Hero'da yıldız ve marka başlığı kaldırıldı | **Tamamlandı** |
 | 28 | Panelde renk özelleştirme | **Tamamlandı** |
+| 29 | Kapalı Pide tablosu — ad kendi satırında | **Tamamlandı** — push onayı bekliyor |
 
 ### Bekleyenler
 
@@ -5519,5 +5520,186 @@ Renkler varsayılan olduğu için menünün görünümü değişmeden kaldı.
 belirteci — o hesap silinip aynı adla yeniden açılınca eski belirteç
 geçersiz kalıyor. Tarayıcı depolaması temizlenip taze girildiğinde hata
 tekrarlamadı; uygulamadan değil, test düzeneğinden geliyor.
+
+=== RAPOR SONU ===
+
+
+## Aşama 29 — Kapalı Pide Tablosu: Ad Kendi Satırında · 2026-09-05
+
+=== RAPOR BAŞLANGICI ===
+
+**Tarih:** 2026-09-05 · **Dal:** `main` · **Durum:** push onayı bekliyor
+
+Kapalı Pide tablosunda ürün adı kendi satırına alındı, fiyatlar altına indi,
+görsel büyüdü. Yalnızca çok fiyatlı tablo; diğer dört kategoriye dokunulmadı.
+
+### 29.1 Sorun ölçüldü — sanılandan büyük
+
+320px'te ad sütununa kalan genişlik: Türkçe 83px, İngilizce 78px, Rusça
+79px, Arapça 101px. Bu genişlikte uzun çeviriler parçalanıyordu:
+
+| Dil | En uzun ad | Satır |
+|---|---|---|
+| tr | Kıyma & Kaşar | 2 |
+| en | Lahmacun (Thin Flatbread with Minced Meat) | **7** |
+| ru | Лахмаджун (тонкая лепёшка с фаршем) | **7** |
+| ar | كيمالي (باللحم المفروم) | 3 |
+
+CSS'te sorunun izi zaten vardı: ad sütunu dar kaldığı için daha önce gövde
+fontundan başlık fontuna geçilmişti. Yani bu, yamayla hafifletilmiş bir
+sorunun kökü.
+
+### 29.2 Yapı — gerçek `<table>` korundu
+
+Tablo `<th scope="col">` / `<th scope="row">` ile kuruluydu; ekran okuyucu
+her fiyatın hangi hamur boyuna ait olduğunu bundan söylüyor. Bu bozulmadı.
+
+Her ürün artık **kendi `<tbody>`'sinde, iki satır**:
+
+```
+<tbody class="pide-urun">              ← bir ürün
+  <tr> [görsel rowSpan=2] [ad colSpan=3] </tr>
+  <tr> [1 Hamur] [1,5 Hamur] [Düble]    </tr>
+</tbody>
+```
+
+Ad `scope="row"` değil **`scope="rowgroup"`**: kendi satırına taşındığı için
+tek satırı değil ürünün iki satırlık grubunu etiketliyor. Grubun sınırını
+`<tbody>` çiziyor, bu yüzden her ürün ayrı gövde.
+
+Ayırıcı çizgi de satırdan `<tbody>`'ye taşındı — satırda kalsaydı aynı ürünü
+ikiye bölerdi. Doğrulandı: altı grubun beşinde çizgi var, sonuncuda yok.
+
+**Sütun hizası korundu.** `rowspan` yaklaşımının asıl riski buydu; ölçüldü:
+başlıklarla fiyat hücrelerinin merkezleri arasındaki sapma dört dilde ve üç
+genişlikte de **0px**.
+
+### 29.3 Görsel ne kadar büyüdü — beş boy denendi
+
+320px, İngilizce (en dar durum):
+
+| Görsel | Ad genişliği | En çok satır | Fiyat sütunları |
+|---|---|---|---|
+| 3.5rem (eski) | 216px | 2 | 70/82/64 |
+| 4.5rem | 200px | 2 | 65/76/59 |
+| **5rem — seçildi** | **192px** | **2** | **62/73/57** |
+| 5.5rem | 184px | 3 | 59/70/55 |
+| 6rem | 176px | 3 | 57/67/52 |
+
+**3.5rem → 5rem (56px → 80px):** kenar +%43, alan yaklaşık iki katı. Daha
+büyüğü seçilmedi: 5.5rem'de İngilizce adlar yeniden bölünmeye başlıyor.
+5rem, dört dilin de ≤2 satırda kaldığı son boy.
+
+Yer tutucu ikonu da 1.6rem → 2.2rem, büyüyen yuvada orantılı kalsın diye.
+
+### 29.4 Sonuç — 320px
+
+| Dil | Ad sütunu | En çok satır | Tablo yüksekliği | Dikey taşma |
+|---|---|---|---|---|
+| tr | 83 → **192** | 2 → **1** | 477 → 621 | 148 → 292 |
+| en | 78 → **192** | 7 → **2** | 1136 → **699** | 807 → **370** |
+| ru | 79 → **192** | 7 → **2** | 1136 → **709** | 807 → **380** |
+| ar | 101 → **192** | 3 → **2** | 755 → **665** | 426 → **335** |
+
+**360px:** ad 113 → 232px. Türkçe tablo 477 → 621 (taşma 76 → 220), Rusça
+1136 → 665 (taşma 807 → 264), en çok satır Rusça'da 2, Türkçe'de 1.
+
+Yatay taşma dört dilde ve iki genişlikte de **0**.
+
+### 29.5 Taşma — dürüst tablo
+
+**Sayfa zaten tek ekrana sığmıyordu:** 320px'te Türkçe 148px, İngilizce ve
+Rusça 807px taşıyordu, aşağı ok devredeydi. Değişimden sonra:
+
+- **İngilizce, Rusça, Arapça'da taşma yarıya indi** (807 → 370)
+- **Türkçe'de arttı** (148 → 292), çünkü kısa adlar zaten sığıyordu ve her
+  ürün artık iki kat
+
+Yani Türkçe'de bir miktar daha kaydırma karşılığında dört dilde de çirkin
+bölünme bitti. Planda bu takas belirtildi ve onaylandı.
+
+### 29.6 Masaüstünde yan kazanç
+
+Görsel sütunu `colgroup`'ta `md:w-52` ile 208px'e çıkıyordu ama içindeki yuva
+56px'ti — sütunun dörtte üçü boştu. Ad artık o sütunun **yanında değil
+altında** olduğu için o boşluk adı sağa itmiş olurdu; sınıf kaldırıldı ve
+genişliği her ekranda `.pide-gorsel-hucre` veriyor.
+
+| | Eski | Yeni |
+|---|---|---|
+| Görsel hücresi | 208px | **91px** |
+| Görsel yuvası | 56px | **80px** |
+| Ad genişliği | 162px | **416px** |
+| En çok satır (ru) | 2 | **1** |
+| Tablo yüksekliği | 629px | 621px, taşma yok |
+
+### 29.7 Kontrast ve çakışma
+
+**Çakışma yok.** Görsel kutularıyla bütün metin kutuları tek tek kesişim
+sınamasından geçirildi: **0 çakışma**.
+
+**Kontrast yeniden ölçüldü** (320px, Rusça, aktif tema Mürekkep + panelden
+seçilmiş Lacivert fiyat rengi):
+
+| Metin | Renk | Eşik | Sonuç |
+|---|---|---|---|
+| Sütun başlığı 9px/700 | `#17150f` | 4,5:1 | **15,64** ✓ |
+| Ürün adı 17px/600 | `#17150f` | 4,5:1 | **15,64** ✓ |
+| İçindekiler 13px/400 | `#57513f` | 4,5:1 | **6,78** ✓ |
+| Fiyat 13px/700 | `#1e3a6b` | 4,5:1 | **9,61** ✓ |
+
+İlk ölçümde sütun başlığı 3,33:1 çıktı ve KALDI göründü. Kutuyu piksel
+piksel inceleyince sebebi görüldü: kutunun **son satırı** başlığın alt
+kenarlık çizgisi (`rgb(108,105,98)`), metnin arkasındaki zemin değil. Zemin
+baştan sona düz `#f2ede3`. Kenarlık satırı hariç tutulunca gerçek değer
+15,64:1. Ölçüm hatasıydı, kontrast sorunu değil.
+
+### 29.8 Diğer kategoriler ve `sizes`
+
+**Dokunulmadı.** `/tr/menu/izgara`: tek sütunlu liste yerinde, 25 ürün,
+görsel yuvası hâlâ **68×68**, yatay taşma 0.
+
+`sizes` 68px → 80px oldu (yuvanın yeni üst sınırı). **İnen dosya
+değişmedi:** Next'in aday genişlikleri ayrık ve 68 de 80 de aynı adaya
+düşüyor — ölçüldü, iki sayfada da `w=96` iniyor. Yani tek sütunlu liste bu
+yüzden daha büyük dosya indirmiyor.
+
+`ui("urun")` anahtarı ad sütunu başlığıyla birlikte kullanımdan kalktı;
+başka kullanan olmadığı doğrulanıp `data/arayuz.ts`ten silindi.
+
+### 29.9 Doğrulama
+
+```
+npx tsc --noEmit   → temiz (çıkış 0)
+npm run lint       → temiz (çıktı yok)
+npm run build      → başarılı, 30 statik sayfa
+tarayıcı konsolu   → 0 hata, 0 uyarı
+```
+
+**Arapça doğru aynalanıyor:** `dir="rtl"`, görsel sağda, ad solunda, fiyatlar
+sağdan sola (200 ₺ en sağda, "عجينة 1" başlığının altında), sütun başlıkları
+aynalanmış, hiza sapması 0. Ekranda bakıldı.
+
+**Kitap bozulmadı:** beş levha, sayaç `Sayfa 2 / 5`, aşağı ok yerinde.
+
+### 29.10 Değişen dosyalar
+
+| Dosya | Değişiklik |
+|---|---|
+| `components/ekranlar.tsx` | `CokFiyatliTablo` yeniden kuruldu: ürün başına `<tbody>`, `rowSpan`/`colSpan`, `scope="rowgroup"`, `md:w-52` kaldırıldı |
+| `app/globals.css` | ayırıcı `<tbody>`'ye, görsel 3.5→5rem, yer tutucu ikonu 1.6→2.2rem, ad ve fiyat boşlukları |
+| `components/UrunGorseli.tsx` | `sizes` 68px → 80px |
+| `data/arayuz.ts` | ölü `urun` anahtarı silindi |
+| `ILERLEME.md` | özet, aşama tablosu ve bu rapor |
+
+`data/menu.ts` ve Firestore içeriği, diğer kategorilerin düzeni, sayfa
+yapısı, oklar, sayaç ve dört dil desteği değişmedi.
+
+### 29.11 Sıradaki adım
+
+Push ve deploy onay bekliyor.
+
+Firebase Storage hâlâ kurulu değil; ürün fotoğrafı yükleme onu bekliyor.
+Fotoğrafsız beş ürün duruyor: Künefe, Kola, Soda, Komposto, Meyveli Soda.
 
 === RAPOR SONU ===

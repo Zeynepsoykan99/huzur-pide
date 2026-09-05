@@ -96,7 +96,6 @@ export const ARAYUZ = {
     ru: "Прокрутить вниз",
   },
   gorsel: { tr: "Görsel", en: "Image", ar: "صورة", ru: "Изображение" },
-  urun: { tr: "Ürün", en: "Item", ar: "الصنف", ru: "Блюдо" },
   menuKategorileri: {
     tr: "Menü kategorileri",
     en: "Menu categories",

@@ -52,18 +52,19 @@ export function UrunGorseli({
   }
 
   /**
-   * `sizes` yuvanın GERÇEK ölçüsü: tek sütunlu listede 4.25rem (68px), pide
-   * tablosunda 3.5rem (56px) — üst sınır 68px.
+   * `sizes` yuvanın GERÇEK ölçüsü — iki yuva var, ÜST SINIR yazılıyor:
+   * tek sütunlu listede 4.25rem (68px), pide tablosunda 5rem (80px).
+   *
+   * 68'den 80'e çıkması indirilen dosyayı DEĞİŞTİRMİYOR: Next'in aday
+   * genişlikleri ayrık (…64, 96, 128, 256…) ve 68 de 80 de aynı adaya
+   * düşüyor — 1x'te 96, 2x'te 256. Yani tek sütunlu liste bu yüzden daha
+   * büyük dosya indirmiyor.
    *
    * Önceden `"(min-width: 768px) 208px, 68px"` yazıyordu; tablodaki
-   * `colgroup`'un `md:w-52` (208px) sınıfına güveniyordu. Ama hücre
-   * genişliğini `.pide-gorsel-hucre` (3.5rem) doğrudan verdiği için o sınıf
-   * eziliyor ve sütun masaüstünde de büyümüyor. Sonuç: masaüstünde 207px
-   * genişliğinde dosya inip 54px'lik kutuya basılıyordu. Görünen ölçü
-   * değişmedi, yalnızca boşuna inen bayt kalktı.
+   * `colgroup`'un `md:w-52` (208px) sınıfına güveniyordu. O sınıf artık
+   * yok (bkz. `CokFiyatliTablo`), sütun her genişlikte görselin ölçüsünde.
    *
-   * Sütun masaüstünde gerçekten genişletilirse bu değer de birlikte
-   * güncellenmeli.
+   * Yuva ölçüsü değişirse bu değer de birlikte güncellenmeli.
    */
   return (
     <span className="gorsel-yuvasi">
@@ -72,7 +73,7 @@ export function UrunGorseli({
         alt={metin(urun.gorsel.alt, dil)}
         width={urun.gorsel.genislik}
         height={urun.gorsel.yukseklik}
-        sizes="68px"
+        sizes="80px"
       />
     </span>
   );

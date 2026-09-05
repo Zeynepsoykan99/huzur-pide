@@ -604,42 +604,50 @@
   border-bottom: 1px solid var(--t-cizgi-guclu);
 }
 
-.pide-tablo tbody tr {
+/* AYIRICI URUNUN ALTINDA, SATIRIN DEGIL: her urun iki satir (ad + fiyatlar)
+   ve cizgi ikisinin arasindan gecerse ayni urunu ikiye bolmus olurdu.
+   `<tbody>` tam olarak bir urun demek, cizgi de ona ait. */
+.pide-urun {
   border-bottom: 1px solid var(--t-cizgi);
 }
 
-.pide-tablo tbody tr:last-child {
+.pide-urun:last-of-type {
   border-bottom: 0;
 }
 
+/* Gorsel iki satiri birden kapliyor (`rowSpan={2}`), bu yuzden dikeyde
+   ortalaniyor: ad kisa oldugunda fotografin ustte asili kalmamasi icin. */
 .pide-gorsel-hucre {
-  width: 3.5rem;
+  width: 5rem;
   padding: 0.6rem 0;
   padding-inline-end: 0.7rem;
 }
 
 .pide-gorsel-hucre .gorsel-yuvasi {
-  width: 3.5rem;
-  height: 3.5rem;
+  width: 5rem;
+  height: 5rem;
 }
 
 .pide-gorsel-hucre .yer-tutucu-ikon {
-  width: 1.6rem;
-  height: 1.6rem;
+  width: 2.2rem;
+  height: 2.2rem;
 }
 
+/* Ad kendi satirinda ve fiyat sutunlarinin tamamini kapliyor. Alt bosluk
+   kisik: altindaki fiyat satiriyla ayni urune ait oldugu okunsun, arada
+   satir arasi kadar bosluk kalmasin. */
 .pide-ad-hucre {
   text-align: start;
   font-weight: 400;
-  padding: 0.6rem 0;
+  padding: 0.6rem 0 0.15rem;
   padding-inline-end: 0.5rem;
 }
 
-/* AD SUTUNU: burada govde fontu DEGIL, temanin baslik fontu kullaniliyor.
-   Sebep olculdu: ad sutunu uc fiyat sutunuyla yer paylastigi icin dar
-   kaliyor ve genis bir govde fontunda uzun Rusca adlar dort satira
-   sariyordu. Baslik fontlari belirgin dar — ayni puntoda cok daha az
-   satir. Punto ve gorsel olculeri DEGISMEDI. */
+/* AD: govde fontu DEGIL, temanin baslik fontu.
+   Ad artik kendi satirinda ve 320px'te 192px genisliginde — eski dar
+   sutunun (78-101px) iki katindan fazla. Baslik fontu yine de duruyor:
+   ayni puntoda belirgin dar oldugu icin uzun cevirilerde satir sayisini
+   dusuruyor ve tablonun tipografisiyle de tutarli. */
 .pide-ad-hucre .urun-ad {
   font-family: var(--t-baslik-font);
   font-weight: var(--t-baslik-kalinlik);
@@ -647,8 +655,9 @@
   hyphens: auto;
 }
 
+/* Ust bosluk yok: ad hucresi zaten aralarindaki mesafeyi veriyor. */
 .pide-hucre {
-  padding: 0.6rem 0.2rem;
+  padding: 0 0.2rem 0.6rem;
   text-align: center;
   font-family: var(--t-govde-font);
   font-size: 0.8125rem;

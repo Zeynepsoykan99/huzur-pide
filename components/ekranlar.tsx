@@ -420,6 +420,23 @@ function TekFiyatliSatir({
  * gerçek <table>: sütun başlıkları fiyat hücrelerinin tam üstüne oturuyor ve
  * <th scope="col"> sayesinde ekran okuyucu her hücrenin hangi sütuna ait
  * olduğunu kendiliğinden söylüyor. Tablo Arapça'da kendiliğinden aynalanıyor.
+ *
+ * ÜRÜN ADI KENDİ SATIRINDA, FİYATLAR ALTINDA.
+ *
+ * Ad, fiyat sütunlarıyla yan yana dursaydı dar telefonda ona kalan yer
+ * ölçüldü: 320px'te 78-101px. Uzun çeviriler o genişlikte parçalanıyordu —
+ * İngilizce ve Rusça "Lahmacun (…)" YEDİ satıra bölünüyordu. Ad kendi
+ * satırına alınınca aynı ekranda 192px'e çıkıyor ve en fazla iki satır
+ * kalıyor; kazanılan yerin bir kısmı da görsele gitti (3,5rem -> 5rem).
+ *
+ * YAPI: her ürün kendi `<tbody>`'sinde iki satır. Görsel `rowSpan={2}` ile
+ * ikisini birden kaplıyor, ad `colSpan` ile fiyat sütunlarının üstünü.
+ * Sütun hizası bozulmuyor — ölçüldü, başlıklarla fiyat hücrelerinin
+ * merkezleri arasındaki sapma 0px.
+ *
+ * Ad artık `scope="row"` DEĞİL `scope="rowgroup"`: kendi satırına taşındığı
+ * için tek bir satırı değil, ürünün iki satırlık grubunu etiketliyor. Grubun
+ * sınırını da `<tbody>` çiziyor, bu yüzden her ürün ayrı bir gövde.
  */
 function CokFiyatliTablo({ sayfa, dil }: { sayfa: MenuSayfasi; dil: DilKodu }) {
   const { kategori, urunler } = sayfa;
@@ -428,8 +445,12 @@ function CokFiyatliTablo({ sayfa, dil }: { sayfa: MenuSayfasi; dil: DilKodu }) {
       <caption className="sr-only">
         {metin(kategori.ad, dil)} — {ui("hamurBoyunaGoreFiyatlar", dil)}
       </caption>
+      {/* Görsel sütununun genişliğini `.pide-gorsel-hucre` veriyor; burada
+          sınıf yok. Eskiden `md:w-52` vardı ve masaüstünde sütunu 208px'e
+          çıkarıyordu — görselin kendisi 56px olduğu için aradaki 128px boş
+          duruyordu. Ad artık o sütunun yanında değil altında olduğundan o
+          boşluk adı sağa itmiş olurdu. */}
       <colgroup>
-        <col className="w-14 md:w-52" />
         <col />
         {kategori.sutunlar.map((s) => (
           <col key={s.kod} />
@@ -440,9 +461,6 @@ function CokFiyatliTablo({ sayfa, dil }: { sayfa: MenuSayfasi; dil: DilKodu }) {
           <th scope="col">
             <span className="sr-only">{ui("gorsel", dil)}</span>
           </th>
-          <th scope="col">
-            <span className="sr-only">{ui("urun", dil)}</span>
-          </th>
           {kategori.sutunlar.map((sutun) => (
             <th key={sutun.kod} scope="col" className="pide-sutun-basligi">
               {metin(sutun.baslik, dil)}
@@ -450,18 +468,24 @@ function CokFiyatliTablo({ sayfa, dil }: { sayfa: MenuSayfasi; dil: DilKodu }) {
           ))}
         </tr>
       </thead>
-      <tbody>
-        {urunler.map((urun) => (
-          <tr key={urun.id}>
-            <td className="pide-gorsel-hucre">
+      {urunler.map((urun) => (
+        <tbody key={urun.id} className="pide-urun">
+          <tr>
+            <td className="pide-gorsel-hucre" rowSpan={2}>
               <UrunGorseli urun={urun} dil={dil} kategoriSlug={kategori.slug} />
             </td>
-            <th scope="row" className="pide-ad-hucre">
+            <th
+              scope="rowgroup"
+              className="pide-ad-hucre"
+              colSpan={kategori.sutunlar.length}
+            >
               <span className="urun-ad">{metin(urun.ad, dil)}</span>
               {icerikMetni(urun, dil) ? (
                 <p className="urun-icerik">{icerikMetni(urun, dil)}</p>
               ) : null}
             </th>
+          </tr>
+          <tr>
             {kategori.sutunlar.map((sutun) => {
               const fiyat = urun.fiyatlar.find((f) => f.sutun === sutun.kod);
               const bos = !fiyat || fiyat.tutar === null;
@@ -476,8 +500,8 @@ function CokFiyatliTablo({ sayfa, dil }: { sayfa: MenuSayfasi; dil: DilKodu }) {
               );
             })}
           </tr>
-        ))}
-      </tbody>
+        </tbody>
+      ))}
     </table>
   );
 }
