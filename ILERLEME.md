@@ -3,7 +3,7 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 29 tamamlandı — Kapalı Pide tablosunda **ürün adı kendi satırına** alındı, fiyatlar altına indi, görsel 56px'ten 80px'e büyüdü. Dar telefonda 7 satıra bölünen adlar en fazla 2 satırda kalıyor. Ürün fotoğrafı hâlâ engelli: Firebase Storage kurulmadı. Aşama 29 dahil her şey **üretimde canlı**. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
+**Güncel aşama:** Aşama 30 tamamlandı — panelin fiyat ekranına **ürün arama** eklendi; Türkçe harfler ASCII'ye katlandığı için `kiymali` yazınca **Kıymalı** bulunuyor. Ürün fotoğrafı hâlâ engelli: Firebase Storage kurulmadı. Aşama 30 **henüz üretimde değil, push onayı bekliyor**; Aşama 29 dahil öncesi **üretimde canlı**. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
 **Son güncelleme:** 2026-09-04
 
 ### Genel Durum
@@ -42,6 +42,7 @@ Numaralandırma rapor başlıklarıyla aynı: aşağıdaki her satırın karşı
 | 27 | Hero'da yıldız ve marka başlığı kaldırıldı | **Tamamlandı** |
 | 28 | Panelde renk özelleştirme | **Tamamlandı** |
 | 29 | Kapalı Pide tablosu — ad kendi satırında | **Tamamlandı** |
+| 30 | Fiyat ekranında ürün arama | **Tamamlandı** — push onayı bekliyor |
 
 ### Bekleyenler
 
@@ -5748,5 +5749,150 @@ gezinmede tekrarlamadı.
 
 Doğrulamalar mekân sahibinin seçtiği tema üzerinde yapıldı (Mürekkep +
 Yeşil vurgu / Lacivert fiyat); ayarlara dokunulmadı.
+
+=== RAPOR SONU ===
+
+
+## Aşama 30 — Fiyat Ekranında Ürün Arama · 2026-09-05
+
+=== RAPOR BAŞLANGICI ===
+
+**Tarih:** 2026-09-05 · **Dal:** `main` · **Durum:** push onayı bekliyor
+
+Fiyat düzenleme ekranına arama kutusu eklendi. 31 ürün arasında kaydırmak
+yerine yazarak bulunuyor.
+
+### 30.1 Kaydetme neden filtrelemeden etkilenmiyor
+
+Bu, işin en önemli noktası ve mevcut mimariden geliyordu:
+
+`degisiklikler` ekranda görüneni değil **`satirlar`'ın tamamını** dolaşarak
+hesaplanıyor; girilen değerler de `degerler` sözlüğünde `urunId|sutun`
+anahtarıyla duruyor. Yani filtre yalnızca **çizimi** etkiliyor, kaydetme yolu
+ekrana hiç bakmıyor.
+
+Sonuç: bir fiyat değiştirilip sonra arama yapılıp o satır gizlense bile
+değişiklik kaybolmuyor. Ölçüldü (bkz. 30.5).
+
+Yan etkisi bilinçli kabul edildi: arama açıkken "Kaydet (N fiyat)" düğmesi
+ekranda görünmeyen değişiklikleri de sayıyor. Kayıp değil — onay kutusu
+değişen her fiyatı ürün adıyla listeliyor. Alternatifi (gizli satırdaki
+değişikliği atmak) veri kaybı olurdu.
+
+### 30.2 Türkçe arama tuzağı — asıl teknik iş
+
+Düz `toLowerCase()` Türkçe'de kırılıyor:
+
+| Yazılan | `toLowerCase()` | `toLocaleLowerCase("tr")` |
+|---|---|---|
+| `Izgara` | `izgara` (noktalı) | `ızgara` (noktasız) |
+| `İzgara` | `i̇zgara` | `izgara` |
+
+Hangisi seçilirse seçilsin kullanıcının yazdığı diğer biçim eşleşmiyor.
+
+Çözüm: **iki tarafı da ASCII'ye katlamak** — `ç ğ ı İ ö ş ü` → `c g i i o s u`,
+sonra küçültmek. Asıl kazanç şu: mekân sahibi telefonda Türkçe karakter
+yazmadan `kiymali` yazınca **Kıymalı**'yı buluyor.
+
+Katlama kodda zaten vardı (`bolumKimligi` aynı haritayı kullanıyordu). İkinci
+bir kopya çıkarmak yerine ortak bir `sadelestir()` yardımcısına alındı,
+ikisi de ondan besleniyor.
+
+### 30.3 Kararlar
+
+**Ölçüt Türkçe ürün adı.** Panel Türkçe çalışıyor ve sayfa istemciye zaten
+yalnızca Türkçe adı gönderiyor; diğer üç dili aramak için sayfanın veri
+şeklini değiştirmek gerekirdi.
+
+**Eşleşen ürünü kalmayan kategori başlığı gizleniyor.** Gruplama artık
+eşleşenler üzerinden yapılıyor, o kategori hiç grup üretmiyor. Başlıklar
+bırakılsaydı arama sonucunda altları boş beş başlık görünür, sayfa bozuk
+gibi dururdu.
+
+**Kategoriye atlama şeridi arama açıkken gizleniyor.** Gizlenmiş
+kategorilere bağlantı vermek kırık davranış olurdu; arama zaten atlamanın
+yerini tutuyor.
+
+**Gecikme (debounce) yok.** 31 ürünlük listede filtreleme anlık; gecikme
+eklemek yazarken takılma hissi yaratırdı.
+
+### 30.4 Arayüz
+
+Listenin üstünde tek kutu (`type="search"`, etiket "Ürün ara") ve yalnızca
+yazı varken beliren bir **Temizle** düğmesi. Altında `aria-live="polite"`
+taşıyan tek satır durum bilgisi:
+
+| Durum | Görünen |
+|---|---|
+| Arama boş | hiçbir şey — normal davranış değişmiyor |
+| Eşleşme var | `31 üründen 3 tanesi` |
+| Eşleşme yok | `"zzz" için sonuç yok.` — liste kaybolduğu için kutu içinde, ortalanmış |
+
+`aria-live`: ekran okuyucu kaç ürün kaldığını yazdıkça duyuruyor, listeyi
+baştan gezmek zorunda kalmıyor.
+
+### 30.5 Doğrulama — panelde uçtan uca
+
+Geçici test hesabıyla girildi, iş bitince silindi.
+
+**Türkçe katlama çalışıyor.** Dört i varyantı da aynı sonucu veriyor:
+
+| Yazılan | Sonuç |
+|---|---|
+| `IZGARA` | 10 ürün |
+| `ızgara` | 10 ürün |
+| `İZGARA` | 10 ürün |
+| `izgara` | 10 ürün |
+| `kasarli` (Türkçe karaktersiz) | **Kaşarlı** |
+| `kiymali` (Türkçe karaktersiz) | **Kıymalı** |
+| `KOMPOSTO` | Komposto |
+| `et izgara porsiyon` (çok kelime) | Et Izgara Porsiyon |
+| `zzz` | `"zzz" için sonuç yok.` |
+
+**Rozetler kayboluyor mu:** hayır. `kiymali` aramasında Kıymalı satırı
+"teyit edilmedi" rozetiyle geldi.
+
+**Kategori başlıkları:** `kiymali` aramasında yalnızca "Kapalı Pide
+Çeşitleri" başlığı kaldı, diğer dördü gizlendi. Atlama şeridi de gizlendi.
+
+**Kritik test — arama açıkken kaydetme:**
+
+1. Arama boşken Et Izgara Porsiyon 500 → 502 yazıldı
+2. `kiymali` arandı — o satır **ekrandan kalktı** (ekranda 1 ürün: Kıymalı)
+3. Kaydet düğmesi hâlâ **"Kaydet (1 fiyat)"** diyordu
+4. Özet kutusu **"Et Izgara Porsiyon 500 ₺ → 502 ₺"** gösterdi
+5. Kaydedildi, menüde **502 ₺** göründü
+6. Arama ile bulunup 500'e geri alındı, kaydedildi
+
+Gizli satırdaki değişiklik ne kayboldu ne de sessizce atıldı.
+
+**Canlı veri geri bırakıldı:** 31 ürün, Et Izgara Porsiyon 500 ₺, mekân
+sahibinin tema ve renk ayarlarına dokunulmadı (Mürekkep + Yeşil/Lacivert),
+test hesapları silindi.
+
+```
+npx tsc --noEmit   → temiz (çıkış 0)
+npm run lint       → temiz (çıktı yok)
+npm run build      → başarılı, 30 statik sayfa
+tarayıcı konsolu   → 0 hata
+```
+
+### 30.6 Değişen dosyalar
+
+| Dosya | Değişiklik |
+|---|---|
+| `app/panel/fiyatlar/FiyatFormu.tsx` | `sadelestir()` yardımcısı, `arama` durumu, `eslesenler` filtresi, arama kutusu ve durum satırı; `bolumKimligi` ortak yardımcıya bağlandı |
+| `app/panel/panel.css` | arama kutusu, Temizle düğmesi, durum satırı ve boş sonuç kutusu |
+| `ILERLEME.md` | özet, aşama tablosu ve bu rapor |
+
+Fiyat kaydetme mantığı, Firestore güncellemesi, `revalidatePath` akışı,
+diğer panel ekranları ve menü tarafı değişmedi.
+
+### 30.7 Sıradaki adım
+
+Push ve deploy onay bekliyor.
+
+Firebase Storage hâlâ kurulu değil; ürün fotoğrafı yükleme onu bekliyor.
+Fotoğrafsız beş ürün duruyor: Künefe, Kola, Soda, Komposto, Meyveli Soda.
 
 === RAPOR SONU ===

@@ -52,19 +52,37 @@ function buyukDegisim(eski: number | null, yeni: number | null): boolean {
   return oran > 3 || oran < 1 / 3;
 }
 
-/** Kategori adindan baglanti hedefi — Turkce harfler id'de sorun cikarmasin. */
-function bolumKimligi(ad: string): string {
+/**
+ * Türkçe metni karşılaştırılabilir hâle getirir: harfleri ASCII'ye katlayıp
+ * küçültür.
+ *
+ * NEDEN DÜZ `toLowerCase()` DEĞİL: Türkçe'de i/ı ayrımı aramayı kırıyor.
+ * `"Izgara".toLowerCase()` noktalı "izgara" veriyor, Türkçe'ye göre doğrusu
+ * olan `toLocaleLowerCase("tr")` ise noktasız "ızgara". Hangisi seçilirse
+ * seçilsin kullanıcının yazdığı diğer biçim eşleşmiyor.
+ *
+ * İki tarafı da ASCII'ye katlayınca sorun ortadan kalkıyor: "kasarli",
+ * "Kaşarlı", "KAŞARLI" ve "kaşarli" aynı dizgeye iniyor. Asıl kazanç şu:
+ * mekân sahibi telefonda Türkçe karakter yazmadan "kiymali" yazınca
+ * "Kıymalı"yı buluyor.
+ */
+function sadelestir(metin: string): string {
   const harita: Record<string, string> = {
     ç: "c", ğ: "g", ı: "i", ö: "o", ş: "s", ü: "u",
     Ç: "c", Ğ: "g", İ: "i", Ö: "o", Ş: "s", Ü: "u",
   };
+  return metin
+    .split("")
+    .map((h) => harita[h] ?? h)
+    .join("")
+    .toLowerCase();
+}
+
+/** Kategori adindan baglanti hedefi — Turkce harfler id'de sorun cikarmasin. */
+function bolumKimligi(ad: string): string {
   return (
     "bolum-" +
-    ad
-      .split("")
-      .map((h) => harita[h] ?? h)
-      .join("")
-      .toLowerCase()
+    sadelestir(ad)
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/^-+|-+$/g, "")
   );
@@ -84,6 +102,15 @@ export function FiyatFormu({ satirlar }: { satirlar: FiyatSatiri[] }) {
   }, [satirlar]);
 
   const [degerler, setDegerler] = useState<Record<string, string>>(baslangic);
+  /**
+   * Arama kutusundaki metin. YALNIZCA ÇİZİMİ etkiliyor.
+   *
+   * Kaydetme yolu buraya hiç bakmıyor: `degisiklikler` ekranda görüneni değil
+   * `satirlar`'ın tamamını dolaşıyor ve girilen değerler `degerler`
+   * sözlüğünde duruyor. Bu yüzden bir fiyat değiştirilip sonra arama yapılıp
+   * o satır gizlense bile değişiklik kaydediliyor — filtre veri kaybettirmiyor.
+   */
+  const [arama, setArama] = useState("");
   const [ozetAcik, setOzetAcik] = useState(false);
   /** Silinmek uzere onay bekleyen urun. `null` = onay kutusu kapali. */
   const [silinecek, setSilinecek] = useState<FiyatSatiri | null>(null);
@@ -170,16 +197,40 @@ export function FiyatFormu({ satirlar }: { satirlar: FiyatSatiri[] }) {
     });
   }
 
-  // Kategoriye göre grupla — mekân sahibi menüdeki sırayla görsün.
+  const aramaVar = arama.trim() !== "";
+
+  /**
+   * Aramaya uyan satırlar. Arama boşsa hepsi — normal davranış değişmiyor.
+   *
+   * Ölçüt ÜRÜN ADI, Türkçesi. Panel Türkçe çalışıyor ve sayfa istemciye
+   * zaten yalnızca Türkçe adı gönderiyor; diğer üç dili aramak için sayfanın
+   * veri şeklini değiştirmek gerekirdi.
+   *
+   * Gecikme (debounce) YOK: 31 ürünlük listede filtreleme anlık, gecikme
+   * eklemek yazarken takılma hissi yaratırdı.
+   */
+  const eslesenler = useMemo(() => {
+    if (!aramaVar) return satirlar;
+    const aranan = sadelestir(arama.trim());
+    return satirlar.filter((s) => sadelestir(s.urunAdi).includes(aranan));
+  }, [satirlar, arama, aramaVar]);
+
+  /**
+   * Kategoriye göre grupla — mekân sahibi menüdeki sırayla görsün.
+   *
+   * Gruplama EŞLEŞENLER üzerinden: eşleşen ürünü kalmayan kategori hiç
+   * grup üretmiyor, yani başlığı da çıkmıyor. Başlıklar bırakılsaydı arama
+   * sonucunda altları boş beş başlık görünür, sayfa bozuk gibi dururdu.
+   */
   const gruplar = useMemo(() => {
     const g: { kategoriAdi: string; satirlar: FiyatSatiri[] }[] = [];
-    for (const s of satirlar) {
+    for (const s of eslesenler) {
       const son = g[g.length - 1];
       if (son && son.kategoriAdi === s.kategoriAdi) son.satirlar.push(s);
       else g.push({ kategoriAdi: s.kategoriAdi, satirlar: [s] });
     }
     return g;
-  }, [satirlar]);
+  }, [eslesenler]);
 
   return (
     <>
@@ -189,8 +240,50 @@ export function FiyatFormu({ satirlar }: { satirlar: FiyatSatiri[] }) {
         </p>
       ) : null}
 
-      {/* Kategoriye atlama: 31 ürün tek sayfada, kaydırarak aramak zordu. */}
-      {gruplar.length > 1 ? (
+      <div className="panel-arama">
+        <label className="panel-arama-alan">
+          <span className="panel-etiket">Ürün ara</span>
+          <input
+            className="panel-girdi"
+            type="search"
+            /* `autoComplete="off"`: tarayıcının eski arama önerileri listenin
+               üstünü kapatıyordu. */
+            autoComplete="off"
+            placeholder="Örnek: kıymalı"
+            value={arama}
+            onChange={(e) => setArama(e.target.value)}
+          />
+        </label>
+        {aramaVar ? (
+          <button
+            type="button"
+            className="panel-dugme panel-dugme-ikincil panel-arama-temizle"
+            onClick={() => setArama("")}
+          >
+            Temizle
+          </button>
+        ) : null}
+      </div>
+
+      {/* Sonuç durumu. `aria-live`: ekran okuyucu kaç ürün kaldığını
+          yazdıkça duyuruyor, listeyi baştan gezmek zorunda kalmıyor.
+          Arama boşken hiçbir şey yazmıyor — sayfa normalde olduğu gibi. */}
+      <p
+        className="panel-arama-durum"
+        data-bos={aramaVar && eslesenler.length === 0 ? "evet" : "hayir"}
+        aria-live="polite"
+      >
+        {aramaVar
+          ? eslesenler.length > 0
+            ? `${satirlar.length} üründen ${eslesenler.length} tanesi`
+            : `"${arama.trim()}" için sonuç yok.`
+          : ""}
+      </p>
+
+      {/* Kategoriye atlama: 31 ürün tek sayfada, kaydırarak aramak zordu.
+          Arama açıkken gizli: gizlenmiş kategorilere bağlantı vermek kırık
+          davranış olurdu, ayrıca arama zaten atlamanın yerini tutuyor. */}
+      {!aramaVar && gruplar.length > 1 ? (
         <nav className="panel-atlama" aria-label="Kategoriye git">
           {gruplar.map((grup) => (
             <a

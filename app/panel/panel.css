@@ -735,3 +735,56 @@
   background: var(--p-uyari);
   border-color: var(--p-uyari);
 }
+
+/* ---------------------------------------------------------------------------
+   Urun arama
+
+   Kucuk ve tek islevli: bir kutu, bir de yalnizca yazi varken beliren
+   Temizle dugmesi. Acilir menu ya da filtre secenegi yok — panelin
+   "her ekranda tek is" dengesi bozulmasin.
+   --------------------------------------------------------------------------- */
+.panel-arama {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.panel-arama-alan {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Safari arama kutusuna kendi gorunumunu veriyor; kutunun panelin diger
+   girdileriyle ayni durmasi icin kapatiliyor. */
+.panel-arama input[type="search"] {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.panel-arama-temizle {
+  flex-shrink: 0;
+}
+
+.panel-arama-durum {
+  margin: 0 0 1rem;
+  font-size: 0.9rem;
+  color: var(--p-solgun);
+}
+
+/* Bos sonuc: liste tamamen kayboldugu icin mesaj tek satir kalmasin,
+   listenin biraktigi bosluga yerlesip goze carpsin. */
+.panel-arama-durum[data-bos="evet"] {
+  padding: 2rem 1rem;
+  text-align: center;
+  font-size: 1rem;
+  background: var(--p-yuzey);
+  border: 1px solid var(--p-cizgi);
+  border-radius: 0.75rem;
+}
+
+/* Arama bosken paragraf bos kaliyor; alt bosluk da gitmeli ki liste
+   yukari kaysin. */
+.panel-arama-durum:empty {
+  margin: 0;
+}
