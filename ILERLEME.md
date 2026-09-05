@@ -3,7 +3,7 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 31 tamamlandı — panelin "Menü görünümü" ekranına **telefon ölçüsünde canlı önizleme** eklendi; gerçek menü yaprağı gerçek veriyle çiziliyor ve tema/renk seçimi anında (2-38 ms) yansıyor. Ürün fotoğrafı hâlâ engelli: Firebase Storage kurulmadı. Aşama 31 **henüz üretimde değil, push onayı bekliyor**; Aşama 30 dahil öncesi **üretimde canlı**. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
+**Güncel aşama:** Aşama 31 tamamlandı — panelin "Menü görünümü" ekranına **telefon ölçüsünde canlı önizleme** eklendi; gerçek menü yaprağı gerçek veriyle çiziliyor ve tema/renk seçimi anında (2-38 ms) yansıyor. Ürün fotoğrafı hâlâ engelli: Firebase Storage kurulmadı. Aşama 31 dahil her şey **üretimde canlı**. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
 **Son güncelleme:** 2026-09-04
 
 ### Genel Durum
@@ -43,7 +43,7 @@ Numaralandırma rapor başlıklarıyla aynı: aşağıdaki her satırın karşı
 | 28 | Panelde renk özelleştirme | **Tamamlandı** |
 | 29 | Kapalı Pide tablosu — ad kendi satırında | **Tamamlandı** |
 | 30 | Fiyat ekranında ürün arama | **Tamamlandı** |
-| 31 | Panelde menü önizlemesi | **Tamamlandı** — push onayı bekliyor |
+| 31 | Panelde menü önizlemesi | **Tamamlandı** |
 
 ### Bekleyenler
 
@@ -6104,9 +6104,75 @@ akışı, diğer panel ekranları ve canlı menü değişmedi.
 
 ### 31.9 Sıradaki adım
 
-Push ve deploy onay bekliyor.
+Push edildi ve üretime çıktı; canlı doğrulama 31.10'da.
 
 Firebase Storage hâlâ kurulu değil; ürün fotoğrafı yükleme onu bekliyor.
 Fotoğrafsız beş ürün duruyor: Künefe, Kola, Soda, Komposto, Meyveli Soda.
+
+### 31.10 Canlı doğrulama · 2026-09-05
+
+`f69d05a` push edildi ve üretime çıktı. Doğrulama
+**https://huzur-pide.vercel.app/panel/tema** üzerinde, geçici test hesabıyla
+yapıldı; iş bitince hesaplar silindi.
+
+**Önizleme anında güncelleniyor.** Değişimin DOM'a yazıldığı an
+`MutationObserver` ile ölçüldü:
+
+| Ne | Süre |
+|---|---|
+| Tema değişimi (Gece Ocağı → Çini Levha) | **5 ms** |
+| Renk değişimi (Kobalt → Turkuaz) | **2 ms** |
+
+Tema geçişinde dördü birden değişti: tema sınıfı (`tema-gece` → `tema-cini`),
+zemin (`rgb(20,16,13)` → `rgb(246,242,233)`), vurgu rengi (`#d98757` →
+`#1a4a8d`) ve **başlık yazı tipi** (Playfair Display → Cormorant). Yeni
+temanın kendi kayıtlı renkleri ve kendi paleti de aynı anda geldi — sunucuya
+gidilmiyor.
+
+**Önizleme gerçek menü verisiyle çalışıyor:**
+
+| Kontrol | Sonuç |
+|---|---|
+| Gerçek bileşen | `.kitap-sayfa` ve `.pide-tablo` var |
+| Ürün grubu | 6 (`<tbody class="pide-urun">`) |
+| Kategori başlığı | "Kapalı Pide Çeşitleri" |
+| Ürün adları | Kıymalı, Kaşarlı, Sucuklu, Kıyma & Kaşar, Karışık, Lahmacun |
+| Fotoğraflar | 6 gerçek fotoğraf |
+| Fiyatlar | 200 ₺ · 300 ₺ · 400 ₺ |
+
+Ekranda da bakıldı: Çini Levha'da porselen zemin, turkuaz motif ve hayalet
+sayfa numarası, mercan fiyatlar; Gece Ocağı'nda koyu zemin, bakır vurgu,
+fıstık fiyatlar. Yeni Kapalı Pide düzeni (ad kendi satırında, 80px görsel)
+önizlemede de görünüyor.
+
+**Çerçeve tam oturuyor:** 390px'lik panelde ölçek 0,85; çerçeve ile
+ölçeklenmiş ekran arasında boşluk ya da taşma yok.
+
+**Panelin kendi tasarımı bozulmamış:**
+
+| Kontrol | Sonuç |
+|---|---|
+| `<body>` sınıfı | `panel` (tema sınıfı yok) |
+| Panel zemini | `rgb(244,241,236)` — değişmedi |
+| Yatay taşma | 0 |
+| `/panel/fiyatlar` | 31 ürün, arama çalışıyor (`kiymali` → 1), 5 atlama bağlantısı, 31 silme düğmesi |
+| Önizleme sızması | yok — telefon çerçevesi yalnızca tema ekranında |
+
+**Canlı menü etkilenmemiş:** `/tr/menu/kapali-pide` → `tema-gece`,
+`--t-vurgu:#d98757`, `--t-fiyat:#b9c47a`, beş levha, altı ürün grubu,
+`Sayfa 1 / 5`, yatay taşma 0. `<body>`de panel sınıfı yok, telefon çerçevesi
+menüye sızmamış.
+
+**Konsolda hata yok** — panel ve menü sayfalarında 0 hata, 0 uyarı.
+
+**Mekân sahibinin ayarları geri bırakıldı.** Test sırasında tema ve renkler
+değiştirildi, sonra birebir eski hâline döndürüldü:
+
+```
+{"tema":"gece","renkler":{"gece":{"vurgu":"bakir","fiyat":"fistik"},
+ "murekkep":{"vurgu":"yesil","fiyat":"lacivert"},
+ "cini":{"vurgu":"kobalt","fiyat":"mercan"}}}
+urun sayisi: 31 · yonetici sayisi: 1 (yalnizca mekan sahibi)
+```
 
 === RAPOR SONU ===
