@@ -1,39 +1,68 @@
 import { redirect } from "next/navigation";
-import { aktifTema, kategoriler, renkSecimi } from "@/data/menuKaynak";
-import { fiyatYaz, metin } from "@/data/menu";
-import { secilebilirTema } from "@/data/tema";
+import { Yaprak } from "@/components/ekranlar";
+import { temaFontlari } from "@/app/temalar/aktif";
+import { aktifTema, sayfalar, tumRenkSecimleri } from "@/data/menuKaynak";
+import {
+  SECILEBILIR_TEMALAR,
+  VARSAYILAN_TEMA,
+  secilebilirTema,
+  type SecilebilirTema,
+} from "@/data/tema";
 import { mevcutYonetici } from "@/lib/oturum";
 import { PanelUst } from "../PanelUst";
-import { TemaSecici } from "./TemaSecici";
-import { RenkSecici, type OrnekUrun } from "./RenkSecici";
+import { GorunumSecici, type Onizleme } from "./GorunumSecici";
 
 export const dynamic = "force-dynamic";
-
-/**
- * Önizlemede gösterilecek örnek: menüdeki İLK FİYATLI ÜRÜN.
- *
- * Uydurma bir örnek ("Kıymalı Pide · 180 ₺") yazılabilirdi ama mekân sahibi
- * kendi menüsünde olmayan bir satır görürdü. Gerçek ürün hem dürüst hem de
- * rengin kendi içeriğinde nasıl durduğunu gösteriyor.
- */
-async function ornekUrun(): Promise<OrnekUrun | null> {
-  for (const kategori of await kategoriler()) {
-    for (const urun of kategori.urunler) {
-      const fiyat = urun.fiyatlar.find((f) => f.tutar !== null);
-      if (fiyat) {
-        return { ad: metin(urun.ad, "tr"), fiyat: fiyatYaz(fiyat.tutar) };
-      }
-    }
-  }
-  return null;
-}
 
 export default async function TemaSayfasi() {
   const yonetici = await mevcutYonetici();
   if (!yonetici) redirect("/panel");
 
-  const tema = await aktifTema();
-  const [secim, ornek] = await Promise.all([renkSecimi(), ornekUrun()]);
+  const [tema, secimler, tumSayfalar] = await Promise.all([
+    aktifTema(),
+    tumRenkSecimleri(),
+    sayfalar(),
+  ]);
+
+  /**
+   * Önizleme yaprakları — ÜÇ TEMA İÇİN DE, SUNUCUDA, ÖNCEDEN basılıyor.
+   *
+   * Menü bileşenleri sunucu bileşeni ve gerçek Firestore verisiyle çalışıyor;
+   * istemcide yeniden çizilemezler. Üçü de önden basılıp istemciye düğüm
+   * olarak geçince, tema değiştirildiğinde istemcinin yapacağı tek iş
+   * hangisini göstereceğini seçmek oluyor — sunucuya gitmiyor, bu yüzden
+   * önizleme anlık.
+   *
+   * Renk için ayrı kopya GEREKMİYOR: renk yalnızca bir CSS değişkeni, aynı
+   * markup her renkle çalışıyor. Tema ise motifi (SVG) ve yazı tipini
+   * değiştirdiği için kopya başına bir tane gerekiyor.
+   *
+   * Gösterilen sayfa MENÜNÜN İLK YAPRAĞI (Kapalı Pide): tema değişkenlerinin
+   * neredeyse tamamını birden kullanıyor — kategori başlığı, motif ayracı,
+   * hayalet sayfa numarası, ürün fotoğrafları, adlar, içindekiler ve üç
+   * fiyat sütunu. Uydurma bir örnek kart yerine gerçek sayfa: mekân sahibi
+   * kendi menüsünü görüyor ve önizleme sessizce yalan söyleyemiyor.
+   *
+   * Dil Türkçe — panelin tamamı Türkçe.
+   */
+  const ilkYaprak = tumSayfalar[0];
+  const onizlemeler = Object.fromEntries(
+    SECILEBILIR_TEMALAR.map((t) => [
+      t,
+      {
+        // Tema sınıfı + o temanın yazı tipi sınıfları. `next/font` çağrısı
+        // sunucuda kalıyor, istemciye yalnızca hazır sınıf adı gidiyor.
+        sinif: `tema-${t} ${temaFontlari(t)}`,
+        dugum: <Yaprak sayfa={ilkYaprak} dil="tr" tema={t} />,
+      } satisfies Onizleme,
+    ]),
+  ) as Record<SecilebilirTema, Onizleme>;
+
+  // Seçilebilir olmayan bir tema kayıtlıysa (Zeytin) panel onu gösteremez;
+  // varsayılana düşülüyor ki ekran boş kalmasın.
+  const baslangicTema: SecilebilirTema = secilebilirTema(tema)
+    ? tema
+    : (VARSAYILAN_TEMA as SecilebilirTema);
 
   return (
     <>
@@ -43,21 +72,11 @@ export default async function TemaSayfasi() {
         <p className="panel-aciklama">
           Müşterinin gördüğü menünün görünümünü seçin. Seçtiğiniz anda değişir.
         </p>
-        <TemaSecici baslangic={tema} />
-
-        {/*
-          Renk seçimi temaya bağlı: her temanın kendi paleti var, çünkü bir
-          temanın zeminine uyan renk diğerininkinde okunmuyor. `key={tema}`
-          şart — tema değişince bileşen sıfırdan kuruluyor ve yeni temanın
-          kendi kayıtlı seçimiyle açılıyor; yoksa eski temanın seçimi ekranda
-          kalırdı.
-
-          Seçilebilir olmayan bir tema (Zeytin) geçerliyse renk bölümü hiç
-          çıkmıyor: onun paleti yok, temanın kendi renkleri geçerli.
-        */}
-        {secilebilirTema(tema) ? (
-          <RenkSecici key={tema} tema={tema} baslangic={secim} ornek={ornek} />
-        ) : null}
+        <GorunumSecici
+          baslangicTema={baslangicTema}
+          baslangicSecimler={secimler}
+          onizlemeler={onizlemeler}
+        />
       </main>
     </>
   );

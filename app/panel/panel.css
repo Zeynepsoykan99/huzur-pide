@@ -618,54 +618,62 @@
   font-size: 0.8rem;
 }
 
-/* --- Onizleme --------------------------------------------------------------
-   Kutu `tema-*` sinifiyla sarili ve renkleri satir ici stille aliyor: canli
-   menudeki duzenegin (bkz. app/[dil]/layout.tsx) birebir ayni. Bu yuzden
-   burada gorunen renk menude gorunecek renkle ayni, iki yerde ayri
-   tanimlanmiyor.
+/* --- Onizleme: telefon cercevesi -------------------------------------------
+   Panelin icinde GERCEK menu yapragi cizilliyor (bkz. app/panel/tema/page.tsx).
 
-   Yazi tipleri temanin degil panelin: tema fontlari yalnizca musteri
-   tarafindaki <html> uzerinde tanimli, burada yarim yuklenirdi.
+   PANELIN KURALI BOZULMUYOR: tema sinifi <body class="panel"> uzerinde degil,
+   asagidaki ic ice sarmalayicida. Panel kendi --p-* degiskenleriyle kaliyor,
+   --t-* yalnizca bu kutunun icinde gecerli. temalar.css tam da bunun icin
+   torun secici kullanmaktan kaciniyor.
+
+   OLCU GERCEK TELEFON OLCUSU (390x640), sonra kucultuluyor. Kutuyu dogrudan
+   dar cizmek yaniltici olurdu: satir sayilari, sigmalar ve kaydirma o zaman
+   musterinin gordugunden baska cikardi. Boyle cizilip olceklenince oranlar
+   birebir korunuyor.
+
+   Olcek uc kirilimda sabit; kabin genisligini okuyup hesaplamak yerine
+   basamakli birakildi, cunku panel govdesinin genisligi zaten sinirli.
    --------------------------------------------------------------------------- */
-.panel-renk-onizleme-sarmal {
-  margin-top: 1.5rem;
+.panel-onizleme-bolum {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--p-cizgi);
 }
 
-.panel-onizleme {
-  padding: 1rem;
-  border-radius: 0.65rem;
+.panel-telefon {
+  --olcek: 0.72;
+  width: calc(390px * var(--olcek));
+  height: calc(640px * var(--olcek));
+  margin-inline: auto;
+  overflow: hidden;
   border: 1px solid var(--p-cizgi);
+  border-radius: 1rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+@media (min-width: 23.5rem) {
+  .panel-telefon {
+    --olcek: 0.85;
+  }
+}
+
+@media (min-width: 30rem) {
+  .panel-telefon {
+    --olcek: 1;
+  }
+}
+
+.panel-telefon-ekran {
+  width: 390px;
+  height: 640px;
+  overflow: hidden;
+  /* `transform-origin` sol ust: kutunun genisligi de ayni olcekle
+     hesaplandigi icin kaydirma gerekmiyor, kutu tam oturuyor. */
+  transform: scale(var(--olcek));
+  transform-origin: top left;
+  /* Musteri tarafinda bu zemini <body> veriyor; panelde <body> panelin
+     kendi zemini, o yuzden burada acikca yaziliyor. */
   background: var(--t-zemin);
-}
-
-.panel-onizleme-levha {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.85rem 1rem;
-  border-radius: 0.5rem;
-  background: var(--t-yuzey);
-  border: 1px solid var(--t-cizgi);
-}
-
-.panel-onizleme-motif {
-  width: 1.5rem;
-  height: 1.5rem;
-  flex-shrink: 0;
-  color: var(--t-vurgu);
-}
-
-.panel-onizleme-ad {
-  flex: 1;
-  min-width: 0;
-  color: var(--t-metin);
-  font-weight: 600;
-}
-
-.panel-onizleme-fiyat {
-  flex-shrink: 0;
-  color: var(--t-fiyat);
-  font-weight: 700;
 }
 
 /* ---------------------------------------------------------------------------

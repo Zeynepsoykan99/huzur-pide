@@ -150,9 +150,17 @@ export async function aktifRenkler(): Promise<CozulmusRenkler | null> {
   return (await menuyuOku()).renkler;
 }
 
-/** Panelin renk kutularını işaretlemek için — ham seçim, çözülmemiş hâliyle. */
-export const renkSecimi = cache(async (): Promise<TemaRenkSecimi> => {
-  const belge = await db().collection("ayarlar").doc("genel").get();
-  const tema = (await menuyuOku()).tema;
-  return (belge.data()?.renkler?.[tema] ?? {}) as TemaRenkSecimi;
-});
+/**
+ * Panelin renk kutularını işaretlemek için — ham seçimler, çözülmemiş hâliyle.
+ *
+ * TEK TEMANIN DEĞİL HEPSİNİN seçimi dönüyor: panel tema değiştirildiğinde
+ * yeni temanın kayıtlı renklerini SUNUCUYA GİTMEDEN gösterebilsin diye.
+ * Yalnızca aktif temanınki gönderilseydi her tema tıklamasında bir gidiş
+ * dönüş gerekir, önizleme de o kadar gecikirdi.
+ */
+export const tumRenkSecimleri = cache(
+  async (): Promise<Record<string, TemaRenkSecimi>> => {
+    const belge = await db().collection("ayarlar").doc("genel").get();
+    return (belge.data()?.renkler ?? {}) as Record<string, TemaRenkSecimi>;
+  },
+);

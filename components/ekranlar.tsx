@@ -506,8 +506,15 @@ function CokFiyatliTablo({ sayfa, dil }: { sayfa: MenuSayfasi; dil: DilKodu }) {
   );
 }
 
-/** Kitabın tek bir yaprağı. */
-function Yaprak({ sayfa, dil, tema }: MotifProps & { sayfa: MenuSayfasi; dil: DilKodu }) {
+/**
+ * Kitabın tek bir yaprağı.
+ *
+ * DIŞA AÇIK, çünkü panelin tema önizlemesi de bunu basıyor. Önizlemenin
+ * gerçek görünümü göstermesinin tek güvenilir yolu gerçek bileşeni
+ * kullanmak: ayrı bir "örnek kart" yazılsaydı tema değişkenlerinden birini
+ * atladığı anda önizleme sessizce yalan söylemeye başlardı.
+ */
+export function Yaprak({ sayfa, dil, tema }: MotifProps & { sayfa: MenuSayfasi; dil: DilKodu }) {
   const cokSutunlu = sayfa.kategori.sutunlar.length > 1;
   return (
     <section

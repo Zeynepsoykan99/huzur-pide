@@ -3,7 +3,7 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 30 tamamlandı — panelin fiyat ekranına **ürün arama** eklendi; Türkçe harfler ASCII'ye katlandığı için `kiymali` yazınca **Kıymalı** bulunuyor. Ürün fotoğrafı hâlâ engelli: Firebase Storage kurulmadı. Aşama 30 dahil her şey **üretimde canlı**. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
+**Güncel aşama:** Aşama 31 tamamlandı — panelin "Menü görünümü" ekranına **telefon ölçüsünde canlı önizleme** eklendi; gerçek menü yaprağı gerçek veriyle çiziliyor ve tema/renk seçimi anında (2-38 ms) yansıyor. Ürün fotoğrafı hâlâ engelli: Firebase Storage kurulmadı. Aşama 31 **henüz üretimde değil, push onayı bekliyor**; Aşama 30 dahil öncesi **üretimde canlı**. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
 **Son güncelleme:** 2026-09-04
 
 ### Genel Durum
@@ -43,6 +43,7 @@ Numaralandırma rapor başlıklarıyla aynı: aşağıdaki her satırın karşı
 | 28 | Panelde renk özelleştirme | **Tamamlandı** |
 | 29 | Kapalı Pide tablosu — ad kendi satırında | **Tamamlandı** |
 | 30 | Fiyat ekranında ürün arama | **Tamamlandı** |
+| 31 | Panelde menü önizlemesi | **Tamamlandı** — push onayı bekliyor |
 
 ### Bekleyenler
 
@@ -5949,5 +5950,163 @@ görülebiliyor.
 **Canlı veri geri bırakıldı:** 31 ürün, Et Izgara Porsiyon 500 ₺, mekân
 sahibinin tema ve renk ayarları olduğu gibi (Mürekkep + Yeşil/Lacivert),
 yönetici sayısı 1 (yalnızca mekân sahibi), test hesapları silindi.
+
+=== RAPOR SONU ===
+
+
+## Aşama 31 — Panelde Menü Önizlemesi · 2026-09-05
+
+=== RAPOR BAŞLANGICI ===
+
+**Tarih:** 2026-09-05 · **Dal:** `main` · **Durum:** push onayı bekliyor
+
+"Menü görünümü" ekranına, gerçek menü yaprağını telefon ölçüsünde gösteren
+bir önizleme eklendi. Tema ya da renk seçildiği anda değişiyor; mekân
+sahibinin siteye gitmesi gerekmiyor.
+
+### 31.1 Mekanizma — sunucuda basılıyor, istemcide seçiliyor
+
+Önizlemenin tıklar tıklamaz değişmesi gerekiyordu, yani istemci durumuna
+bağlı olmalıydı. Ama menü bileşenleri (`Yaprak`, `CokFiyatliTablo`) sunucu
+bileşeni ve gerçek Firestore verisiyle çalışıyor; istemcide yeniden
+çizilemezler.
+
+Çözüm ikisini de koruyor: **sayfa sunucuda üç tema için de önceden basılıyor**,
+üç düğüm istemci bileşenine prop olarak geçiyor, istemcinin yapacağı tek iş
+hangisini göstereceğini seçmek. Gerçek bileşenler, gerçek veri, sıfır markup
+kopyası.
+
+Renk için ayrı kopya gerekmedi: renk yalnızca bir CSS değişkeni, aynı markup
+her renkle çalışıyor. Tema ise motifi (SVG) ve yazı tipini değiştirdiği için
+kopya başına bir tane gerekti.
+
+`<iframe>` ile gerçek siteyi göstermek değerlendirildi ve elendi: yalnızca
+kaydedilmiş hâli gösterirdi, yeniden üretim tamamlanana kadar eskiyi çizerdi
+ve anlık olmazdı.
+
+### 31.2 Panelin kuralı bozulmadı
+
+Tema `<body class="panel">`e değil **iç içe bir sarmalayıcıya** veriliyor.
+`temalar.css` tam da bunun için torun seçici kullanmaktan kaçınıyor (dosyanın
+başındaki not bunu söylüyor). Panel kendi `--p-*` değişkenleriyle kalıyor;
+`--t-*` yalnızca önizleme kutusunun içinde geçerli.
+
+Ölçüldü: önizleme açıkken `<body>` sınıfı hâlâ `panel`, panel zemini hâlâ
+`rgb(244,241,236)`.
+
+### 31.3 Yazı tipleri de doğru geliyor
+
+Aşama 28'deki küçük renk önizlemesi panelin fontuyla çiziliyordu; tema
+fontları yalnızca müşteri tarafındaki `<html>` üzerinde tanımlıydı. Font
+sınıfı (`temaFontlari(tema)`) artık aynı sarmalayıcıya veriliyor.
+
+Dört font modülünün de `preload: false` olması bunu bedavaya getiriyor:
+yalnızca gösterilen temanın dosyaları, yalnızca gösterildiğinde iniyor.
+
+`next/font` çağrısı sunucuda kalıyor; istemciye yalnızca hazır sınıf adı
+gidiyor.
+
+### 31.4 Ne gösteriyor
+
+**Menünün gerçek ilk yaprağı (Kapalı Pide), gerçek Firestore verisiyle.**
+Bu sayfa tema değişkenlerinin neredeyse tamamını birden kullanıyor: kategori
+başlığı, motif ayracı, hayalet sayfa numarası, altı ürün fotoğrafı, adlar,
+içindekiler ve üç fiyat sütunu.
+
+Uydurma bir "örnek kart" yazılmadı — ayrı bir kart, tema değişkenlerinden
+birini atladığı anda önizleme sessizce yalan söylemeye başlardı. `Yaprak`
+bu yüzden dışa açıldı.
+
+Dil Türkçe; panelin tamamı Türkçe.
+
+**Ölçü gerçek telefon ölçüsü: 390×640, sonra küçültülüyor.** Kutuyu doğrudan
+dar çizmek yanıltıcı olurdu — satır sayıları, sığmalar ve kaydırma o zaman
+müşterinin gördüğünden başka çıkardı. Ölçek üç kırılımda sabit: dar telefonda
+0,72 · 376px üstünde 0,85 · 480px üstünde 1.
+
+### 31.5 Yapı değişikliği
+
+Önizleme tema İLE rengin birleşimini gösteriyor. İkisi ayrı bileşenlerde
+kendi durumlarını tutsaydı, tema kartına basıldığında önizleme rengi ancak
+sunucudan dönen veriyle öğrenirdi — bir gidiş dönüş kadar gecikirdi.
+
+Yeni bir üst bileşen (`GorunumSecici`) durumu ve eylem çağrılarını üstlendi;
+`TemaSecici` ve `RenkSecici` sunum bileşenine indi. **Sunucu eylemleri
+(`temayiDegistir`, `renkleriDegistir`) hiç değişmedi.**
+
+Yan kazanç: tema değişince yapılan `router.refresh()` artık gerekmiyor —
+renk seçimlerinin hepsi baştan geliyor (`tumRenkSecimleri`), yeni temanın
+kayıtlı renkleri sunucuya gidilmeden gösteriliyor.
+
+### 31.6 Anlıklık ölçüldü
+
+| Ne | Süre |
+|---|---|
+| Tema değişimi (Gece → Mürekkep) | **38 ms** |
+| Renk değişimi (DOM yazımı) | **2 ms** |
+
+Tema geçişinde zemin, vurgu, fiyat ve **başlık yazı tipi** (Playfair Display
+→ Oswald) birlikte değişti; Mürekkep'in kendi kayıtlı renkleri (Yeşil +
+Lacivert) ve kendi paleti de aynı anda geldi.
+
+Bir ölçüm hatası düzeltildi: renk değişimini `requestAnimationFrame` ile
+ölçtüğümde 797 ms gibi değerler çıkıyordu. `MutationObserver` ile DOM
+yazımını doğrudan izleyince gerçek süre **2 ms**. Aradaki fark benim ölçüm
+döngümün kare beklemesiydi, güncellemenin kendisi değil.
+
+### 31.7 Doğrulama
+
+Geçici test hesabıyla panele girildi, iş bitince hesaplar silindi.
+
+**Önizleme gerçek bileşen ve gerçek veriyle çalışıyor:** `.kitap-sayfa` ve
+`.pide-tablo` var, altı ürün grubu, kategori başlığı "Kapalı Pide Çeşitleri",
+ilk ürün "Kıymalı", altı gerçek fotoğraf.
+
+**Çerçeve tam oturuyor:** masaüstünde ölçek 1, çerçeve 390×640, ölçeklenmiş
+ekran 390×640 — boşluk ya da taşma yok. İçerideki menü 390px genişlikte,
+yani gerçek telefon ölçüsünde.
+
+**Panelin geri kalanı bozulmadı:** `/panel/fiyatlar` 31 ürün, arama çalışıyor
+(`kiymali` → 1 ürün), atlama şeridi 5 bağlantı, 31 silme düğmesi; önizleme
+oraya sızmamış. `/panel/urun-ekle` yerinde.
+
+**Menü tarafı etkilenmedi:** `/tr/menu/kapali-pide` → `tema-gece`,
+`--t-vurgu:#d98757`, beş levha, altı ürün grubu, `Sayfa 1 / 5`, taşma 0,
+`<body>`de panel sınıfı yok.
+
+```
+npx tsc --noEmit   → temiz (çıkış 0)
+npm run lint       → temiz (çıktı yok)
+npm run build      → başarılı, 30 statik sayfa
+tarayıcı konsolu   → 0 hata, 0 uyarı
+```
+
+**Mekân sahibinin ayarları geri bırakıldı.** Test sırasında tema ve renkler
+değiştirildi, sonra birebir eski hâline döndürüldü:
+`tema: gece` · gece: bakır/fıstık · mürekkep: yeşil/lacivert ·
+çini: kobalt/mercan.
+
+### 31.8 Değişen dosyalar
+
+| Dosya | Değişiklik |
+|---|---|
+| `app/panel/tema/GorunumSecici.tsx` | **yeni** — durum, eylem çağrıları, önizleme |
+| `app/panel/tema/page.tsx` | üç temanın yaprağı sunucuda basılıyor, font sınıfları hesaplanıyor |
+| `app/panel/tema/TemaSecici.tsx` | sunum bileşenine indi |
+| `app/panel/tema/RenkSecici.tsx` | sunum bileşenine indi; eski küçük önizleme kalktı |
+| `components/ekranlar.tsx` | `Yaprak` dışa açıldı |
+| `data/menuKaynak.ts` | `renkSecimi` → `tumRenkSecimleri` (hepsi tek okumada) |
+| `app/panel/panel.css` | telefon çerçevesi; eski küçük önizleme kuralları silindi |
+| `ILERLEME.md` | özet, aşama tablosu ve bu rapor |
+
+Tema ve renk kaydetme mantığı, Firestore güncellemesi, `revalidatePath`
+akışı, diğer panel ekranları ve canlı menü değişmedi.
+
+### 31.9 Sıradaki adım
+
+Push ve deploy onay bekliyor.
+
+Firebase Storage hâlâ kurulu değil; ürün fotoğrafı yükleme onu bekliyor.
+Fotoğrafsız beş ürün duruyor: Künefe, Kola, Soda, Komposto, Meyveli Soda.
 
 === RAPOR SONU ===
