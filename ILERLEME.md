@@ -3,7 +3,7 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 32 tamamlandı — karşılama sayfasındaki **hero perdesi hafifletildi** (0,52/0,66/0,60 → 0,46/0,58/0,53), dükkân fotoğrafı belirgin biçimde açıldı; diğer iki blok dokunulmadan kaldı. Ürün fotoğrafı hâlâ engelli: Firebase Storage kurulmadı. Aşama 32 **henüz üretimde değil, push onayı bekliyor**; Aşama 31 dahil öncesi **üretimde canlı**. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
+**Güncel aşama:** Aşama 32 tamamlandı — karşılama sayfasındaki **hero perdesi hafifletildi** (0,52/0,66/0,60 → 0,46/0,58/0,53), dükkân fotoğrafı belirgin biçimde açıldı; diğer iki blok dokunulmadan kaldı. Ürün fotoğrafı hâlâ engelli: Firebase Storage kurulmadı. Aşama 32 dahil her şey **üretimde canlı**. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
 **Son güncelleme:** 2026-09-04
 
 ### Genel Durum
@@ -44,7 +44,7 @@ Numaralandırma rapor başlıklarıyla aynı: aşağıdaki her satırın karşı
 | 29 | Kapalı Pide tablosu — ad kendi satırında | **Tamamlandı** |
 | 30 | Fiyat ekranında ürün arama | **Tamamlandı** |
 | 31 | Panelde menü önizlemesi | **Tamamlandı** |
-| 32 | Hero perdesi hafifletildi | **Tamamlandı** — push onayı bekliyor |
+| 32 | Hero perdesi hafifletildi | **Tamamlandı** |
 
 ### Bekleyenler
 
@@ -6299,7 +6299,7 @@ kitabı, menü içeriği ve panel değişmedi.
 
 ### 32.7 Sıradaki adım
 
-Push ve deploy onay bekliyor.
+Push edildi ve üretime çıktı; canlı doğrulama 32.8'de.
 
 Fotoğrafı daha da açmak için perdeyi değil metnin konumunu ya da yerel bir
 gölgeyi değiştirmek gerekir: şu an fotoğrafın tamamı, tek bir 16px satırı
@@ -6307,5 +6307,54 @@ korumak için karartılıyor. İstenirse ayrı bir aşamada ele alınabilir.
 
 Firebase Storage hâlâ kurulu değil; ürün fotoğrafı yükleme onu bekliyor.
 Fotoğrafsız beş ürün duruyor: Künefe, Kola, Soda, Komposto, Meyveli Soda.
+
+### 32.8 Canlı doğrulama · 2026-09-06
+
+`361eb75` push edildi ve üretime çıktı. Doğrulama
+**https://huzur-pide.vercel.app** üzerinde yapıldı.
+
+Dağıtım, yayındaki CSS paketinden doğrulandı:
+`kars-hero .kars-perde{background:linear-gradient(#09122175 0%,#09122194
+45%,#09122187 100%)}` — `0x75/255 = 0,459` · `0x94/255 = 0,580` ·
+`0x87/255 = 0,529`, yani uygulanan değerin ta kendisi.
+
+**Fotoğraf gözle daha açık.** Hem 320px hem masaüstünde bakıldı: tabela
+yazısı, terasın cam bölmeleri, içerideki sarı lambalar ve zemindeki ıslak
+beton artık seçiliyor. Eskiden bunlar karartmanın altında kayboluyordu.
+
+**Slogan en dar telefonda da rahat okunuyor.** 320px en kötü durum — slogan
+orada fotoğrafın en parlak yerine, tabelanın üstündeki gökyüzüne denk
+geliyor:
+
+| Dil | 320px | Eşik |
+|---|---|---|
+| `/tr` | **5,09:1** | 4,5:1 ✓ |
+| `/en` | **5,00:1** | 4,5:1 ✓ |
+| `/ru` | **5,00:1** | 4,5:1 ✓ |
+| `/ar` | **5,00:1** | 4,5:1 ✓ |
+
+Masaüstünde (1280px) **8,89:1**.
+
+**Dört temada bozulma yok.** Canlıda ölçüldü: Çini, Gece, Mürekkep ve
+Zeytin'in dördünde de hero perdesi `0,46/0,58/0,53`, diğer blokların
+perdesi `0,52/0,66/0,60`, slogan rengi `rgb(255,255,255)` — birebir aynı.
+Perde tema değişkeni olmadığı için temaya özgü bir fark zaten oluşamıyor;
+bu ölçüm onu doğruluyor.
+
+**Diğer iki blok etkilenmedi** (masaüstü):
+
+| Metin | Değer | Eşik |
+|---|---|---|
+| Lezzetler başlık | 6,45:1 | 3:1 ✓ |
+| Lezzetler metin | 5,69:1 | 4,5:1 ✓ |
+| Organizasyon başlık | 6,68:1 | 3:1 ✓ |
+| Organizasyon metin | 5,89:1 | 4,5:1 ✓ |
+
+Değişiklik öncesiyle birebir aynı sayılar.
+
+**Konsolda hata yok:** 0 hata, 0 uyarı.
+
+Firestore'a dokunulmadı; mekân sahibinin tema ve renk ayarları olduğu gibi
+(Gece Ocağı + Bakır/Fıstık).
 
 === RAPOR SONU ===
