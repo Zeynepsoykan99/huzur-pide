@@ -3,7 +3,7 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 31 tamamlandı — panelin "Menü görünümü" ekranına **telefon ölçüsünde canlı önizleme** eklendi; gerçek menü yaprağı gerçek veriyle çiziliyor ve tema/renk seçimi anında (2-38 ms) yansıyor. Ürün fotoğrafı hâlâ engelli: Firebase Storage kurulmadı. Aşama 31 dahil her şey **üretimde canlı**. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
+**Güncel aşama:** Aşama 32 tamamlandı — karşılama sayfasındaki **hero perdesi hafifletildi** (0,52/0,66/0,60 → 0,46/0,58/0,53), dükkân fotoğrafı belirgin biçimde açıldı; diğer iki blok dokunulmadan kaldı. Ürün fotoğrafı hâlâ engelli: Firebase Storage kurulmadı. Aşama 32 **henüz üretimde değil, push onayı bekliyor**; Aşama 31 dahil öncesi **üretimde canlı**. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
 **Son güncelleme:** 2026-09-04
 
 ### Genel Durum
@@ -44,6 +44,7 @@ Numaralandırma rapor başlıklarıyla aynı: aşağıdaki her satırın karşı
 | 29 | Kapalı Pide tablosu — ad kendi satırında | **Tamamlandı** |
 | 30 | Fiyat ekranında ürün arama | **Tamamlandı** |
 | 31 | Panelde menü önizlemesi | **Tamamlandı** |
+| 32 | Hero perdesi hafifletildi | **Tamamlandı** — push onayı bekliyor |
 
 ### Bekleyenler
 
@@ -6174,5 +6175,137 @@ değiştirildi, sonra birebir eski hâline döndürüldü:
  "cini":{"vurgu":"kobalt","fiyat":"mercan"}}}
 urun sayisi: 31 · yonetici sayisi: 1 (yalnizca mekan sahibi)
 ```
+
+=== RAPOR SONU ===
+
+
+## Aşama 32 — Hero Perdesi Hafifletildi · 2026-09-06
+
+=== HATA DÜZELTMESİ ===
+
+**Onaylanan değer uygulanamadı: `0,34 / 0,46 / 0,41` en dar ekranda AA'nın
+altına düşüyor.** Plandaki ölçüm 390px ve 1280px üzerindeydi; planda
+"uygulama sırasında 320px'i de kontrol edeceğim" demiştim ve orada kaldı:
+**3,44:1** (ölçülen), eşik 4,5:1.
+
+Sebep, gradyanın alfası değil fotoğrafın kendisi: içerik alta çekili ve
+boşluk sabit olduğu için hero küçüldükçe slogan fotoğrafın **başka bir
+yerine** denk geliyor. 390px'te terasın önünde (koyu), 320px'te tabelanın
+üstündeki neredeyse beyaz gökyüzünde — o kutudaki en parlak piksel
+`rgb(224,243,253)`.
+
+Uygulanan değer: **`0,46 / 0,58 / 0,53`** — 320px dahil her genişlikte
+savunulabilir payla geçen en açık değer.
+
+=== RAPOR BAŞLANGICI ===
+
+**Tarih:** 2026-09-06 · **Dal:** `main` · **Durum:** push onayı bekliyor
+
+### 32.1 Perde temaya göre değişmiyordu
+
+Sorulan şeyin cevabı: her temanın kendi perde değeri **yok.** `.kars-perde`
+tek bir kural, sabit `rgba(9,18,33,…)` değerleriyle; `--t-*` değişkeni değil
+ve `temalar.css` içinde hiç geçmiyor.
+
+Tahminle bırakılmadı, ölçüldü: dört temanın (Çini, Gece, Mürekkep, Zeytin)
+her birinde hero perdesi `0,46/0,58/0,53`, diğer blokların perdesi
+`0,52/0,66/0,60`, slogan rengi `rgb(255,255,255)` — birebir aynı. Yani
+kontrast dört temada da aynı; temaya özgü bir sorun yok.
+
+Asıl paylaşım başkaydı: **aynı perdeyi üç blok birden kullanıyordu.** Bu
+yüzden değişiklik `.kars-hero .kars-perde` ile yalnızca hero'ya verildi.
+
+### 32.2 Değer nasıl seçildi
+
+Deneme yanılma yerine hesap: perdesiz ham fotoğraf ayrıca çekilip
+birleştirme formülü (`sonuç = foto × (1−alfa) + perde × alfa`) modellendi.
+Model mevcut değerde **1,1/255 sapmayla** doğrulandı — yani aday değerler
+ekrana basılmadan hesaplanabildi.
+
+Sloganın arkasındaki en kötü oran, gerçek fotoğraf pikselleriyle:
+
+| Perde | 320px | 360px | 390px | 1280px |
+|---|---|---|---|---|
+| 0,34 / 0,46 / 0,41 | **3,33 ✗** | 8,20 | 4,99 | 7,10 |
+| 0,42 / 0,54 / 0,49 | **4,24 ✗** | 9,44 | 6,11 | 8,29 |
+| 0,44 / 0,56 / 0,51 | 4,51 (pay %0,2) | 9,78 | — | — |
+| **0,46 / 0,58 / 0,53 ✅** | **4,81** | 10,13 | 6,78 | — |
+| 0,52 / 0,66 / 0,60 (eski) | 6,21 | 11,59 | 8,31 | 10,36 |
+
+`0,44/0,56/0,51` teknik olarak geçiyordu ama payı %0,2; canlı sayfada o
+kadar dar bırakılmadı.
+
+Sloganın arkasındaki alfa **0,648 → 0,570.**
+
+### 32.3 Diğer iki blok neden dokunulmadı
+
+Kapsam dışı olduğu için değil — **taşıyamazlar.** Mevcut perdeyle bile taş
+fırın bloğunun başlığı **4,85:1**'de; alevler yüzünden üç bloğun en parlağı
+o. Perde orada hafifletilseydi doğrudan eşiğin altına düşerdi. Ortak kural
+olduğu gibi bırakıldı ve bu gerekçe CSS'e yazıldı.
+
+### 32.4 Ölçüm — değişiklikten sonra
+
+**Hero sloganı (16px/400, eşik 4,5:1):**
+
+| Genişlik | Önce | Sonra |
+|---|---|---|
+| 320px | 6,21 | **4,99** |
+| 390px | 8,31 | **6,70** |
+| 1280px | 10,36 | **8,89** |
+
+Dört dilde 320px (en kötü durum): tr **4,99** · en **4,93** · ru **4,93** ·
+ar **4,93** — hepsi geçiyor.
+
+**Diğer iki blok değişmedi** (390px):
+
+| Metin | Önce | Sonra |
+|---|---|---|
+| Lezzetler başlık | 4,85 | **4,85** |
+| Lezzetler metin | 5,61 | **5,61** |
+| Organizasyon başlık | 6,71 | **6,71** |
+| Organizasyon metin | 6,18 | **6,18** |
+
+Birebir aynı — değişikliğin hero'ya kilitlendiğinin kanıtı.
+
+### 32.5 Doğrulama
+
+```
+npx tsc --noEmit   → temiz (çıkış 0)
+npm run lint       → temiz (çıktı yok)
+npm run build      → başarılı, 30 statik sayfa
+tarayıcı konsolu   → 0 hata
+```
+
+Beş genişlik (320 · 360 · 390 · 600 · 1280), dört dil, dört tema kontrol
+edildi. Fotoğraf ekranda belirgin biçimde açıldı: tabela, teras camları ve
+içerideki ışıklar artık seçiliyor.
+
+Konsoldaki tek uyarı hero görselinin ön yükleme/önbellek uyarısı — Aşama
+25'te belgelenen, tarayıcının önbellekteki daha büyük adayı yeniden
+kullanmasından gelen bilinen durum; bu değişiklikle ilgisi yok.
+
+Firestore'a dokunulmadı; mekân sahibinin tema ve renk ayarları olduğu gibi.
+
+### 32.6 Değişen dosyalar
+
+| Dosya | Değişiklik |
+|---|---|
+| `app/globals.css` | `.kars-hero .kars-perde` eklendi (0,46/0,58/0,53); ortak `.kars-perde` açıklamasına "hafifletilemez" gerekçesi yazıldı |
+| `ILERLEME.md` | özet, aşama tablosu ve bu rapor |
+
+Diğer iki görselin perdesi, karşılama sayfasının metinleri ve akışı, menü
+kitabı, menü içeriği ve panel değişmedi.
+
+### 32.7 Sıradaki adım
+
+Push ve deploy onay bekliyor.
+
+Fotoğrafı daha da açmak için perdeyi değil metnin konumunu ya da yerel bir
+gölgeyi değiştirmek gerekir: şu an fotoğrafın tamamı, tek bir 16px satırı
+korumak için karartılıyor. İstenirse ayrı bir aşamada ele alınabilir.
+
+Firebase Storage hâlâ kurulu değil; ürün fotoğrafı yükleme onu bekliyor.
+Fotoğrafsız beş ürün duruyor: Künefe, Kola, Soda, Komposto, Meyveli Soda.
 
 === RAPOR SONU ===

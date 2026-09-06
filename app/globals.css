@@ -1004,12 +1004,20 @@
  * daha koyu, ortada en koyu bir gradyan kullaniliyor: metin bandinin
  * arkasi her fotografta ayni koyuluga iniyor.
  *
+ * Bu ORTAK deger firin ve dis gorunum bloklari icin; hero'nunki ayri ve
+ * daha hafif (asagida, `.kars-hero .kars-perde`).
+ *
  * Degerler OLCUMLE bulundu, gozle degil:
  *   0,62-0,74-0,68 -> en dar nokta 6,85:1. Esigi rahat geciyordu ama
  *      fotograflar o kadar karariyordu ki mekan zor seciliyordu.
  *   0,46-0,60-0,54 -> firin blogunda 4,22:1'e dustu ve KALDI; alevler
  *      metnin arkasinda neredeyse beyaz.
- *   0,52-0,66-0,60 -> su anki. En dar nokta yine firin blogu, 5,6:1.
+ *   0,52-0,66-0,60 -> su anki. En dar nokta yine firin blogu, 4,85:1.
+ *
+ * BU DEGERLER HAFIFLETILEMEZ. Firin blogunun basligi mevcut perdeyle bile
+ * 4,85:1'de, yani esige en yakin nokta orasi; perde acilirsa dogrudan
+ * altina duser. Hero'da yapilan hafifletmenin buraya tasinmamasinin sebebi
+ * budur.
  *
  * Orta durak en koyu: metin bandi tam orada duruyor. Bu degerler
  * degistirilirse kontrast yeniden olculmeli — ozellikle firin gorseli,
@@ -1024,6 +1032,49 @@
     rgba(9, 18, 33, 0.52) 0%,
     rgba(9, 18, 33, 0.66) 45%,
     rgba(9, 18, 33, 0.6) 100%
+  );
+}
+
+/*
+ * HERO'NUN PERDESI DAHA HAFIF — fotograf ortak degerde fazla kararıyordu.
+ *
+ * Hero'yu ayirmayi mumkun kilan sey icerigi: Asama 27'de marka basligi
+ * kaldirildiktan sonra fotografin ustunde duran TEK metin slogan kaldi
+ * (Menu butonunun kendi opak zemini var, perdeden etkilenmiyor). Tek bir
+ * 16px metnin payi, digerlerindeki baslik + govde ikilisinden cok daha
+ * genis.
+ *
+ * Deger hesapla secildi, deneme yanilmayla degil: perdesiz ham fotograf
+ * ayrica olculup birlestirme formulu (sonuc = foto x (1-alfa) + perde x
+ * alfa) modellendi; model mevcut degerde 1,1/255 sapmayla dogrulandi.
+ *
+ * BELIRLEYICI GENISLIK 320px, 390 DEGIL. Icerik alta cekili ve bosluk
+ * sabit oldugu icin slogan, hero kucuduk ce fotografin FARKLI bir yerine
+ * denk geliyor: 390px'te terasin onune (koyu), 320px'te ise tabelanin
+ * ustundeki neredeyse beyaz gokyuzune — o kutudaki en parlak piksel
+ * rgb(224,243,253). En kotu durumu 320px belirliyor.
+ *
+ * Sloganin arkasindaki en kotu oran, gercek fotograf pikselleriyle:
+ *   perde            320px    360px
+ *   0,34-0,46-0,41    3,33     8,20   KALIR  <- ilk denenen, gokyuzunde dustu
+ *   0,42-0,54-0,49    4,24     9,44   KALIR
+ *   0,44-0,56-0,51    4,51     9,78   gecer ama pay %0,2
+ *   0,46-0,58-0,53    4,81    10,13   SU ANKI
+ *   0,52-0,66-0,60    6,21    11,59   eski deger
+ *
+ * Secilen deger, savunulabilir bir payla (%7) gecen EN ACIK deger.
+ * Sloganin arkasindaki alfa 0,648'den 0,570'e iniyor.
+ *
+ * Daha ileri gitmek icin perdeyi degil METNIN KONUMUNU ya da yerel bir
+ * golgeyi degistirmek gerekir: burada fotografin tamami, tek bir 16px
+ * satiri korumak icin karartiliyor.
+ */
+.kars-hero .kars-perde {
+  background: linear-gradient(
+    to bottom,
+    rgba(9, 18, 33, 0.46) 0%,
+    rgba(9, 18, 33, 0.58) 45%,
+    rgba(9, 18, 33, 0.53) 100%
   );
 }
 
