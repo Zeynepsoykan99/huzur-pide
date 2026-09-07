@@ -3,7 +3,7 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 33 tamamlandı — **menü içeriği fiziksel menüye göre baştan yazıldı**: 5 kategori / 31 üründen **8 kategori / 56 ürüne** çıktı (Çorbalar, Kahvaltı ve Açık Pide yeni). 22 fotoğrafın hepsi taşındı, teyitsiz fiyat kalmadı. Firebase Storage hâlâ kurulmadı; fotoğrafsız ürün sayısı 34. Aşama 33 dahil her şey **üretimde canlı**. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
+**Güncel aşama:** Aşama 34 tamamlandı — **27 ürün fotoğrafı eklendi**: fotoğraflı ürün 22'den **47'ye** çıktı, fotoğrafsız 34'ten **9'a** indi. (Aşama 33'te menü 8 kategori / 56 ürün olarak baştan yazılmıştı.) Firebase Storage hâlâ kurulmadı. Aşama 34 **henüz üretimde değil, push onayı bekliyor**; Aşama 33 dahil öncesi **üretimde canlı**. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
 **Son güncelleme:** 2026-09-04
 
 ### Genel Durum
@@ -46,6 +46,7 @@ Numaralandırma rapor başlıklarıyla aynı: aşağıdaki her satırın karşı
 | 31 | Panelde menü önizlemesi | **Tamamlandı** |
 | 32 | Hero perdesi hafifletildi | **Tamamlandı** |
 | 33 | Menü içeriğinin yenilenmesi (8 kategori, 56 ürün) | **Tamamlandı** |
+| 34 | Eksik ürün fotoğrafları (27 fotoğraf) | **Tamamlandı** — push onayı bekliyor |
 
 ### Bekleyenler
 
@@ -6673,5 +6674,193 @@ yenileme belirtecinden; depolama temizlenip taze girildiğinde tekrarlamıyor,
 uygulamadan gelmiyor.
 
 Mekân sahibinin tema ve renk ayarları korundu.
+
+=== RAPOR SONU ===
+
+
+## Aşama 34 — Eksik Ürün Fotoğrafları · 2026-09-07
+
+=== RAPOR BAŞLANGICI ===
+
+**Tarih:** 2026-09-07 · **Dal:** `main` · **Durum:** push onayı bekliyor
+
+27 fotoğraf eklendi. **Fotoğraflı ürün 22 → 47**, fotoğrafsız **34 → 9**.
+
+### 34.1 Önce onarım: proje dosyaları kazara taşınmıştı
+
+Fotoğraf işine başlamadan önce `yeni-gorseller/` klasörünü listeleyince
+içinde proje dosyaları çıktı. Sürükleme ters yönde çalışmış:
+**12 izlenen dosya + `.env.local` klasöre taşınmış**, üç görsel de proje
+köküne düşmüştü.
+
+| Kaybolan | Etkisi |
+|---|---|
+| `package.json`, `package-lock.json` | uygulama kurulamaz/derlenemez |
+| `next.config.ts` | bütün yönlendirmeler giderdi |
+| `.gitignore` | `node_modules` commit'e girerdi; `yeni-gorseller/` git'e görünür olmuştu |
+| `.env.local` | **servis hesabı anahtarı** — Firestore betikleri çalışmaz |
+| `ILERLEME.md`, `AGENTS.md`, `CLAUDE.md`, `README.md` | proje kaydı ve talimatlar |
+| `firestore.rules`, `storage.rules`, `eslint.config.mjs`, `postcss.config.mjs` | güvenlik kuralları, yapılandırma |
+
+Onarım öncesi **içerik kaybı olup olmadığı ölçüldü**: 12 dosyanın hepsi
+git'teki hâliyle aynı çıktı; dördündeki fark yalnızca satır sonuydu
+(CRLF/LF), normalleştirilince birebir eşleştiler. Sonra `git checkout` ile
+geri alındı.
+
+`.env.local` git'te izlenmediği için `git checkout` onu getirmedi;
+`gorsel-guncelle.ts` "FIREBASE_SERVICE_ACCOUNT yok" diye durunca fark
+edildi ve klasörden köke geri taşındı. **Kopya değil, taşınmıştı** — kökte
+başka nüshası yoktu.
+
+Kökteki üç başıboş görsel (`menemen.avif`, `su.jpg`,
+`kaşar sucuk açık pide`) klasöre taşındı.
+
+Sonuç: çalışma ağacı temiz, `yeni-gorseller/` yine `.gitignore`'da.
+
+### 34.2 Eşleştirme
+
+Eşleştirme **dosya adına göre** yapıldı, içerik açılmadan. 25 dosya net
+eşleşti; adı açıkça göstermeyen **dört dosya soruldu**:
+
+| Soru | Karar |
+|---|---|
+| `kıyma kaşar.jpg` — açık mı kapalı pide mi (adında "açık pide" yok) | **Açık Pide** |
+| `ayrann.avif` — hangi ayran | **Küçük Ayran** |
+| `büyük ayran.jpg` — mevcut fotoğrafın yerine mi | **Evet, değiştirildi** |
+| `su - Kopya.jpg` / `su.jpg` — Su'nun fotoğrafı var | **`su - Kopya.jpg` ile değiştirildi** |
+
+### 34.3 Bozuk dosya: menemen.avif
+
+`menemen.avif` **açılamadı.** Metadata okunuyor (800×600 heif) ama piksel
+çözümü `bad seek to 62313` ile patlıyor: dosya 14.634 bayt, bitstream
+62.313. baytı işaret ediyor — yani **kesik/bozuk**.
+
+Diğer AVIF (`ayrann.avif`, 1000×1000) sorunsuz çözüldü, yani biçim değil
+dosyanın kendisi bozuk. **Menemen fotoğrafsız kaldı**, yeni dosya
+bekleniyor.
+
+### 34.4 İşleme
+
+Ayar mevcut fotoğraflarla aynı: **800×450, webp kalite 78, merkezden
+kırpma**. Çıktı adı ürün kimliği (`ezogelin` → `ezogelin.webp`).
+
+27 dosya işlendi. Kaynakların 10'u hedeften küçüktü ve büyütüldü; ikisi
+belirgin ölçüde:
+
+| Kaynak | Ölçü | Büyütme |
+|---|---|---|
+| tek kişilik kahvaltı.jpg | 387×516 | ×2,07 |
+| serpme kahvaltı 4 kişilik.jpg | 399×501 | ×2,01 |
+| türk kahvesi.webp | 430×430 | ×1,86 |
+| patatescips porsiyon.jpg | 447×447 | ×1,79 |
+
+**Ekranda sorun çıkarmıyor:** yuva 68–80 CSS piksel ve Next 96w dosya
+sunuyor; 387 piksellik kaynak bile bu ölçünün kat kat üstünde. Büyütme
+depolanan dosyayı şişiriyor, görüneni değil.
+
+Dikey kaynakların 16:9'a merkezden kırpılması bir miktar üst/alt kaybı
+demek — bu, mevcut fotoğraflarla aynı muamele.
+
+### 34.5 Alt metinler
+
+25 yeni fotoğrafın alt metni dört dilde yazıldı, kardeş ürünlerin
+kalıbında (Kapalı Pide'nin `Kıymalı pide / Pide with minced beef` kalıbı
+Açık Pide'de `Kıymalı açık pide / Open pide with minced beef` oldu).
+
+**Ekranda bir tutarsızlık yakalandı ve düzeltildi:** Büyük Ayran'ın eski
+alt metni `Köpüklü ayran bardağı / Glass of ayran with foam` idi; yeni
+fotoğraf markalı bir ayran kabı, köpüklü bardak değil. Metin
+`Büyük ayran / Large ayran / عيران كبير / Большой айран` olarak
+güncellendi — Küçük Ayran'la da tutarlı. Su'nun alt metni (`Pet şişede su`)
+yeni fotoğrafı hâlâ doğru anlattığı için değişmedi.
+
+### 34.6 Sıra: Firestore önce, derleme sonra
+
+Proje kuralı uygulandı — sayfalar Firestore'dan derleme anında üretiliyor:
+
+1. `data/menu.ts` güncellendi (`gorsel-ekle.ts`)
+2. **Firestore güncellendi** (`gorsel-guncelle.ts`, `tohum.ts` DEĞİL) —
+   26 ürünün yalnızca `gorsel` alanı, `update()` ile
+3. `tohum-dogrula.ts` → **"hicbir alanda fark yok"**
+4. `npm run build`
+
+`menu-uret.ts` yeniden çalıştırılamazdı: eski menüyü içe aktarıp yenisini
+kuruyordu ve artık var olmayan kimliklere (`soda`, `ayran`) bakıyor. Tek
+seferlikti; görseller için ayrı ve dar kapsamlı `gorsel-ekle.ts` yazıldı.
+
+### 34.7 Doğrulama
+
+**47 fotoğrafın 47'si doğru üründe.** Her ürünün `src` özniteliği
+kimliğiyle tek tek eşleştirildi; Açık Pide `acik-*` dosyalarını, Kapalı
+Pide kendi `*-pide` dosyalarını kullanıyor — **çapraz geçiş yok.**
+
+**Dört dilde de 47 fotoğraf, 0 boş alt metin.** Arapça alt metinler Arapça,
+Rusça Rusça geliyor; `dir="rtl"` korunuyor.
+
+**Sayfa yapısı bozulmadı.** Fotoğraflar yer tutucularla aynı ölçüde
+olduğundan taşma değerleri değişmedi (390px):
+
+| Kategori | Önce | Sonra |
+|---|---|---|
+| Çorbalar | 0 | 0 |
+| Kahvaltı | 32 | 32 |
+| Açık Pide | 516 | 516 |
+| Kapalı Pide | 16 | 16–25 |
+| Izgara | 488 | 506 |
+| Salatalar / Tatlılar | 0 | 0 |
+| İçecekler | 580 | 580 |
+
+**`sizes` doğru: `80px`** — tek değer, tüm ürün fotoğraflarında.
+
+```
+npx tsc --noEmit   → temiz (çıkış 0)
+npm run lint       → temiz (çıktı yok)
+npm run build      → başarılı, 42 statik sayfa
+tarayıcı konsolu   → 0 hata, 0 uyarı
+```
+
+### 34.8 Marka ambalajı
+
+Kola (Coca-Cola kutusu), Yedigün, Lipton Ice Tea ve iki ayran (İçim)
+fotoğraflarında **marka ambalajı görünüyor**. Bunu daha önce sormuş ve
+kabul etmiştiniz (Fanta'da olduğu gibi); aynı sınıfta olduğu için bilginize
+sunuluyor, karar değişmediyse yapılacak bir şey yok.
+
+### 34.9 Fotoğrafsız kalan 9 ürün
+
+| Kategori | Ürün | Sebep |
+|---|---|---|
+| Kahvaltı | **Menemen** | dosya bozuk, yenisi bekleniyor |
+| Kahvaltı | Kuymak | dosya yok |
+| Açık Pide | Karışık, Spesiyal, Dörtmevsim | dosya yok |
+| İçecekler | Meyve Suyu, Gazoz, Sade Soda, Meyveli Soda | dosya yok |
+
+Kullanımdan çıkmış 5 dosya (`ayran`, `fanta`, `kabak-tatlisi`,
+`kuzu-izgara-kg`, `kuzu-izgara-porsiyon`) diskte duruyor, **silinmedi**.
+
+### 34.10 Değişen dosyalar
+
+| Dosya | Değişiklik |
+|---|---|
+| `public/urunler/*.webp` | 25 yeni dosya + `su.webp` yenilendi |
+| `data/menu.ts` | 25 ürüne görsel, 2 yol düzeltmesi, 1 alt metin düzeltmesi |
+| `betikler/gorsel-isle.ts` | **yeni** — ham fotoğrafları 800×450 webp q78'e çevirir |
+| `betikler/gorsel-ekle.ts` | **yeni** — görselleri ve alt metinleri `data/menu.ts`'e işler |
+| `ILERLEME.md` | özet, aşama tablosu ve bu rapor |
+
+Menü içeriği, fiyatlar, çeviriler, sayfa yapısı ve panel değişmedi.
+
+### 34.11 Sıradaki adım
+
+Push ve deploy onay bekliyor.
+
+**Sizden beklenen iki şey:** Menemen'in sağlam bir fotoğrafı ve —
+isterseniz — kalan 8 ürünün fotoğrafları.
+
+**Güvenlik notu:** `.env.local` artık kökte ve `.gitignore` altında, git'e
+girmiyor. Klasör taşımalarında bu dosyanın yerinden oynamamasına dikkat
+edilmeli; içinde Firebase servis hesabı anahtarı var.
+
+Firebase Storage hâlâ kurulu değil; panelden fotoğraf yükleme onu bekliyor.
 
 === RAPOR SONU ===

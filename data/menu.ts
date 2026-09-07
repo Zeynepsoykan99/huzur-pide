@@ -251,7 +251,17 @@ export const MENU: Kategori[] = [
           { sutun: "az", tutar: 100, dogrulandi: true },
           { sutun: "tam", tutar: 170, dogrulandi: true },
         ],
-        gorsel: null,
+        gorsel: {
+          src: "/urunler/ezogelin.webp",
+          alt: {
+            tr: "Ezogelin çorbası",
+            en: "Bowl of ezogelin soup",
+            ar: "شوربة إيزوغلين",
+            ru: "Суп эзогелин",
+          },
+          genislik: 800,
+          yukseklik: 450,
+        },
       },
       {
         id: "mercimek",
@@ -266,7 +276,17 @@ export const MENU: Kategori[] = [
           { sutun: "az", tutar: 100, dogrulandi: true },
           { sutun: "tam", tutar: 170, dogrulandi: true },
         ],
-        gorsel: null,
+        gorsel: {
+          src: "/urunler/mercimek.webp",
+          alt: {
+            tr: "Mercimek çorbası",
+            en: "Bowl of lentil soup",
+            ar: "شوربة العدس",
+            ru: "Чечевичный суп",
+          },
+          genislik: 800,
+          yukseklik: 450,
+        },
       },
       {
         id: "tavuksuyu",
@@ -281,7 +301,17 @@ export const MENU: Kategori[] = [
           { sutun: "az", tutar: 100, dogrulandi: true },
           { sutun: "tam", tutar: 170, dogrulandi: true },
         ],
-        gorsel: null,
+        gorsel: {
+          src: "/urunler/tavuksuyu.webp",
+          alt: {
+            tr: "Tavuk suyu çorbası",
+            en: "Bowl of chicken soup",
+            ar: "شوربة الدجاج",
+            ru: "Куриный суп",
+          },
+          genislik: 800,
+          yukseklik: 450,
+        },
       },
       {
         id: "kelle-paca",
@@ -296,7 +326,17 @@ export const MENU: Kategori[] = [
           { sutun: "az", tutar: 120, dogrulandi: true },
           { sutun: "tam", tutar: 250, dogrulandi: true },
         ],
-        gorsel: null,
+        gorsel: {
+          src: "/urunler/kelle-paca.webp",
+          alt: {
+            tr: "Kelle paça çorbası",
+            en: "Bowl of kelle paça soup",
+            ar: "شوربة كلة باتشا",
+            ru: "Суп келле-пача",
+          },
+          genislik: 800,
+          yukseklik: 450,
+        },
       },
     ],
   },
@@ -322,7 +362,17 @@ export const MENU: Kategori[] = [
         },
         icerik: null,
         fiyatlar: tek(380),
-        gorsel: null,
+        gorsel: {
+          src: "/urunler/tek-kisilik-kahvalti.webp",
+          alt: {
+            tr: "Tek kişilik kahvaltı tabağı",
+            en: "Breakfast plate for one",
+            ar: "طبق فطور لشخص واحد",
+            ru: "Завтрак на одного",
+          },
+          genislik: 800,
+          yukseklik: 450,
+        },
       },
       {
         id: "serpme-kahvalti-2",
@@ -334,7 +384,17 @@ export const MENU: Kategori[] = [
         },
         icerik: null,
         fiyatlar: tek(1000),
-        gorsel: null,
+        gorsel: {
+          src: "/urunler/serpme-kahvalti-2.webp",
+          alt: {
+            tr: "İki kişilik serpme kahvaltı sofrası",
+            en: "Spread breakfast table for two",
+            ar: "مائدة فطور مفتوح لشخصين",
+            ru: "Большой завтрак на двоих",
+          },
+          genislik: 800,
+          yukseklik: 450,
+        },
       },
       {
         id: "serpme-kahvalti-4",
@@ -346,7 +406,17 @@ export const MENU: Kategori[] = [
         },
         icerik: null,
         fiyatlar: tek(1600),
-        gorsel: null,
+        gorsel: {
+          src: "/urunler/serpme-kahvalti-4.webp",
+          alt: {
+            tr: "Dört kişilik serpme kahvaltı sofrası",
+            en: "Spread breakfast table for four",
+            ar: "مائدة فطور مفتوح لأربعة أشخاص",
+            ru: "Большой завтрак на четверых",
+          },
+          genislik: 800,
+          yukseklik: 450,
+        },
       },
       {
         id: "menemen",
@@ -370,7 +440,17 @@ export const MENU: Kategori[] = [
         },
         icerik: null,
         fiyatlar: tek(200),
-        gorsel: null,
+        gorsel: {
+          src: "/urunler/sucuklu-yumurta.webp",
+          alt: {
+            tr: "Sahanda sucuklu yumurta",
+            en: "Eggs with sucuk in a pan",
+            ar: "بيض بالسجق في المقلاة",
+            ru: "Яичница с суджуком на сковороде",
+          },
+          genislik: 800,
+          yukseklik: 450,
+        },
       },
       {
         id: "kuymak",
@@ -394,7 +474,17 @@ export const MENU: Kategori[] = [
         },
         icerik: null,
         fiyatlar: tek(170),
-        gorsel: null,
+        gorsel: {
+          src: "/urunler/patates-cips.webp",
+          alt: {
+            tr: "Patates kızartması porsiyonu",
+            en: "Portion of French fries",
+            ar: "حصة بطاطس مقلية",
+            ru: "Порция картофеля фри",
+          },
+          genislik: 800,
+          yukseklik: 450,
+        },
       },
     ],
   },
@@ -428,7 +518,17 @@ export const MENU: Kategori[] = [
           { sutun: "hamur15", tutar: 550, dogrulandi: true },
           { sutun: "duble", tutar: 700, dogrulandi: true },
         ],
-        gorsel: null,
+        gorsel: {
+          src: "/urunler/acik-kiymali.webp",
+          alt: {
+            tr: "Kıymalı açık pide",
+            en: "Open pide with minced beef",
+            ar: "بيدة مفتوحة بلحم مفروم",
+            ru: "Открытая пиде с фаршем",
+          },
+          genislik: 800,
+          yukseklik: 450,
+        },
       },
       {
         id: "acik-kusbasili",
@@ -444,7 +544,17 @@ export const MENU: Kategori[] = [
           { sutun: "hamur15", tutar: 550, dogrulandi: true },
           { sutun: "duble", tutar: 700, dogrulandi: true },
         ],
-        gorsel: null,
+        gorsel: {
+          src: "/urunler/acik-kusbasili.webp",
+          alt: {
+            tr: "Kuşbaşılı açık pide",
+            en: "Open pide with diced beef",
+            ar: "بيدة مفتوحة بقطع اللحم",
+            ru: "Открытая пиде с кусочками мяса",
+          },
+          genislik: 800,
+          yukseklik: 450,
+        },
       },
       {
         id: "acik-kusbasi-kasar",
@@ -460,7 +570,17 @@ export const MENU: Kategori[] = [
           { sutun: "hamur15", tutar: 570, dogrulandi: true },
           { sutun: "duble", tutar: 750, dogrulandi: true },
         ],
-        gorsel: null,
+        gorsel: {
+          src: "/urunler/acik-kusbasi-kasar.webp",
+          alt: {
+            tr: "Kuşbaşılı kaşarlı açık pide",
+            en: "Open pide with diced beef and cheese",
+            ar: "بيدة مفتوحة بقطع اللحم والجبن",
+            ru: "Открытая пиде с мясом и сыром",
+          },
+          genislik: 800,
+          yukseklik: 450,
+        },
       },
       {
         id: "acik-kiyma-kasar",
@@ -476,7 +596,17 @@ export const MENU: Kategori[] = [
           { sutun: "hamur15", tutar: 570, dogrulandi: true },
           { sutun: "duble", tutar: 750, dogrulandi: true },
         ],
-        gorsel: null,
+        gorsel: {
+          src: "/urunler/acik-kiyma-kasar.webp",
+          alt: {
+            tr: "Kıymalı kaşarlı açık pide",
+            en: "Open pide with minced beef and cheese",
+            ar: "بيدة مفتوحة بلحم مفروم وجبن",
+            ru: "Открытая пиде с фаршем и сыром",
+          },
+          genislik: 800,
+          yukseklik: 450,
+        },
       },
       {
         id: "acik-karisik",
@@ -524,7 +654,17 @@ export const MENU: Kategori[] = [
           { sutun: "hamur15", tutar: 550, dogrulandi: true },
           { sutun: "duble", tutar: 700, dogrulandi: true },
         ],
-        gorsel: null,
+        gorsel: {
+          src: "/urunler/acik-kasar-sucuk.webp",
+          alt: {
+            tr: "Kaşarlı sucuklu açık pide",
+            en: "Open pide with cheese and Turkish sausage",
+            ar: "بيدة مفتوحة بالجبن والسجق التركي",
+            ru: "Открытая пиде с сыром и суджуком",
+          },
+          genislik: 800,
+          yukseklik: 450,
+        },
       },
       {
         id: "acik-pastirmali",
@@ -540,7 +680,17 @@ export const MENU: Kategori[] = [
           { sutun: "hamur15", tutar: 650, dogrulandi: true },
           { sutun: "duble", tutar: 870, dogrulandi: true },
         ],
-        gorsel: null,
+        gorsel: {
+          src: "/urunler/acik-pastirmali.webp",
+          alt: {
+            tr: "Pastırmalı açık pide",
+            en: "Open pide with cured beef",
+            ar: "بيدة مفتوحة بالبسطرمة",
+            ru: "Открытая пиде с пастырмой",
+          },
+          genislik: 800,
+          yukseklik: 450,
+        },
       },
       {
         id: "acik-dortmevsim",
@@ -572,7 +722,17 @@ export const MENU: Kategori[] = [
           { sutun: "hamur15", tutar: 550, dogrulandi: true },
           { sutun: "duble", tutar: 700, dogrulandi: true },
         ],
-        gorsel: null,
+        gorsel: {
+          src: "/urunler/acik-kasarli.webp",
+          alt: {
+            tr: "Kaşarlı açık pide",
+            en: "Open pide with kaşar cheese",
+            ar: "بيدة مفتوحة بجبن كاشار",
+            ru: "Открытая пиде с сыром кашар",
+          },
+          genislik: 800,
+          yukseklik: 450,
+        },
       },
       {
         id: "acik-yagli-yumurtali",
@@ -588,7 +748,17 @@ export const MENU: Kategori[] = [
           { sutun: "hamur15", tutar: 200, dogrulandi: true },
           { sutun: "duble", tutar: 250, dogrulandi: true },
         ],
-        gorsel: null,
+        gorsel: {
+          src: "/urunler/acik-yagli-yumurtali.webp",
+          alt: {
+            tr: "Yağlı yumurtalı açık pide",
+            en: "Open pide with butter and egg",
+            ar: "بيدة مفتوحة بالسمن والبيض",
+            ru: "Открытая пиде с маслом и яйцом",
+          },
+          genislik: 800,
+          yukseklik: 450,
+        },
       },
     ],
   },
@@ -1198,7 +1368,17 @@ export const MENU: Kategori[] = [
           ru: "Тесто кадаиф, сыр, сироп, сверху фисташки",
         },
         fiyatlar: tek(200),
-        gorsel: null,
+        gorsel: {
+          src: "/urunler/kunefe.webp",
+          alt: {
+            tr: "Künefe",
+            en: "Künefe pastry",
+            ar: "كنافة",
+            ru: "Кюнефе",
+          },
+          genislik: 800,
+          yukseklik: 450,
+        },
       },
       {
         id: "sutlac",
@@ -1251,7 +1431,17 @@ export const MENU: Kategori[] = [
         },
         icerik: null,
         fiyatlar: tek(60),
-        gorsel: null,
+        gorsel: {
+          src: "/urunler/kola.webp",
+          alt: {
+            tr: "Kola",
+            en: "Cola",
+            ar: "كولا",
+            ru: "Кола",
+          },
+          genislik: 800,
+          yukseklik: 450,
+        },
       },
       {
         id: "yedigun",
@@ -1263,7 +1453,17 @@ export const MENU: Kategori[] = [
         },
         icerik: null,
         fiyatlar: tek(60),
-        gorsel: null,
+        gorsel: {
+          src: "/urunler/yedigun.webp",
+          alt: {
+            tr: "Yedigün gazozu",
+            en: "Yedigün soda",
+            ar: "مشروب يدي غون الغازي",
+            ru: "Газировка Едигюн",
+          },
+          genislik: 800,
+          yukseklik: 450,
+        },
       },
       {
         id: "lipton-ice-tea",
@@ -1275,7 +1475,17 @@ export const MENU: Kategori[] = [
         },
         icerik: null,
         fiyatlar: tek(60),
-        gorsel: null,
+        gorsel: {
+          src: "/urunler/lipton-ice-tea.webp",
+          alt: {
+            tr: "Lipton Ice Tea",
+            en: "Lipton Ice Tea",
+            ar: "ليبتون آيس تي",
+            ru: "Lipton Ice Tea",
+          },
+          genislik: 800,
+          yukseklik: 450,
+        },
       },
       {
         id: "meyve-suyu",
@@ -1350,7 +1560,17 @@ export const MENU: Kategori[] = [
           ru: "Йогурт, вода, соль",
         },
         fiyatlar: tek(30),
-        gorsel: null,
+        gorsel: {
+          src: "/urunler/kucuk-ayran.webp",
+          alt: {
+            tr: "Küçük ayran",
+            en: "Small ayran",
+            ar: "عيران صغير",
+            ru: "Малый айран",
+          },
+          genislik: 800,
+          yukseklik: 450,
+        },
       },
       {
         id: "buyuk-ayran",
@@ -1368,12 +1588,12 @@ export const MENU: Kategori[] = [
         },
         fiyatlar: tek(40),
         gorsel: {
-          src: "/urunler/ayran.webp",
+          src: "/urunler/buyuk-ayran.webp",
           alt: {
-            tr: "Köpüklü ayran bardağı",
-            en: "Glass of ayran with foam",
-            ar: "كوب عيران بالرغوة",
-            ru: "Стакан айрана с пенкой",
+            tr: "Büyük ayran",
+            en: "Large ayran",
+            ar: "عيران كبير",
+            ru: "Большой айран",
           },
           genislik: 800,
           yukseklik: 450,
@@ -1389,7 +1609,17 @@ export const MENU: Kategori[] = [
         },
         icerik: null,
         fiyatlar: tek(10),
-        gorsel: null,
+        gorsel: {
+          src: "/urunler/kucuk-cay.webp",
+          alt: {
+            tr: "Küçük çay",
+            en: "Small tea",
+            ar: "شاي صغير",
+            ru: "Маленький чай",
+          },
+          genislik: 800,
+          yukseklik: 450,
+        },
       },
       {
         id: "buyuk-cay",
@@ -1401,7 +1631,17 @@ export const MENU: Kategori[] = [
         },
         icerik: null,
         fiyatlar: tek(30),
-        gorsel: null,
+        gorsel: {
+          src: "/urunler/buyuk-cay.webp",
+          alt: {
+            tr: "Büyük çay",
+            en: "Large tea",
+            ar: "شاي كبير",
+            ru: "Большой чай",
+          },
+          genislik: 800,
+          yukseklik: 450,
+        },
       },
       {
         id: "turk-kahvesi",
@@ -1413,7 +1653,17 @@ export const MENU: Kategori[] = [
         },
         icerik: null,
         fiyatlar: tek(70),
-        gorsel: null,
+        gorsel: {
+          src: "/urunler/turk-kahvesi.webp",
+          alt: {
+            tr: "Türk kahvesi",
+            en: "Turkish coffee",
+            ar: "قهوة تركية",
+            ru: "Турецкий кофе",
+          },
+          genislik: 800,
+          yukseklik: 450,
+        },
       },
       {
         id: "su",
