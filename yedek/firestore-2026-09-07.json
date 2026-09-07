@@ -1,0 +1,1271 @@
+{
+  "alindi": "2026-09-07T11:31:55.994Z",
+  "kaynak": "firestore",
+  "ozet": {
+    "kategoriSayisi": 5,
+    "urunSayisi": 31,
+    "fiyatHucresiSayisi": 43,
+    "dogrulanmamisFiyatSayisi": 4,
+    "gorselliUrunSayisi": 26
+  },
+  "ayarlar": {
+    "tema": "murekkep",
+    "renkler": {
+      "gece": {
+        "fiyat": "fistik",
+        "vurgu": "bakir"
+      },
+      "cini": {
+        "fiyat": "patlican",
+        "vurgu": "mercan"
+      },
+      "murekkep": {
+        "fiyat": "kirmizi",
+        "vurgu": "kahve"
+      }
+    }
+  },
+  "kategoriler": [
+    {
+      "_id": "kapali-pide",
+      "slug": "kapali-pide",
+      "ad": {
+        "tr": "Kapalı Pide Çeşitleri",
+        "en": "Closed Pide",
+        "ar": "البيدة المغلقة",
+        "ru": "Закрытая пиде"
+      },
+      "sira": 0,
+      "sutunlar": [
+        {
+          "kod": "hamur1",
+          "baslik": {
+            "tr": "1 Hamur",
+            "en": "1 Dough",
+            "ar": "عجينة 1",
+            "ru": "1 тесто"
+          }
+        },
+        {
+          "kod": "hamur15",
+          "baslik": {
+            "tr": "1,5 Hamur",
+            "en": "1.5 Dough",
+            "ar": "عجينة 1.5",
+            "ru": "1,5 теста"
+          }
+        },
+        {
+          "kod": "duble",
+          "baslik": {
+            "tr": "Duble",
+            "en": "Double",
+            "ar": "دوبل",
+            "ru": "Двойная"
+          }
+        }
+      ]
+    },
+    {
+      "_id": "izgara",
+      "slug": "izgara",
+      "ad": {
+        "tr": "Izgara Çeşitleri",
+        "en": "Grilled Dishes",
+        "ar": "المشويات",
+        "ru": "Блюда на гриле"
+      },
+      "sira": 1,
+      "sutunlar": [
+        {
+          "kod": "tek",
+          "baslik": {
+            "tr": "Fiyat",
+            "en": "Price",
+            "ar": "السعر",
+            "ru": "Цена"
+          }
+        }
+      ]
+    },
+    {
+      "_id": "salatalar",
+      "slug": "salatalar",
+      "ad": {
+        "tr": "Salatalar",
+        "en": "Salads",
+        "ar": "السلطات",
+        "ru": "Салаты"
+      },
+      "sira": 2,
+      "sutunlar": [
+        {
+          "kod": "tek",
+          "baslik": {
+            "tr": "Fiyat",
+            "en": "Price",
+            "ar": "السعر",
+            "ru": "Цена"
+          }
+        }
+      ]
+    },
+    {
+      "_id": "tatlilar",
+      "slug": "tatlilar",
+      "ad": {
+        "tr": "Tatlı Çeşitleri",
+        "en": "Desserts",
+        "ar": "الحلويات",
+        "ru": "Десерты"
+      },
+      "sira": 3,
+      "sutunlar": [
+        {
+          "kod": "tek",
+          "baslik": {
+            "tr": "Fiyat",
+            "en": "Price",
+            "ar": "السعر",
+            "ru": "Цена"
+          }
+        }
+      ]
+    },
+    {
+      "_id": "icecekler",
+      "slug": "icecekler",
+      "ad": {
+        "tr": "İçecekler",
+        "en": "Drinks",
+        "ar": "المشروبات",
+        "ru": "Напитки"
+      },
+      "sira": 4,
+      "sutunlar": [
+        {
+          "kod": "tek",
+          "baslik": {
+            "tr": "Fiyat",
+            "en": "Price",
+            "ar": "السعر",
+            "ru": "Цена"
+          }
+        }
+      ]
+    }
+  ],
+  "urunler": [
+    {
+      "_id": "kola",
+      "id": "kola",
+      "kategoriSlug": "icecekler",
+      "sira": 0,
+      "ad": {
+        "tr": "Kola",
+        "en": "Cola",
+        "ar": "كولا",
+        "ru": "Кола"
+      },
+      "icerik": null,
+      "gorsel": null,
+      "fiyatlar": [
+        {
+          "sutun": "tek",
+          "tutar": 80,
+          "dogrulandi": true
+        }
+      ]
+    },
+    {
+      "_id": "fanta",
+      "id": "fanta",
+      "kategoriSlug": "icecekler",
+      "sira": 1,
+      "ad": {
+        "tr": "Fanta",
+        "en": "Fanta",
+        "ar": "فانتا",
+        "ru": "Фанта"
+      },
+      "icerik": null,
+      "fiyatlar": [
+        {
+          "sutun": "tek",
+          "tutar": 80,
+          "dogrulandi": true
+        }
+      ],
+      "gorsel": {
+        "src": "/urunler/fanta.webp",
+        "alt": {
+          "tr": "Fanta kutusu",
+          "en": "Can of Fanta",
+          "ar": "علبة فانتا",
+          "ru": "Банка Фанты"
+        },
+        "genislik": 800,
+        "yukseklik": 450
+      }
+    },
+    {
+      "_id": "soda",
+      "id": "soda",
+      "kategoriSlug": "icecekler",
+      "sira": 2,
+      "ad": {
+        "tr": "Soda",
+        "en": "Sparkling Mineral Water",
+        "ar": "مياه معدنية فوارة",
+        "ru": "Газированная минеральная вода"
+      },
+      "icerik": {
+        "tr": "Maden suyu",
+        "en": "Sparkling mineral water",
+        "ar": "مياه معدنية فوارة",
+        "ru": "Газированная минеральная вода"
+      },
+      "gorsel": null,
+      "fiyatlar": [
+        {
+          "sutun": "tek",
+          "tutar": 40,
+          "dogrulandi": true
+        }
+      ]
+    },
+    {
+      "_id": "ayran",
+      "id": "ayran",
+      "kategoriSlug": "icecekler",
+      "sira": 3,
+      "ad": {
+        "tr": "Ayran",
+        "en": "Ayran (Yogurt Drink)",
+        "ar": "عيران (مشروب اللبن)",
+        "ru": "Айран (кисломолочный напиток)"
+      },
+      "icerik": {
+        "tr": "Yoğurt, su, tuz",
+        "en": "Yogurt, water, salt",
+        "ar": "لبن، ماء، ملح",
+        "ru": "Йогурт, вода, соль"
+      },
+      "fiyatlar": [
+        {
+          "sutun": "tek",
+          "tutar": 50,
+          "dogrulandi": true
+        }
+      ],
+      "gorsel": {
+        "src": "/urunler/ayran.webp",
+        "alt": {
+          "tr": "Köpüklü ayran bardağı",
+          "en": "Glass of ayran with foam",
+          "ar": "كوب عيران بالرغوة",
+          "ru": "Стакан айрана с пенкой"
+        },
+        "genislik": 800,
+        "yukseklik": 450
+      }
+    },
+    {
+      "_id": "komposto",
+      "id": "komposto",
+      "kategoriSlug": "icecekler",
+      "sira": 4,
+      "ad": {
+        "tr": "Komposto",
+        "en": "Komposto (Fruit Compote)",
+        "ar": "كومبوستو (شراب الفاكهة المسلوقة)",
+        "ru": "Компот"
+      },
+      "icerik": {
+        "tr": "Kaynatılmış meyve ve şerbeti",
+        "en": "Boiled fruit with its syrup",
+        "ar": "فاكهة مسلوقة مع شرابها",
+        "ru": "Отварные фрукты с сиропом"
+      },
+      "gorsel": null,
+      "fiyatlar": [
+        {
+          "sutun": "tek",
+          "tutar": 80,
+          "dogrulandi": true
+        }
+      ]
+    },
+    {
+      "_id": "meyveli-soda",
+      "id": "meyveli-soda",
+      "kategoriSlug": "icecekler",
+      "sira": 5,
+      "ad": {
+        "tr": "Meyveli Soda",
+        "en": "Fruit-flavoured Sparkling Water",
+        "ar": "مياه فوارة بنكهة الفواكه",
+        "ru": "Газированная вода с фруктовым вкусом"
+      },
+      "icerik": {
+        "tr": "Meyve aromalı maden suyu",
+        "en": "Fruit-flavoured sparkling mineral water",
+        "ar": "مياه معدنية فوارة بنكهة الفواكه",
+        "ru": "Газированная минеральная вода с фруктовым вкусом"
+      },
+      "gorsel": null,
+      "fiyatlar": [
+        {
+          "sutun": "tek",
+          "tutar": 40,
+          "dogrulandi": true
+        }
+      ]
+    },
+    {
+      "_id": "su",
+      "id": "su",
+      "kategoriSlug": "icecekler",
+      "sira": 6,
+      "ad": {
+        "tr": "Su",
+        "en": "Water",
+        "ar": "ماء",
+        "ru": "Вода"
+      },
+      "icerik": null,
+      "gorsel": {
+        "src": "/urunler/su.webp",
+        "alt": {
+          "tr": "Pet şişede su",
+          "en": "Bottle of water",
+          "ar": "زجاجة ماء",
+          "ru": "Бутылка воды"
+        },
+        "genislik": 800,
+        "yukseklik": 450
+      },
+      "fiyatlar": [
+        {
+          "sutun": "tek",
+          "tutar": 20,
+          "dogrulandi": true
+        }
+      ]
+    },
+    {
+      "_id": "et-izgara-kg",
+      "id": "et-izgara-kg",
+      "kategoriSlug": "izgara",
+      "sira": 0,
+      "ad": {
+        "tr": "Et Izgara 1 KG",
+        "en": "Grilled Beef 1 KG",
+        "ar": "لحم بقري مشوي 1 كغ",
+        "ru": "Говядина на гриле 1 кг"
+      },
+      "icerik": {
+        "tr": "Izgarada dana eti",
+        "en": "Grilled beef",
+        "ar": "لحم بقري مشوي",
+        "ru": "Говядина на гриле"
+      },
+      "fiyatlar": [
+        {
+          "sutun": "tek",
+          "tutar": 1500,
+          "dogrulandi": true
+        }
+      ],
+      "gorsel": {
+        "src": "/urunler/et-izgara-kg.webp",
+        "alt": {
+          "tr": "Izgarada dana eti",
+          "en": "Beef on the grill",
+          "ar": "لحم بقري على الشواية",
+          "ru": "Говядина на гриле"
+        },
+        "genislik": 800,
+        "yukseklik": 450
+      }
+    },
+    {
+      "_id": "et-izgara-porsiyon",
+      "id": "et-izgara-porsiyon",
+      "kategoriSlug": "izgara",
+      "sira": 1,
+      "ad": {
+        "tr": "Et Izgara Porsiyon",
+        "en": "Grilled Beef Portion",
+        "ar": "لحم بقري مشوي حصة",
+        "ru": "Говядина на гриле, порция"
+      },
+      "icerik": {
+        "tr": "Izgarada dana eti",
+        "en": "Grilled beef",
+        "ar": "لحم بقري مشوي",
+        "ru": "Говядина на гриле"
+      },
+      "gorsel": {
+        "src": "/urunler/et-izgara-porsiyon.webp",
+        "alt": {
+          "tr": "Tabakta ızgara dana eti",
+          "en": "Grilled beef on a plate",
+          "ar": "لحم بقري مشوي في طبق",
+          "ru": "Говядина на гриле на тарелке"
+        },
+        "genislik": 800,
+        "yukseklik": 450
+      },
+      "fiyatlar": [
+        {
+          "sutun": "tek",
+          "tutar": 500,
+          "dogrulandi": true
+        }
+      ]
+    },
+    {
+      "_id": "kuzu-izgara-kg",
+      "id": "kuzu-izgara-kg",
+      "kategoriSlug": "izgara",
+      "sira": 2,
+      "ad": {
+        "tr": "Kuzu Izgara 1 KG",
+        "en": "Grilled Lamb 1 KG",
+        "ar": "لحم ضأن مشوي 1 كغ",
+        "ru": "Баранина на гриле 1 кг"
+      },
+      "icerik": {
+        "tr": "Izgarada kuzu eti",
+        "en": "Grilled lamb",
+        "ar": "لحم ضأن مشوي",
+        "ru": "Баранина на гриле"
+      },
+      "fiyatlar": [
+        {
+          "sutun": "tek",
+          "tutar": 1700,
+          "dogrulandi": true
+        }
+      ],
+      "gorsel": {
+        "src": "/urunler/kuzu-izgara-kg.webp",
+        "alt": {
+          "tr": "Izgarada kuzu pirzola",
+          "en": "Lamb chops on the grill",
+          "ar": "ريش ضأن على الشواية",
+          "ru": "Бараньи рёбрышки на гриле"
+        },
+        "genislik": 800,
+        "yukseklik": 450
+      }
+    },
+    {
+      "_id": "kuzu-izgara-porsiyon",
+      "id": "kuzu-izgara-porsiyon",
+      "kategoriSlug": "izgara",
+      "sira": 3,
+      "ad": {
+        "tr": "Kuzu Izgara Porsiyon",
+        "en": "Grilled Lamb Portion",
+        "ar": "لحم ضأن مشوي حصة",
+        "ru": "Баранина на гриле, порция"
+      },
+      "icerik": {
+        "tr": "Izgarada kuzu eti",
+        "en": "Grilled lamb",
+        "ar": "لحم ضأن مشوي",
+        "ru": "Баранина на гриле"
+      },
+      "fiyatlar": [
+        {
+          "sutun": "tek",
+          "tutar": 550,
+          "dogrulandi": true
+        }
+      ],
+      "gorsel": {
+        "src": "/urunler/kuzu-izgara-porsiyon.webp",
+        "alt": {
+          "tr": "Lavaş üstünde ızgara kuzu pirzola",
+          "en": "Grilled lamb chops on flatbread",
+          "ar": "ريش ضأن مشوية على خبز اللافاش",
+          "ru": "Бараньи рёбрышки на гриле на лаваше"
+        },
+        "genislik": 800,
+        "yukseklik": 450
+      }
+    },
+    {
+      "_id": "kofte-izgara-kg",
+      "id": "kofte-izgara-kg",
+      "kategoriSlug": "izgara",
+      "sira": 4,
+      "ad": {
+        "tr": "Köfte Izgara 1 KG",
+        "en": "Grilled Köfte 1 KG (Meatballs)",
+        "ar": "كفتة مشوية 1 كغ",
+        "ru": "Кёфте на гриле 1 кг (котлетки)"
+      },
+      "icerik": {
+        "tr": "Izgarada dana kıymalı köfte",
+        "en": "Grilled beef meatballs",
+        "ar": "كفتة لحم بقري مشوية",
+        "ru": "Котлетки из говяжьего фарша на гриле"
+      },
+      "fiyatlar": [
+        {
+          "sutun": "tek",
+          "tutar": 1300,
+          "dogrulandi": true
+        }
+      ],
+      "gorsel": {
+        "src": "/urunler/kofte-izgara-kg.webp",
+        "alt": {
+          "tr": "Izgarada pişen köfteler",
+          "en": "Köfte cooking on the grill",
+          "ar": "كفتة تُشوى على الشواية",
+          "ru": "Кёфте жарятся на гриле"
+        },
+        "genislik": 800,
+        "yukseklik": 450
+      }
+    },
+    {
+      "_id": "kofte-izgara-porsiyon",
+      "id": "kofte-izgara-porsiyon",
+      "kategoriSlug": "izgara",
+      "sira": 5,
+      "ad": {
+        "tr": "Köfte Izgara Porsiyon (6 adet köfte)",
+        "en": "Grilled Köfte Portion (6 pieces)",
+        "ar": "كفتة مشوية حصة (6 قطع)",
+        "ru": "Кёфте на гриле, порция (6 шт.)"
+      },
+      "icerik": {
+        "tr": "Izgarada dana kıymalı köfte, 6 adet",
+        "en": "Grilled beef meatballs, 6 pieces",
+        "ar": "كفتة لحم بقري مشوية، 6 قطع",
+        "ru": "Котлетки из говяжьего фарша на гриле, 6 шт."
+      },
+      "gorsel": {
+        "src": "/urunler/kofte-izgara.webp",
+        "alt": {
+          "tr": "Izgara köfte porsiyonu",
+          "en": "Grilled köfte portion",
+          "ar": "حصة كفتة مشوية",
+          "ru": "Порция кёфте на гриле"
+        },
+        "genislik": 800,
+        "yukseklik": 450
+      },
+      "fiyatlar": [
+        {
+          "sutun": "tek",
+          "tutar": 400,
+          "dogrulandi": true
+        }
+      ]
+    },
+    {
+      "_id": "kofte-izgara-bucuk-porsiyon",
+      "id": "kofte-izgara-bucuk-porsiyon",
+      "kategoriSlug": "izgara",
+      "sira": 6,
+      "ad": {
+        "tr": "Köfte Izgara 1,5 Porsiyon (8-9 adet)",
+        "en": "Grilled Köfte 1.5 Portion (8-9 pieces)",
+        "ar": "كفتة مشوية حصة ونصف (8-9 قطع)",
+        "ru": "Кёфте на гриле, 1,5 порции (8-9 шт.)"
+      },
+      "icerik": {
+        "tr": "Izgarada dana kıymalı köfte, 8-9 adet",
+        "en": "Grilled beef meatballs, 8-9 pieces",
+        "ar": "كفتة لحم بقري مشوية، 8-9 قطع",
+        "ru": "Котлетки из говяжьего фарша на гриле, 8-9 шт."
+      },
+      "fiyatlar": [
+        {
+          "sutun": "tek",
+          "tutar": 500,
+          "dogrulandi": true
+        }
+      ],
+      "gorsel": {
+        "src": "/urunler/kofte-izgara-bucuk-porsiyon.webp",
+        "alt": {
+          "tr": "Salatalı ızgara köfte tabağı",
+          "en": "Grilled köfte plate with salad",
+          "ar": "طبق كفتة مشوية مع سلطة",
+          "ru": "Тарелка кёфте на гриле с салатом"
+        },
+        "genislik": 800,
+        "yukseklik": 450
+      }
+    },
+    {
+      "_id": "tavuk-izgara-kg",
+      "id": "tavuk-izgara-kg",
+      "kategoriSlug": "izgara",
+      "sira": 7,
+      "ad": {
+        "tr": "Tavuk Izgara 1 KG",
+        "en": "Grilled Chicken 1 KG",
+        "ar": "دجاج مشوي 1 كغ",
+        "ru": "Курица на гриле 1 кг"
+      },
+      "icerik": {
+        "tr": "Izgarada tavuk eti",
+        "en": "Grilled chicken",
+        "ar": "دجاج مشوي",
+        "ru": "Курица на гриле"
+      },
+      "fiyatlar": [
+        {
+          "sutun": "tek",
+          "tutar": 700,
+          "dogrulandi": true
+        }
+      ],
+      "gorsel": {
+        "src": "/urunler/tavuk-izgara-kg.webp",
+        "alt": {
+          "tr": "Izgarada tavuk parçaları",
+          "en": "Chicken pieces on the grill",
+          "ar": "قطع دجاج على الشواية",
+          "ru": "Кусочки курицы на гриле"
+        },
+        "genislik": 800,
+        "yukseklik": 450
+      }
+    },
+    {
+      "_id": "tavuk-porsiyon",
+      "id": "tavuk-porsiyon",
+      "kategoriSlug": "izgara",
+      "sira": 8,
+      "ad": {
+        "tr": "Tavuk Porsiyon",
+        "en": "Chicken Portion",
+        "ar": "دجاج حصة",
+        "ru": "Курица, порция"
+      },
+      "icerik": {
+        "tr": "Izgarada tavuk eti",
+        "en": "Grilled chicken",
+        "ar": "دجاج مشوي",
+        "ru": "Курица на гриле"
+      },
+      "fiyatlar": [
+        {
+          "sutun": "tek",
+          "tutar": 350,
+          "dogrulandi": true
+        }
+      ],
+      "gorsel": {
+        "src": "/urunler/tavuk-porsiyon.webp",
+        "alt": {
+          "tr": "Lavaşlı ızgara tavuk porsiyonu",
+          "en": "Grilled chicken portion with flatbread",
+          "ar": "حصة دجاج مشوي مع خبز اللافاش",
+          "ru": "Порция курицы на гриле с лавашем"
+        },
+        "genislik": 800,
+        "yukseklik": 450
+      }
+    },
+    {
+      "_id": "karisik-izgara-kg",
+      "id": "karisik-izgara-kg",
+      "kategoriSlug": "izgara",
+      "sira": 9,
+      "ad": {
+        "tr": "Karışık Izgara 1 KG",
+        "en": "Mixed Grill 1 KG",
+        "ar": "مشاوي مشكلة 1 كغ",
+        "ru": "Ассорти на гриле 1 кг"
+      },
+      "icerik": {
+        "tr": "Izgarada dana eti, kuzu eti, köfte ve tavuk",
+        "en": "Grilled beef, lamb, meatballs and chicken",
+        "ar": "لحم بقري وضأن وكفتة ودجاج مشوية",
+        "ru": "Говядина, баранина, котлетки и курица на гриле"
+      },
+      "fiyatlar": [
+        {
+          "sutun": "tek",
+          "tutar": 1700,
+          "dogrulandi": true
+        }
+      ],
+      "gorsel": {
+        "src": "/urunler/karisik-izgara-kg.webp",
+        "alt": {
+          "tr": "Bulgur pilavlı karışık ızgara",
+          "en": "Mixed grill with bulgur pilaf",
+          "ar": "مشاوي مشكلة مع برغل",
+          "ru": "Ассорти на гриле с булгуром"
+        },
+        "genislik": 800,
+        "yukseklik": 450
+      }
+    },
+    {
+      "_id": "karisik-izgara-porsiyon",
+      "id": "karisik-izgara-porsiyon",
+      "kategoriSlug": "izgara",
+      "sira": 10,
+      "ad": {
+        "tr": "Karışık Izgara Porsiyon",
+        "en": "Mixed Grill Portion",
+        "ar": "مشاوي مشكلة حصة",
+        "ru": "Ассорти на гриле, порция"
+      },
+      "icerik": {
+        "tr": "Izgarada dana eti, kuzu eti, köfte ve tavuk",
+        "en": "Grilled beef, lamb, meatballs and chicken",
+        "ar": "لحم بقري وضأن وكفتة ودجاج مشوية",
+        "ru": "Говядина, баранина, котлетки и курица на гриле"
+      },
+      "gorsel": {
+        "src": "/urunler/karisik-izgara.webp",
+        "alt": {
+          "tr": "Karışık ızgara tabağı",
+          "en": "Mixed grill plate",
+          "ar": "طبق مشاوي مشكلة",
+          "ru": "Тарелка ассорти на гриле"
+        },
+        "genislik": 800,
+        "yukseklik": 450
+      },
+      "fiyatlar": [
+        {
+          "sutun": "tek",
+          "tutar": 600,
+          "dogrulandi": true
+        }
+      ]
+    },
+    {
+      "_id": "sac-kavurma",
+      "id": "sac-kavurma",
+      "kategoriSlug": "izgara",
+      "sira": 11,
+      "ad": {
+        "tr": "Saç Kavurma",
+        "en": "Saç Kavurma (Beef Sautéed on a Griddle)",
+        "ar": "ساتش كافورما (لحم مقلي على الصاج)",
+        "ru": "Сач кавурма (мясо с саджа)"
+      },
+      "icerik": {
+        "tr": "Sacda kavrulmuş dana eti, biber, domates, soğan",
+        "en": "Beef sautéed on a griddle with pepper, tomato and onion",
+        "ar": "لحم بقري مقلي على الصاج مع الفلفل والطماطم والبصل",
+        "ru": "Говядина, жаренная на садже с перцем, помидорами и луком"
+      },
+      "fiyatlar": [
+        {
+          "sutun": "tek",
+          "tutar": 500,
+          "dogrulandi": true
+        }
+      ],
+      "gorsel": {
+        "src": "/urunler/sac-kavurma.webp",
+        "alt": {
+          "tr": "Sacda dana eti kavurma",
+          "en": "Beef sautéed on a griddle pan",
+          "ar": "لحم بقري مقلي على الصاج",
+          "ru": "Говядина, жаренная на садже"
+        },
+        "genislik": 800,
+        "yukseklik": 450
+      }
+    },
+    {
+      "_id": "et-sis",
+      "id": "et-sis",
+      "kategoriSlug": "izgara",
+      "sira": 12,
+      "ad": {
+        "tr": "Et Şiş",
+        "en": "Et Şiş (Beef Skewer)",
+        "ar": "شيش لحم",
+        "ru": "Эт шиш (шашлык из говядины)"
+      },
+      "icerik": {
+        "tr": "Şişe dizilmiş dana eti, ızgarada",
+        "en": "Grilled beef on skewers",
+        "ar": "قطع لحم بقري مشوية على السيخ",
+        "ru": "Говядина на шампуре, на гриле"
+      },
+      "gorsel": {
+        "src": "/urunler/et-sis.webp",
+        "alt": {
+          "tr": "Et şiş",
+          "en": "Beef skewer",
+          "ar": "شيش لحم",
+          "ru": "Шашлык из говядины"
+        },
+        "genislik": 800,
+        "yukseklik": 450
+      },
+      "fiyatlar": [
+        {
+          "sutun": "tek",
+          "tutar": 500,
+          "dogrulandi": true
+        }
+      ]
+    },
+    {
+      "_id": "tavuk-sis",
+      "id": "tavuk-sis",
+      "kategoriSlug": "izgara",
+      "sira": 13,
+      "ad": {
+        "tr": "Tavuk Şiş",
+        "en": "Tavuk Şiş (Chicken Skewer)",
+        "ar": "شيش دجاج",
+        "ru": "Тавук шиш (шашлык из курицы)"
+      },
+      "icerik": {
+        "tr": "Şişe dizilmiş tavuk eti, ızgarada",
+        "en": "Grilled chicken on skewers",
+        "ar": "قطع دجاج مشوية على السيخ",
+        "ru": "Курица на шампуре, на гриле"
+      },
+      "fiyatlar": [
+        {
+          "sutun": "tek",
+          "tutar": 300,
+          "dogrulandi": true
+        }
+      ],
+      "gorsel": {
+        "src": "/urunler/tavuk-sis.webp",
+        "alt": {
+          "tr": "Tavuk şiş",
+          "en": "Chicken skewer",
+          "ar": "شيش دجاج",
+          "ru": "Шашлык из курицы"
+        },
+        "genislik": 800,
+        "yukseklik": 450
+      }
+    },
+    {
+      "_id": "kiymali",
+      "id": "kiymali",
+      "kategoriSlug": "kapali-pide",
+      "sira": 0,
+      "ad": {
+        "tr": "Kıymalı",
+        "en": "Kıymalı (Minced Beef)",
+        "ar": "كيمالي (لحم مفروم)",
+        "ru": "Кыймалы (с фаршем)"
+      },
+      "icerik": {
+        "tr": "Dana kıyma, soğan, domates, biber, maydanoz",
+        "en": "Minced beef, onion, tomato, pepper, parsley",
+        "ar": "لحم بقري مفروم، بصل، طماطم، فلفل، بقدونس",
+        "ru": "Говяжий фарш, лук, помидоры, перец, петрушка"
+      },
+      "gorsel": {
+        "src": "/urunler/kiymali-pide.webp",
+        "alt": {
+          "tr": "Kıymalı pide",
+          "en": "Pide with minced beef",
+          "ar": "بيدة بلحم مفروم",
+          "ru": "Пиде с фаршем"
+        },
+        "genislik": 800,
+        "yukseklik": 450
+      },
+      "fiyatlar": [
+        {
+          "sutun": "hamur1",
+          "tutar": 200,
+          "dogrulandi": false
+        },
+        {
+          "sutun": "hamur15",
+          "tutar": 300,
+          "dogrulandi": true
+        },
+        {
+          "sutun": "duble",
+          "tutar": 400,
+          "dogrulandi": true
+        }
+      ]
+    },
+    {
+      "_id": "kasarli",
+      "id": "kasarli",
+      "kategoriSlug": "kapali-pide",
+      "sira": 1,
+      "ad": {
+        "tr": "Kaşarlı",
+        "en": "Kaşarlı (Cheese)",
+        "ar": "كاشارلي (جبن)",
+        "ru": "Кашарлы (с сыром)"
+      },
+      "icerik": {
+        "tr": "Kaşar peyniri",
+        "en": "Kaşar cheese",
+        "ar": "جبن كاشار",
+        "ru": "Сыр кашар"
+      },
+      "fiyatlar": [
+        {
+          "sutun": "hamur1",
+          "tutar": 200,
+          "dogrulandi": false
+        },
+        {
+          "sutun": "hamur15",
+          "tutar": 300,
+          "dogrulandi": true
+        },
+        {
+          "sutun": "duble",
+          "tutar": 400,
+          "dogrulandi": false
+        }
+      ],
+      "gorsel": {
+        "src": "/urunler/kasarli-pide.webp",
+        "alt": {
+          "tr": "Kaşarlı pide",
+          "en": "Pide with kaşar cheese",
+          "ar": "بيدة بجبن كاشار",
+          "ru": "Пиде с сыром кашар"
+        },
+        "genislik": 800,
+        "yukseklik": 450
+      }
+    },
+    {
+      "_id": "sucuklu",
+      "id": "sucuklu",
+      "kategoriSlug": "kapali-pide",
+      "sira": 2,
+      "ad": {
+        "tr": "Sucuklu",
+        "en": "Sucuklu (Turkish Sausage)",
+        "ar": "سوجوكلو (سجق تركي)",
+        "ru": "Суджуклу (с суджуком)"
+      },
+      "icerik": {
+        "tr": "Dilimlenmiş sucuk, kaşar peyniri",
+        "en": "Sliced Turkish sausage, kaşar cheese",
+        "ar": "شرائح السجق التركي، جبن كاشار",
+        "ru": "Ломтики суджука, сыр кашар"
+      },
+      "fiyatlar": [
+        {
+          "sutun": "hamur1",
+          "tutar": 200,
+          "dogrulandi": true
+        },
+        {
+          "sutun": "hamur15",
+          "tutar": 300,
+          "dogrulandi": true
+        },
+        {
+          "sutun": "duble",
+          "tutar": 400,
+          "dogrulandi": true
+        }
+      ],
+      "gorsel": {
+        "src": "/urunler/sucuklu-pide.webp",
+        "alt": {
+          "tr": "Sucuklu pide",
+          "en": "Pide with Turkish sausage",
+          "ar": "بيدة بالسجق التركي",
+          "ru": "Пиде с суджуком"
+        },
+        "genislik": 800,
+        "yukseklik": 450
+      }
+    },
+    {
+      "_id": "kiyma-kasar",
+      "id": "kiyma-kasar",
+      "kategoriSlug": "kapali-pide",
+      "sira": 3,
+      "ad": {
+        "tr": "Kıyma & Kaşar",
+        "en": "Kıyma & Kaşar (Minced Beef & Cheese)",
+        "ar": "كيما وكاشار (لحم مفروم وجبن)",
+        "ru": "Кыйма и кашар (фарш и сыр)"
+      },
+      "icerik": {
+        "tr": "Dana kıyma, kaşar peyniri",
+        "en": "Minced beef, kaşar cheese",
+        "ar": "لحم بقري مفروم، جبن كاشار",
+        "ru": "Говяжий фарш, сыр кашар"
+      },
+      "fiyatlar": [
+        {
+          "sutun": "hamur1",
+          "tutar": 220,
+          "dogrulandi": true
+        },
+        {
+          "sutun": "hamur15",
+          "tutar": 330,
+          "dogrulandi": true
+        },
+        {
+          "sutun": "duble",
+          "tutar": 440,
+          "dogrulandi": true
+        }
+      ],
+      "gorsel": {
+        "src": "/urunler/kiyma-kasar-pide.webp",
+        "alt": {
+          "tr": "Kıymalı kaşarlı pide",
+          "en": "Pide with minced beef and cheese",
+          "ar": "بيدة بلحم مفروم وجبن",
+          "ru": "Пиде с фаршем и сыром"
+        },
+        "genislik": 800,
+        "yukseklik": 450
+      }
+    },
+    {
+      "_id": "karisik",
+      "id": "karisik",
+      "kategoriSlug": "kapali-pide",
+      "sira": 4,
+      "ad": {
+        "tr": "Karışık",
+        "en": "Karışık (Mixed)",
+        "ar": "كاريشيك (مشكل)",
+        "ru": "Карышык (ассорти)"
+      },
+      "icerik": {
+        "tr": "Dana kıyma, sucuk, kaşar peyniri",
+        "en": "Minced beef, Turkish sausage, kaşar cheese",
+        "ar": "لحم بقري مفروم، سجق تركي، جبن كاشار",
+        "ru": "Говяжий фарш, суджук, сыр кашар"
+      },
+      "gorsel": {
+        "src": "/urunler/karisik-pide.webp",
+        "alt": {
+          "tr": "Karışık pide",
+          "en": "Mixed pide",
+          "ar": "بيدة مشكلة",
+          "ru": "Пиде ассорти"
+        },
+        "genislik": 800,
+        "yukseklik": 450
+      },
+      "fiyatlar": [
+        {
+          "sutun": "hamur1",
+          "tutar": 240,
+          "dogrulandi": true
+        },
+        {
+          "sutun": "hamur15",
+          "tutar": 350,
+          "dogrulandi": true
+        },
+        {
+          "sutun": "duble",
+          "tutar": 480,
+          "dogrulandi": true
+        }
+      ]
+    },
+    {
+      "_id": "lahmacun",
+      "id": "lahmacun",
+      "kategoriSlug": "kapali-pide",
+      "sira": 5,
+      "ad": {
+        "tr": "Lahmacun",
+        "en": "Lahmacun (Thin Flatbread with Minced Meat)",
+        "ar": "لحم بعجين",
+        "ru": "Лахмаджун (тонкая лепёшка с фаршем)"
+      },
+      "icerik": {
+        "tr": "İnce hamur, dana kıyma, soğan, domates, biber, maydanoz",
+        "en": "Thin dough, minced beef, onion, tomato, pepper, parsley",
+        "ar": "عجينة رقيقة، لحم بقري مفروم، بصل، طماطم، فلفل، بقدونس",
+        "ru": "Тонкое тесто, говяжий фарш, лук, помидоры, перец, петрушка"
+      },
+      "fiyatlar": [
+        {
+          "sutun": "hamur1",
+          "tutar": 100,
+          "dogrulandi": true
+        },
+        {
+          "sutun": "hamur15",
+          "tutar": null,
+          "dogrulandi": true
+        },
+        {
+          "sutun": "duble",
+          "tutar": null,
+          "dogrulandi": true
+        }
+      ],
+      "gorsel": {
+        "src": "/urunler/lahmacun.webp",
+        "alt": {
+          "tr": "Lahmacun",
+          "en": "Thin flatbread with minced meat",
+          "ar": "لحم بعجين",
+          "ru": "Тонкая лепёшка с фаршем"
+        },
+        "genislik": 800,
+        "yukseklik": 450
+      }
+    },
+    {
+      "_id": "coban-salata",
+      "id": "coban-salata",
+      "kategoriSlug": "salatalar",
+      "sira": 0,
+      "ad": {
+        "tr": "Çoban Salata",
+        "en": "Çoban Salata (Shepherd's Salad)",
+        "ar": "سلطة الراعي",
+        "ru": "Чобан салата (пастуший салат)"
+      },
+      "icerik": {
+        "tr": "Domates, salatalık, soğan, yeşil biber, maydanoz, zeytinyağı",
+        "en": "Tomato, cucumber, onion, green pepper, parsley, olive oil",
+        "ar": "طماطم، خيار، بصل، فلفل أخضر، بقدونس، زيت زيتون",
+        "ru": "Помидоры, огурцы, лук, зелёный перец, петрушка, оливковое масло"
+      },
+      "fiyatlar": [
+        {
+          "sutun": "tek",
+          "tutar": 100,
+          "dogrulandi": true
+        }
+      ],
+      "gorsel": {
+        "src": "/urunler/coban-salata.webp",
+        "alt": {
+          "tr": "Ahşap kâsede çoban salata",
+          "en": "Shepherd's salad in a wooden bowl",
+          "ar": "سلطة الراعي في وعاء خشبي",
+          "ru": "Пастуший салат в деревянной миске"
+        },
+        "genislik": 800,
+        "yukseklik": 450
+      }
+    },
+    {
+      "_id": "kunefe",
+      "id": "kunefe",
+      "kategoriSlug": "tatlilar",
+      "sira": 0,
+      "ad": {
+        "tr": "Künefe",
+        "en": "Künefe (Cheese-filled Shredded Pastry)",
+        "ar": "كنافة",
+        "ru": "Кюнефе (десерт из теста кадаиф с сыром)"
+      },
+      "icerik": {
+        "tr": "Kadayıf, tel peynir, şerbet, üzerine antep fıstığı",
+        "en": "Shredded kadayıf pastry, stringy cheese, syrup, topped with pistachio",
+        "ar": "عجينة الكنافة، جبن، قطر، مع الفستق الحلبي",
+        "ru": "Тесто кадаиф, сыр, сироп, сверху фисташки"
+      },
+      "gorsel": null,
+      "fiyatlar": [
+        {
+          "sutun": "tek",
+          "tutar": 200,
+          "dogrulandi": true
+        }
+      ]
+    },
+    {
+      "_id": "sutlac",
+      "id": "sutlac",
+      "kategoriSlug": "tatlilar",
+      "sira": 1,
+      "ad": {
+        "tr": "Sütlaç",
+        "en": "Sütlaç (Rice Pudding)",
+        "ar": "سوتلاتش (أرز بالحليب)",
+        "ru": "Сютлач (рисовый пудинг)"
+      },
+      "icerik": {
+        "tr": "Süt, pirinç, şeker, fırında",
+        "en": "Milk, rice, sugar, baked in the oven",
+        "ar": "حليب، أرز، سكر، مخبوز في الفرن",
+        "ru": "Молоко, рис, сахар, запечённый в духовке"
+      },
+      "gorsel": {
+        "src": "/urunler/sutlac.webp",
+        "alt": {
+          "tr": "Sütlaç",
+          "en": "Rice pudding",
+          "ar": "أرز بالحليب",
+          "ru": "Рисовый пудинг"
+        },
+        "genislik": 800,
+        "yukseklik": 450
+      },
+      "fiyatlar": [
+        {
+          "sutun": "tek",
+          "tutar": 170,
+          "dogrulandi": true
+        }
+      ]
+    },
+    {
+      "_id": "kabak-tatlisi",
+      "id": "kabak-tatlisi",
+      "kategoriSlug": "tatlilar",
+      "sira": 2,
+      "ad": {
+        "tr": "Kabak Tatlısı",
+        "en": "Kabak Tatlısı (Candied Pumpkin)",
+        "ar": "حلوى اليقطين",
+        "ru": "Кабак татлысы (тыква в сиропе)"
+      },
+      "icerik": {
+        "tr": "Balkabağı, şeker, üzerine ceviz",
+        "en": "Pumpkin, sugar, topped with walnut",
+        "ar": "يقطين، سكر، مع الجوز",
+        "ru": "Тыква, сахар, сверху грецкий орех"
+      },
+      "gorsel": {
+        "src": "/urunler/kabak-tatlisi.webp",
+        "alt": {
+          "tr": "Kabak tatlısı",
+          "en": "Candied pumpkin",
+          "ar": "حلوى اليقطين",
+          "ru": "Тыква в сиропе"
+        },
+        "genislik": 800,
+        "yukseklik": 450
+      },
+      "fiyatlar": [
+        {
+          "sutun": "tek",
+          "tutar": 150,
+          "dogrulandi": false
+        }
+      ]
+    }
+  ]
+}
