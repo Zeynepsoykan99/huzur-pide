@@ -200,6 +200,51 @@ export function YerTutucuTatli({ className }: { className?: string }) {
   );
 }
 
+/**
+ * Corba — kasenin icindeki sivi yuzeyi ve ustunde buhar.
+ *
+ * Salata kasesinden SIVI YUZEYIYLE, tatli kasesinden AYAGI OLMAMASIYLA
+ * ayriliyor; buhar da pidedekinden ince ve kivrimsiz. Uc kase seklinin bir
+ * arada okunabilir kalmasi icin her birine ayri bir isaret verildi.
+ */
+export function YerTutucuCorba({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 48 48" aria-hidden="true" className={className}>
+      {/* Sivinin yuzeyi — kasenin agzindaki elips */}
+      <ellipse cx="24" cy="26" rx="17" ry="4.2" fill="currentColor" fillOpacity=".6" />
+      {/* Kase */}
+      <path
+        d="M7 26h34c0 9-7.6 15-17 15S7 35 7 26Z"
+        fill="currentColor"
+        fillOpacity=".4"
+      />
+      {/* Buhar */}
+      <g stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeOpacity=".45">
+        <path d="M17 17v-5M24 14v-6M31 17v-5" />
+      </g>
+    </svg>
+  );
+}
+
+/**
+ * Kahvalti — sahanda yumurta. Ustten gorunum: ak ve sarisi.
+ *
+ * Kahvaltiyi tek bir sekille anlatan en okunur isaret bu; menudeki yedi
+ * kalemin (serpme, menemen, kuymak…) ortak paydasi da yumurta.
+ */
+export function YerTutucuKahvalti({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 48 48" aria-hidden="true" className={className}>
+      {/* Ak. Ilk surumde tavada yayilmis duzensiz bir sekildi ve 68px'lik
+          yuvada yalnizca soluk bir blob olarak okunuyordu; duz elipse
+          cevrilince yumurta sekli netlesti. */}
+      <ellipse cx="24" cy="24" rx="18" ry="13.5" fill="currentColor" fillOpacity=".4" />
+      {/* Sari — merkezden hafif kacik, sahandaki gibi */}
+      <circle cx="20.5" cy="23" r="7.2" fill="currentColor" fillOpacity=".65" />
+    </svg>
+  );
+}
+
 /** Icecek — bardak ve pipet. */
 export function YerTutucuIcecek({ className }: { className?: string }) {
   return (

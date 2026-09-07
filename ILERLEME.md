@@ -3,7 +3,7 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 32 tamamlandı — karşılama sayfasındaki **hero perdesi hafifletildi** (0,52/0,66/0,60 → 0,46/0,58/0,53), dükkân fotoğrafı belirgin biçimde açıldı; diğer iki blok dokunulmadan kaldı. Ürün fotoğrafı hâlâ engelli: Firebase Storage kurulmadı. Aşama 32 dahil her şey **üretimde canlı**. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
+**Güncel aşama:** Aşama 33 tamamlandı — **menü içeriği fiziksel menüye göre baştan yazıldı**: 5 kategori / 31 üründen **8 kategori / 56 ürüne** çıktı (Çorbalar, Kahvaltı ve Açık Pide yeni). 22 fotoğrafın hepsi taşındı, teyitsiz fiyat kalmadı. Firebase Storage hâlâ kurulmadı; fotoğrafsız ürün sayısı 34. Aşama 33 **henüz üretimde değil, push onayı bekliyor**; Aşama 32 dahil öncesi **üretimde canlı**. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
 **Son güncelleme:** 2026-09-04
 
 ### Genel Durum
@@ -45,6 +45,7 @@ Numaralandırma rapor başlıklarıyla aynı: aşağıdaki her satırın karşı
 | 30 | Fiyat ekranında ürün arama | **Tamamlandı** |
 | 31 | Panelde menü önizlemesi | **Tamamlandı** |
 | 32 | Hero perdesi hafifletildi | **Tamamlandı** |
+| 33 | Menü içeriğinin yenilenmesi (8 kategori, 56 ürün) | **Tamamlandı** — push onayı bekliyor |
 
 ### Bekleyenler
 
@@ -6356,5 +6357,246 @@ Değişiklik öncesiyle birebir aynı sayılar.
 
 Firestore'a dokunulmadı; mekân sahibinin tema ve renk ayarları olduğu gibi
 (Gece Ocağı + Bakır/Fıstık).
+
+=== RAPOR SONU ===
+
+
+## Aşama 33 — Menü İçeriğinin Yenilenmesi · 2026-09-07
+
+=== RAPOR BAŞLANGICI ===
+
+**Tarih:** 2026-09-07 · **Dal:** `main` · **Durum:** push onayı bekliyor
+
+Menü fiziksel menünün güncel hâline göre baştan yazıldı: **5 kategori / 31
+ürün → 8 kategori / 56 ürün.**
+
+### 33.1 Yedek (Adım 0)
+
+`betikler/yedek-al.ts` **yetmiyordu**: yalnızca `data/menu.ts`'i yedekliyor.
+O betik Firestore'a taşınmadan önce yazılmıştı ve o gün dosyanın kendisi
+içeriğin kaynağıydı; Aşama 17'den beri gerçek kaynak Firestore ve fiyatlar
+panelden değiştirilebiliyor.
+
+`betikler/yedek-firestore.ts` yazıldı — kategoriler + ürünler + `ayarlar/genel`,
+hiçbir şey yazmadan. Üç dosya commit edildi (`8fdee78`):
+
+| Dosya | İçerik |
+|---|---|
+| `yedek/firestore-2026-09-07.json` | Firestore'un tamamı |
+| `yedek/menu-2026-09-07.json` | `data/menu.ts`'in makine okunur kopyası |
+| `yedek/menu-2026-09-07.ts` | kaynak dosyanın kopyası |
+
+**Ölçüldü: iki taraf ayrışmamış** — ikisi de 5 kategori, 31 ürün, 43 fiyat
+hücresi, 4 doğrulanmamış, 26 fotoğraf.
+
+### 33.2 Sorduğum üç şey
+
+Brief'te bir çelişki vardı (Ayran) ve veriyi okurken iki tane daha çıktı:
+
+| Soru | Karar |
+|---|---|
+| Ayran: tek mi, küçük/büyük mü | **İki ürün** — Küçük 30, Büyük 40 |
+| Çoban Salata Izgara'da mı, Salatalar'da mı (listede Izgara altındaydı ama adım 5'te Salatalar ayrı kategori sayılmıştı) | **Salatalar kalsın** → 8 kategori |
+| Kategori sırası (menü gövdesi ile adım 5 farklı sıra veriyordu) | **Adım 5'teki sıra** |
+| "Patates Cips" kızartma mı, paket cips mi | **Kızartma** (French Fries) |
+
+### 33.3 Üretici betik — neden elle yazmadım
+
+56 ürünün her birinin adı dört dilde. Hayatta kalan ürünlerin Arapça ve
+Rusça metinlerini elle kopyalarken **tek bir harfin bozulması** yeterdi ve
+bu gözle fark edilmezdi.
+
+`betikler/menu-uret.ts` eski `MENU`'yü **içe aktarıp** (regex'le ayrıştırmadan,
+tip güvenli) hayatta kalan ürünlerin `ad`, `icerik` ve `gorsel` alanlarını
+olduğu gibi taşıyor; yalnızca fiyatlar, sıra ve yeni ürünler yazılıyor.
+
+Bir tuzak yakalandı: `Cevrilebilir` tipinde **yalnızca `tr` zorunlu**. İlk
+sürüm dört dili de koşulsuz yazıyordu; eksik çeviri `undefined` olarak
+yazılsaydı üretilen dosya derlenmezdi. Yalnızca dolu diller yazılıyor.
+
+### 33.4 Kimlik çakışması — sessiz veri kaybı önlendi
+
+Açık Pide ile Kapalı Pide'de **dört ürün aynı adı taşıyor** (Kıymalı,
+Kaşarlı, Kıyma & Kaşar, Karışık). Firestore'da ürün kimlikleri tek
+koleksiyonda global; Açık Pide'ninkine `kiymali` verilseydi **Kapalı
+Pide'nin ürününün üzerine yazardı.**
+
+Açık Pide ürünleri `acik-` önekli. Ayrıca iki yeniden adlandırma:
+`soda` → `sade-soda`, `ayran` → `buyuk-ayran` (+ yeni `kucuk-ayran`).
+
+Doğrulandı: **global tekrar eden kimlik yok.**
+
+### 33.5 Yazma betiği — neden `tohum.ts` değil
+
+İki sebep, ikisi de veri kaybı:
+
+1. **`tohum.ts` silme yapmıyor.** Menüden çıkan ürünler Firestore'da kalır ve
+   müşteri menüsünde görünmeye devam ederdi.
+2. **`tohum.ts` `ayarlar/genel`i `{ tema: VARSAYILAN_TEMA }` ile eziyor.**
+   Mekân sahibinin seçtiği tema ve üç temanın renk tercihleri silinirdi.
+
+`betikler/menu-yaz.ts` yazıldı: `--yaz` verilmedikçe hiçbir şey yazmıyor,
+`ayarlar` koleksiyonuna hiç dokunmuyor, artık listede olmayanları siliyor.
+
+Kuru çalışma → 32 yeni ürün, 7 silinecek, 0 kategori silinecek. Sonra yazıldı.
+
+**Silinen 7:** Kuzu Izgara 1 KG, Kuzu Izgara Porsiyon, Kabak Tatlısı, Fanta,
+Komposto (menüden çıkanlar) + `soda`, `ayran` (yeniden adlandırılanlar).
+*Nescafe zaten Firestore'da kayıtlı değildi.*
+
+**Ayarlar korundu** — yazma sonrası yedekle karşılaştırıldı, **birebir aynı**
+(`tema: murekkep`, üç temanın renkleri).
+
+### 33.6 Sonuç: liste ↔ Firestore farkı 0
+
+```
+npx tsx betikler/tohum-dogrula.ts
+  kategori  8 / 8
+  urun      56 / 56
+  teyitEdilmemisFiyat  0 / 0
+TASIMA DOGRULANDI — hicbir alanda fark yok.
+```
+
+| # | Kategori | Sütun | Ürün | Fotoğraf |
+|---|---|---|---|---|
+| 1 | Çorbalar | Az / Tam | 4 | — |
+| 2 | Kahvaltı Çeşitleri | tek | 7 | — |
+| 3 | Açık Pide Çeşitleri | 1/1,5/Duble | 11 | — |
+| 4 | Kapalı Pide Çeşitleri | 1/1,5/Duble | 6 | 6 |
+| 5 | Izgara Çeşitleri | tek | 12 | 12 |
+| 6 | Salatalar | tek | 1 | 1 |
+| 7 | Tatlı Çeşitleri | tek | 2 | 1 |
+| 8 | İçecekler | tek | 13 | 2 |
+
+**56 ürün, 94 fiyat hücresi, 22 fotoğraf, 34 yer tutucu, 0 teyitsiz fiyat.**
+
+Teyitsiz işaretlerin hepsi kalktı: Kapalı Pide'deki üç hücre gerçek
+fotoğraftan geldiği için teyitli oldu, dördüncüsü (Kabak Tatlısı) silindi.
+
+### 33.7 Fotoğraflar
+
+**22 fotoğrafın hepsi taşındı** — kimlikle eşleşerek: 6 Kapalı Pide,
+12 Izgara, Çoban Salata, Sütlaç, Su ve `ayran.webp` → Büyük Ayran.
+
+**4 fotoğraf kullanımdan çıktı** (Kuzu ×2, Kabak Tatlısı, Fanta).
+**Dosyalar silinmedi** — ileride gerekebilir.
+
+Açık Pide fotoğrafsız: Kapalı Pide'nin fotoğrafları kopyalanmadı, o
+fotoğraflar kapalı pidenin ve yanıltıcı olurdu.
+
+### 33.8 Yer tutucu ikonları — çıkan kusur ve düzeltmesi
+
+İlk derlemede **çorbaya pide ikonu** düştü: yer tutucu haritasında yeni
+kategoriler yoktu, kod jenerik pideye düşüyordu. Oysa `Ikonlar.tsx`'in kendi
+gerekçesi bunu reddediyor — "içeceğe pide silüeti göstermek anlamca yanlıştı".
+
+İki ikon eklendi: **çorba** (kâse + sıvı yüzeyi + buhar, salata ve tatlı
+kâselerinden ayrı okunacak şekilde) ve **kahvaltı** (sahanda yumurta).
+Açık Pide bilerek pide ikonunu kullanıyor — ikisi de pide.
+
+Kahvaltı ikonunun ilk sürümü tavada yayılmış düzensiz bir şekildi ve
+68px'lik yuvada yalnızca soluk bir blob olarak okunuyordu; düz elipse
+çevrilince yumurta şekli netleşti.
+
+### 33.9 Sayfa yapısı: bölme yok, 8 sayfa
+
+Kararınız doğrultusunda bölme yapılmadı; kaydırma + aşağı ok devrede.
+Gerekçe Aşama 14'te kayıtlı: bölme kavramı tipten silinmiş
+(`sayfaBolumleri`, `kategoriIcindeNo`, `kategoriToplamSayfa`) ve eski
+bölünmüş adresler kategoriye yönlendirilmiş — geri konsalardı **sonsuz
+döngü** olurdu.
+
+Ölçüm (Türkçe, görünür alan 320px'te 435px / 390px'te 711px):
+
+| Kategori | Ürün | Taşma 320px | Taşma 390px |
+|---|---|---|---|
+| Çorbalar | 4 | 92 | **0** |
+| Kahvaltı | 7 | 308 | 32 |
+| **Açık Pide** | 11 | **792** | **516** |
+| Kapalı Pide | 6 | 292 | 16 |
+| Izgara | 12 | 764 | 488 |
+| Salatalar | 1 | **0** | **0** |
+| Tatlılar | 2 | **0** | **0** |
+| İçecekler | 13 | 856 | 580 |
+
+390px'te dört kategori tam sığıyor, Kapalı Pide 16px kalıyor. En uzun sayfa
+Açık Pide. Rusça'da da ölçüldü, ürün adlarının hiçbiri 2 satırı geçmiyor.
+
+Bölme isterseniz ayrı bir aşama: tip sistemi ve yönlendirmeler geri açılmalı.
+
+### 33.10 Doğrulama
+
+**42 statik sayfa** (30'dan): 8 kategori × 4 dil + karşılama + menü listesi.
+
+**Dört dil.** Kategori adları: `Soups/Breakfast/Open Pide…` ·
+`الشوربات/الفطور/البيدة المفتوحة…` · `Супы/Завтрак/Открытая пиде…`
+Çorba sütunları dört dilde de doğru (`Az/Tam` · `Small/Full` ·
+`صغيرة/كاملة` · `Малая/Полная`).
+
+**Arapça RTL doğru:** `dir="rtl"`, görsel sağda, sütunlar aynalanmış, fiyat
+sütunu hizası **0px sapma**, yatay taşma 0.
+
+**Kaldırılan ürünler hiçbir yerde görünmüyor** — sayfa metninde Kuzu Izgara,
+Kabak Tatlısı, Fanta, Komposto, Nescafe arandı: yok.
+
+**Kategori listesi** 1–8 doğru numaralanmış; sayaç `Sayfa 1 / 8`.
+
+**Eski adresler çalışıyor** (silinen kategori yok):
+`kapali-pide-1/2/3`, `izgara-1/2/3/4`, `icecekler-1/2` → 307, kendi
+kategorisine. `/tr/secim`, `/tr/organizasyon`, `/tr/dil`, `/` → 307 doğru
+hedefe. Olmayanlar (`izgara-9`, `kapali-pide-4`, `corbalar-1`) → **404**.
+
+**Panel çalışıyor:** 56 ürün, 8 kategori başlığı, 8 atlama bağlantısı,
+0 teyitsiz rozet, arama çalışıyor (`ezogelin` → 1 ürün), Çorba sütunları
+"Az"/"Tam" olarak görünüyor.
+
+**Tema önizlemesi düzeltildi.** Sıralama değişince ilk sıraya fotoğrafsız
+bir kategori (Çorbalar) geçmiş ve önizleme fotoğrafların tema içinde nasıl
+durduğunu gösteremez olmuştu — kendi yan etkim. Artık **fotoğrafı olan ilk
+yaprağı** seçiyor (Kapalı Pide, 6 fotoğraf). Mekân sahibinin tema ve renk
+seçimleri korundu (Mürekkep + Kahve/Kırmızı).
+
+```
+npx tsc --noEmit   → temiz (çıkış 0)
+npm run lint       → temiz (çıktı yok)
+npm run build      → başarılı, 42 statik sayfa
+tarayıcı konsolu   → 0 hata, 0 uyarı
+```
+
+### 33.11 Uydurmadıklarım
+
+- **Yeni ürünlerin açıklaması yok** (`icerik: null`). İçindekiler
+  verilmediği için menüde yalnızca ad ve fiyat görünüyor. Mevcut ürünlerin
+  açıklamaları korundu.
+- **Spesiyal ve Dörtmevsim'in içeriği** bilinmiyor; yalnızca adın karşılığı
+  çevrildi.
+- **Sade Soda**: mevcut "Soda" ürününün çevirisi olduğu gibi korundu
+  (`Sparkling Mineral Water`), yalnızca Türkçe adı değişti.
+
+### 33.12 Değişen dosyalar
+
+| Dosya | Değişiklik |
+|---|---|
+| `data/menu.ts` | MENU tamamen yeniden üretildi; `CORBA_SUTUNLARI` eklendi |
+| `betikler/menu-uret.ts` | **yeni** — MENU üreticisi |
+| `betikler/menu-yaz.ts` | **yeni** — Firestore yazıcı + silici, kuru çalışmalı |
+| `betikler/yedek-firestore.ts` | **yeni** — Firestore yedekleyici |
+| `components/Ikonlar.tsx` | çorba ve kahvaltı yer tutucuları |
+| `components/UrunGorseli.tsx` | yer tutucu haritasına üç yeni kategori |
+| `app/panel/tema/page.tsx` | önizleme fotoğraflı yaprağı seçiyor |
+| `yedek/*` | üç yedek dosyası |
+| `ILERLEME.md` | özet, aşama tablosu ve bu rapor |
+
+Karşılama sayfası, kitabın yatay akışı/okları/sayacı, panelin kendi
+tasarımı, tema ve renk sistemi değişmedi.
+
+### 33.13 Sıradaki adım
+
+Push ve deploy onay bekliyor.
+
+Fotoğrafsız ürün sayısı 5'ten **34'e** çıktı (yeni kategoriler ve içecekler).
+Firebase Storage hâlâ kurulu değil; fotoğraf yükleme onu bekliyor.
+
+Yeni ürünlerin içindekiler açıklamaları isterseniz ayrı bir adımda eklenir.
 
 === RAPOR SONU ===

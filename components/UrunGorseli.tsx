@@ -1,7 +1,9 @@
 import Image from "next/image";
 import {
+  YerTutucuCorba,
   YerTutucuIcecek,
   YerTutucuIzgara,
+  YerTutucuKahvalti,
   YerTutucuPide,
   YerTutucuSalata,
   YerTutucuTatli,
@@ -19,6 +21,10 @@ import { metin, type DilKodu, type Urun } from "@/data/menu";
  * ekran boş kalmıyor, sadece ikon jenerik oluyor.
  */
 const YER_TUTUCULAR: Record<string, (p: { className?: string }) => React.ReactElement> = {
+  corbalar: YerTutucuCorba,
+  kahvalti: YerTutucuKahvalti,
+  // Acik ve kapali pide AYNI ikonu paylasiyor: ikisi de pide, silueti de ayni.
+  "acik-pide": YerTutucuPide,
   "kapali-pide": YerTutucuPide,
   izgara: YerTutucuIzgara,
   salatalar: YerTutucuSalata,

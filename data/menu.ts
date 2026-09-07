@@ -194,6 +194,24 @@ const PIDE_SUTUNLARI: FiyatSutunu[] = [
   },
 ];
 
+/**
+ * Çorbalarda iki porsiyon: az ve tam.
+ *
+ * Pide sütunlarından ayrı bir sabit — ikisi de üç değil iki sütunlu olsaydı
+ * bile aynı şey değiller: başlıklar farklı ve biri değişirse diğeri
+ * değişmemeli.
+ */
+const CORBA_SUTUNLARI: FiyatSutunu[] = [
+  {
+    kod: "az",
+    baslik: { tr: "Az", en: "Small", ar: "صغيرة", ru: "Малая" },
+  },
+  {
+    kod: "tam",
+    baslik: { tr: "Tam", en: "Full", ar: "كاملة", ru: "Полная" },
+  },
+];
+
 /** Tek fiyatlı kategoriler için. Başlık ekranda gösterilmez. */
 const TEK_SUTUN: FiyatSutunu[] = [
   { kod: "tek", baslik: { tr: "Fiyat", en: "Price", ar: "السعر", ru: "Цена" } },
@@ -210,6 +228,372 @@ const tek = (tutar: number, dogrulandi = true): Fiyat[] => [
 
 export const MENU: Kategori[] = [
   /* ---------------------------------------------------------------- 1 */
+  {
+    slug: "corbalar",
+    ad: {
+      tr: "Çorbalar",
+      en: "Soups",
+      ar: "الشوربات",
+      ru: "Супы",
+    },
+    sutunlar: CORBA_SUTUNLARI,
+    urunler: [
+      {
+        id: "ezogelin",
+        ad: {
+          tr: "Ezogelin",
+          en: "Ezogelin (Red Lentil & Bulgur Soup)",
+          ar: "شوربة إيزوغلين (عدس وبرغل)",
+          ru: "Эзогелин (суп из чечевицы и булгура)",
+        },
+        icerik: null,
+        fiyatlar: [
+          { sutun: "az", tutar: 100, dogrulandi: true },
+          { sutun: "tam", tutar: 170, dogrulandi: true },
+        ],
+        gorsel: null,
+      },
+      {
+        id: "mercimek",
+        ad: {
+          tr: "Mercimek",
+          en: "Mercimek (Lentil Soup)",
+          ar: "شوربة العدس",
+          ru: "Чечевичный суп",
+        },
+        icerik: null,
+        fiyatlar: [
+          { sutun: "az", tutar: 100, dogrulandi: true },
+          { sutun: "tam", tutar: 170, dogrulandi: true },
+        ],
+        gorsel: null,
+      },
+      {
+        id: "tavuksuyu",
+        ad: {
+          tr: "Tavuksuyu",
+          en: "Chicken Soup",
+          ar: "شوربة الدجاج",
+          ru: "Куриный суп",
+        },
+        icerik: null,
+        fiyatlar: [
+          { sutun: "az", tutar: 100, dogrulandi: true },
+          { sutun: "tam", tutar: 170, dogrulandi: true },
+        ],
+        gorsel: null,
+      },
+      {
+        id: "kelle-paca",
+        ad: {
+          tr: "Kelle Paça",
+          en: "Kelle Paça (Lamb Head & Trotter Soup)",
+          ar: "كلة باتشا (شوربة رأس وقوائم الخروف)",
+          ru: "Келле-пача (суп из головы и ножек)",
+        },
+        icerik: null,
+        fiyatlar: [
+          { sutun: "az", tutar: 120, dogrulandi: true },
+          { sutun: "tam", tutar: 250, dogrulandi: true },
+        ],
+        gorsel: null,
+      },
+    ],
+  },
+
+  /* ---------------------------------------------------------------- 2 */
+  {
+    slug: "kahvalti",
+    ad: {
+      tr: "Kahvaltı Çeşitleri",
+      en: "Breakfast",
+      ar: "الفطور",
+      ru: "Завтрак",
+    },
+    sutunlar: TEK_SUTUN,
+    urunler: [
+      {
+        id: "tek-kisilik-kahvalti",
+        ad: {
+          tr: "Tek Kişilik Kahvaltı",
+          en: "Breakfast for One",
+          ar: "فطور لشخص واحد",
+          ru: "Завтрак на одного",
+        },
+        icerik: null,
+        fiyatlar: tek(380),
+        gorsel: null,
+      },
+      {
+        id: "serpme-kahvalti-2",
+        ad: {
+          tr: "Serpme Kahvaltı 2 Kişilik",
+          en: "Spread Breakfast for 2",
+          ar: "فطور مفتوح لشخصين",
+          ru: "Большой завтрак на двоих",
+        },
+        icerik: null,
+        fiyatlar: tek(1000),
+        gorsel: null,
+      },
+      {
+        id: "serpme-kahvalti-4",
+        ad: {
+          tr: "Serpme Kahvaltı 4 Kişilik",
+          en: "Spread Breakfast for 4",
+          ar: "فطور مفتوح لأربعة أشخاص",
+          ru: "Большой завтрак на четверых",
+        },
+        icerik: null,
+        fiyatlar: tek(1600),
+        gorsel: null,
+      },
+      {
+        id: "menemen",
+        ad: {
+          tr: "Menemen",
+          en: "Menemen (Eggs with Tomato & Pepper)",
+          ar: "منمن (بيض بالطماطم والفلفل)",
+          ru: "Менемен (яичница с томатами и перцем)",
+        },
+        icerik: null,
+        fiyatlar: tek(200),
+        gorsel: null,
+      },
+      {
+        id: "sucuklu-yumurta",
+        ad: {
+          tr: "Sucuklu Yumurta",
+          en: "Eggs with Sucuk",
+          ar: "بيض بالسجق التركي",
+          ru: "Яичница с суджуком",
+        },
+        icerik: null,
+        fiyatlar: tek(200),
+        gorsel: null,
+      },
+      {
+        id: "kuymak",
+        ad: {
+          tr: "Kuymak",
+          en: "Kuymak (Melted Cheese & Cornmeal)",
+          ar: "كويماك (جبن ذائب مع دقيق الذرة)",
+          ru: "Куймак (сыр с кукурузной мукой)",
+        },
+        icerik: null,
+        fiyatlar: tek(200),
+        gorsel: null,
+      },
+      {
+        id: "patates-cips",
+        ad: {
+          tr: "Patates Cips (Porsiyon)",
+          en: "French Fries (Portion)",
+          ar: "بطاطس مقلية (حصة)",
+          ru: "Картофель фри (порция)",
+        },
+        icerik: null,
+        fiyatlar: tek(170),
+        gorsel: null,
+      },
+    ],
+  },
+
+  /* ---------------------------------------------------------------- 3 */
+  {
+    slug: "acik-pide",
+    ad: {
+      tr: "Açık Pide Çeşitleri",
+      en: "Open Pide",
+      ar: "البيدة المفتوحة",
+      ru: "Открытая пиде",
+    },
+    // Acik pide ile kapali pidede dort urunun adi ayni (Kiymali, Kasarli,
+    // Kiyma & Kasar, Karisik). Firestore'da urun kimlikleri TEK koleksiyonda
+    // global oldugu icin buradakiler `acik-` onekli: onek olmasaydi kapali
+    // pidenin ayni adli urununun uzerine yazilirdi.
+    sutunlar: PIDE_SUTUNLARI,
+    urunler: [
+      {
+        id: "acik-kiymali",
+        ad: {
+          tr: "Kıymalı",
+          en: "Kıymalı (Minced Beef)",
+          ar: "كيمالي (لحم مفروم)",
+          ru: "Кыймалы (с фаршем)",
+        },
+        icerik: null,
+        fiyatlar: [
+          { sutun: "hamur1", tutar: 390, dogrulandi: true },
+          { sutun: "hamur15", tutar: 550, dogrulandi: true },
+          { sutun: "duble", tutar: 700, dogrulandi: true },
+        ],
+        gorsel: null,
+      },
+      {
+        id: "acik-kusbasili",
+        ad: {
+          tr: "Kuşbaşılı",
+          en: "Kuşbaşılı (Diced Beef)",
+          ar: "كوشباشلي (قطع لحم)",
+          ru: "Кушбашылы (с кусочками мяса)",
+        },
+        icerik: null,
+        fiyatlar: [
+          { sutun: "hamur1", tutar: 390, dogrulandi: true },
+          { sutun: "hamur15", tutar: 550, dogrulandi: true },
+          { sutun: "duble", tutar: 700, dogrulandi: true },
+        ],
+        gorsel: null,
+      },
+      {
+        id: "acik-kusbasi-kasar",
+        ad: {
+          tr: "Kuşbaşı & Kaşar",
+          en: "Kuşbaşı & Kaşar (Diced Beef & Cheese)",
+          ar: "كوشباشي وكاشار (قطع لحم وجبن)",
+          ru: "Кушбашы и кашар (мясо и сыр)",
+        },
+        icerik: null,
+        fiyatlar: [
+          { sutun: "hamur1", tutar: 410, dogrulandi: true },
+          { sutun: "hamur15", tutar: 570, dogrulandi: true },
+          { sutun: "duble", tutar: 750, dogrulandi: true },
+        ],
+        gorsel: null,
+      },
+      {
+        id: "acik-kiyma-kasar",
+        ad: {
+          tr: "Kıyma & Kaşar",
+          en: "Kıyma & Kaşar (Minced Beef & Cheese)",
+          ar: "كيما وكاشار (لحم مفروم وجبن)",
+          ru: "Кыйма и кашар (фарш и сыр)",
+        },
+        icerik: null,
+        fiyatlar: [
+          { sutun: "hamur1", tutar: 410, dogrulandi: true },
+          { sutun: "hamur15", tutar: 570, dogrulandi: true },
+          { sutun: "duble", tutar: 750, dogrulandi: true },
+        ],
+        gorsel: null,
+      },
+      {
+        id: "acik-karisik",
+        ad: {
+          tr: "Karışık",
+          en: "Karışık (Mixed)",
+          ar: "كاريشيك (مشكل)",
+          ru: "Карышык (ассорти)",
+        },
+        icerik: null,
+        fiyatlar: [
+          { sutun: "hamur1", tutar: 430, dogrulandi: true },
+          { sutun: "hamur15", tutar: 600, dogrulandi: true },
+          { sutun: "duble", tutar: 800, dogrulandi: true },
+        ],
+        gorsel: null,
+      },
+      {
+        id: "acik-spesiyal",
+        ad: {
+          tr: "Spesiyal",
+          en: "Spesiyal (Special)",
+          ar: "سبيشال (طبق خاص)",
+          ru: "Спесиял (фирменная)",
+        },
+        icerik: null,
+        fiyatlar: [
+          { sutun: "hamur1", tutar: 460, dogrulandi: true },
+          { sutun: "hamur15", tutar: 600, dogrulandi: true },
+          { sutun: "duble", tutar: 800, dogrulandi: true },
+        ],
+        gorsel: null,
+      },
+      {
+        id: "acik-kasar-sucuk",
+        ad: {
+          tr: "Kaşar Sucuk",
+          en: "Kaşar & Sucuk (Cheese & Turkish Sausage)",
+          ar: "كاشار وسجق (جبن وسجق تركي)",
+          ru: "Кашар и суджук (сыр и суджук)",
+        },
+        icerik: null,
+        fiyatlar: [
+          { sutun: "hamur1", tutar: 390, dogrulandi: true },
+          { sutun: "hamur15", tutar: 550, dogrulandi: true },
+          { sutun: "duble", tutar: 700, dogrulandi: true },
+        ],
+        gorsel: null,
+      },
+      {
+        id: "acik-pastirmali",
+        ad: {
+          tr: "Pastırmalı",
+          en: "Pastırmalı (Cured Beef)",
+          ar: "بسطرمة (لحم مقدد)",
+          ru: "Пастырмалы (с пастырмой)",
+        },
+        icerik: null,
+        fiyatlar: [
+          { sutun: "hamur1", tutar: 500, dogrulandi: true },
+          { sutun: "hamur15", tutar: 650, dogrulandi: true },
+          { sutun: "duble", tutar: 870, dogrulandi: true },
+        ],
+        gorsel: null,
+      },
+      {
+        id: "acik-dortmevsim",
+        ad: {
+          tr: "Dörtmevsim",
+          en: "Dörtmevsim (Four Seasons)",
+          ar: "أربعة فصول",
+          ru: "Дёртмевсим (четыре сезона)",
+        },
+        icerik: null,
+        fiyatlar: [
+          { sutun: "hamur1", tutar: 460, dogrulandi: true },
+          { sutun: "hamur15", tutar: 600, dogrulandi: true },
+          { sutun: "duble", tutar: 800, dogrulandi: true },
+        ],
+        gorsel: null,
+      },
+      {
+        id: "acik-kasarli",
+        ad: {
+          tr: "Kaşarlı",
+          en: "Kaşarlı (Cheese)",
+          ar: "كاشارلي (جبن)",
+          ru: "Кашарлы (с сыром)",
+        },
+        icerik: null,
+        fiyatlar: [
+          { sutun: "hamur1", tutar: 390, dogrulandi: true },
+          { sutun: "hamur15", tutar: 550, dogrulandi: true },
+          { sutun: "duble", tutar: 700, dogrulandi: true },
+        ],
+        gorsel: null,
+      },
+      {
+        id: "acik-yagli-yumurtali",
+        ad: {
+          tr: "Yağlı Yumurtalı",
+          en: "Yağlı Yumurtalı (Butter & Egg)",
+          ar: "بالسمن والبيض",
+          ru: "Яйлы юмурталы (с маслом и яйцом)",
+        },
+        icerik: null,
+        fiyatlar: [
+          { sutun: "hamur1", tutar: 170, dogrulandi: true },
+          { sutun: "hamur15", tutar: 200, dogrulandi: true },
+          { sutun: "duble", tutar: 250, dogrulandi: true },
+        ],
+        gorsel: null,
+      },
+    ],
+  },
+
+  /* ---------------------------------------------------------------- 4 */
   {
     slug: "kapali-pide",
     ad: {
@@ -235,10 +619,9 @@ export const MENU: Kategori[] = [
           ru: "Говяжий фарш, лук, помидоры, перец, петрушка",
         },
         fiyatlar: [
-          // 1 Hamur fiyatı işletmeyle teyit edilmedi.
-          { sutun: "hamur1", tutar: 200, dogrulandi: false },
-          { sutun: "hamur15", tutar: 300, dogrulandi: true },
-          { sutun: "duble", tutar: 400, dogrulandi: true },
+          { sutun: "hamur1", tutar: 260, dogrulandi: true },
+          { sutun: "hamur15", tutar: 360, dogrulandi: true },
+          { sutun: "duble", tutar: 520, dogrulandi: true },
         ],
         gorsel: {
           src: "/urunler/kiymali-pide.webp",
@@ -267,10 +650,9 @@ export const MENU: Kategori[] = [
           ru: "Сыр кашар",
         },
         fiyatlar: [
-          // 1 Hamur ve Duble fiyatları işletmeyle teyit edilmedi.
-          { sutun: "hamur1", tutar: 200, dogrulandi: false },
-          { sutun: "hamur15", tutar: 300, dogrulandi: true },
-          { sutun: "duble", tutar: 400, dogrulandi: false },
+          { sutun: "hamur1", tutar: 260, dogrulandi: true },
+          { sutun: "hamur15", tutar: 360, dogrulandi: true },
+          { sutun: "duble", tutar: 520, dogrulandi: true },
         ],
         gorsel: {
           src: "/urunler/kasarli-pide.webp",
@@ -299,9 +681,9 @@ export const MENU: Kategori[] = [
           ru: "Ломтики суджука, сыр кашар",
         },
         fiyatlar: [
-          { sutun: "hamur1", tutar: 200, dogrulandi: true },
-          { sutun: "hamur15", tutar: 300, dogrulandi: true },
-          { sutun: "duble", tutar: 400, dogrulandi: true },
+          { sutun: "hamur1", tutar: 260, dogrulandi: true },
+          { sutun: "hamur15", tutar: 360, dogrulandi: true },
+          { sutun: "duble", tutar: 520, dogrulandi: true },
         ],
         gorsel: {
           src: "/urunler/sucuklu-pide.webp",
@@ -330,9 +712,9 @@ export const MENU: Kategori[] = [
           ru: "Говяжий фарш, сыр кашар",
         },
         fiyatlar: [
-          { sutun: "hamur1", tutar: 220, dogrulandi: true },
-          { sutun: "hamur15", tutar: 330, dogrulandi: true },
-          { sutun: "duble", tutar: 440, dogrulandi: true },
+          { sutun: "hamur1", tutar: 280, dogrulandi: true },
+          { sutun: "hamur15", tutar: 370, dogrulandi: true },
+          { sutun: "duble", tutar: 550, dogrulandi: true },
         ],
         gorsel: {
           src: "/urunler/kiyma-kasar-pide.webp",
@@ -361,9 +743,9 @@ export const MENU: Kategori[] = [
           ru: "Говяжий фарш, суджук, сыр кашар",
         },
         fiyatlar: [
-          { sutun: "hamur1", tutar: 240, dogrulandi: true },
-          { sutun: "hamur15", tutar: 350, dogrulandi: true },
-          { sutun: "duble", tutar: 480, dogrulandi: true },
+          { sutun: "hamur1", tutar: 320, dogrulandi: true },
+          { sutun: "hamur15", tutar: 400, dogrulandi: true },
+          { sutun: "duble", tutar: 640, dogrulandi: true },
         ],
         gorsel: {
           src: "/urunler/karisik-pide.webp",
@@ -392,8 +774,7 @@ export const MENU: Kategori[] = [
           ru: "Тонкое тесто, говяжий фарш, лук, помидоры, перец, петрушка",
         },
         fiyatlar: [
-          { sutun: "hamur1", tutar: 100, dogrulandi: true },
-          // Lahmacun'un 1,5 Hamur ve Duble karşılığı yok.
+          { sutun: "hamur1", tutar: 120, dogrulandi: true },
           { sutun: "hamur15", tutar: null, dogrulandi: true },
           { sutun: "duble", tutar: null, dogrulandi: true },
         ],
@@ -412,7 +793,7 @@ export const MENU: Kategori[] = [
     ],
   },
 
-  /* ---------------------------------------------------------------- 2 */
+  /* ---------------------------------------------------------------- 5 */
   {
     slug: "izgara",
     ad: {
@@ -429,15 +810,15 @@ export const MENU: Kategori[] = [
           tr: "Et Izgara 1 KG",
           en: "Grilled Beef 1 KG",
           ar: "لحم بقري مشوي 1 كغ",
-          ru: "Говядина на гриле 1 кг"
+          ru: "Говядина на гриле 1 кг",
         },
         icerik: {
           tr: "Izgarada dana eti",
           en: "Grilled beef",
           ar: "لحم بقري مشوي",
-          ru: "Говядина на гриле"
+          ru: "Говядина на гриле",
         },
-        fiyatlar: tek(1500),
+        fiyatlar: tek(1650),
         gorsel: {
           src: "/urunler/et-izgara-kg.webp",
           alt: {
@@ -456,15 +837,15 @@ export const MENU: Kategori[] = [
           tr: "Et Izgara Porsiyon",
           en: "Grilled Beef Portion",
           ar: "لحم بقري مشوي حصة",
-          ru: "Говядина на гриле, порция"
+          ru: "Говядина на гриле, порция",
         },
         icerik: {
           tr: "Izgarada dana eti",
           en: "Grilled beef",
           ar: "لحم بقري مشوي",
-          ru: "Говядина на гриле"
+          ru: "Говядина на гриле",
         },
-        fiyatlar: tek(500),
+        fiyatlar: tek(600),
         gorsel: {
           src: "/urunler/et-izgara-porsiyon.webp",
           alt: {
@@ -478,74 +859,20 @@ export const MENU: Kategori[] = [
         },
       },
       {
-        id: "kuzu-izgara-kg",
-        ad: {
-          tr: "Kuzu Izgara 1 KG",
-          en: "Grilled Lamb 1 KG",
-          ar: "لحم ضأن مشوي 1 كغ",
-          ru: "Баранина на гриле 1 кг"
-        },
-        icerik: {
-          tr: "Izgarada kuzu eti",
-          en: "Grilled lamb",
-          ar: "لحم ضأن مشوي",
-          ru: "Баранина на гриле"
-        },
-        fiyatlar: tek(1700),
-        gorsel: {
-          src: "/urunler/kuzu-izgara-kg.webp",
-          alt: {
-            tr: "Izgarada kuzu pirzola",
-            en: "Lamb chops on the grill",
-            ar: "ريش ضأن على الشواية",
-            ru: "Бараньи рёбрышки на гриле",
-          },
-          genislik: 800,
-          yukseklik: 450,
-        },
-      },
-      {
-        id: "kuzu-izgara-porsiyon",
-        ad: {
-          tr: "Kuzu Izgara Porsiyon",
-          en: "Grilled Lamb Portion",
-          ar: "لحم ضأن مشوي حصة",
-          ru: "Баранина на гриле, порция"
-        },
-        icerik: {
-          tr: "Izgarada kuzu eti",
-          en: "Grilled lamb",
-          ar: "لحم ضأن مشوي",
-          ru: "Баранина на гриле"
-        },
-        fiyatlar: tek(550),
-        gorsel: {
-          src: "/urunler/kuzu-izgara-porsiyon.webp",
-          alt: {
-            tr: "Lavaş üstünde ızgara kuzu pirzola",
-            en: "Grilled lamb chops on flatbread",
-            ar: "ريش ضأن مشوية على خبز اللافاش",
-            ru: "Бараньи рёбрышки на гриле на лаваше",
-          },
-          genislik: 800,
-          yukseklik: 450,
-        },
-      },
-      {
         id: "kofte-izgara-kg",
         ad: {
           tr: "Köfte Izgara 1 KG",
           en: "Grilled Köfte 1 KG (Meatballs)",
           ar: "كفتة مشوية 1 كغ",
-          ru: "Кёфте на гриле 1 кг (котлетки)"
+          ru: "Кёфте на гриле 1 кг (котлетки)",
         },
         icerik: {
           tr: "Izgarada dana kıymalı köfte",
           en: "Grilled beef meatballs",
           ar: "كفتة لحم بقري مشوية",
-          ru: "Котлетки из говяжьего фарша на гриле"
+          ru: "Котлетки из говяжьего фарша на гриле",
         },
-        fiyatlar: tek(1300),
+        fiyatlar: tek(1400),
         gorsel: {
           src: "/urunler/kofte-izgara-kg.webp",
           alt: {
@@ -572,7 +899,7 @@ export const MENU: Kategori[] = [
           ar: "كفتة لحم بقري مشوية، 6 قطع",
           ru: "Котлетки из говяжьего фарша на гриле, 6 шт.",
         },
-        fiyatlar: tek(400),
+        fiyatlar: tek(450),
         gorsel: {
           src: "/urunler/kofte-izgara.webp",
           alt: {
@@ -591,15 +918,15 @@ export const MENU: Kategori[] = [
           tr: "Köfte Izgara 1,5 Porsiyon (8-9 adet)",
           en: "Grilled Köfte 1.5 Portion (8-9 pieces)",
           ar: "كفتة مشوية حصة ونصف (8-9 قطع)",
-          ru: "Кёфте на гриле, 1,5 порции (8-9 шт.)"
+          ru: "Кёфте на гриле, 1,5 порции (8-9 шт.)",
         },
         icerik: {
           tr: "Izgarada dana kıymalı köfte, 8-9 adet",
           en: "Grilled beef meatballs, 8-9 pieces",
           ar: "كفتة لحم بقري مشوية، 8-9 قطع",
-          ru: "Котлетки из говяжьего фарша на гриле, 8-9 шт."
+          ru: "Котлетки из говяжьего фарша на гриле, 8-9 шт.",
         },
-        fiyatlar: tek(500),
+        fiyatlar: tek(600),
         gorsel: {
           src: "/urunler/kofte-izgara-bucuk-porsiyon.webp",
           alt: {
@@ -618,13 +945,13 @@ export const MENU: Kategori[] = [
           tr: "Tavuk Izgara 1 KG",
           en: "Grilled Chicken 1 KG",
           ar: "دجاج مشوي 1 كغ",
-          ru: "Курица на гриле 1 кг"
+          ru: "Курица на гриле 1 кг",
         },
         icerik: {
           tr: "Izgarada tavuk eti",
           en: "Grilled chicken",
           ar: "دجاج مشوي",
-          ru: "Курица на гриле"
+          ru: "Курица на гриле",
         },
         fiyatlar: tek(700),
         gorsel: {
@@ -645,13 +972,13 @@ export const MENU: Kategori[] = [
           tr: "Tavuk Porsiyon",
           en: "Chicken Portion",
           ar: "دجاج حصة",
-          ru: "Курица, порция"
+          ru: "Курица, порция",
         },
         icerik: {
           tr: "Izgarada tavuk eti",
           en: "Grilled chicken",
           ar: "دجاج مشوي",
-          ru: "Курица на гриле"
+          ru: "Курица на гриле",
         },
         fiyatlar: tek(350),
         gorsel: {
@@ -672,15 +999,15 @@ export const MENU: Kategori[] = [
           tr: "Karışık Izgara 1 KG",
           en: "Mixed Grill 1 KG",
           ar: "مشاوي مشكلة 1 كغ",
-          ru: "Ассорти на гриле 1 кг"
+          ru: "Ассорти на гриле 1 кг",
         },
         icerik: {
           tr: "Izgarada dana eti, kuzu eti, köfte ve tavuk",
           en: "Grilled beef, lamb, meatballs and chicken",
           ar: "لحم بقري وضأن وكفتة ودجاج مشوية",
-          ru: "Говядина, баранина, котлетки и курица на гриле"
+          ru: "Говядина, баранина, котлетки и курица на гриле",
         },
-        fiyatlar: tek(1700),
+        fiyatlar: tek(1600),
         gorsel: {
           src: "/urunler/karisik-izgara-kg.webp",
           alt: {
@@ -707,7 +1034,7 @@ export const MENU: Kategori[] = [
           ar: "لحم بقري وضأن وكفتة ودجاج مشوية",
           ru: "Говядина, баранина, котлетки и курица на гриле",
         },
-        fiyatlar: tek(600),
+        fiyatlar: tek(750),
         gorsel: {
           src: "/urunler/karisik-izgara.webp",
           alt: {
@@ -726,13 +1053,13 @@ export const MENU: Kategori[] = [
           tr: "Saç Kavurma",
           en: "Saç Kavurma (Beef Sautéed on a Griddle)",
           ar: "ساتش كافورما (لحم مقلي على الصاج)",
-          ru: "Сач кавурма (мясо с саджа)"
+          ru: "Сач кавурма (мясо с саджа)",
         },
         icerik: {
           tr: "Sacda kavrulmuş dana eti, biber, domates, soğan",
           en: "Beef sautéed on a griddle with pepper, tomato and onion",
           ar: "لحم بقري مقلي على الصاج مع الفلفل والطماطم والبصل",
-          ru: "Говядина, жаренная на садже с перцем, помидорами и луком"
+          ru: "Говядина, жаренная на садже с перцем, помидорами и луком",
         },
         fiyatlar: tek(500),
         gorsel: {
@@ -780,13 +1107,13 @@ export const MENU: Kategori[] = [
           tr: "Tavuk Şiş",
           en: "Tavuk Şiş (Chicken Skewer)",
           ar: "شيش دجاج",
-          ru: "Тавук шиш (шашлык из курицы)"
+          ru: "Тавук шиш (шашлык из курицы)",
         },
         icerik: {
           tr: "Şişe dizilmiş tavuk eti, ızgarada",
           en: "Grilled chicken on skewers",
           ar: "قطع دجاج مشوية على السيخ",
-          ru: "Курица на шампуре, на гриле"
+          ru: "Курица на шампуре, на гриле",
         },
         fiyatlar: tek(300),
         gorsel: {
@@ -804,24 +1131,30 @@ export const MENU: Kategori[] = [
     ],
   },
 
-  /* ---------------------------------------------------------------- 3 */
+  /* ---------------------------------------------------------------- 6 */
   {
     slug: "salatalar",
-    ad: { tr: "Salatalar", en: "Salads", ar: "السلطات", ru: "Салаты" },
+    ad: {
+      tr: "Salatalar",
+      en: "Salads",
+      ar: "السلطات",
+      ru: "Салаты",
+    },
     sutunlar: TEK_SUTUN,
-    urunler: [{
+    urunler: [
+      {
         id: "coban-salata",
         ad: {
           tr: "Çoban Salata",
           en: "Çoban Salata (Shepherd's Salad)",
           ar: "سلطة الراعي",
-          ru: "Чобан салата (пастуший салат)"
+          ru: "Чобан салата (пастуший салат)",
         },
         icerik: {
           tr: "Domates, salatalık, soğan, yeşil biber, maydanoz, zeytinyağı",
           en: "Tomato, cucumber, onion, green pepper, parsley, olive oil",
           ar: "طماطم، خيار، بصل، فلفل أخضر، بقدونس، زيت زيتون",
-          ru: "Помидоры, огурцы, лук, зелёный перец, петрушка, оливковое масло"
+          ru: "Помидоры, огурцы, лук, зелёный перец, петрушка, оливковое масло",
         },
         fiyatlar: tek(100),
         gorsel: {
@@ -835,10 +1168,11 @@ export const MENU: Kategori[] = [
           genislik: 800,
           yukseklik: 450,
         },
-      }],
+      },
+    ],
   },
 
-  /* ---------------------------------------------------------------- 4 */
+  /* ---------------------------------------------------------------- 7 */
   {
     slug: "tatlilar",
     ad: {
@@ -849,17 +1183,23 @@ export const MENU: Kategori[] = [
     },
     sutunlar: TEK_SUTUN,
     urunler: [
-      { id: "kunefe", ad: {
+      {
+        id: "kunefe",
+        ad: {
           tr: "Künefe",
           en: "Künefe (Cheese-filled Shredded Pastry)",
           ar: "كنافة",
           ru: "Кюнефе (десерт из теста кадаиф с сыром)",
-        }, icerik: {
+        },
+        icerik: {
           tr: "Kadayıf, tel peynir, şerbet, üzerine antep fıstığı",
           en: "Shredded kadayıf pastry, stringy cheese, syrup, topped with pistachio",
           ar: "عجينة الكنافة، جبن، قطر، مع الفستق الحلبي",
           ru: "Тесто кадаиф, сыр, сироп, сверху фисташки",
-        }, fiyatlar: tek(200), gorsel: null },
+        },
+        fiyatlar: tek(200),
+        gorsel: null,
+      },
       {
         id: "sutlac",
         ad: {
@@ -887,98 +1227,146 @@ export const MENU: Kategori[] = [
           yukseklik: 450,
         },
       },
-      {
-        id: "kabak-tatlisi",
-        ad: {
-          tr: "Kabak Tatlısı",
-          en: "Kabak Tatlısı (Candied Pumpkin)",
-          ar: "حلوى اليقطين",
-          ru: "Кабак татлысы (тыква в сиропе)",
-        },
-        icerik: {
-          tr: "Balkabağı, şeker, üzerine ceviz",
-          en: "Pumpkin, sugar, topped with walnut",
-          ar: "يقطين، سكر، مع الجوز",
-          ru: "Тыква, сахар, сверху грецкий орех",
-        },
-        // Fiyat işletmeyle teyit edilmedi.
-        fiyatlar: tek(150, false),
-        gorsel: {
-          src: "/urunler/kabak-tatlisi.webp",
-          alt: {
-            tr: "Kabak tatlısı",
-            en: "Candied pumpkin",
-            ar: "حلوى اليقطين",
-            ru: "Тыква в сиропе",
-          },
-          genislik: 800,
-          yukseklik: 450,
-        },
-      },
     ],
   },
 
-  /* ---------------------------------------------------------------- 5 */
+  /* ---------------------------------------------------------------- 8 */
   {
     slug: "icecekler",
-    ad: { tr: "İçecekler", en: "Drinks", ar: "المشروبات", ru: "Напитки" },
+    ad: {
+      tr: "İçecekler",
+      en: "Drinks",
+      ar: "المشروبات",
+      ru: "Напитки",
+    },
     sutunlar: TEK_SUTUN,
-    // Bu kategorinin içeriği huzurpide.com.tr/menu adresinden alındı.
     urunler: [
-      { id: "kola", ad: {
+      {
+        id: "kola",
+        ad: {
           tr: "Kola",
           en: "Cola",
           ar: "كولا",
           ru: "Кола",
-        }, icerik: null, fiyatlar: tek(80), gorsel: null },
-      {
-        id: "fanta",
-        ad: {
-          tr: "Fanta",
-          en: "Fanta",
-          ar: "فانتا",
-          ru: "Фанта"
         },
         icerik: null,
-        fiyatlar: tek(80),
-        gorsel: {
-          src: "/urunler/fanta.webp",
-          alt: {
-            tr: "Fanta kutusu",
-            en: "Can of Fanta",
-            ar: "علبة فانتا",
-            ru: "Банка Фанты",
-          },
-          genislik: 800,
-          yukseklik: 450,
-        },
+        fiyatlar: tek(60),
+        gorsel: null,
       },
-      { id: "soda", ad: {
-          tr: "Soda",
+      {
+        id: "yedigun",
+        ad: {
+          tr: "Yedigün",
+          en: "Yedigün (Lemon-Lime Soda)",
+          ar: "يدي غون (مشروب غازي بالليمون)",
+          ru: "Едигюн (лимонад)",
+        },
+        icerik: null,
+        fiyatlar: tek(60),
+        gorsel: null,
+      },
+      {
+        id: "lipton-ice-tea",
+        ad: {
+          tr: "Lipton Ice Tea",
+          en: "Lipton Ice Tea",
+          ar: "ليبتون آيس تي",
+          ru: "Lipton Ice Tea",
+        },
+        icerik: null,
+        fiyatlar: tek(60),
+        gorsel: null,
+      },
+      {
+        id: "meyve-suyu",
+        ad: {
+          tr: "Meyve Suyu",
+          en: "Fruit Juice",
+          ar: "عصير فواكه",
+          ru: "Фруктовый сок",
+        },
+        icerik: null,
+        fiyatlar: tek(60),
+        gorsel: null,
+      },
+      {
+        id: "gazoz",
+        ad: {
+          tr: "Gazoz",
+          en: "Gazoz (Turkish Soda)",
+          ar: "غازوز (مشروب غازي)",
+          ru: "Газоз (лимонад)",
+        },
+        icerik: null,
+        fiyatlar: tek(60),
+        gorsel: null,
+      },
+      {
+        id: "sade-soda",
+        ad: {
+          tr: "Sade Soda",
           en: "Sparkling Mineral Water",
           ar: "مياه معدنية فوارة",
           ru: "Газированная минеральная вода",
-        }, icerik: {
+        },
+        icerik: {
           tr: "Maden suyu",
           en: "Sparkling mineral water",
           ar: "مياه معدنية فوارة",
           ru: "Газированная минеральная вода",
-        }, fiyatlar: tek(40), gorsel: null },
+        },
+        fiyatlar: tek(40),
+        gorsel: null,
+      },
       {
-        id: "ayran",
+        id: "meyveli-soda",
         ad: {
-          tr: "Ayran",
-          en: "Ayran (Yogurt Drink)",
-          ar: "عيران (مشروب اللبن)",
-          ru: "Айран (кисломолочный напиток)"
+          tr: "Meyveli Soda",
+          en: "Fruit-flavoured Sparkling Water",
+          ar: "مياه فوارة بنكهة الفواكه",
+          ru: "Газированная вода с фруктовым вкусом",
+        },
+        icerik: {
+          tr: "Meyve aromalı maden suyu",
+          en: "Fruit-flavoured sparkling mineral water",
+          ar: "مياه معدنية فوارة بنكهة الفواكه",
+          ru: "Газированная минеральная вода с фруктовым вкусом",
+        },
+        fiyatlar: tek(40),
+        gorsel: null,
+      },
+      {
+        id: "kucuk-ayran",
+        ad: {
+          tr: "Küçük Ayran",
+          en: "Small Ayran (Yogurt Drink)",
+          ar: "عيران صغير (مشروب اللبن)",
+          ru: "Айран малый (кисломолочный напиток)",
         },
         icerik: {
           tr: "Yoğurt, su, tuz",
           en: "Yogurt, water, salt",
           ar: "لبن، ماء، ملح",
-          ru: "Йогурт, вода, соль"
+          ru: "Йогурт, вода, соль",
         },
-        fiyatlar: tek(50),
+        fiyatlar: tek(30),
+        gorsel: null,
+      },
+      {
+        id: "buyuk-ayran",
+        ad: {
+          tr: "Büyük Ayran",
+          en: "Large Ayran (Yogurt Drink)",
+          ar: "عيران كبير (مشروب اللبن)",
+          ru: "Айран большой (кисломолочный напиток)",
+        },
+        icerik: {
+          tr: "Yoğurt, su, tuz",
+          en: "Yogurt, water, salt",
+          ar: "لبن، ماء، ملح",
+          ru: "Йогурт, вода, соль",
+        },
+        fiyatlar: tek(40),
         gorsel: {
           src: "/urunler/ayran.webp",
           alt: {
@@ -991,35 +1379,49 @@ export const MENU: Kategori[] = [
           yukseklik: 450,
         },
       },
-      { id: "komposto", ad: {
-          tr: "Komposto",
-          en: "Komposto (Fruit Compote)",
-          ar: "كومبوستو (شراب الفاكهة المسلوقة)",
-          ru: "Компот",
-        }, icerik: {
-          tr: "Kaynatılmış meyve ve şerbeti",
-          en: "Boiled fruit with its syrup",
-          ar: "فاكهة مسلوقة مع شرابها",
-          ru: "Отварные фрукты с сиропом",
-        }, fiyatlar: tek(80), gorsel: null },
-      { id: "meyveli-soda", ad: {
-          tr: "Meyveli Soda",
-          en: "Fruit-flavoured Sparkling Water",
-          ar: "مياه فوارة بنكهة الفواكه",
-          ru: "Газированная вода с фруктовым вкусом",
-        }, icerik: {
-          tr: "Meyve aromalı maden suyu",
-          en: "Fruit-flavoured sparkling mineral water",
-          ar: "مياه معدنية فوارة بنكهة الفواكه",
-          ru: "Газированная минеральная вода с фруктовым вкусом",
-        }, fiyatlar: tek(40), gorsel: null },
+      {
+        id: "kucuk-cay",
+        ad: {
+          tr: "Küçük Çay",
+          en: "Tea (Small)",
+          ar: "شاي صغير",
+          ru: "Чай (маленький)",
+        },
+        icerik: null,
+        fiyatlar: tek(10),
+        gorsel: null,
+      },
+      {
+        id: "buyuk-cay",
+        ad: {
+          tr: "Büyük Çay",
+          en: "Tea (Large)",
+          ar: "شاي كبير",
+          ru: "Чай (большой)",
+        },
+        icerik: null,
+        fiyatlar: tek(30),
+        gorsel: null,
+      },
+      {
+        id: "turk-kahvesi",
+        ad: {
+          tr: "Türk Kahvesi",
+          en: "Turkish Coffee",
+          ar: "قهوة تركية",
+          ru: "Турецкий кофе",
+        },
+        icerik: null,
+        fiyatlar: tek(70),
+        gorsel: null,
+      },
       {
         id: "su",
         ad: {
           tr: "Su",
           en: "Water",
           ar: "ماء",
-          ru: "Вода"
+          ru: "Вода",
         },
         icerik: null,
         fiyatlar: tek(10),

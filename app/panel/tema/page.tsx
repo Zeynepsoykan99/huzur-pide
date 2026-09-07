@@ -37,15 +37,21 @@ export default async function TemaSayfasi() {
    * markup her renkle çalışıyor. Tema ise motifi (SVG) ve yazı tipini
    * değiştirdiği için kopya başına bir tane gerekiyor.
    *
-   * Gösterilen sayfa MENÜNÜN İLK YAPRAĞI (Kapalı Pide): tema değişkenlerinin
-   * neredeyse tamamını birden kullanıyor — kategori başlığı, motif ayracı,
-   * hayalet sayfa numarası, ürün fotoğrafları, adlar, içindekiler ve üç
-   * fiyat sütunu. Uydurma bir örnek kart yerine gerçek sayfa: mekân sahibi
-   * kendi menüsünü görüyor ve önizleme sessizce yalan söyleyemiyor.
+   * Gösterilen sayfa FOTOĞRAFI OLAN İLK YAPRAK, düpedüz ilk yaprak değil.
+   * Sebep ölçüldü: kategori sırası değişince ilk sıraya fotoğrafsız bir
+   * kategori (Çorbalar) geçti ve önizleme fotoğrafların tema içinde nasıl
+   * durduğunu gösteremez oldu. Fotoğraflı bir yaprak tema değişkenlerinin
+   * neredeyse tamamını birden kullanıyor: kategori başlığı, motif ayracı,
+   * hayalet sayfa numarası, ürün fotoğrafları, adlar, içindekiler ve fiyat
+   * sütunları.
+   *
+   * Uydurma bir örnek kart yerine gerçek sayfa: mekân sahibi kendi menüsünü
+   * görüyor ve önizleme sessizce yalan söyleyemiyor.
    *
    * Dil Türkçe — panelin tamamı Türkçe.
    */
-  const ilkYaprak = tumSayfalar[0];
+  const ilkYaprak =
+    tumSayfalar.find((s) => s.urunler.some((u) => u.gorsel)) ?? tumSayfalar[0];
   const onizlemeler = Object.fromEntries(
     SECILEBILIR_TEMALAR.map((t) => [
       t,
