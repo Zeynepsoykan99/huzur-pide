@@ -3,7 +3,7 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 33 tamamlandı — **menü içeriği fiziksel menüye göre baştan yazıldı**: 5 kategori / 31 üründen **8 kategori / 56 ürüne** çıktı (Çorbalar, Kahvaltı ve Açık Pide yeni). 22 fotoğrafın hepsi taşındı, teyitsiz fiyat kalmadı. Firebase Storage hâlâ kurulmadı; fotoğrafsız ürün sayısı 34. Aşama 33 **henüz üretimde değil, push onayı bekliyor**; Aşama 32 dahil öncesi **üretimde canlı**. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
+**Güncel aşama:** Aşama 33 tamamlandı — **menü içeriği fiziksel menüye göre baştan yazıldı**: 5 kategori / 31 üründen **8 kategori / 56 ürüne** çıktı (Çorbalar, Kahvaltı ve Açık Pide yeni). 22 fotoğrafın hepsi taşındı, teyitsiz fiyat kalmadı. Firebase Storage hâlâ kurulmadı; fotoğrafsız ürün sayısı 34. Aşama 33 dahil her şey **üretimde canlı**. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
 **Son güncelleme:** 2026-09-04
 
 ### Genel Durum
@@ -45,7 +45,7 @@ Numaralandırma rapor başlıklarıyla aynı: aşağıdaki her satırın karşı
 | 30 | Fiyat ekranında ürün arama | **Tamamlandı** |
 | 31 | Panelde menü önizlemesi | **Tamamlandı** |
 | 32 | Hero perdesi hafifletildi | **Tamamlandı** |
-| 33 | Menü içeriğinin yenilenmesi (8 kategori, 56 ürün) | **Tamamlandı** — push onayı bekliyor |
+| 33 | Menü içeriğinin yenilenmesi (8 kategori, 56 ürün) | **Tamamlandı** |
 
 ### Bekleyenler
 
@@ -6592,11 +6592,86 @@ tasarımı, tema ve renk sistemi değişmedi.
 
 ### 33.13 Sıradaki adım
 
-Push ve deploy onay bekliyor.
+Push edildi ve üretime çıktı; canlı doğrulama 33.14'te.
 
 Fotoğrafsız ürün sayısı 5'ten **34'e** çıktı (yeni kategoriler ve içecekler).
 Firebase Storage hâlâ kurulu değil; fotoğraf yükleme onu bekliyor.
 
 Yeni ürünlerin içindekiler açıklamaları isterseniz ayrı bir adımda eklenir.
+
+### 33.14 Canlı doğrulama · 2026-09-07
+
+`3b6c317` push edildi ve üretime çıktı. Doğrulama
+**https://huzur-pide.vercel.app** üzerinde yapıldı.
+
+**8 kategori dört dilde de açılıyor** — 32 rotanın hepsi **200**:
+
+| Dil | corbalar · kahvalti · acik-pide · kapali-pide · izgara · salatalar · tatlilar · icecekler |
+|---|---|
+| `/tr` `/en` `/ar` `/ru` | 8/8 · 8/8 · 8/8 · 8/8 |
+
+**Sıra doğru**, dört dilde de:
+
+| Dil | Sıra |
+|---|---|
+| tr | Çorbalar → Kahvaltı → Açık Pide → Kapalı Pide → Izgara → Salatalar → Tatlılar → İçecekler |
+| en | Soups → Breakfast → Open Pide → Closed Pide → Grilled Dishes → Salads → Desserts → Drinks |
+| ar | الشوربات → الفطور → البيدة المفتوحة → البيدة المغلقة → المشويات → السلطات → الحلويات → المشروبات |
+| ru | Супы → Завтрак → Открытая пиде → Закрытая пиде → Блюда на гриле → Салаты → Десерты → Напитки |
+
+Çorba sütunları: `Az/Tam` · `Small/Full` · `صغيرة/كاملة` · `Малая/Полная`.
+Sayaç `Sayfa 1 / 8`, 56 ürün, 22 fotoğraf, yatay taşma 0.
+
+**Kaldırılan ürünler hiçbir yerde yok.** Sayfa metninde arandı — Türkçe'de
+`Kuzu Izgara, Kabak Tatlısı, Fanta, Komposto, Nescafe`, Arapça ve Rusça'da
+karşılıkları: **hiçbiri bulunamadı.** Panelde `kuzu` araması
+`"kuzu" için sonuç yok.` veriyor.
+
+**Aynı adlı ürünler karışmamış** — kimlik önekinin asıl sınavı buydu:
+
+| Ürün | Açık Pide | Kapalı Pide |
+|---|---|---|
+| Kıymalı | 390 / 550 / 700 · fotoğrafsız | **260 / 360 / 520 · fotoğraflı** |
+| Kaşarlı | 390 / 550 / 700 · fotoğrafsız | **260 / 360 / 520 · fotoğraflı** |
+| Kıyma & Kaşar | 410 / 570 / 750 · fotoğrafsız | **280 / 370 / 550 · fotoğraflı** |
+| Karışık | 430 / 600 / 800 · fotoğrafsız | **320 / 400 / 640 · fotoğraflı** |
+
+Fiyatlar da fotoğraflar da birbirine geçmemiş. Panelde `kiymali` araması
+**iki ayrı ürün** döndürüyor.
+
+**Arapça RTL doğru:** `dir="rtl"`, görsel sağda, sütun başlıkları
+aynalanmış, fiyat hizası **0px sapma**, yatay taşma 0.
+
+**Eski adresler doğru yönleniyor:**
+
+| Adres | Sonuç |
+|---|---|
+| `kapali-pide-1/2/3` | 307 → `/tr/menu/kapali-pide` |
+| `izgara-1/2/3/4` | 307 → `/tr/menu/izgara` |
+| `icecekler-1/2` | 307 → `/tr/menu/icecekler` |
+| `/tr/secim`, `/tr/organizasyon` | 307 → `/tr` |
+| `/ar/dil` | 307 → `/ar/menu` |
+| `/` | 307 → `/tr` |
+| `izgara-9`, `kapali-pide-4`, `corbalar-1`, `kahvalti-1` | **404** |
+
+Yeni kategorilerin numaralı biçimi hiç var olmadığı için 404 kalıyor —
+doğru davranış.
+
+**Panel 56 ürünle çalışıyor:** 8 kategori başlığı, 8 atlama bağlantısı,
+**0 teyitsiz rozet**. Arama:
+
+| Arama | Sonuç |
+|---|---|
+| `kiymali` | 56 üründen **2** (Açık + Kapalı Pide) |
+| `ezogelin` | 56 üründen 1 |
+| `ayran` | 56 üründen **2** (Küçük + Büyük) |
+| `kuzu` | `"kuzu" için sonuç yok.` |
+
+**Konsolda hata yok** — menü sayfalarında 0 hata, 0 uyarı. Panel girişinde
+görülen `securetoken` 400'leri silinmiş test hesabının tarayıcıda kalan
+yenileme belirtecinden; depolama temizlenip taze girildiğinde tekrarlamıyor,
+uygulamadan gelmiyor.
+
+Mekân sahibinin tema ve renk ayarları korundu.
 
 === RAPOR SONU ===
