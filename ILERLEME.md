@@ -3,8 +3,8 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 34 tamamlandı — **27 ürün fotoğrafı eklendi**: fotoğraflı ürün 22'den **47'ye** çıktı, fotoğrafsız 34'ten **9'a** indi. (Aşama 33'te menü 8 kategori / 56 ürün olarak baştan yazılmıştı.) Firebase Storage hâlâ kurulmadı. Aşama 34 **henüz üretimde değil, push onayı bekliyor**; Aşama 33 dahil öncesi **üretimde canlı**. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
-**Son güncelleme:** 2026-09-04
+**Güncel aşama:** Aşama 34 tamamlandı — **27 ürün fotoğrafı eklendi**: fotoğraflı ürün 22'den **47'ye** çıktı, fotoğrafsız 34'ten **9'a** indi. (Aşama 33'te menü 8 kategori / 56 ürün olarak baştan yazılmıştı.) Firebase Storage hâlâ kurulmadı. Aşama 34 dahil tamamı **üretimde canlı**. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
+**Son güncelleme:** 2026-09-07
 
 ### Genel Durum
 
@@ -46,7 +46,7 @@ Numaralandırma rapor başlıklarıyla aynı: aşağıdaki her satırın karşı
 | 31 | Panelde menü önizlemesi | **Tamamlandı** |
 | 32 | Hero perdesi hafifletildi | **Tamamlandı** |
 | 33 | Menü içeriğinin yenilenmesi (8 kategori, 56 ürün) | **Tamamlandı** |
-| 34 | Eksik ürün fotoğrafları (27 fotoğraf) | **Tamamlandı** — push onayı bekliyor |
+| 34 | Eksik ürün fotoğrafları (27 fotoğraf) | **Tamamlandı** — üretimde canlı |
 
 ### Bekleyenler
 
@@ -6862,5 +6862,70 @@ girmiyor. Klasör taşımalarında bu dosyanın yerinden oynamamasına dikkat
 edilmeli; içinde Firebase servis hesabı anahtarı var.
 
 Firebase Storage hâlâ kurulu değil; panelden fotoğraf yükleme onu bekliyor.
+
+### 34.12 Canlı doğrulama · 2026-09-07
+
+`13abfd6` push edildi ve üretime çıktı. Doğrulama
+**https://huzur-pide.vercel.app** üzerinde, 390×844 telefon ölçüsünde yapıldı.
+
+**47 fotoğrafın 47'si doğru üründe — dört dilde de.** Her ürünün görsel
+adresi ürün kimliğiyle tek tek eşleştirildi; canlıdaki dosya listesi
+yereldekiyle birebir aynı çıktı, eksik veya fazla yok.
+
+**Aynı adlı pideler karışmamış** — bu doğrulamanın asıl sınavıydı:
+
+| Ürün | Açık Pide | Kapalı Pide |
+|---|---|---|
+| Kıymalı | `acik-kiymali` | `kiymali-pide` |
+| Kaşarlı | `acik-kasarli` | `kasarli-pide` |
+| Kıyma & Kaşar | `acik-kiyma-kasar` | `kiyma-kasar-pide` |
+
+Açık Pide'nin 8 fotoğrafının tamamı `acik-` önekli, Kapalı Pide'nin 6
+fotoğrafının hiçbiri değil. **Çapraz geçiş yok** — dört dilde de ayrı ayrı
+ölçüldü (tr, en, ar, ru: 8 + 6, çapraz 0).
+
+**Büyük Ayran'ın yeni alt metni doğru**, Küçük Ayran'la tutarlı:
+
+| | Küçük | Büyük |
+|---|---|---|
+| tr | Küçük ayran | **Büyük ayran** |
+| en | Small ayran | **Large ayran** |
+| ar | عيران صغير | **عيران كبير** |
+| ru | Малый айран | **Большой айран** |
+
+Eski `Köpüklü ayran bardağı / Glass of ayran with foam` metni canlıda hiçbir
+yerde kalmadı.
+
+**Dört dilde de 47 fotoğraf, 0 boş alt metin.** Arapça alt metinler Arapça,
+Rusça Rusça geliyor; tek istisna `Lipton Ice Tea` — marka adı, kasıtlı.
+Arapça'da `dir="rtl"` korunuyor, yatay taşma 0.
+
+**Fotoğrafların hepsi gerçekten yükleniyor.** 47 görselin tamamı için
+`naturalWidth > 0` ölçüldü; 80×45 piksellik optimize edilmiş sürüm
+sunuluyor, `sizes` tek değer: `80px`.
+
+İlk geçişte Izgara ve Salatalar'daki 13 eski fotoğraf yüklenmemiş göründü;
+sebebi hata değil, **Next görsel iyileştiricisinin soğuk önbelleği** —
+dosyaların hepsi doğrudan çağrıldığında 200 döndü (29–80 KB), sayfa yeniden
+açıldığında 47/47 yüklendi.
+
+**32 kategori adresinin hepsi 200** (8 kategori × 4 dil). `/tr`, `/tr/menu`
+ve `/panel` 200; `/` → 307. Karşılama sayfasının üç mekân fotoğrafı da
+yükleniyor.
+
+**Konsolda hata yok** — menü, karşılama ve içecek sayfalarında 0 hata,
+0 uyarı.
+
+**Proje dosyaları yerinde.** 14 kök dosyanın hepsi mevcut; `.env.local`
+kökte, içinde `FIREBASE_SERVICE_ACCOUNT` var ve `.gitignore:19` (`.env*`)
+tarafından git'ten dışlandığı doğrulandı. Çalışma ağacı temiz.
+
+**Firestore ile `data/menu.ts` aynı:** `tohum-dogrula.ts` → 8/8 kategori,
+56/56 ürün, 0 teyitsiz fiyat, tema `murekkep` — *"hicbir alanda fark yok"*.
+`npx tsc --noEmit` ve `npm run lint` temiz.
+
+**Fotoğrafsız 9 ürün** (Menemen, Kuymak, Açık Pide'nin Karışık/Spesiyal/
+Dörtmevsim'i, Meyve Suyu, Gazoz, Sade Soda, Meyveli Soda) yer tutucu
+ikonlarıyla görünüyor; beklenen durum.
 
 === RAPOR SONU ===
