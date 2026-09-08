@@ -3,7 +3,7 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 36 tamamlandı — panel giriş ekranına **"Şifremi unuttum"** eklendi: mekân sahibi Firebase konsoluna girmeden kendi e-postasından şifresini yenileyebiliyor. Aşama 36 **henüz üretimde değil, push onayı bekliyor**; Aşama 35 dahil öncesi **üretimde canlı**. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Firebase Storage hâlâ kurulmadı. Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
+**Güncel aşama:** Aşama 36 tamamlandı — panel giriş ekranına **"Şifremi unuttum"** eklendi: mekân sahibi Firebase konsoluna girmeden kendi e-postasından şifresini yenileyebiliyor. Aşama 36 dahil tamamı **üretimde canlı**. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Firebase Storage hâlâ kurulmadı. Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
 **Son güncelleme:** 2026-09-08
 
 ### Genel Durum
@@ -48,7 +48,7 @@ Numaralandırma rapor başlıklarıyla aynı: aşağıdaki her satırın karşı
 | 33 | Menü içeriğinin yenilenmesi (8 kategori, 56 ürün) | **Tamamlandı** |
 | 34 | Eksik ürün fotoğrafları (27 fotoğraf) | **Tamamlandı** — üretimde canlı |
 | 35 | Ürün fotoğraflarında netlik ve kırpma (kare format) | **Tamamlandı** — üretimde canlı |
-| 36 | Panele "Şifremi unuttum" (şifre sıfırlama) | **Tamamlandı** — push onayı bekliyor |
+| 36 | Panele "Şifremi unuttum" (şifre sıfırlama) | **Tamamlandı** — üretimde canlı |
 
 ### Bekleyenler
 
@@ -7407,5 +7407,47 @@ Push ve deploy onay bekliyor.
 **Sizden beklenen:** gelen kutunuzda sıfırlama e-postasının bulunduğunu
 teyit etmeniz. Bağlantıya tıklamadıkça şifreniz değişmiyor; bağlantı bir
 süre sonra kendiliğinden geçersizleşiyor.
+
+### 36.9 Canlı doğrulama · 2026-09-08
+
+Mekân sahibi **e-postayı aldığını doğruladı.** `e44ba9a` push edildi ve
+üretime çıktı (45 saniyede). Doğrulama
+**https://huzur-pide.vercel.app/panel** üzerinde, tarayıcı depolaması
+temizlenmiş hâlde — yani temiz bir ziyaretçi gibi — yapıldı.
+
+**"Şifremi unuttum" çalışıyor.** Giriş ekranında bağlantı görünüyor;
+tıklanınca kutu sıfırlama kipine geçiyor:
+
+| Kontrol | Sonuç |
+|---|---|
+| Sıfırlama kipine geçiş | ✓ |
+| Giriş kipinde yazılan e-posta taşındı | ✓ (`zeynepsoykan99@gmail.com`) |
+| Açıklama satırı | ✓ |
+| Sayfadaki `<form>` sayısı | **1** — iç içe form yok |
+| Gönderim | `accounts:sendOobCode` → **200** |
+| Mesaj | tarafsız metin, yeşil bildirim, `role="status"` |
+| 60 sn bekleme | ✓ düğme pasif, geri sayım işliyor |
+| "Girişe dön" | ✓ şifre alanı döndü, e-posta korundu, mesaj temizlendi |
+
+**Hesap varlığı canlıda da sızmıyor:** var olmayan bir adresle
+(`hicboylebirhesapyok@huzurpide.com`) gönderildi — Firebase yine **200** ve
+`GetOobConfirmationCodeResponse` döndü, ekranda **birebir aynı** mesaj
+çıktı. Yerelde ölçülen davranış üretimde de aynı.
+
+**Sıfırlama sonrası panel girişsiz kalıyor:**
+
+| Kontrol | Sonuç |
+|---|---|
+| Sıfırlama sonrası çerez | **boş** — oturum üretilmiyor |
+| `/panel/fiyatlar` (fetch) | giriş ekranı dönüyor, fiyat formu yok |
+| `/panel/fiyatlar` (tarayıcıyla gidildi) | **`/panel`'e düşüyor**, giriş ekranı |
+| Fiyat formu sızdı mı | **hayır** |
+
+**Konsolda hata yok** — canlıda **0 hata, 0 uyarı**. Yerelde görülen
+`/flags/*.svg` "preloaded but not used" uyarıları üretimde hiç çıkmıyor;
+tahmin edildiği gibi yerel sunucuya özgüymüş.
+
+**Masaüstü:** 1440×900'de metin düğmesi 352×38 piksel, yatay taşma 0.
+Telefonda (390×844) ölçüler aynı.
 
 === RAPOR SONU ===
