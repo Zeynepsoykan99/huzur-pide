@@ -3,7 +3,7 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 35 tamamlandı — **47 ürün fotoğrafı kare formata geçirildi**: 800×450 (16:9) yerine 384×384 (1:1). Kare yuvada gösterilen 16:9 görsel hem bulanıklığın hem de kırpmanın sebebiydi; ikisi de düzeldi, depolama %45 küçüldü. Aşama 35 **henüz üretimde değil, push onayı bekliyor**; Aşama 34 dahil öncesi **üretimde canlı**. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Firebase Storage hâlâ kurulmadı. Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
+**Güncel aşama:** Aşama 35 tamamlandı — **47 ürün fotoğrafı kare formata geçirildi**: 800×450 (16:9) yerine 384×384 (1:1). Kare yuvada gösterilen 16:9 görsel hem bulanıklığın hem de kırpmanın sebebiydi; ikisi de düzeldi, depolama %45 küçüldü. Aşama 35 dahil tamamı **üretimde canlı**. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Firebase Storage hâlâ kurulmadı. Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
 **Son güncelleme:** 2026-09-08
 
 ### Genel Durum
@@ -47,7 +47,7 @@ Numaralandırma rapor başlıklarıyla aynı: aşağıdaki her satırın karşı
 | 32 | Hero perdesi hafifletildi | **Tamamlandı** |
 | 33 | Menü içeriğinin yenilenmesi (8 kategori, 56 ürün) | **Tamamlandı** |
 | 34 | Eksik ürün fotoğrafları (27 fotoğraf) | **Tamamlandı** — üretimde canlı |
-| 35 | Ürün fotoğraflarında netlik ve kırpma (kare format) | **Tamamlandı** — push onayı bekliyor |
+| 35 | Ürün fotoğraflarında netlik ve kırpma (kare format) | **Tamamlandı** — üretimde canlı |
 
 ### Bekleyenler
 
@@ -7158,5 +7158,65 @@ düzelebilecek üç fotoğraf: `lahmacun` (yığının sağı kadraj dışında)
 girmiyor), `acik-kasarli` (pidenin bir ucu kadraj dışında).
 
 Firebase Storage hâlâ kurulu değil; panelden fotoğraf yükleme onu bekliyor.
+
+### 35.9 Canlı doğrulama · 2026-09-08
+
+`94947e7` push edildi ve üretime çıktı (45 saniyede). Doğrulama
+**https://huzur-pide.vercel.app** üzerinde yapıldı.
+
+**Fotoğraflar gözle net.** Aynı sayfanın eski üretim ve yeni canlı hâli yan
+yana konuldu: kola, Yedigün ve Lipton kutuları eskiden ortadan kesilmiş
+bulanık birer şerittiken, şimdi **tam ve keskin** duruyor. Açık Pide'de
+kıymalı pidenin **iki ucu da** kadrajda.
+
+Ölçümle: doğal ölçü **80×80** (eskiden 80×45), inen aday `w=96 q=82`,
+yuva 78,4 — büyütme **yok** (eskiden DPR 3'te 1,63 kat).
+
+| | Önce | Sonra (canlı) |
+|---|---|---|
+| Etiket boyutu | 800×450 | **384×384** |
+| Doğal ölçü | 80×45 | **80×80** |
+| Kalite | 75 | **82** |
+| DPR 3'te büyütme | 1,63× | **yok** |
+
+`q=90` gibi izin listesinde olmayan bir kalite canlıda **400** dönüyor —
+listenin çalıştığı doğrulandı.
+
+**Kare format üç gösterim yerinde de doğru, sıkışma/gerilme yok:**
+
+| Yer | Yuva | Doğal | `object-fit` |
+|---|---|---|---|
+| Kategori listeleri | 66,4 × 66,4 | 80×80 | cover |
+| Çok fiyatlı pide tablosu | 78,4 × 78,4 | 80×80 | cover |
+| Panel · tema önizlemesi | 78,4 × 78,4 | 80×80 | cover |
+
+390×844 ve **1440×900**'de yuva ölçüleri birebir aynı, 47/47 görsel kare,
+yatay taşma 0.
+
+**Sayfa yapısı bozulmadı** — canlı taşma değerleri değişiklik öncesiyle
+aynı (390px): Çorbalar 0, Kahvaltı 32, Açık Pide 516, Kapalı Pide 16,
+Izgara 488, Salatalar 0, Tatlılar 0, İçecekler 580.
+
+**Panel önizlemesi bozulmamış.** Geçici test hesabıyla açıldı: dört
+fotoğraf da kare, 80×80, yüklenmiş, sarmalayıcıda ölçek yok
+(`matrix(1,0,0,1,0,0)`). Mekân sahibinin ayarları yerinde — tema
+**Mürekkep**, vurgu **Kahve**, fiyat **Kırmızı**. Hesap sonra silindi,
+yönetici sayısı 1'e döndü.
+
+**Dört dilde 47 fotoğraf**, dosya listesi dört dilde birebir aynı, 0 boş
+alt metin, çapraz geçiş yok (Açık Pide 8 / Kapalı Pide 6). Arapça'da
+`dir="rtl"` korunuyor, fotoğraflar sağda, yatay taşma 0. Izgara sayfasında
+47 görselin **47'si** yüklendi.
+
+**Konsolda hata yok** — menü sayfalarında ve panelde 0 hata, 0 uyarı.
+
+`tohum-dogrula.ts` doğrulama sonrası da temiz: 8/8 kategori, 56/56 ürün,
+0 teyitsiz fiyat, *"hicbir alanda fark yok"*.
+
+**Depo notu:** görsel yedeği (`yedek/urunler-2026-09-08/`) diskte duruyor
+ama `.gitignore`'a alındı — eski 800×450 dosyaların hepsi zaten git
+geçmişinde (`git show 13abfd6:public/urunler/kola.webp`), ikinci bir kopya
+depoyu 2,4 MB boşuna şişiriyordu. `yedek/` içindeki JSON ve `.ts` yedekleri
+izlenmeye devam ediyor — onların başka nüshası yok.
 
 === RAPOR SONU ===
