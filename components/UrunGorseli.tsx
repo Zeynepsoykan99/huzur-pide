@@ -66,6 +66,14 @@ export function UrunGorseli({
    * düşüyor — 1x'te 96, 2x'te 256. Yani tek sütunlu liste bu yüzden daha
    * büyük dosya indirmiyor.
    *
+   * BU DEĞER ancak kaynak KARE olduğu için doğru. Fotoğraflar 800×450
+   * (16:9) saklanırken tarayıcı bu sözleşmeye uyup 80 piksel GENİŞLİK
+   * indiriyordu; kare yuvayı dolduran ise YÜKSEKLİK olduğundan eline
+   * her zaman 16/9 kat eksik piksel geçiyor ve görsel büyütülüyordu
+   * (DPR 3'te 256×144 inip 235 piksellik yuvaya 1,63 kat). Kaynak 1:1
+   * olunca inen adayın tamamı kullanılıyor. Kaynak oranı bir daha
+   * değişirse bu satır da birlikte gözden geçirilmeli.
+   *
    * Önceden `"(min-width: 768px) 208px, 68px"` yazıyordu; tablodaki
    * `colgroup`'un `md:w-52` (208px) sınıfına güveniyordu. O sınıf artık
    * yok (bkz. `CokFiyatliTablo`), sütun her genişlikte görselin ölçüsünde.
@@ -80,6 +88,10 @@ export function UrunGorseli({
         width={urun.gorsel.genislik}
         height={urun.gorsel.yukseklik}
         sizes="80px"
+        // Kaynak zaten q82; optimizator kucultup yeniden sikistirdigi icin
+        // varsayilan 75'te cift kayipli sikistirma oluyordu. Izin listesi
+        // `next.config.ts`'te.
+        quality={82}
       />
     </span>
   );

@@ -48,6 +48,13 @@ _preview.html
 # public/urunler/ altinda repoda duruyor; ham dosyalarin repoda isi yok.
 /yeni-gorseller/
 
+# Fotograf isleme oncesi alinan gorsel yedekleri. Diskte duruyorlar ama
+# git'e girmiyorlar: onceki surumlerin hepsi zaten gecmiste (ornegin
+# `git show <commit>:public/urunler/kola.webp`), ikinci bir kopya depoyu
+# bosuna sisiriyor. `yedek/` icindeki JSON ve .ts yedekleri izlenmeye
+# devam ediyor — onlarin baska nushasi yok.
+/yedek/urunler-*/
+
 # Vercel (vercel link tarafindan eklendi)
 .vercel
 

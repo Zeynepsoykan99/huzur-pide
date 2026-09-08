@@ -63,6 +63,21 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+
+  images: {
+    /**
+     * Next 16'da `quality` degeri burada IZIN LISTESINE yazilmadan
+     * kullanilamiyor; listede olmayan bir deger istendiginde optimizator
+     * goruntu yerine kisa bir hata govdesi donuyor (sessiz bozulma).
+     *
+     * 75 varsayilan, 82 urun fotograflari icin. Kaynak dosyalar zaten
+     * webp q82 saklaniyor; optimizator onlari kucultup YENIDEN
+     * sikistirdigi icin cift kayipli sikistirma oluyordu. 82'ye cikmak
+     * kiyma, salata gibi dokulu yuzeylerdeki izi kaldiriyor. Bedeli
+     * fotograf basina ~9,4 KB yerine ~12,1 KB.
+     */
+    qualities: [75, 82],
+  },
 };
 
 export default nextConfig;

@@ -3,8 +3,8 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 34 tamamlandı — **27 ürün fotoğrafı eklendi**: fotoğraflı ürün 22'den **47'ye** çıktı, fotoğrafsız 34'ten **9'a** indi. (Aşama 33'te menü 8 kategori / 56 ürün olarak baştan yazılmıştı.) Firebase Storage hâlâ kurulmadı. Aşama 34 dahil tamamı **üretimde canlı**. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
-**Son güncelleme:** 2026-09-07
+**Güncel aşama:** Aşama 35 tamamlandı — **47 ürün fotoğrafı kare formata geçirildi**: 800×450 (16:9) yerine 384×384 (1:1). Kare yuvada gösterilen 16:9 görsel hem bulanıklığın hem de kırpmanın sebebiydi; ikisi de düzeldi, depolama %45 küçüldü. Aşama 35 **henüz üretimde değil, push onayı bekliyor**; Aşama 34 dahil öncesi **üretimde canlı**. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Firebase Storage hâlâ kurulmadı. Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
+**Son güncelleme:** 2026-09-08
 
 ### Genel Durum
 
@@ -47,6 +47,7 @@ Numaralandırma rapor başlıklarıyla aynı: aşağıdaki her satırın karşı
 | 32 | Hero perdesi hafifletildi | **Tamamlandı** |
 | 33 | Menü içeriğinin yenilenmesi (8 kategori, 56 ürün) | **Tamamlandı** |
 | 34 | Eksik ürün fotoğrafları (27 fotoğraf) | **Tamamlandı** — üretimde canlı |
+| 35 | Ürün fotoğraflarında netlik ve kırpma (kare format) | **Tamamlandı** — push onayı bekliyor |
 
 ### Bekleyenler
 
@@ -6927,5 +6928,235 @@ tarafından git'ten dışlandığı doğrulandı. Çalışma ağacı temiz.
 **Fotoğrafsız 9 ürün** (Menemen, Kuymak, Açık Pide'nin Karışık/Spesiyal/
 Dörtmevsim'i, Meyve Suyu, Gazoz, Sade Soda, Meyveli Soda) yer tutucu
 ikonlarıyla görünüyor; beklenen durum.
+
+=== RAPOR SONU ===
+
+## Aşama 35 — Ürün Fotoğraflarında Netlik ve Kırpma · 2026-09-08
+
+=== RAPOR BAŞLANGICI ===
+
+**Tarih:** 2026-09-08 · **Dal:** `main` · **Durum:** push onayı bekliyor
+
+47 fotoğraf **800×450 (16:9)** yerine **384×384 (1:1)** olarak yeniden
+üretildi. Bulanıklık ve kırpma aynı kökten geliyordu; ikisi de düzeldi.
+Depolama **%45 küçüldü**.
+
+### 35.1 Teşhis — tek bir uyumsuzluk, iki belirti
+
+Fotoğraflar 16:9 saklanıyordu ama menüdeki yuvaların **ikisi de kare**:
+
+| Yuva | Ölçü | Nerede |
+|---|---|---|
+| `.gorsel-yuvasi` | 66,4 × 66,4 px | tek sütunlu listeler |
+| `.pide-gorsel-hucre` | 78,4 × 78,4 px | pide tabloları |
+
+Kodda yuvanın oranını değiştiren tek bir kural yok — "masaüstünde farklı
+oranlarda gösteriliyor" varsayımı doğru değildi, her yerde kare.
+
+**Netlik.** Canlıdan alınan gerçek değerler: `sizes="80px"`, seçilen aday
+`w=96`, inen görüntü **96×54**, yuva 78,4. Tarayıcı sözleşmeye uyup 80
+piksel **genişlik** indiriyor; kare yuvayı dolduran ise **yükseklik**.
+16:9'da yükseklik genişliğin 9/16'sı olduğu için eline her zaman
+**1,78 kat eksik** piksel geçiyordu:
+
+| Cihaz | Gereken | İnen aday | Kullanılabilir | Sonuç |
+|---|---|---|---|---|
+| DPR 1 | 78 | 96×54 | 54 | **1,45× büyütme** |
+| DPR 2 | 157 | 256×144 | 144 | 1,09× büyütme |
+| DPR 3 (yaygın telefon) | 235 | 256×144 | 144 | **1,63× büyütme** |
+
+Kalite 78 ana sebep değildi ama payı vardı: dosya q78 saklanıp
+optimizatörde **yeniden q75 ile** sıkıştırılıyordu — çift kayıplı sıkıştırma.
+
+**Kırpma.** Kırpma noktası (`50% 50%`) yanlış değildi; kırpma **iki kez**
+oluyordu:
+
+1. **Görünmez kırpma** — ham fotoğraf 800×450'ye sığdırılırken üstü altı
+   kesiliyordu. Ham kaynakların **15'i tam kare**; yüksekliklerinin
+   %43,75'i o aşamada gitti.
+2. **Görünen kırpma** — 800×450 kare yuvaya sığarken **genişliğin %43,75'i**
+   kesiliyordu.
+
+Çarpımı: **ham fotoğrafın ortalama %37'si** ekranda görünüyordu. Kare
+kaynaklarda %32, dikey kahvaltı fotoğraflarında **%24**.
+
+Fotoğraflar açılıp bakıldı. Yarısında yalnızca arka plan gidiyordu
+(`kelle-paca`, `et-sis`, `turk-kahvesi`), **yarısında ürünün kendisi**:
+`acik-kiymali`de pidenin iki ucu, `kola`da kutunun üstü ve altı,
+`serpme-kahvalti-4`te sofranın yanları, `kofte-izgara-bucuk-porsiyon`da
+köftelerin bir kısmı.
+
+**Büyütme denetimi:** 27 ham kaynağın 11'i 800×450'ye çıkarken
+büyütülmüştü — en ağırları `tek-kisilik-kahvalti` (387×516, ×2,07) ve
+`serpme-kahvalti-4` (399×501, ×2,01).
+
+### 35.2 Kritik kısıt: 20 fotoğrafın ham hali yok
+
+| | Adet | Elde olan en iyi kaynak |
+|---|---|---|
+| Ham dosyası duran (Aşama 34) | **27** | orijinal — tam geri kazanılabilir |
+| Ham dosyası olmayan (Aşama 2–18) | **20** | yalnızca kırpılmış 800×450 |
+
+20 dosyanın orijinalleri repoda, Masaüstü'nde ve İndirilenler'de arandı,
+bulunamadı. Bunlarda yapılabilen tek şey mevcut kare içinde pencereyi
+kaydırmak; **yanlar geri gelmiyor** — ama zaten bugün de görünmüyorlardı,
+yani hiçbir şey kaybedilmedi.
+
+### 35.3 Hedef ölçü neden 384
+
+Next'in `imageSizes` dizisinin en büyük değeri (32, 48, 64, 96, 128, 256,
+**384**) ve **47 kaynağın hepsi bunu büyütmeden karşılıyor**: ham
+kaynakların çıkarabildiği en küçük kare 387 px, ham kaynağı olmayanlarınki
+450 px. Yuva en fazla 80 CSS piksel; DPR 4'te bile 320 piksel isteniyor.
+
+Betik bunu kendi de denetliyor: kaynak kare kenarı 384'ten küçükse
+**duruyor**. Çalıştırmada hiçbiri durmadı.
+
+### 35.4 Uygulama
+
+**Yeni betik `betikler/gorsel-kare.ts`** — 384×384, webp **q82**, `cover`.
+Kaynak seçimi dosya başına: ham dosyası olan 27'si `yeni-gorseller/`
+içindeki orijinalden, kalan 20'si **yedekten**. Yedekten okumanın ikinci
+sebebi var: o 20 dosyada girdiyle çıktı aynı yol; yerinde yazmak betiği
+tek kullanımlık yapardı.
+
+**Kırpma penceresi 46 fotoğrafta merkez.** Otomatik ilgi odaklı kırpma
+(`sharp.strategy.attention`) denendi ve **güvenilir çıkmadı**: köfte
+fotoğrafında pencereyi salataya kaydırıp eti dışarıda bıraktı, lahmacunda
+merkezden kötü sonuç verdi. Bu yüzden 47'sinin hepsi kontak sayfalarında
+gözle denetlendi.
+
+Denetimde **iki fotoğrafta** merkez ürünü kesiyordu, ikisi de denendi:
+
+| Fotoğraf | Karar |
+|---|---|
+| `kofte-izgara-bucuk-porsiyon` | **sağa alındı** — köfteler kadrajın çoğunu kaplıyor, ızgara domates de girdi |
+| `karisik-izgara` | denendi, **merkezde bırakıldı** — sola alınca tabağın sağ yarısı kesildi, yerine bulgur kâsesi ve çay girdi |
+
+`acik-kasarli`, `acik-pastirmali`, `mercimek`, `kunefe` için de üç pencere
+karşılaştırıldı; dördünde de merkez en dengelisiydi.
+
+**Kalite:** `next.config.ts`'e `images.qualities: [75, 82]` eklendi ve
+görsele `quality={82}` verildi. Next 16'da bu izin listesi **zorunlu**;
+listede olmayan bir değer istendiğinde optimizatör görüntü yerine 84
+baytlık bir hata gövdesi dönüyor — sessiz bozulma. Test edilip doğrulandı.
+
+**Sıra korundu:** `data/menu.ts` → **Firestore** (`gorsel-guncelle.ts`,
+`tohum.ts` DEĞİL) → `tohum-dogrula.ts` → `npm run build`.
+
+`data/menu.ts`'te yalnızca `genislik: 800 → 384` ve `yukseklik: 450 → 384`
+değişti. Dosyada `tutar: 800` diye **fiyatlar** da var (üç hücre); yalnızca
+görsel bloğundaki ikili hedeflendi, fiyatlara dokunulmadı.
+
+### 35.5 Sonuçlar
+
+**Netlik.** İnen görüntünün tamamı artık kullanılıyor:
+
+| | Önce | Sonra |
+|---|---|---|
+| Saklanan | 800×450 (16:9) | **384×384 (1:1)** |
+| Doğal ölçü (ekranda) | 80×45 | **80×80** |
+| DPR 3'te büyütme | 1,63× | **yok** |
+| Optimizatör kalitesi | 75 (kaynak q78 üzerine) | **82** |
+
+**Kırpma.** Ham kaynağı olan 27 fotoğrafta ekranda görünen alan
+**%37'den %100'e** çıktı — 15'i zaten kare olduğu için hiç kırpılmıyor.
+Kola ve Yedigün kutuları, ayran kapları, çay bardağı, kahve fincanı ve su
+şişesi artık **tam** görünüyor; açık pidelerin uçları kadraja giriyor.
+
+**Depolama küçüldü** — kalite yükselmesine rağmen:
+
+| | Toplam | Ortalama |
+|---|---|---|
+| Önce (800×450 q78) | 2043 KB | 43,5 KB |
+| Sonra (384×384 q82) | **1126 KB** | **24,0 KB** |
+
+İndirilen ağırlık DPR 3'te fotoğraf başına 9,4 KB'den **12,1 KB**'ye
+çıkıyor (kalite artışı); sayfa başına 4–14 fotoğrafla ~50–170 KB.
+
+### 35.6 Doğrulama
+
+**Kare format tüm gösterim yerlerinde doğru — sıkışma/gerilme yok.**
+Ürün fotoğrafı yalnızca üç yerde görünüyor, üçü de ölçüldü:
+
+| Yer | Yuva | Doğal | `object-fit` | Sonuç |
+|---|---|---|---|---|
+| Kategori listeleri | 66,4 × 66,4 | 80×80 | cover | kare, bozulma yok |
+| Çok fiyatlı pide tablosu | 78,4 × 78,4 | 80×80 | cover | kare, bozulma yok |
+| Panel · tema önizlemesi | 78,4 × 78,4 | 80×80 | cover | kare, bozulma yok |
+
+Panel önizlemesi geçici test hesabıyla açılıp gerçekten ölçüldü (hesap
+sonra silindi, yönetici sayısı 1'e döndü). Önizleme sarmalayıcısında
+`transform` yok — ölçek uygulanmıyor. `/panel`, `/panel/fiyatlar` ve
+`/panel/urun-ekle` sayfalarında ürün fotoğrafı hiç bulunmuyor.
+
+**Telefon ve masaüstü aynı:** 390×844 ve 1440×900'de yuva ölçüleri birebir
+aynı (66,4 ve 78,4), yatay taşma 0, 47/47 görsel kare.
+
+**Sayfa yapısı bozulmadı.** 390px'te taşma değerleri **değişmedi**:
+
+| Kategori | Önce | Sonra |
+|---|---|---|
+| Çorbalar | 0 | 0 |
+| Kahvaltı | 32 | 32 |
+| Açık Pide | 516 | 516 |
+| Kapalı Pide | 16 | 16 |
+| Izgara | 488 | 488 |
+| Salatalar / Tatlılar | 0 | 0 |
+| İçecekler | 580 | 580 |
+
+320×568'de de yatay taşma 0 ve yuva ölçüleri aynı. Beklenen sonuç: yuva
+sabit ölçülü ve `overflow: hidden`, görselin oranı düzene giremiyor.
+
+**Dört dilde 47 fotoğraf**, dosya listesi dört dilde birebir aynı, boş alt
+metin 0, **çapraz geçiş yok** (Açık Pide 8 dosyanın hepsi `acik-` önekli,
+Kapalı Pide'nin 6'sının hiçbiri değil). Arapça `dir="rtl"` korunuyor,
+yatay taşma 0. Dört dilde de `width/height` 384×384, `sizes` `80px`,
+`q` 82.
+
+```
+npx tsc --noEmit   → temiz
+npm run lint       → temiz
+npm run build      → başarılı, 42 statik sayfa
+tarayıcı konsolu   → 0 hata, 0 uyarı
+tohum-dogrula.ts   → 8/8 kategori, 56/56 urun, "hicbir alanda fark yok"
+```
+
+Bir ölçüm tuzağı: sayfa gezilirken kimi fotoğraf "yüklenmedi" görünüyor.
+Sebebi hata değil, `loading="lazy"` — görünür alandaki fotoğrafların
+**hepsi** yükleniyor, dosyalar doğrudan çağrıldığında 200 dönüyor. Mevcut
+davranış, bu aşamayla ilgisi yok.
+
+### 35.7 Değişen dosyalar
+
+| Dosya | Değişiklik |
+|---|---|
+| `public/urunler/*.webp` | **47 dosya** yeniden üretildi (384×384 q82) |
+| `data/menu.ts` | 47 görsel bloğunda yalnızca `genislik`/`yukseklik` |
+| `next.config.ts` | `images.qualities: [75, 82]` |
+| `components/UrunGorseli.tsx` | `quality={82}` + `sizes` gerekçesinin güncellenmesi |
+| `betikler/gorsel-kare.ts` | **yeni** — kare üretim betiği, kayma tablosu içinde |
+| `yedek/urunler-2026-09-08/` | **yeni** — önceki 52 dosyanın yedeği |
+| `yedek/firestore-2026-09-08.json` | **yeni** |
+| `ILERLEME.md` | özet, aşama tablosu ve bu rapor |
+
+Menü içeriği, fiyatlar, çeviriler, alt metinler, sayfa yapısı, yuva
+ölçüleri, `sizes` ve karşılama sayfası görselleri **değişmedi**.
+`public/urunler/` içindeki kullanımdan çıkmış 5 eski dosyaya dokunulmadı.
+
+### 35.8 Sıradaki adım
+
+Push ve deploy onay bekliyor.
+
+Fotoğrafsız 9 ürün değişmedi (Menemen, Kuymak, Açık Pide'nin
+Karışık/Spesiyal/Dörtmevsim'i, Meyve Suyu, Gazoz, Sade Soda, Meyveli
+Soda). Menemen'in dosyası hâlâ bozuk, yenisi bekleniyor.
+
+**Çerçevesi elimizdekiyle sınırlı kalanlar** — ham hali gelirse
+düzelebilecek üç fotoğraf: `lahmacun` (yığının sağı kadraj dışında),
+`kofte-izgara-bucuk-porsiyon` (sağa alındı ama tabağın tamamı yine
+girmiyor), `acik-kasarli` (pidenin bir ucu kadraj dışında).
+
+Firebase Storage hâlâ kurulu değil; panelden fotoğraf yükleme onu bekliyor.
 
 === RAPOR SONU ===
