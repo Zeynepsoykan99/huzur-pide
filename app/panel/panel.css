@@ -526,6 +526,38 @@
   color: var(--p-solgun);
 }
 
+/* Sifre sifirlama kipinin ustundeki tek satirlik aciklama. Giris kipinde
+   yok: orada ne yapilacagi zaten alan adlarindan belli. */
+.panel-giris-aciklama {
+  margin: 0 0 1rem;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--p-solgun);
+}
+
+/* Metin gorunumlu dugme: "Sifremi unuttum" ve "Girise don".
+   <a> DEGIL <button>: gidilecek bir adres yok, ayni kutu kip degistiriyor.
+   Ekran okuyucuya da dogru sey soyleniyor. Ana eylemle yarismasin diye
+   zemini ve cercevesi yok, ama dokunma alani kucuk kalmasin diye dikey
+   bosluk birakiliyor. */
+.panel-metin-dugme {
+  display: block;
+  width: 100%;
+  margin-top: 0.75rem;
+  padding: 0.5rem;
+  font-size: 0.9rem;
+  font-family: inherit;
+  color: var(--p-vurgu);
+  background: none;
+  border: 0;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+
+.panel-metin-dugme:hover {
+  text-decoration: underline;
+}
+
 /* --- Yardımcılar --- */
 .panel-not {
   margin: 1rem 0 0;

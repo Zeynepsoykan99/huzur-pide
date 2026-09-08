@@ -3,7 +3,7 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 35 tamamlandı — **47 ürün fotoğrafı kare formata geçirildi**: 800×450 (16:9) yerine 384×384 (1:1). Kare yuvada gösterilen 16:9 görsel hem bulanıklığın hem de kırpmanın sebebiydi; ikisi de düzeldi, depolama %45 küçüldü. Aşama 35 dahil tamamı **üretimde canlı**. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Firebase Storage hâlâ kurulmadı. Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
+**Güncel aşama:** Aşama 36 tamamlandı — panel giriş ekranına **"Şifremi unuttum"** eklendi: mekân sahibi Firebase konsoluna girmeden kendi e-postasından şifresini yenileyebiliyor. Aşama 36 **henüz üretimde değil, push onayı bekliyor**; Aşama 35 dahil öncesi **üretimde canlı**. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Firebase Storage hâlâ kurulmadı. Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
 **Son güncelleme:** 2026-09-08
 
 ### Genel Durum
@@ -48,6 +48,7 @@ Numaralandırma rapor başlıklarıyla aynı: aşağıdaki her satırın karşı
 | 33 | Menü içeriğinin yenilenmesi (8 kategori, 56 ürün) | **Tamamlandı** |
 | 34 | Eksik ürün fotoğrafları (27 fotoğraf) | **Tamamlandı** — üretimde canlı |
 | 35 | Ürün fotoğraflarında netlik ve kırpma (kare format) | **Tamamlandı** — üretimde canlı |
+| 36 | Panele "Şifremi unuttum" (şifre sıfırlama) | **Tamamlandı** — push onayı bekliyor |
 
 ### Bekleyenler
 
@@ -7218,5 +7219,193 @@ ama `.gitignore`'a alındı — eski 800×450 dosyaların hepsi zaten git
 geçmişinde (`git show 13abfd6:public/urunler/kola.webp`), ikinci bir kopya
 depoyu 2,4 MB boşuna şişiriyordu. `yedek/` içindeki JSON ve `.ts` yedekleri
 izlenmeye devam ediyor — onların başka nüshası yok.
+
+=== RAPOR SONU ===
+
+## Aşama 36 — Panele "Şifremi Unuttum" · 2026-09-08
+
+=== RAPOR BAŞLANGICI ===
+
+**Tarih:** 2026-09-08 · **Dal:** `main` · **Durum:** push onayı bekliyor
+
+Giriş ekranına şifre sıfırlama eklendi. Mekân sahibi artık Firebase
+konsoluna hiç girmeden, kendi e-postasından şifresini yenileyebiliyor.
+İki dosya değişti, panelin güvenlik mimarisine dokunulmadı.
+
+### 36.1 Önce ölçüm: Firebase'in gizlilik koruması zaten açıkmış
+
+Kod yazmadan önce projenin Auth yapılandırması okundu:
+
+```
+emailPrivacyConfig: { enableImprovedEmailPrivacy: true }
+```
+
+Bu, "hangi hesapların var olduğunu ele verme" sorusunun standart çözümü ve
+**bu projede zaten etkindi**. Sonucu şu: `sendPasswordResetEmail` var
+olmayan bir adres için de **başarıyla dönüyor**, `auth/user-not-found`
+diye bir hata hiç gelmiyor. Yani iki durumu istemcide **ayırt etmek
+mümkün değil** — arayüzün tek bir tarafsız mesaj göstermesi bunun
+uydurulmuş bir önlemi değil, doğal sonucu.
+
+Ölçümle kanıtlandı (aşağıda 36.5).
+
+### 36.2 Neden iki kip
+
+Mevcut giriş bir `<form>`. Sıfırlama alanını onun içine koymak iç içe
+`<form>` demekti — geçersiz HTML. Dışına koymak ise ekranda **iki ayrı
+e-posta alanını** aynı anda gösterirdi.
+
+Bu yüzden kutu tek, kip iki: ya giriş ya sıfırlama. Yazılan e-posta
+kipler arasında taşınıyor, kip değişince eski mesaj temizleniyor.
+
+```
+GIRIS KIPI              SIFIRLAMA KIPI
++------------------+    +----------------------------+
+| E-posta          |    | (aciklama satiri)          |
+| [..............] |    | E-posta                    |
+| Sifre            |    | [dolu gelir...............]|
+| [..............] |    |                            |
+| [  Giris yap   ] |    | [ Sifirlama baglantisi   ] |
+| Sifremi unuttum  |    | Girise don                 |
++------------------+    +----------------------------+
+```
+
+### 36.3 Gönderim
+
+`sendPasswordResetEmail(istemciKimligi(), eposta.trim())` —
+`actionCodeSettings` **verilmedi**. Firebase'in kendi barındırdığı
+sıfırlama sayfası kullanılıyor; yetkili alan adı yapılandırması ve ek
+bakım yükü doğmuyor.
+
+**Sunucuya yeni bir uç eklenmedi.** Akış tamamen Firebase Auth ile
+istemci tarafında; Server Action yok, Admin SDK yok, yeni izin yok.
+
+### 36.4 Mesajlar
+
+| Durum | Kullanıcının gördüğü |
+|---|---|
+| Başarılı **ve** hesap yok (ayırt edilemiyor) | Bu adres kayıtlıysa, şifre sıfırlama bağlantısı e-postanıza gönderildi. Gelen kutunuzu ve gereksiz (spam) klasörünü kontrol edin. |
+| `auth/invalid-email`, `auth/missing-email` | E-posta adresi geçerli görünmüyor. Adresi kontrol edin. |
+| `auth/too-many-requests` | Çok fazla deneme yapıldı. Birkaç dakika sonra tekrar deneyin. |
+| `auth/network-request-failed` | Bağlantı kurulamadı. İnternet bağlantınızı kontrol edip tekrar deneyin. |
+| Diğer | Şu an gönderilemedi. Birazdan tekrar deneyin. |
+
+Firebase'in ham hata kodları hiçbir yerde gösterilmiyor — mevcut giriş
+formunun kuralı korundu. Başarı mesajı `role="status"`, hata
+`role="alert"`.
+
+### 36.5 Hız sınırlaması — Firebase'inki yeterli, ek sunucu sınırı yok
+
+Karar ve gerekçesi:
+
+- Identity Platform `sendOobCode` çağrılarını **sunucu tarafında** kendi
+  kotasıyla kısıyor; aşılınca `auth/too-many-requests` dönüyor. Bu
+  atlatılamıyor.
+- Tehdit modeli dar: panelin tek kullanıcısı var, adres sızması zaten
+  kapalı, bağlantı yalnızca gerçek posta kutusuna gidiyor. Kötüye
+  kullanımın tek sonucu sahibin gelen kutusunun şişmesi olurdu.
+- Kendi sınırımızı koymak, akışı Server Action'a taşıyıp bağlantıyı
+  `generatePasswordResetLink` ile üretip **e-postayı kendimiz göndermeyi**
+  gerektirirdi: yeni bir e-posta altyapısı bağımlılığı ve Firebase'in
+  hazır şablonunun kaybı.
+
+Buna ek olarak **60 saniyelik istemci tarafı bekleme** kondu: gönderim
+sonrası düğme geri sayımla pasif kalıyor. Kodda bunun **güvenlik önlemi
+olmadığı** açıkça yazılı — tarayıcı konsolundan SDK doğrudan çağrılarak
+atlatılabilir; amacı yalnızca kazara üst üste tıklamayı önlemek.
+
+Bekleme yalnızca **başarılı** gönderimde başlıyor; hata durumunda düğme
+hemen tekrar etkin — başarısız bir denemenin kullanıcıyı bir dakika
+kilitlemesi yanlış olurdu. Ölçüldü ve öyle davranıyor.
+
+### 36.6 Doğrulama
+
+**Hesap varlığı sızmıyor — asıl sınav buydu.** Var olan ve var olmayan
+iki adres denendi, ağ trafiği ham hâliyle kaydedildi:
+
+| Adres | HTTP | Firebase yanıtı | Ekrandaki mesaj |
+|---|---|---|---|
+| `panel-testi@huzurpide.test` (VAR) | **200** | `GetOobConfirmationCodeResponse` | tarafsız mesaj |
+| `hicboylebirhesapyok@huzurpide.com` (YOK) | **200** | `GetOobConfirmationCodeResponse` | **aynı** tarafsız mesaj |
+
+İkisi de aynı durum kodunu, aynı yanıt biçimini ve **aynı ekran metnini**
+veriyor. Hesabın olup olmadığı hiçbir kanaldan okunamıyor.
+
+**Kip geçişleri:**
+
+| Kontrol | Sonuç |
+|---|---|
+| Giriş → sıfırlama, e-posta taşınıyor mu | ✓ (`panel-testi@huzurpide.test` alana geldi) |
+| Sıfırlama → giriş, e-posta korunuyor mu | ✓ |
+| Kip değişince mesaj temizleniyor mu | ✓ |
+| Şifre alanı sıfırlama kipinde gizli mi | ✓ |
+| Sayfada kaç `<form>` var | **1** — iç içe form **yok** |
+
+**Hata dalları:**
+
+- Bozuk adres (`abc`) ve boş alan: tarayıcının kendi doğrulaması gönderimi
+  **engelliyor** (`type="email"` + `required`), SDK'ya hiç gidilmiyor.
+  `auth/invalid-email` dalı bu yüzden savunma amaçlı duruyor.
+- Ağ hatası taklit edildi: ekranda **"Bağlantı kurulamadı…"**, kırmızı
+  bildirim, `role="alert"`, düğme etkin kaldı. Doğru.
+- Bekleme sırasında düğmeye basıldı: **hiçbir şey olmadı** — sayaç
+  gerçekten kilitliyor.
+
+**Panel girişsiz erişilemiyor kuralı bozulmadı:**
+
+| Kontrol | Sonuç |
+|---|---|
+| Sıfırlama sonrası çerez | **boş** — oturum üretilmiyor |
+| Sıfırlama sonrası `/panel/fiyatlar` | **giriş ekranı** dönüyor, fiyat formu değil |
+| Yetkisiz hesapla giriş | "Bu hesabın panele erişim yetkisi yok." |
+| Yanlış şifre | "E-posta veya şifre hatalı." |
+| Doğru hesapla giriş | panel açılıyor (üç bölüm görünüyor) |
+
+**Gerçek e-posta gönderildi.** `zeynepsoykan99@gmail.com` adresine
+arayüzden gerçek bir sıfırlama isteği yapıldı; `accounts:sendOobCode`
+**200** döndü. Gelen kutusu doğrulaması mekân sahibinde.
+
+**Masaüstü ve telefon:** 390×844 ve 1440×900'de kutu 352 piksel, metin
+düğmesi tam genişlikte ve 38 piksel yüksekliğinde (dokunma alanı yeterli),
+yatay taşma 0.
+
+```
+npx tsc --noEmit   → temiz
+npm run lint       → temiz
+npm run build      → başarılı, 42 statik sayfa
+tarayıcı konsolu   → 0 hata
+```
+
+Konsol hakkında iki dürüst not:
+
+- Yerel sunucuda `/flags/*.svg` için "preloaded but not used" **uyarıları**
+  görülüyor; üretimde **görülmüyor** ve bu aşamayla ilgisi yok (bayrak
+  görselleri, giriş ekranıyla alakasız).
+- Yanlış şifre denendiğinde konsolda `signInWithPassword` **400**'ü
+  beliriyor. Bu, Firebase'in başarısız girişi bildirme biçimi ve
+  **eskiden beri** böyle; bu aşamada değişmedi.
+
+### 36.7 Değişen dosyalar
+
+| Dosya | Değişiklik |
+|---|---|
+| `app/panel/Giris.tsx` | iki kip, `sendPasswordResetEmail`, hata eşlemesi, 60 sn bekleme |
+| `app/panel/panel.css` | iki yeni sınıf: `.panel-metin-dugme`, `.panel-giris-aciklama` |
+
+Yeni renk tanımlanmadı, mevcut `--p-*` değişkenleri kullanıldı. Metin
+düğmeleri `<a>` değil `<button type="button">`: gidilecek bir adres yok,
+aynı kutu kip değiştiriyor.
+
+**Değişmeyenler:** panelin güvenlik mimarisi (sunucu tarafı yazma, istemciye
+sıfır yazma izni), diğer panel ekranları, menü tarafı, Firestore, giriş
+zorunluluğu, kayıt ekranının olmaması.
+
+### 36.8 Sıradaki adım
+
+Push ve deploy onay bekliyor.
+
+**Sizden beklenen:** gelen kutunuzda sıfırlama e-postasının bulunduğunu
+teyit etmeniz. Bağlantıya tıklamadıkça şifreniz değişmiyor; bağlantı bir
+süre sonra kendiliğinden geçersizleşiyor.
 
 === RAPOR SONU ===
