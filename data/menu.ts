@@ -1742,6 +1742,21 @@ export function sayfaNumarasi(kategori: Kategori): number {
 /** Para birimi. Tek yerde tutuluyor ki değişirse tek satır düzenlensin. */
 export const PARA_BIRIMI = "₺";
 
+/** Mekân adı — sekme başlığının sabit kuyruğu. */
+export const MEKAN_ADI = "Huzur Pide";
+
+/**
+ * Menü kitabının sekme başlığı.
+ *
+ * İKİ YERDEN ÇAĞRILIYOR ve bu yüzden burada duruyor: rotanın
+ * `generateMetadata`'sı (tam sayfa yüklemede) ve `SayfaSayaci` (kitapta
+ * kaydırılırken, istemci tarafında). Biçim iki yere kopyalansaydı biri
+ * değiştiğinde diğeri sessizce eskir, sekmede iki farklı kalıp görünürdü.
+ */
+export function sayfaBasligi(kategoriAdi: string): string {
+  return `${kategoriAdi} · ${MEKAN_ADI}`;
+}
+
 /**
  * Bir metni istenen dilde döndürür. Çeviri girilmemişse Türkçe'ye düşer —
  * ekranda boşluk görünmesindense kaynak dil görünsün.

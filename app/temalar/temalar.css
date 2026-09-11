@@ -99,6 +99,26 @@
   --t-gorsel-golge: none;
 }
 
+/*
+ * ARAPCA YAZI TIPLERI — SECICIDE IKI BICIM DE OLMAK ZORUNDA.
+ *
+ * `tema-*` sinifi <html> ogesinin KENDISINDE duruyor, `dir="rtl"` de ayni
+ * ogede. Bu yuzden yalnizca torun bicimi (`[dir="rtl"] .tema-cini`, aradaki
+ * bosluk) yazilirsa kural HIC eslesmiyor: bir oge kendi torunu olamaz.
+ * Uzun sure oyle yazilmisti ve dort temanin da Arapca tipografisi sessizce
+ * olu kaldi — Arapca sayfalar Latin yigini (Playfair/Inter) ile ciziliyor,
+ * o yiginda Arap harfi olmadigi icin tarayici sistem fontuna dusuyordu.
+ * Gorunurde bozukluk olmadigi icin fark edilmesi zor bir hataydi.
+ *
+ * BILESIK bicim (`[dir="rtl"].tema-cini`, boslugsuz) bugunku yapiyi cozuyor.
+ * TORUN bicimi de birakiliyor: panel onizlemesinde tema sinifi ic ice bir
+ * <div>'de duruyor; bugun orasi hep LTR oldugu icin fark etmiyor, ama
+ * onizlemeye Arapca eklenirse ayni hata tekrar dogmasin.
+ *
+ * Bu dosyadaki diger `[dir="rtl"] …` kurallari (ok simgeleri gibi) gercekten
+ * torun hedefliyor; onlarda bosluk DOGRU ve dokunulmadi.
+ */
+[dir="rtl"].tema-cini,
 [dir="rtl"] .tema-cini {
   --t-baslik-font: var(--font-reem), Tahoma, sans-serif;
   --t-govde-font: var(--font-plex-arabic), "Segoe UI", Tahoma, sans-serif;
@@ -178,6 +198,7 @@
   --t-gorsel-golge: inset 0 0 0 1px rgba(20, 16, 13, 0.5), 0 3px 12px rgba(0, 0, 0, 0.45);
 }
 
+[dir="rtl"].tema-gece,
 [dir="rtl"] .tema-gece {
   --t-baslik-font: var(--font-amiri), "Times New Roman", serif;
   --t-govde-font: var(--font-noto-arabic), "Segoe UI", Tahoma, sans-serif;
@@ -250,6 +271,7 @@
   --t-gorsel-golge: none;
 }
 
+[dir="rtl"].tema-murekkep,
 [dir="rtl"] .tema-murekkep {
   --t-baslik-font: var(--font-cairo), Tahoma, sans-serif;
   --t-govde-font: var(--font-noto-kufi), "Segoe UI", Tahoma, sans-serif;
@@ -321,6 +343,7 @@
   --t-gorsel-golge: none;
 }
 
+[dir="rtl"].tema-zeytin,
 [dir="rtl"] .tema-zeytin {
   --t-baslik-font: var(--font-naskh), "Times New Roman", serif;
   --t-govde-font: var(--font-noto-arabic), "Segoe UI", Tahoma, sans-serif;

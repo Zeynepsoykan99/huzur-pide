@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { MenuKitabiEkrani } from "@/components/ekranlar";
-import { DILLER, gecerliDil, metin } from "@/data/menu";
+import { DILLER, gecerliDil, MEKAN_ADI, metin, sayfaBasligi } from "@/data/menu";
 import { aktifTema, sayfaBul, sayfalar } from "@/data/menuKaynak";
 
 /**
@@ -22,8 +22,8 @@ export async function generateMetadata({
 }: PageProps<"/[dil]/menu/[sayfa]">): Promise<Metadata> {
   const { dil, sayfa } = await params;
   const s = await sayfaBul(sayfa);
-  if (!gecerliDil(dil) || !s) return { title: "Huzur Pide" };
-  return { title: `${metin(s.kategori.ad, dil)} · Huzur Pide` };
+  if (!gecerliDil(dil) || !s) return { title: MEKAN_ADI };
+  return { title: sayfaBasligi(metin(s.kategori.ad, dil)) };
 }
 
 export default async function MenuKitabiSayfasi({

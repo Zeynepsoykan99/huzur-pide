@@ -2,6 +2,7 @@
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { sayfayaKaydir } from "@/components/kitapKaydirma";
+import { sayfaBasligi } from "@/data/menu";
 
 /**
  * Sunucuda `useLayoutEffect` uyarı veriyor; orada zaten çalışmasına gerek yok.
@@ -48,8 +49,8 @@ export function SayfaSayaci({
   adresiGuncelle = true,
 }: {
   kabId: string;
-  /** Sayfa sırasına göre slug/no çiftleri. */
-  sayfalar: { slug: string; no: number }[];
+  /** Sayfa sırasına göre slug/no/başlık üçlüleri. */
+  sayfalar: { slug: string; no: number; baslik: string }[];
   dil: string;
   /** Sunucunun bildiği açılış sayfası — hydration bununla eşleşiyor. */
   baslangicNo: number;
@@ -122,6 +123,22 @@ export function SayfaSayaci({
         if (sonYazilanRef.current !== hedef) {
           sonYazilanRef.current = hedef;
           window.history.replaceState(null, "", hedef);
+          /*
+            SEKME BAŞLIĞI DA ADRESLE BİRLİKTE.
+
+            `replaceState` başlığa dokunmuyor; yalnızca adres güncellenince
+            sekmede girilen kategori yazılı kalıyordu — Çorbalar'dan girip
+            İçecekler'e kaydıran biri "Çorbalar · Huzur Pide" görüyordu.
+            Yer imine eklendiğinde ya da paylaşıldığında da yanlış ad
+            gidiyordu.
+
+            Biçim `sayfaBasligi()`ten geliyor, rotanın `generateMetadata`'sı
+            da aynı yardımcıyı kullanıyor: iki yol tek kalıptan besleniyor.
+
+            Adresle AYNI koşula bağlı (`adresiGuncelle`): panel önizlemesi
+            adres yazmıyor, panelin kendi başlığını da ezmemeli.
+          */
+          document.title = sayfaBasligi(sayfa.baslik);
         }
       },
       { root: kap, threshold: [0.5, 0.75, 1] },

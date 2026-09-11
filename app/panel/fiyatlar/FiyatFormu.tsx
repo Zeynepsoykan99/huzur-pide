@@ -170,9 +170,25 @@ export function FiyatFormu({ satirlar }: { satirlar: FiyatSatiri[] }) {
           : { tur: "hata", metin: sonuc.hata },
       );
       if (sonuc.ok) {
-        // Kaydedilen degerler artik "mevcut" sayilsin.
+        /*
+          Kaydedilen degerler artik "mevcut" sayilsin.
+
+          ONCEDEN 800 ms sonra `window.location.reload()` vardi ve basari
+          mesaji okunmaya firsat kalmadan sayfa yenileniyordu — kaydetmenin
+          islendigi ekranda gorulemiyordu.
+
+          `router.refresh()` sunucu verisini tazeliyor ama bileseni ve
+          `bildirim` state'ini ayakta tutuyor, mesaj ekranda kaliyor. Silme
+          yolu (`sil()`) zaten bunu yapiyordu; kaydetme de ayni davranisa
+          getirildi.
+
+          Form kendiliginden sifirlaniyor: `degisiklikler`, kullanicinin
+          yazdigi `degerler` ile tazelenen `satirlar`i karsilastiriyor. Kayit
+          sonrasi ikisi esitlendigi icin liste bosaliyor ve dugme "Degisiklik
+          yok"a donuyor.
+        */
         window.scrollTo({ top: 0 });
-        setTimeout(() => window.location.reload(), 800);
+        router.refresh();
       }
     });
   }
@@ -202,17 +218,27 @@ export function FiyatFormu({ satirlar }: { satirlar: FiyatSatiri[] }) {
   /**
    * Aramaya uyan satırlar. Arama boşsa hepsi — normal davranış değişmiyor.
    *
-   * Ölçüt ÜRÜN ADI, Türkçesi. Panel Türkçe çalışıyor ve sayfa istemciye
-   * zaten yalnızca Türkçe adı gönderiyor; diğer üç dili aramak için sayfanın
-   * veri şeklini değiştirmek gerekirdi.
+   * Ölçüt ÜRÜN ADI ve KATEGORİ ADI, ikisi de Türkçe. Panel Türkçe çalışıyor
+   * ve sayfa istemciye zaten yalnızca Türkçe adı gönderiyor; diğer üç dili
+   * aramak için sayfanın veri şeklini değiştirmek gerekirdi.
    *
-   * Gecikme (debounce) YOK: 31 ürünlük listede filtreleme anlık, gecikme
+   * KATEGORİ ADI SONRADAN EKLENDİ: "çorba" yazan biri hiçbir şey bulamıyordu,
+   * çünkü hiçbir ÜRÜN "çorba" adını taşımıyor (Ezogelin, Mercimek…). Oysa
+   * ekranda "Çorbalar" diye bir bölüm duruyor. Aynısı "tatlı" ve "içecek"
+   * için de geçerliydi. `kategoriAdi` zaten satırın içinde geliyordu, veri
+   * eklemek gerekmedi.
+   *
+   * Gecikme (debounce) YOK: 56 ürünlük listede filtreleme anlık, gecikme
    * eklemek yazarken takılma hissi yaratırdı.
    */
   const eslesenler = useMemo(() => {
     if (!aramaVar) return satirlar;
     const aranan = sadelestir(arama.trim());
-    return satirlar.filter((s) => sadelestir(s.urunAdi).includes(aranan));
+    return satirlar.filter(
+      (s) =>
+        sadelestir(s.urunAdi).includes(aranan) ||
+        sadelestir(s.kategoriAdi).includes(aranan),
+    );
   }, [satirlar, arama, aramaVar]);
 
   /**

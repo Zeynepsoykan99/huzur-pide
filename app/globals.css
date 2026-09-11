@@ -62,6 +62,28 @@
    Ortak parcalar
    --------------------------------------------------------------------------- */
 
+/*
+ * EKRAN OKUYUCU METNI SISTEM FONTUYLA — indirilen fonttan tasarruf icin.
+ *
+ * `.sr-only` Tailwind'in yardimci sinifi: metni gorunmez kilar ama DOM'da
+ * birakir. Gorunmese de tarayici onu YAZI TIPIYLE ESLESTIRIYOR, yani icindeki
+ * harfleri kapsayan webfont alt kumesini indiriyor.
+ *
+ * Olculen bedel: dil seridindeki `<span class="sr-only">Русский — Rusya</span>`
+ * yuzunden TURKCE sayfada iki Kiril alt kumesi (Inter 18,3 KB + Playfair
+ * 20,6 KB) iniyordu. Sayfadaki tek Kiril metin oydu; yani ~39 KB, hicbir
+ * zaman cizilmeyen bir metin icin.
+ *
+ * Sistem yigini verilince webfont gerekmiyor. Ekran okuyucunun okudugu metin
+ * degismiyor — yalnizca hangi fontla cizilecegi degisiyor, ki cizilmiyor.
+ *
+ * KATMANSIZ yaziliyor: Tailwind'in `.sr-only`si `@layer utilities` icinde ve
+ * katmansiz kural katmanliyi yener; `!important` gerekmiyor.
+ */
+.sr-only {
+  font-family: system-ui, "Segoe UI", Arial, sans-serif;
+}
+
 /* Odak halkasi tek yerde: her tiklanabilir ogede ayni. */
 .odak {
   outline: none;

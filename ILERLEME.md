@@ -3,7 +3,7 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 36 tamamlandı — panel giriş ekranına **"Şifremi unuttum"** eklendi: mekân sahibi Firebase konsoluna girmeden kendi e-postasından şifresini yenileyebiliyor. Aşama 36 dahil tamamı **üretimde canlı**. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Firebase Storage hâlâ kurulmadı. Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
+**Güncel aşama:** Aşama 37 tamamlandı — uçtan uca testin bulgularından **beşi düzeltildi**: Arapça tipografisi (dört temada da ölüydü), görünmeyen metin için inen 39 KB font, sekme başlığının kitapta güncellenmemesi, panel aramasının kategori adlarını kapsamaması ve kaydetme onayının okunamaması. Aşama 37 **henüz üretimde değil, push onayı bekliyor**; Aşama 36 dahil öncesi **üretimde canlı**. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Firebase Storage hâlâ kurulmadı. Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
 **Son güncelleme:** 2026-09-08
 
 ### Genel Durum
@@ -49,6 +49,7 @@ Numaralandırma rapor başlıklarıyla aynı: aşağıdaki her satırın karşı
 | 34 | Eksik ürün fotoğrafları (27 fotoğraf) | **Tamamlandı** — üretimde canlı |
 | 35 | Ürün fotoğraflarında netlik ve kırpma (kare format) | **Tamamlandı** — üretimde canlı |
 | 36 | Panele "Şifremi unuttum" (şifre sıfırlama) | **Tamamlandı** — üretimde canlı |
+| 37 | Uçtan uca test bulguları: beş düzeltme | **Tamamlandı** — push onayı bekliyor |
 
 ### Bekleyenler
 
@@ -7449,5 +7450,243 @@ tahmin edildiği gibi yerel sunucuya özgüymüş.
 
 **Masaüstü:** 1440×900'de metin düğmesi 352×38 piksel, yatay taşma 0.
 Telefonda (390×844) ölçüler aynı.
+
+=== RAPOR SONU ===
+
+## Aşama 37 — Uçtan Uca Testin Bulguları: Beş Düzeltme · 2026-09-08
+
+=== RAPOR BAŞLANGICI ===
+
+**Tarih:** 2026-09-08 · **Dal:** `main` · **Durum:** push onayı bekliyor
+
+Aşama 36 sonrası yapılan uçtan uca testte çıkan bulgulardan beşi düzeltildi:
+**Ö1, Ö2, Ö3, İ2, İ3**. Sonraya bırakılanlara (İ1, İ4, İ5, İ6) dokunulmadı.
+
+### 37.1 Ö1 — Arapça tipografisi hiçbir temada uygulanmıyordu
+
+**Kök sebep:** `tema-*` sınıfı `<html>` öğesinin **kendisinde** duruyor,
+`dir="rtl"` de aynı öğede. Kural ise torun birleştiricisiyle yazılmıştı:
+
+```css
+[dir="rtl"] .tema-gece { … }   /* aradaki boşluk */
+```
+
+Bir öğe kendi torunu olamayacağı için kural **hiç eşleşmiyordu**. Sonuç:
+dört temanın da Arapça yazı tipleri ölüydü; Arapça sayfalar Latin yığınıyla
+(Playfair/Inter) çiziliyor, o yığında Arap harfi olmadığı için tarayıcı
+sessizce sistem fontuna düşüyordu. Görünürde bozukluk olmadığı için fark
+edilmesi zordu.
+
+**Düzeltme:** dört kuralda da bileşik biçim eklendi, torun biçimi bırakıldı:
+
+```css
+[dir="rtl"].tema-gece,
+[dir="rtl"] .tema-gece { … }
+```
+
+Bileşik olan bugünkü yapıyı çözüyor; torun olanı panel önizlemesi için
+duruyor (orada tema sınıfı iç içe bir `<div>`'de; bugün hep LTR olduğu için
+fark etmiyor, ama önizlemeye Arapça eklenirse aynı hata tekrar doğmasın).
+
+`temalar.css`'teki diğer `[dir="rtl"] …` kuralları (ok simgeleri) gerçekten
+torun hedefliyor; **onlara dokunulmadı.**
+
+**Ölçüm — dört temada da seçici artık eşleşiyor:**
+
+| Tema | `[dir="rtl"].tema-X` eşleşmesi |
+|---|---|
+| cini · gece · murekkep · zeytin | **hepsi `true`** (önce hepsi `false`) |
+
+Aktif tema Gece olduğu için font çözümlemesi onda uçtan uca doğrulandı:
+
+| | Önce | Sonra |
+|---|---|---|
+| Başlık fontu | Playfair Display | **Amiri** |
+| Ürün adı fontu | Playfair Display | **Amiri** |
+| Gerçekten yüklenen aileler | Playfair Display, Inter | **Amiri, Noto Sans Arabic** |
+
+Diğer üç temanın font değişkenleri yalnızca kendileri aktifken tanımlanıyor
+(bkz. `app/temalar/aktif.ts` — üretimde yalnızca aktif temanın fontları
+iniyor); onlarda seçici eşleşmesi doğrulandı, mekanizma aynı.
+
+### 37.2 Ö2 — Görünmeyen metin için font indiriliyordu
+
+`.sr-only` Tailwind'in yardımcı sınıfı: metni görünmez kılar ama DOM'da
+bırakır. **Görünmese de tarayıcı onu yazı tipiyle eşleştiriyor** ve
+harfleri kapsayan webfont alt kümesini indiriyor.
+
+Dil şeridindeki `<span class="sr-only">Русский — Rusya</span>` yüzünden
+Türkçe sayfada iki Kiril alt kümesi iniyordu; sayfadaki tek Kiril metin
+oydu. Kurala sistem yığını verildi:
+
+```css
+.sr-only { font-family: system-ui, "Segoe UI", Arial, sans-serif; }
+```
+
+Katmansız yazıldı: Tailwind'inki `@layer utilities` içinde ve katmansız
+kural katmanlıyı yener — `!important` gerekmedi. Ekran okuyucunun okuduğu
+metin değişmiyor.
+
+**Ölçüm (Türkçe ve İngilizce, aynı ortam):**
+
+| | Önce | Sonra |
+|---|---|---|
+| Font dosyası | 6 | **4** |
+| Font ağırlığı | 227,6 KB | **188,6 KB** |
+| Sayfa toplamı | 398 KB | **369,8 KB** |
+
+**−39 KB**, tam da inen iki Kiril alt kümesi (Inter 18,3 + Playfair 20,6).
+Rusça sayfada Kiril zaten gerekli, orada değişiklik yok.
+
+### 37.3 Ö1 + Ö2 birlikte: net bilanço
+
+İstenen karşılaştırma. **Önemli uyarı:** yerel `next start`, üretimden farklı
+davranıp kullanılmayan font dosyalarını da indiriyor. Bunu ölçtüm ve
+izole ettim — Ö1 geri alınmış yapıda da Rusça sayfa aynı 11 dosyayı
+indiriyordu, yani **bu davranış bu aşamanın sonucu değil, yerel sunucuya
+özgü.** Bu yüzden aşağıdaki tablo iki ayrı ölçümü ayrı ayrı gösteriyor.
+
+**Üretimde ölçülen (Ö2'nin kazancı, tr/en):**
+
+| Dil | Önce | Sonra | Fark |
+|---|---|---|---|
+| tr | 6 dosya · 227,6 KB | 4 dosya · 188,6 KB | **−39,0 KB** |
+| en | 6 dosya · 227,6 KB | 4 dosya · 188,6 KB | **−39,0 KB** |
+| ru | 6 dosya · 227,6 KB | değişmiyor | 0 |
+
+**Yerelde izole edilen (Ö1'in Arapça sayfaya etkisi, aynı ortam A/B):**
+
+| Arapça sayfa | Ö1 kapalı | Ö1 açık |
+|---|---|---|
+| İnen dosya | 11 | **9** |
+| İnen ağırlık | 554,4 KB | **515,4 KB** |
+| Gerçekten kullanılan aileler | Playfair, Inter | **Amiri, Noto Sans Arabic** |
+
+Yerel ortamın şişirmesi iki tarafta da aynı olduğu için **fark anlamlı**:
+Arapça sayfa doğru fontları kullanmaya başlarken indirdiği dosya sayısı ve
+ağırlığı **azaldı** — çünkü artık gereksiz Latin alt kümelerinin bir kısmına
+ihtiyaç kalmıyor.
+
+**Bilanço:** tr/en'de kesin **−39 KB**; Arapça'da doğru tipografi, ağırlıkta
+artış yok. Arapça sayfanın üretimdeki kesin rakamı deploy sonrası ölçülüp
+rapora eklenecek — yerel sayılar üretimi temsil etmiyor.
+
+### 37.4 Ö3 — Sekme başlığı kitapta gezerken güncellenmiyordu
+
+`replaceState` adresi güncelliyordu ama `document.title`'a dokunmuyordu;
+Çorbalar'dan girip İçecekler'e kaydıran biri sekmede hâlâ "Çorbalar"
+görüyordu. Yer imine eklendiğinde de yanlış ad gidiyordu.
+
+Başlık biçimi iki yere kopyalanmasın diye tek yardımcıya taşındı:
+
+| Dosya | Değişiklik |
+|---|---|
+| `data/menu.ts` | `MEKAN_ADI` + `sayfaBasligi(kategoriAdi)` |
+| `app/[dil]/menu/[sayfa]/page.tsx` | `generateMetadata` yardımcıyı kullanıyor |
+| `components/ekranlar.tsx` | `sayfaListesi`'ne `baslik` eklendi |
+| `components/SayfaSayaci.tsx` | adres yazılırken `document.title` de yazılıyor |
+
+Adresle **aynı koşula** bağlı (`adresiGuncelle`), yani panel önizlemesinde
+panelin başlığı ezilmiyor.
+
+**Ölçüm — dört dilde de sekiz sayfa boyunca takip ediyor:**
+
+```
+tr  Çorbalar → Kahvaltı Çeşitleri → … → İçecekler        8/8 dogru
+en  Soups → Open Pide → Grilled Dishes → Drinks          dogru
+ru  Супы → Открытая пиде → Блюда на гриле → Напитки      dogru
+ar  الشوربات → البيدة المفتوحة → المشويات → المشروبات        dogru
+```
+
+Panel önizlemesinde başlık `Yönetim · Huzur Pide` olarak korunuyor
+(önizleme tek yaprak çiziyor, sayaç orada hiç kurulmuyor).
+
+*Test notu:* Arapça'yı ilk denemede kaydıramadım — RTL kapta ileri yön
+`scrollLeft` negatif. Ölçüm hatasıydı, doğru yönle tekrarlandı ve çalıştı.
+
+### 37.5 İ2 — Panel araması kategori adını da kapsıyor
+
+"çorba" yazan hiçbir şey bulamıyordu, çünkü hiçbir **ürün** o adı taşımıyor
+(Ezogelin, Mercimek…). `kategoriAdi` zaten satırın içinde geliyordu, veri
+eklemek gerekmedi — filtreye bir koşul eklendi.
+
+| Arama | Önce | Sonra |
+|---|---|---|
+| `çorba` / `corba` | sonuç yok | **4** (Çorbalar) |
+| `tatlı` / `tatli` | sonuç yok | **2** (Tatlı Çeşitleri) |
+| `içecek` / `icecek` | sonuç yok | **13** (İçecekler) |
+| `izgara` | 12 | 12 |
+| `pide` | 17 | 17 (iki pide bölümü) |
+| `ezogelin` · `kunefe` · `ayran` · `çoban` | 1 · 1 · 2 · 1 | **aynı** |
+| `kuzu` | sonuç yok | sonuç yok |
+
+Türkçe katlama (`sadelestir`) iki yönde de çalışıyor; mevcut aramaların
+hiçbiri bozulmadı.
+
+### 37.6 İ3 — Kaydetme onayı artık okunabiliyor
+
+Kayıttan 800 ms sonra `window.location.reload()` çağrılıyordu; başarı
+mesajı okunmaya fırsat kalmadan sayfa yenileniyordu. `router.refresh()`
+ile değiştirildi — silme yolu (`sil()`) zaten bunu yapıyordu, kaydetme de
+aynı davranışa getirildi.
+
+**Ölçüm:** gerçek bir fiyat değişikliği (Çoban Salata 100 → 105) kaydedildi
+ve bildirim **8,5 saniye boyunca ekranda kaldı** (izleme orada kesildi,
+kaybolmadı). Form kendiliğinden sıfırlandı: düğme "Değişiklik yok"a döndü,
+kutuda kayıtlı değer göründü, arama filtresi korundu. Değişiklik canlı
+menüye yansıdı ve **100'e geri alındı**.
+
+### 37.7 Sayfa yapısı bozulmadı
+
+Ö1 Arapça'da yazı tipini değiştirdiği için sığma yeniden ölçüldü —
+metrikler değişince satır sayısı da değişebilirdi.
+
+**Arapça, üretim (eski font) ↔ yerel (yeni font):**
+
+| Kategori | 390px önce | 390px sonra | 320px önce | 320px sonra |
+|---|---|---|---|---|
+| Çorbalar | 0 | 0 | 92 | 92 |
+| Kahvaltı | 32 | 32 | 308 | 308 |
+| Açık Pide | 516 | 516 | 792 | 792 |
+| Kapalı Pide | 24 | 24 | 315 | 315 |
+| Izgara | 506 | 506 | 826 | **804** |
+| Salatalar / Tatlılar | 0 | 0 | 0 | 0 |
+| İçecekler | 580 | 580 | 856 | 856 |
+
+Tek değişen hücre Izgara/320px: **22 piksel daha AZ** taşma. Arapça fontlar
+Latin yedeğinden bir tık derli toplu. Yatay taşma her ölçüde **0**.
+
+**Türkçe hiç değişmedi** — 320 ve 390px'te sekiz kategorinin de değerleri
+öncekiyle birebir aynı.
+
+```
+npx tsc --noEmit   → temiz
+npm run lint       → temiz
+npm run build      → başarılı, 42 statik sayfa
+tarayıcı konsolu   → 0 hata
+tohum-dogrula.ts   → 8/8 kategori, 56/56 urun, "hicbir alanda fark yok"
+```
+
+### 37.8 Değişen dosyalar
+
+| Dosya | Madde | Değişiklik |
+|---|---|---|
+| `app/temalar/temalar.css` | Ö1 | 4 kurala bileşik seçici |
+| `app/globals.css` | Ö2 | `.sr-only` sistem fontu |
+| `data/menu.ts` | Ö3 | `MEKAN_ADI`, `sayfaBasligi()` |
+| `app/[dil]/menu/[sayfa]/page.tsx` | Ö3 | yardımcıyı kullanıyor |
+| `components/ekranlar.tsx` | Ö3 | `sayfaListesi`'ne `baslik` |
+| `components/SayfaSayaci.tsx` | Ö3 | `document.title` güncelleniyor |
+| `app/panel/fiyatlar/FiyatFormu.tsx` | İ2, İ3 | kategori araması + `router.refresh()` |
+
+Menü içeriği, fiyatlar, çeviriler, görseller, panelin güvenlik mimarisi ve
+diğer ekranlar değişmedi. Test izleri temizlendi: geçici hesaplar silindi
+(yönetici sayısı 1), fiyat geri alındı, Firestore testten önceki hâlinde.
+
+### 37.9 Sonraya bırakılanlar
+
+İ1 (Zeytin teması denetim dışı), İ4 (adres/SEO: büyük harf varyantı,
+canonical, robots/sitemap, OG), İ5 (30 RSC ön yükleme), İ6 (JS'siz
+davranış) — sizin kararınızla dokunulmadı.
 
 === RAPOR SONU ===

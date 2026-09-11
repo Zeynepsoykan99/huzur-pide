@@ -566,7 +566,13 @@ export function MenuKitabiEkrani({
   acilis: MenuSayfasi;
   yolOneki?: string;
 }) {
-  const sayfaListesi = sayfalar.map((s) => ({ slug: s.slug, no: s.no }));
+  // `baslik` YALNIZCA sayaca gidiyor: kaydirirken sekme basligini da
+  // guncelleyebilsin diye. Oklar ve asagi ok kullanmiyor.
+  const sayfaListesi = sayfalar.map((s) => ({
+    slug: s.slug,
+    no: s.no,
+    baslik: metin(s.kategori.ad, dil),
+  }));
   // Onizlemede `menu/<slug>` diye bir rota yok; dil degistirme baglantisi
   // oradaki tek menu ekranina gitmeli.
   const onizleme = yolOneki !== "";
