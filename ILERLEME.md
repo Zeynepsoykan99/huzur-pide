@@ -3,7 +3,7 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 37 tamamlandı — uçtan uca testin bulgularından **beşi düzeltildi**: Arapça tipografisi (dört temada da ölüydü), görünmeyen metin için inen 39 KB font, sekme başlığının kitapta güncellenmemesi, panel aramasının kategori adlarını kapsamaması ve kaydetme onayının okunamaması. Aşama 37 **henüz üretimde değil, push onayı bekliyor**; Aşama 36 dahil öncesi **üretimde canlı**. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Firebase Storage hâlâ kurulmadı. Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
+**Güncel aşama:** Aşama 37 tamamlandı — uçtan uca testin bulgularından **beşi düzeltildi**: Arapça tipografisi (dört temada da ölüydü), görünmeyen metin için inen 39 KB font, sekme başlığının kitapta güncellenmemesi, panel aramasının kategori adlarını kapsamaması ve kaydetme onayının okunamaması. Aşama 37 dahil tamamı **üretimde canlı**. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Firebase Storage hâlâ kurulmadı. Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
 **Son güncelleme:** 2026-09-08
 
 ### Genel Durum
@@ -49,7 +49,7 @@ Numaralandırma rapor başlıklarıyla aynı: aşağıdaki her satırın karşı
 | 34 | Eksik ürün fotoğrafları (27 fotoğraf) | **Tamamlandı** — üretimde canlı |
 | 35 | Ürün fotoğraflarında netlik ve kırpma (kare format) | **Tamamlandı** — üretimde canlı |
 | 36 | Panele "Şifremi unuttum" (şifre sıfırlama) | **Tamamlandı** — üretimde canlı |
-| 37 | Uçtan uca test bulguları: beş düzeltme | **Tamamlandı** — push onayı bekliyor |
+| 37 | Uçtan uca test bulguları: beş düzeltme | **Tamamlandı** — üretimde canlı |
 
 ### Bekleyenler
 
@@ -7688,5 +7688,82 @@ diğer ekranlar değişmedi. Test izleri temizlendi: geçici hesaplar silindi
 İ1 (Zeytin teması denetim dışı), İ4 (adres/SEO: büyük harf varyantı,
 canonical, robots/sitemap, OG), İ5 (30 RSC ön yükleme), İ6 (JS'siz
 davranış) — sizin kararınızla dokunulmadı.
+
+### 37.10 Canlı doğrulama · 2026-09-11
+
+`a7aa3e0` push edildi ve 60 saniyede üretime çıktı.
+
+**Push, raporun yazıldığı gün yapılamamıştı.** Erişim kesintisi yüzünden
+commit hiç oluşmamıştı; beş düzeltme ve rapor üç gün boyunca yalnızca
+çalışma ağacında durdu. Durum tespitinde doğrulandı: hiçbir dosya
+kaybolmamış, `git ls-files --deleted` 0, izlenen 192 dosyanın hepsi
+diskteydi. Push öncesi `tsc`, `lint` ve `build` yeniden çalıştırıldı,
+üçü de temiz çıktı (42 statik sayfa).
+
+**Bu arada tema değişmiş:** rapor yazılırken Gece'ydi, şimdi **Mürekkep**.
+Bu doğrulamayı güçlendirdi — Ö1 artık yerelde **test edilmediğim** bir
+temada da kanıtlanmış oldu.
+
+**Ö1 çalışıyor.** Arapça sayfa Mürekkep temasının Arapça yazı tipleriyle
+çiziliyor:
+
+| | Önce | Sonra (canlı) |
+|---|---|---|
+| Başlık fontu | Playfair Display → sistem yedeği | **Cairo** |
+| Gövde fontu | Inter → sistem yedeği | **Noto Kufi Arabic** |
+| `document.fonts` yüklenen aileler | Playfair, Inter | **Cairo, Noto Kufi Arabic** |
+
+**Ö2 çalışıyor.** Temiz sekmede Türkçe sayfa artık **yalnızca 4 font
+dosyası** istiyor, Kiril alt kümesi yok:
+
+```
+ 20.9KB  Oswald          latin
+ 28.1KB  Source Sans 3   latin
+ 18.5KB  Oswald          latin-ext
+ 58.6KB  Source Sans 3   latin-ext
+-------  toplam 126,2 KB   (onceden 227,6 KB / 6 dosya, 2'si Kiril)
+```
+
+`.sr-only` üretimde `system-ui` hesaplanıyor. Kiril alt kümeleri yalnızca
+**Rusça** sayfada iniyor — yani gerektiği yerde.
+
+**Arapça sayfanın gerçek üretim ağırlığı:** 9 font dosyası, **356 KB**.
+Dağılım: Arapça kapsayan aileler 229,9 KB (Cairo 62,9 + Noto Kufi 167,0),
+Latin aileler 126,1 KB (Oswald 39,4 + Source Sans 86,7). Sayfa toplamı
+605 KB. Deploy sonrası ilk (tamamen soğuk) yüklemede yalnızca Arapça
+fontlar inmişti: 5 dosya / 229,8 KB.
+
+*Ölçüm notu:* Aynı oturumda arka arkaya ölçüm yapılırsa rakamlar şişiyor —
+`encodedBodySize` önbellekten gelen dosyaları da sayıyor. Bunu
+`transferSize` ile doğruladım (11 dosyanın hepsi `transferSize=0`, yani
+telden hiç geçmemiş) ve ölçümleri temiz sekmede tekrarladım. Daha önceki
+"yerel sunucu her fontu indiriyor" teşhisim de büyük ölçüde bu önbellek
+etkisiymiş.
+
+**Ö3 çalışıyor — dört dilde de sekme başlığı kategoriyle birlikte
+değişiyor:**
+
+| Dil | 1. sayfa → Açık Pide → Izgara → İçecekler |
+|---|---|
+| tr | Çorbalar → Açık Pide Çeşitleri → Izgara Çeşitleri → İçecekler |
+| en | Soups → Open Pide → Grilled Dishes → Drinks |
+| ar | الشوربات → البيدة المفتوحة → المشويات → المشروبات |
+| ru | Супы → Открытая пиде → Блюда на гриле → Напитки |
+
+**İ2 çalışıyor.** `çorba`/`corba` → 4, `tatlı` → 2, `içecek`/`icecek` → 13,
+`izgara` → 12, `pide` → 17 (iki pide bölümü birden). Mevcut aramalar
+bozulmadı: `ezogelin` 1, `ayran` 2, `çoban` 1, `kuzu` sonuç yok.
+
+**İ3 çalışıyor.** Gerçek kayıt (Çoban Salata 100 → 105): bildirim
+**9,9 saniye boyunca ekranda kaldı**, sayfa yenilenmedi, form kendiliğinden
+"Değişiklik yok"a döndü, arama filtresi korundu. Değişiklik canlı menüye
+yansıdı ve **100'e geri alındı**.
+
+**Konsolda hata yok** — menü ve panel sayfalarında 0 hata, 0 uyarı. Arapça
+sayfada yatay taşma 0.
+
+Test izleri temizlendi: geçici hesaplar silindi (yönetici sayısı 1), fiyat
+geri alındı, `tohum-dogrula.ts` → 8/8 kategori, 56/56 ürün, *"hicbir alanda
+fark yok"*.
 
 === RAPOR SONU ===
