@@ -3,7 +3,7 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 38 tamamlandı — **yedi fotoğraf işlendi**: altı yeni ürüne, biri de Kola'nın yerine (Coca-Cola → Pepsi; ürün adı sahibinin kararıyla jenerik kaldı). Fotoğraflı ürün **47 → 53**, fotoğrafsız **9 → 3** (Menemen, Karışık, Gazoz). Aşama 38 **henüz üretimde değil, push onayı bekliyor**; Aşama 37 dahil öncesi **üretimde canlı**. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Firebase Storage hâlâ kurulmadı. Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
+**Güncel aşama:** Aşama 38 tamamlandı — **yedi fotoğraf işlendi**: altı yeni ürüne, biri de Kola'nın yerine (Coca-Cola → Pepsi; ürün adı sahibinin kararıyla jenerik kaldı). Fotoğraflı ürün **47 → 53**, fotoğrafsız **9 → 3** (Menemen, Karışık, Gazoz). Aşama 38 dahil tamamı **üretimde canlı**. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Firebase Storage hâlâ kurulmadı. Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
 **Son güncelleme:** 2026-09-11
 
 ### Genel Durum
@@ -50,7 +50,7 @@ Numaralandırma rapor başlıklarıyla aynı: aşağıdaki her satırın karşı
 | 35 | Ürün fotoğraflarında netlik ve kırpma (kare format) | **Tamamlandı** — üretimde canlı |
 | 36 | Panele "Şifremi unuttum" (şifre sıfırlama) | **Tamamlandı** — üretimde canlı |
 | 37 | Uçtan uca test bulguları: beş düzeltme | **Tamamlandı** — üretimde canlı |
-| 38 | İkinci parti ürün fotoğrafları + Kola görseli | **Tamamlandı** — push onayı bekliyor |
+| 38 | İkinci parti ürün fotoğrafları + Kola görseli | **Tamamlandı** — üretimde canlı |
 
 ### Bekleyenler
 
@@ -7971,5 +7971,57 @@ Push ve deploy onay bekliyor.
 Ayrıca **Açık Pide · Spesiyal**'in fotoğrafı, sizin kararınızla, yuvarlak
 pizza gösteriyor. Gerçek bir açık pide fotoğrafı gelirse tek satırlık
 değişiklikle yenilenebilir.
+
+### 38.9 Canlı doğrulama · 2026-09-11
+
+`3f3dbe4` push edildi ve 60 saniyede üretime çıktı.
+
+**Kola gerçekten Pepsi gösteriyor, adı hâlâ "Kola".** Görsel piksel
+düzeyinde sayıldı (mavi/kırmızı oranı), dört dilde ad ayrı ayrı okundu:
+
+| Dil | Ürün adı | Alt metin | Fotoğraf |
+|---|---|---|---|
+| tr | **Kola** | Pepsi kutusu | Pepsi (%13,3 mavi / %1,7 kırmızı) |
+| en | **Cola** | Can of Pepsi | aynı dosya |
+| ar | **كولا** | علبة بيبسي | aynı dosya |
+| ru | **Кола** | Банка Pepsi | aynı dosya |
+
+**Eski önbellekte Coca-Cola kalmıyor — asıl merak edilen buydu.** Test iki
+ayrı durumda yapıldı:
+
+| Durum | Sonuç | Not |
+|---|---|---|
+| **Isınmış önbellek** (değişiklikten önce aynı sayfayı görmüş tarayıcı) | **PEPSI** | `transferSize` 1.300 bayt, yani görseli yeniden çekti |
+| **Temiz sekme** | **PEPSI** | %13,3 mavi |
+
+Üretimdeki `Cache-Control: public, max-age=0, must-revalidate` başlığı
+sayesinde tarayıcı her kullanımda ETag doğruluyor; dosya adı aynı kalsa da
+içerik değiştiği için yeni görseli hemen alıyor. Yerelde görülen 4 saatlik
+bayatlık (`max-age=14400`) üretimde yok.
+
+**Yedi fotoğrafın yedisi de doğru üründe, dört dilde** — dosya adı ve alt
+metin ürün ürün eşleştirildi. **56 ürün, 53 fotoğraflı, 3 fotoğrafsız**
+(Menemen, Karışık, Gazoz), boş alt metin 0, `sizes` `80px`, kalite `82`,
+ölçüler 384×384 (Dörtmevsim 375×375). Yedi dosyanın hepsi canlıda **200**
+dönüyor.
+
+**Sayfa yapısı bozulmadı** — fontlar yerleştikten sonra ölçüldü:
+
+| | 390px | 320px |
+|---|---|---|
+| tr | 0 / 32 / 516 / 16 / 488 / 0 / 0 / 580 | 92 / 308 / 792 / 292 / 764 / 0 / 0 / 856 |
+| ar | 0 / 32 / 516 / 31 / 506 / 0 / 0 / 580 | 92 / 308 / 792 / 327 / 861 / 0 / 0 / 856 |
+
+Değişiklik öncesiyle birebir aynı, yatay taşma her ölçüde 0. Arapça sayfada
+RTL korunuyor, görseller sağda.
+
+**Konsolda hata yok** — 0 hata, 0 uyarı.
+
+*Ölçüm notu:* Sayfada 53 görselin 31'i "yüklenmedi" görünüyor; sebebi
+`loading="lazy"` — görünür alandaki 6 görselin **hepsi** yüklü. Mevcut
+davranış, bu aşamayla ilgisi yok.
+
+`tohum-dogrula.ts` doğrulama sonrası da temiz: 8/8 kategori, 56/56 ürün,
+0 teyitsiz fiyat, *"hicbir alanda fark yok"*.
 
 === RAPOR SONU ===
