@@ -462,7 +462,17 @@ export const MENU: Kategori[] = [
         },
         icerik: null,
         fiyatlar: tek(200),
-        gorsel: null,
+        gorsel: {
+          src: "/urunler/kuymak.webp",
+          alt: {
+            tr: "Bakır sahanda kuymak",
+            en: "Kuymak in a copper pan",
+            ar: "كويماك في مقلاة نحاسية",
+            ru: "Куймак в медной сковороде",
+          },
+          genislik: 384,
+          yukseklik: 384,
+        },
       },
       {
         id: "patates-cips",
@@ -638,7 +648,17 @@ export const MENU: Kategori[] = [
           { sutun: "hamur15", tutar: 600, dogrulandi: true },
           { sutun: "duble", tutar: 800, dogrulandi: true },
         ],
-        gorsel: null,
+        gorsel: {
+          src: "/urunler/acik-spesiyal.webp",
+          alt: {
+            tr: "Sucuklu, mantarlı ve biberli spesiyal",
+            en: "Special with sucuk, mushrooms and peppers",
+            ar: "سبيشال بالسجق والفطر والفلفل",
+            ru: "Спесиял с суджуком, грибами и перцем",
+          },
+          genislik: 384,
+          yukseklik: 384,
+        },
       },
       {
         id: "acik-kasar-sucuk",
@@ -706,7 +726,17 @@ export const MENU: Kategori[] = [
           { sutun: "hamur15", tutar: 600, dogrulandi: true },
           { sutun: "duble", tutar: 800, dogrulandi: true },
         ],
-        gorsel: null,
+        gorsel: {
+          src: "/urunler/acik-dortmevsim.webp",
+          alt: {
+            tr: "Dört bölmeli açık pide",
+            en: "Open pide in four sections",
+            ar: "بيدة مفتوحة بأربعة أقسام",
+            ru: "Открытая пиде из четырёх частей",
+          },
+          genislik: 375,
+          yukseklik: 375,
+        },
       },
       {
         id: "acik-kasarli",
@@ -1434,10 +1464,10 @@ export const MENU: Kategori[] = [
         gorsel: {
           src: "/urunler/kola.webp",
           alt: {
-            tr: "Kola",
-            en: "Cola",
-            ar: "كولا",
-            ru: "Кола",
+            tr: "Pepsi kutusu",
+            en: "Can of Pepsi",
+            ar: "علبة بيبسي",
+            ru: "Банка Pepsi",
           },
           genislik: 384,
           yukseklik: 384,
@@ -1497,7 +1527,17 @@ export const MENU: Kategori[] = [
         },
         icerik: null,
         fiyatlar: tek(60),
-        gorsel: null,
+        gorsel: {
+          src: "/urunler/meyve-suyu.webp",
+          alt: {
+            tr: "Şeftali nektarı kutusu",
+            en: "Can of peach nectar",
+            ar: "علبة رحيق الخوخ",
+            ru: "Банка персикового нектара",
+          },
+          genislik: 384,
+          yukseklik: 384,
+        },
       },
       {
         id: "gazoz",
@@ -1526,7 +1566,17 @@ export const MENU: Kategori[] = [
           ru: "Газированная минеральная вода",
         },
         fiyatlar: tek(40),
-        gorsel: null,
+        gorsel: {
+          src: "/urunler/sade-soda.webp",
+          alt: {
+            tr: "Sade maden suyu şişesi",
+            en: "Bottle of plain sparkling water",
+            ar: "زجاجة مياه معدنية فوارة",
+            ru: "Бутылка простой минеральной воды",
+          },
+          genislik: 384,
+          yukseklik: 384,
+        },
       },
       {
         id: "meyveli-soda",
@@ -1543,7 +1593,17 @@ export const MENU: Kategori[] = [
           ru: "Газированная минеральная вода с фруктовым вкусом",
         },
         fiyatlar: tek(40),
-        gorsel: null,
+        gorsel: {
+          src: "/urunler/meyveli-soda.webp",
+          alt: {
+            tr: "Elmalı soda şişesi",
+            en: "Bottle of apple-flavoured soda",
+            ar: "زجاجة صودا بنكهة التفاح",
+            ru: "Бутылка содовой с яблоком",
+          },
+          genislik: 384,
+          yukseklik: 384,
+        },
       },
       {
         id: "kucuk-ayran",

@@ -3,8 +3,8 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 37 tamamlandı — uçtan uca testin bulgularından **beşi düzeltildi**: Arapça tipografisi (dört temada da ölüydü), görünmeyen metin için inen 39 KB font, sekme başlığının kitapta güncellenmemesi, panel aramasının kategori adlarını kapsamaması ve kaydetme onayının okunamaması. Aşama 37 dahil tamamı **üretimde canlı**. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Firebase Storage hâlâ kurulmadı. Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
-**Son güncelleme:** 2026-09-08
+**Güncel aşama:** Aşama 38 tamamlandı — **yedi fotoğraf işlendi**: altı yeni ürüne, biri de Kola'nın yerine (Coca-Cola → Pepsi; ürün adı sahibinin kararıyla jenerik kaldı). Fotoğraflı ürün **47 → 53**, fotoğrafsız **9 → 3** (Menemen, Karışık, Gazoz). Aşama 38 **henüz üretimde değil, push onayı bekliyor**; Aşama 37 dahil öncesi **üretimde canlı**. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Firebase Storage hâlâ kurulmadı. Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
+**Son güncelleme:** 2026-09-11
 
 ### Genel Durum
 
@@ -50,6 +50,7 @@ Numaralandırma rapor başlıklarıyla aynı: aşağıdaki her satırın karşı
 | 35 | Ürün fotoğraflarında netlik ve kırpma (kare format) | **Tamamlandı** — üretimde canlı |
 | 36 | Panele "Şifremi unuttum" (şifre sıfırlama) | **Tamamlandı** — üretimde canlı |
 | 37 | Uçtan uca test bulguları: beş düzeltme | **Tamamlandı** — üretimde canlı |
+| 38 | İkinci parti ürün fotoğrafları + Kola görseli | **Tamamlandı** — push onayı bekliyor |
 
 ### Bekleyenler
 
@@ -7765,5 +7766,210 @@ sayfada yatay taşma 0.
 Test izleri temizlendi: geçici hesaplar silindi (yönetici sayısı 1), fiyat
 geri alındı, `tohum-dogrula.ts` → 8/8 kategori, 56/56 ürün, *"hicbir alanda
 fark yok"*.
+
+=== RAPOR SONU ===
+
+## Aşama 38 — İkinci Parti Ürün Fotoğrafları ve Kola Görselinin Değişmesi · 2026-09-11
+
+=== RAPOR BAŞLANGICI ===
+
+**Tarih:** 2026-09-11 · **Dal:** `main` · **Durum:** push onayı bekliyor
+
+Yedi fotoğraf işlendi: **altı yeni ürüne**, biri de Kola'nın mevcut
+fotoğrafının yerine. **Fotoğraflı ürün 47 → 53**, fotoğrafsız **9 → 3**.
+
+Bu partide dosyalar **açılıp içeriğine bakılarak** eşleştirildi; dosya adına
+güvenilmedi. Üçünde sorun çıktı, üçü de mekân sahibine bildirildi.
+
+### 38.1 Kola / Pepsi — önce sorulan soru
+
+Gelen fotoğraf markalı bir **Pepsi** kutusu, menüdeki mevcut fotoğraf ise
+markalı bir **Coca-Cola** kutusuydu. Ürünün adı ise dört dilde de
+**jenerik**: "Kola / Cola / كولا / Кола".
+
+Bu yüzden "fotoğrafı değiştir" talimatı tek başına yetmedi: mekân
+Coca-Cola'dan Pepsi'ye geçtiyse ad da değişmeliydi, ikisini birden
+satıyorsa Pepsi ayrı bir ürün olmalıydı. Soruldu.
+
+**Karar: ad jenerik kalsın, yalnızca fotoğraf değişsin.** Uygulanan:
+
+| | Önce | Sonra |
+|---|---|---|
+| Ürün kimliği | `kola` | `kola` (değişmedi) |
+| Ad (4 dil) | Kola / Cola / كولا / Кола | **değişmedi** |
+| Fiyat | 60 ₺ | değişmedi |
+| Fotoğraf | Coca-Cola kutusu | **Pepsi kutusu** |
+| Alt metin | "Kola / Cola / كولا / Кола" | **"Pepsi kutusu / Can of Pepsi / علبة بيبسي / Банка Pepsi"** |
+
+Alt metin fotoğrafı anlatır, ürünü değil — fotoğrafta artık Pepsi olduğu
+için o da güncellendi.
+
+### 38.2 Dosya dosya inceleme
+
+Klasördeki sekiz yeni dosyanın hepsi açıldı; filigran, başka işletme logosu
+ve telif işareti arandı.
+
+| Dosya | Ürün | Fotoğrafta ne var | Sonuç |
+|---|---|---|---|
+| `pepsi kola.webp` | Kola (değişim) | Pepsi 250 ml kutu | temiz |
+| `dörtmevsimpide.png` | Açık Pide · Dörtmevsim | Dört bölmeli açık pide (sucuk / kavurma / kaşar / pastırma) | temiz |
+| `meyve suyu.jpg` | Meyve Suyu | Tamek Şeftali Nektarı kutusu | temiz |
+| `sade soda.png` | Sade Soda | İnişdibi doğal mineralli su şişesi | temiz |
+| `meyveli soda.jpg` | Meyveli Soda | Freşa elmalı soda şişesi | temiz |
+| `kuymakk.jpg` | Kuymak | Bakır sahandan çekilen kuymak | **filigran** |
+| `spesiyalpide.jpg` | Açık Pide · Spesiyal | Yuvarlak pizza | **logo + tür uyuşmazlığı** |
+| `menemenn.avif` | Menemen | — | **bozuk** |
+
+Marka ambalajı (Tamek, İnişdibi/Freşa, Pepsi) sorun sayılmadı: menüde zaten
+kabul edilmiş bir düzen (Coca-Cola, Yedigün, Lipton, İçim).
+
+### 38.3 Üç sorun ve nasıl ele alındı
+
+**Menemen yine bozuk — üstelik aynı dosya.** `menemenn.avif`, eski
+`menemen.avif` ile **birebir aynı** (MD5 `9b882a89…`). Metadata okunuyor
+(800×600 heif) ama piksel çözülmüyor: `bad seek to 62313`, dosya 62.281
+bayt — kesik. Yeni bir dosya değil, bozuk olanın adı değiştirilmiş kopyası.
+**Menemen fotoğrafsız kaldı.**
+
+**Kuymak'ta filigran vardı, kırpılarak çıkarıldı.** Sol altta yarı saydam
+bir metin duruyordu (kontrast artırılınca görüldü, tam okunamadı). Filigran
+alt şeritteydi; üstteki 1040 satırdan kare alınarak tamamen dışarıda
+bırakıldı. Kaynak yine hedefin 2,7 katı, yani kalite kaybı yok.
+
+**Spesiyal'de iki sorun vardı; biri çözüldü, biri sahibin kararıyla
+bırakıldı.** Görselin üst ortasında başka bir işletmenin **"NOS" logosu** ve
+çevresinde altın bir tanıtım çerçevesi vardı — **kırpılarak ikisi de
+çıkarıldı**. İkinci sorun duruyor: fotoğrafta **yuvarlak bir pizza** var,
+kayık biçimli açık pide değil. Bu bildirildi, "Açık Pide · Spesiyal"
+adının altında pizza görüneceği açıkça söylendi; fotoğrafın bu hâliyle
+kullanılmasına **mekân sahibi karar verdi.**
+
+Alt metni bu yüzden biçimi değil **malzemeleri** sayıyor: "Sucuklu,
+mantarlı ve biberli spesiyal". Ekran okuyucu kullanan birine görmediği bir
+şeyi ("açık pide") söylememek için.
+
+### 38.4 İşleme
+
+Ayar önceki fotoğraflarla aynı: **kare, webp kalite 82, `fit: cover`**.
+
+| Ürün | Kaynak | İşlem | Sonuç |
+|---|---|---|---|
+| kola | 400×400 | — | 384×384 · 5 KB |
+| acik-dortmevsim | 500×375 | — | **375×375** · 38 KB |
+| acik-spesiyal | 1024×1024 | logo + çerçeve kırpıldı | 384×384 · 46 KB |
+| kuymak | 1200×1200 | filigran kırpıldı | 384×384 · 16 KB |
+| meyve-suyu | 1650×1650 | — | 384×384 · 8 KB |
+| sade-soda | 500×500 | — | 384×384 · 6 KB |
+| meyveli-soda | 500×500 | — | 384×384 · 5 KB |
+
+**Hiçbir fotoğraf büyütülmedi.** `dörtmevsimpide.png` 500×375; çıkarılabilen
+en büyük kare 375, hedefin 9 piksel altında. Aşama 37'de konan "büyütme yok"
+kuralını korumak için o dosya **375×375** saklandı — yuva en fazla 80 CSS
+piksel, DPR 4'te 320 istiyor, 375 fazlasıyla yetiyor. Betik büyütme
+gerektiğinde durur.
+
+**Sıra korundu:** `data/menu.ts` → **Firestore** (`gorsel-guncelle.ts`,
+`tohum.ts` DEĞİL) → `tohum-dogrula.ts` → `npm run build`.
+
+### 38.5 Doğrulama
+
+**Yedi fotoğrafın yedisi de doğru üründe, dört dilde.** Ürün başına dosya
+adı ve alt metin tek tek eşleştirildi; dört dilde de aynı sonuç.
+
+| Ürün | Dosya | Alt metin (tr) |
+|---|---|---|
+| Kuymak | `kuymak` | Bakır sahanda kuymak |
+| Spesiyal | `acik-spesiyal` | Sucuklu, mantarlı ve biberli spesiyal |
+| Dörtmevsim | `acik-dortmevsim` | Dört bölmeli açık pide |
+| Kola | `kola` | Pepsi kutusu |
+| Meyve Suyu | `meyve-suyu` | Şeftali nektarı kutusu |
+| Sade Soda | `sade-soda` | Sade maden suyu şişesi |
+| Meyveli Soda | `meyveli-soda` | Elmalı soda şişesi |
+
+**Kola'nın adı dört dilde de değişmedi** — ekrandan doğrulandı: tr "Kola",
+en "Cola", ar "كولا", ru "Кола". Yalnızca fotoğraf ve alt metin yeni.
+
+**56 ürün, 53 fotoğraflı, 3 fotoğrafsız** (Menemen, Karışık, Gazoz) — dört
+dilde de aynı. Boş alt metin 0. `sizes` `80px`, kalite `82`, ölçüler
+384×384 (Dörtmevsim 375×375).
+
+**Sayfa yapısı hiç değişmedi.** Taşma değerleri üretimdekiyle birebir aynı:
+
+| | 390px | 320px |
+|---|---|---|
+| tr | 0 / 32 / 516 / 16 / 488 / 0 / 0 / 580 | 92 / 308 / 792 / 292 / 764 / 0 / 0 / 856 |
+| ar | 0 / 32 / 516 / 31 / 506 / 0 / 0 / 580 | 92 / 308 / 792 / 327 / 861 / 0 / 0 / 856 |
+
+Yatay taşma her ölçüde 0.
+
+*Ölçüm notu:* Aşama 37'de Arapça için verdiğim birkaç taşma değeri
+(Kapalı Pide 24, Izgara 804) **fontlar yerleşmeden** ölçülmüştü. Bu kez
+`document.fonts.ready` beklenerek ölçüldü ve üretimle karşılaştırıldı;
+yukarıdaki değerler her iki tarafta da aynı çıktı. Yani aradaki fark bu
+aşamadan değil, o günkü ölçümün erken alınmasından geliyormuş.
+
+```
+npx tsc --noEmit   → temiz
+npm run lint       → temiz
+npm run build      → başarılı, 42 statik sayfa
+tarayıcı konsolu   → 0 hata
+tohum-dogrula.ts   → 8/8 kategori, 56/56 urun, "hicbir alanda fark yok"
+```
+
+### 38.6 Bir tuzak: değişmeyen dosya adı ve önbellek
+
+Kola'nın dosya adı aynı kaldığı için (`/urunler/kola.webp`) yerelde sayfa
+hâlâ **Coca-Cola** gösteriyordu. Sebep araştırıldı:
+
+- Diskteki kaynak: **Pepsi**
+- Optimizatörün verdiği (önbellek atlanarak): **Pepsi**
+- Tarayıcının çizdiği: **Coca-Cola**
+
+Yani bayatlık tarayıcı önbelleğindeydi. Başlıklar farkı açıklıyor:
+
+| Ortam | Optimize görselin `Cache-Control` başlığı |
+|---|---|
+| Yerel `next start` | `public, max-age=14400, must-revalidate` (**4 saat**) |
+| Üretim (Vercel) | `public, max-age=0, must-revalidate` |
+
+Üretimde tarayıcı her kullanımda sunucuya sorup ETag'i doğruluyor; içerik
+değiştiği için yeni görseli hemen alıyor. Temiz sekmede yerelde de Pepsi
+göründü. **Canlı doğrulamada bu ayrıca sınanacak.**
+
+### 38.7 Değişen dosyalar
+
+| Dosya | Değişiklik |
+|---|---|
+| `public/urunler/*.webp` | 6 yeni dosya + `kola.webp` yenilendi |
+| `data/menu.ts` | 6 ürüne görsel, Kola'nın alt metni |
+| `betikler/gorsel-ekle-2.ts` | **yeni** — ikinci parti görsel işleyici, kırpma kutularıyla |
+| `betikler/gorsel-veri-2.ts` | **yeni** — görselleri ve alt metinleri veriye işler |
+| `yedek/urunler-2026-09-11/` | önceki 52 dosyanın yedeği (gitignore'da) |
+| `yedek/firestore-2026-09-11.json` | **yeni** |
+| `ILERLEME.md` | özet, aşama tablosu ve bu rapor |
+
+Ürün adları, fiyatlar, çeviriler, diğer fotoğraflar ve panel değişmedi.
+
+*Küçük düzeltme:* `gorsel-veri-2.ts` ilk çalıştığında fotoğrafsız sayısını
+**5** dedi; düz `gorsel: null` araması veri dosyasındaki iki **açıklama
+satırını** da sayıyordu. Sayaç girintiye bakacak şekilde düzeltildi, doğru
+sayı **3**. Ekrandaki yer tutucu sayısı da 3 — veri zaten doğruydu, yanlış
+olan yalnızca sayaçtı.
+
+### 38.8 Sıradaki adım
+
+Push ve deploy onay bekliyor.
+
+**Fotoğrafsız kalan 3 ürün:**
+
+| Ürün | Sebep |
+|---|---|
+| **Menemen** | Gönderilen dosya bozuk (eskisinin kopyası). Sağlam bir dosya gerekiyor |
+| **Açık Pide · Karışık** | Klasörde dosya yok |
+| **Gazoz** | Klasörde dosya yok |
+
+Ayrıca **Açık Pide · Spesiyal**'in fotoğrafı, sizin kararınızla, yuvarlak
+pizza gösteriyor. Gerçek bir açık pide fotoğrafı gelirse tek satırlık
+değişiklikle yenilenebilir.
 
 === RAPOR SONU ===
