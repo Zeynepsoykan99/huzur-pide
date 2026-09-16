@@ -428,7 +428,17 @@ export const MENU: Kategori[] = [
         },
         icerik: null,
         fiyatlar: tek(200),
-        gorsel: null,
+        gorsel: {
+          src: "/urunler/menemen.webp",
+          alt: {
+            tr: "Bakır sahanda menemen",
+            en: "Menemen in a copper pan",
+            ar: "منمن في مقلاة نحاسية",
+            ru: "Менемен в медной сковороде",
+          },
+          genislik: 384,
+          yukseklik: 384,
+        },
       },
       {
         id: "sucuklu-yumurta",
@@ -1549,7 +1559,17 @@ export const MENU: Kategori[] = [
         },
         icerik: null,
         fiyatlar: tek(60),
-        gorsel: null,
+        gorsel: {
+          src: "/urunler/gazoz.webp",
+          alt: {
+            tr: "Cam şişede gazoz",
+            en: "Gazoz in a glass bottle",
+            ar: "غازوز في زجاجة زجاجية",
+            ru: "Газоз в стеклянной бутылке",
+          },
+          genislik: 384,
+          yukseklik: 384,
+        },
       },
       {
         id: "sade-soda",

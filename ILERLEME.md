@@ -3,7 +3,7 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 40 tamamlandı ve **üretimde canlı**. Sonraya bırakılan dört iyileştirme yapıldı (Zeytin teması kaldırıldı; büyük harfli adres yönlendirmesi, canonical, hreflang, robots.txt, sitemap.xml, Open Graph, dile göre başlık; dil bağlantılarında ön yükleme kapatıldı; JavaScript kapalıyken oklar ve sayaç düzgün davranıyor) ve teslim hazırlığı yapıldı (`KULLANIM.md`, güncel yedek, dosya temizliği, güvenlik ve bağımlılık denetimi). **Teslimden önce karar bekleyen bir güvenlik güncellemesi var:** Bekleyenler, satır 1.
+**Güncel aşama:** Aşama 41 tamamlandı, **push onayı bekliyor**. Menemen ve Gazoz fotoğrafları eklendi: fotoğraflı ürün **53 → 55 / 56**. Menü henüz tamamlanmadı; tek eksik **Açık Pide · Karışık** (gelen dosya Kuşbaşılı Kaşarlı'nın kopyasıydı, kullanılmadı). Aşama 40'a kadar olan her şey **üretimde canlı**. Teslimden önce karar bekleyen bir güvenlik güncellemesi var: Bekleyenler, satır 1.
 **Son güncelleme:** 2026-09-16
 
 ### Genel Durum
@@ -53,6 +53,7 @@ Numaralandırma rapor başlıklarıyla aynı: aşağıdaki her satırın karşı
 | 38 | İkinci parti ürün fotoğrafları + Kola görseli | **Tamamlandı** — üretimde canlı |
 | 39 | Organizasyon görselinin değişmesi (yüzler bulanıklaştırıldı) | **Tamamlandı** — üretimde canlı |
 | 40 | Dört iyileştirme (İ1, İ4, İ5, İ6) + teslim hazırlığı | **Tamamlandı** — üretimde canlı |
+| 41 | Menemen ve Gazoz fotoğrafları (55/56) | **Tamamlandı** — push onayı bekliyor |
 
 ### Bekleyenler
 
@@ -65,7 +66,7 @@ satırları o günün kaydı olarak duruyor, güncel liste burası.
 | 2 | Firebase Storage / Blaze planı | **Hesap** — Firebase projesinin Blaze'e (kredi kartı bağlı, kullandıkça öde) geçirilmesi senin hesabından yapılacak bir işlem | Panelden fotoğraf yükleme buna bağlı; veri yapısındaki `gorsel` alanı ve panel akışı hazır bekliyor (Aşama 16) |
 | 3 | QR kodunun bakacağı adres | **Karar** — kök `https://huzur-pide.vercel.app` mi, doğrudan `.../tr` mi | Önerim `/tr`: yönlendirme atlanır, sayfa daha hızlı açılır. Kök adres her iki durumda da çalışır (Aşama 5). Alan adı kararıyla (4) birlikte ele alınmalı |
 | 4 | Vercel Hobby planı ve alan adı | **Karar + hesap** — Pro'ya geçmek ya da bilerek Hobby'de kalmak; özel alan adı | Ayrı ele alınacak. Site adresi kodda tek yerde (`data/site.ts` → `SITE_ADRESI`); alan adı değişince o satır güncellenir (Aşama 40) |
-| 5 | 3 ürünün fotoğrafı | **Dosya** — 56 üründen 3'ünün görseli yok | **Menemen**, **Açık Pide · Karışık**, **Gazoz**. Gelen `menemen.avif` / `menemenn.avif` bozuk (Aşama 34, 38) |
+| 5 | 1 ürünün fotoğrafı | **Dosya** — 56 üründen yalnızca 1'inin görseli yok | **Açık Pide · Karışık**. Aşama 41'de gelen `karısıkpideson.jpg`, Kuşbaşılı Kaşarlı'nın mevcut fotoğrafının küçük kopyası çıktı; sahibinin kararıyla kullanılmadı. Farklı bir Karışık fotoğrafı gelince menü tamamlanır. (Menemen ve Gazoz Aşama 41'de eklendi.) |
 | 6 | Arapça çevirilerin kontrolü | **Kişi** — ana dili Arapça olan birinin gözden geçirmesi | Özellikle Türkçe adın harf çevirisiyle yazıldığı kalemler: كاشارلي, كاريشيك, ساتش كافورما (Aşama 3) |
 | 7 | README | **Zaman** — bu sefer atlandı (Aşama 40, T2) | Şu an `create-next-app` şablonu. Yapı, ortam değişkeni adları, betikler, dağıtım ve yedek alma yazılacak. Mekân sahibi için kullanım notu ayrıca var: `KULLANIM.md` |
 
@@ -8465,9 +8466,10 @@ Hepsi AA'yı geçiyor. Karşılamanın CSS'ine bu aşamada dokunulmadı.
 Temizlik: iki geçici hesap silindi, **yönetici sayısı 1**. Test sonrası
 alınan yedekte Çoban Salata `100, teyitli`; `tohum-dogrula.ts` "fark yok".
 
-*Not:* `betikler/test-temizle.ts` bu sefer **kullanılmadı**: Firestore'u
-`data/menu.ts`'teki eski içeriğe döndürüyor, bugünkü menüyü bozardı.
-Fiyat panelden elle geri alındı.
+*Not:* `betikler/test-temizle.ts` bu sefer **kullanılmadı**: temayı zorla
+Çini'ye çeviriyor, canlıdaki Mürekkep değişirdi. Fiyat panelden elle geri
+alındı. *(Aşama 41'de düzeltildi: burada önce "eski içeriğe döndürür"
+yazıyordu; yanlıştı, `data/menu.ts` Firestore ile birebir aynı.)*
 
 *Ölçüm notları:*
 - Test sırasında ağ iki kez kısa süre koptu. Bir derleme Google Fonts'a
@@ -8649,5 +8651,166 @@ satır, 404 testinde belgenin kendi 404 yanıtı (beklenen).
 
 **Açık kalan:** Next.js güvenlik güncellemesi (Bekleyenler, satır 1) için
 karar.
+
+=== RAPOR SONU ===
+
+## Aşama 41 — Menemen ve Gazoz Fotoğrafları · 2026-09-16
+
+=== RAPOR BAŞLANGICI ===
+
+**Tarih:** 2026-09-16 · **Dal:** `main` · **Durum:** push onayı bekliyor
+
+Son üç eksik fotoğraf için dosya geldi. **İkisi işlendi (Menemen, Gazoz)**,
+Karışık Pide'nin dosyası başka bir ürünün fotoğrafının kopyası çıktı ve
+sahibinin kararıyla kullanılmadı.
+
+**Fotoğraflı ürün 53 → 55 / 56. Menü henüz tamamlanmadı:** tek eksik
+**Açık Pide · Karışık**.
+
+### 41.1 Menemen — dördüncü deneme, bu kez sağlam
+
+Önceki üç dosya bozuktu ve aynı dosyanın kopyalarıydı (MD5 `9b882a89…`).
+İşlemeden önce denetlendi:
+
+| Kontrol | Sonuç |
+|---|---|
+| Dosya | `menemenson`: uzantısız, içeriği **JPEG** (JFIF, 800×600, 3 kanal). `.jpg` eklendi |
+| MD5 | `370a46d5…`, bozuk dosyalardan **farklı** |
+| Piksel verisi | En katı modda (`failOn: "warning"`) **eksiksiz çözüldü**: 800×600×3 = 1.440.000 bayt |
+| Kesiklik | JPEG bitiş işareti (`FF D9`) yerinde; son satırlarda renk çeşitliliği var (kesik JPEG'de alt kısım düz gri olur) |
+| Boyut / veri | 97.102 bayt → piksel başına 1,62 bit, bu çözünürlükte olağan |
+| Görsel | Bakır sahanda menemen, maydanozla; ahşap altlık, yanda ekmek ve çay |
+
+Bu denetim `betikler/gorsel-ekle-3.ts` içine **kalıcı koruma** olarak
+konuldu: bilinen bozuk MD5 listesi, JPEG bitiş işareti, katı çözme. Biri
+tutmazsa betik hiçbir dosya yazmadan duruyor. **Sınandı:** eski
+`menemen.avif` verildiğinde önce MD5'e takıldı; MD5 kontrolü kapatılınca
+katı çözmeye takıldı ("bad seek to 62282"). İki kat da çalışıyor.
+
+### 41.2 Eşleştirme ve denetim
+
+| Dosya | Biçim | Ölçü | İçerik | Sonuç |
+|---|---|---|---|---|
+| `menemenson` → `.jpg` | JPEG | 800×600 | Bakır sahanda menemen | **Menemen** |
+| `gazozson.jpg` | JPEG | 283×581 | Cam şişe gazoz | **Gazoz** |
+| `karısıkpideson.jpg` | JPEG | 447×447 | Tahtada kıymalı-kaşarlı açık pide | **Kullanılmadı** |
+
+**Filigran, başka işletme logosu, telif işareti: üçünde de yok.** Çeyrekler
+kontrastı artırılarak büyütüldü; gazozun beyaz zeminindeki sapmalar ayrıca
+büyütülerek tarandı.
+
+**Karışık Pide — kopya fotoğraf.** Dosya, menüde zaten **Kuşbaşılı
+Kaşarlı** için kullanılan fotoğrafın küçük bir kopyası: kaynak 1000×1000,
+bu 447×447, MD5 farklı ama görüntü aynı. Aynı ölçeğe indirilince ortalama
+fark **5,3/255**, diğer açık pidelerle 35 ve üstü; yan yana bakıldığında
+tahta, limon ve dilim dizilişi birebir aynı. Menüdeki 58 fotoğrafın
+hepsiyle karşılaştırıldı; Menemen (en yakın 40,1) ve Gazoz (en yakın 26,4,
+beyaz zemin benzerliği) için çakışma yok. **Karar: Karışık fotoğrafsız
+kalıyor, yeni dosya bekleniyor.**
+
+**Gazoz etiketi** üreticinin reklam iddiasını taşıyor ("Türkiye'de tek!
+Koruyucu içermeyen Efsane Gazoz"). Pepsi'deki gibi bir marka ambalajı;
+80 piksellik yuvada okunmuyor. **Karar: sorun değil.**
+
+### 41.3 İşleme
+
+Ayar önceki partilerle aynı: kare, **384×384, webp q82**, büyütme yok.
+
+| Ürün | Yöntem | Çıktı |
+|---|---|---|
+| `menemen` | Merkezden kare (800×600 → 600×600) → 384. Kenarlardaki ekmeğin ve çay kulpunun bir kısmı dışarıda; sahan tam görünüyor | `public/urunler/menemen.webp` · 31.440 B |
+| `gazoz` | **Onaylı özel kadraj.** Kaynak bir ekran görüntüsü: şişe saf beyaz bir iç panelde, çevresinde çok açık mavimsi bir kenar (#f7fbfc) ve soluk bir çerçeve var. Merkezden kare kırpma (üstelik büyütme yasağıyla 283 px) şişenin tepesini ve dibini keserdi. İç panel alındı (x 16–235, y 10–559; şişe x 59–201, y 32–538, tamamen içeride), iki yana saf beyaz eklenip 550×550 yapıldı ve 384'e **küçültüldü**. Şişenin tamamı, diğer içecekler gibi beyaz zeminde | `public/urunler/gazoz.webp` · 4.416 B |
+
+**Alt metinler** (onaylı):
+
+| Ürün | tr | en | ar | ru |
+|---|---|---|---|---|
+| Menemen | Bakır sahanda menemen | Menemen in a copper pan | منمن في مقلاة نحاسية | Менемен в медной сковороде |
+| Gazoz | Cam şişede gazoz | Gazoz in a glass bottle | غازوز في زجاجة زجاجية | Газоз в стеклянной бутылке |
+
+**Sıra:**
+1. `data/menu.ts` → iki ürünün `gorsel` alanı dolduruldu.
+2. **Derlemeden önce** `gorsel-guncelle.ts` çalıştırıldı. Yalnızca iki
+   ürünün `gorsel` alanı yazıldı (menemen, gazoz: "yok" → yeni dosya);
+   `tohum.ts` kullanılmadı.
+3. `tohum-dogrula.ts`: 8/8 kategori, 56/56 ürün, teyitsiz 0, "fark yok".
+4. Derleme.
+
+### 41.4 Doğrulama (yerel üretim derlemesi)
+
+**İki fotoğraf dört dilde doğru satırda** (ekranda bakıldı, tr ve ar ekran
+görüntüsüyle):
+
+| Dil | Menemen (Kahvaltı, sayfa 2) | Gazoz (İçecekler, sayfa 8) |
+|---|---|---|
+| tr | Menemen · 200 ₺ · "Bakır sahanda menemen" | Gazoz · 60 ₺ · "Cam şişede gazoz" |
+| en | Menemen (Eggs with Tomato & Pepper) · "Menemen in a copper pan" | Gazoz (Turkish Soda) · "Gazoz in a glass bottle" |
+| ar | منمن (بيض بالطماطم والفلفل) · "منمن في مقلاة نحاسية" | غازوز (مشروب غازي) · "غازوز في زجاجة زجاجية" |
+| ru | Менемен (яичница с томатами и перцем) · "Менемен в медной сковороде" | Газоз (лимонад) · "Газоз в стеклянной бутылке" |
+
+Her iki görsel de yüklendi. `sizes="80px"`, kalite **q=82**, ekranda
+66×66, DPR 2'de 256w seçiliyor. Arapça'da görsel sağda, doğru.
+
+**Fotoğraf sayımı, dört dilde aynı:** 56 ürün, **55 fotoğraflı**,
+fotoğrafsız yalnızca **Karışık** (Açık Pide). Boş alt metin 0; bütün ürün
+görsellerinde `sizes` `80px`.
+
+**Sığma değişmedi — 16/16 birebir aynı:**
+
+| | 390px | 320px |
+|---|---|---|
+| tr | 0 / 32 / 516 / 16 / 488 / 0 / 0 / 580 | 92 / 308 / 792 / 292 / 764 / 0 / 0 / 856 |
+| en | 0 / 32 / 516 / 67 / 506 / 0 / 0 / 580 | 92 / 308 / 792 / 370 / 826 / 0 / 0 / 874 |
+| ar | 0 / 32 / 516 / 31 / 506 / 0 / 0 / 580 | 92 / 308 / 792 / 327 / 861 / 0 / 0 / 856 |
+| ru | 0 / 32 / 516 / 60 / 506 / 0 / 0 / 598 | 92 / 329 / 792 / 380 / 915 / 0 / 0 / 938 |
+
+Yer tutucu ile fotoğraf aynı yuvayı kullandığı için beklenen buydu.
+
+```
+npx tsc --noEmit   → temiz
+npm run lint       → temiz
+npm run build      → başarılı, 44 statik sayfa
+tarayıcı konsolu   → 0 hata (8 sayfa, dört dil), başarısız istek yok
+tohum-dogrula.ts   → 8/8 kategori, 56/56 ürün, "fark yok"
+```
+
+### 41.5 Push öncesi dikkat
+
+Firestore **şimdiden** yeni `gorsel` alanlarını taşıyor, ama iki dosya
+canlıda henüz yok. Canlı sayfalar statik olduğu için şu an etkilenmiyor.
+Push'tan önce panelden bir kayıt yapılırsa sayfalar yeniden üretilir ve
+bu iki üründe görsel kırık görünür. Push bu aralığı kapatıyor.
+
+### 41.6 Düzeltme — Aşama 40'taki `test-temizle.ts` notu
+
+40.6'da "`test-temizle.ts` Firestore'u eski içeriğe döndürür" yazmıştım.
+**Yanlıştı.** Betik `data/menu.ts`'e göre çalışıyor ve o dosya Firestore
+ile birebir aynı (`tohum-dogrula.ts` bunu doğruluyor). Betiğin asıl
+tehlikesi **temayı zorla Çini'ye çevirmesi**; canlıdaki Mürekkep
+değişirdi. Kullanmamak doğru karardı, gerekçe yanlış yazılmıştı. 40.6'daki
+not da düzeltildi.
+
+### 41.7 Değişen dosyalar
+
+| Dosya | Değişiklik |
+|---|---|
+| `public/urunler/menemen.webp` | yeni (384×384, 31.440 B) |
+| `public/urunler/gazoz.webp` | yeni (384×384, 4.416 B) |
+| `data/menu.ts` | iki ürünün `gorsel` alanı + dört dilde alt metin |
+| `betikler/gorsel-ekle-3.ts` | yeni: işleme ve Menemen koruması |
+| `ILERLEME.md` | özet, aşama tablosu, Bekleyenler satır 5, 40.6 düzeltmesi, bu rapor |
+| Firestore `urunler/menemen`, `urunler/gazoz` | yalnızca `gorsel` alanı |
+
+`yeni-gorseller/` git dışında: `menemenson` → `menemenson.jpg` yeniden
+adlandırıldı.
+
+Menü içeriği, fiyatlar, çeviriler, diğer görseller, tema ve panel
+değişmedi.
+
+### 41.8 Sıradaki adım
+
+Push için onay bekleniyor. Push sonrası canlı doğrulama 41.9'a eklenecek.
+Açık kalanlar: Karışık Pide fotoğrafı (yeni dosya), Next.js güvenlik
+güncellemesi (Bekleyenler, satır 1).
 
 === RAPOR SONU ===
