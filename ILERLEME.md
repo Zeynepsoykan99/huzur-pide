@@ -3,7 +3,7 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 40 tamamlandı, **push onayı bekliyor**. Sonraya bırakılan dört iyileştirme yapıldı (Zeytin teması kaldırıldı; büyük harfli adres yönlendirmesi, canonical, hreflang, robots.txt, sitemap.xml, Open Graph, dile göre başlık; dil bağlantılarında ön yükleme kapatıldı; JavaScript kapalıyken oklar ve sayaç düzgün davranıyor) ve teslim hazırlığı yapıldı (`KULLANIM.md`, güncel yedek, dosya temizliği, güvenlik ve bağımlılık denetimi). **Teslimden önce karar bekleyen bir güvenlik güncellemesi var:** Bekleyenler, satır 1. Aşama 39'a kadar olan her şey **üretimde canlı**.
+**Güncel aşama:** Aşama 40 tamamlandı ve **üretimde canlı**. Sonraya bırakılan dört iyileştirme yapıldı (Zeytin teması kaldırıldı; büyük harfli adres yönlendirmesi, canonical, hreflang, robots.txt, sitemap.xml, Open Graph, dile göre başlık; dil bağlantılarında ön yükleme kapatıldı; JavaScript kapalıyken oklar ve sayaç düzgün davranıyor) ve teslim hazırlığı yapıldı (`KULLANIM.md`, güncel yedek, dosya temizliği, güvenlik ve bağımlılık denetimi). **Teslimden önce karar bekleyen bir güvenlik güncellemesi var:** Bekleyenler, satır 1.
 **Son güncelleme:** 2026-09-16
 
 ### Genel Durum
@@ -52,7 +52,7 @@ Numaralandırma rapor başlıklarıyla aynı: aşağıdaki her satırın karşı
 | 37 | Uçtan uca test bulguları: beş düzeltme | **Tamamlandı** — üretimde canlı |
 | 38 | İkinci parti ürün fotoğrafları + Kola görseli | **Tamamlandı** — üretimde canlı |
 | 39 | Organizasyon görselinin değişmesi (yüzler bulanıklaştırıldı) | **Tamamlandı** — üretimde canlı |
-| 40 | Dört iyileştirme (İ1, İ4, İ5, İ6) + teslim hazırlığı | **Tamamlandı** — push onayı bekliyor |
+| 40 | Dört iyileştirme (İ1, İ4, İ5, İ6) + teslim hazırlığı | **Tamamlandı** — üretimde canlı |
 
 ### Bekleyenler
 
@@ -8262,7 +8262,7 @@ ağ isteği yok.
 
 === RAPOR BAŞLANGICI ===
 
-**Tarih:** 2026-09-16 · **Dal:** `main` · **Durum:** push onayı bekliyor
+**Tarih:** 2026-09-16 · **Dal:** `main` · **Durum:** üretimde canlı (40.12)
 
 Aşama 37'de sonraya bırakılan dört iyileştirme (İ1, İ4, İ5, İ6) yapıldı ve
 proje teslime hazırlandı. Kapsam dışı bırakılanlar: eksik üç ürün
@@ -8544,9 +8544,110 @@ panelin güvenlik mimarisi, Vercel planı ve alan adı.
 
 ### 40.11 Sıradaki adım
 
-Push için onay bekleniyor. Push sonrası canlı doğrulama (yönlendirmeler,
-etiketler, robots ve sitemap, ön yükleme sayısı ve boyutu, JS kapalı
-davranış, 40 sayfa, sığma, kontrast, konsol) 40.12'ye eklenecek. Ardından
-Next güvenlik güncellemesi için karar.
+Push edildi ve üretime çıktı; canlı doğrulama 40.12'de. Ardından Next
+güvenlik güncellemesi için karar.
+
+### 40.12 Canlı doğrulama · 2026-09-16
+
+`593e5ca` push edildi ve yaklaşık 60 saniyede üretime çıktı. Doğrulama
+**https://huzur-pide.vercel.app** üzerinde yapıldı.
+
+**Büyük harfli adresler yönleniyor (308):**
+
+| Adres | Sonuç |
+|---|---|
+| `/tr/MENU` · `/tr/Menu` | → `/tr/menu` |
+| `/tr/MENU/corbalar` | → `/tr/menu/corbalar` |
+| `/TR` · `/Tr/menu/IZGARA` | → `/tr` · `/tr/menu/izgara` |
+| `/PANEL` | → `/panel` |
+| `/tr/MENU?x=1` | → `/tr/menu?x=1` |
+| `/tr`, `/tr/menu`, `/tr/menu/corbalar`, `/panel` | 200, yönlendirme yok |
+| `/tr/menu/yok` | 404 |
+| `/` | 307 → `/tr` (eskisi gibi) |
+
+**Proxy statik önbelleği bozmadı:** `/tr`, `/tr/menu`, `/tr/menu/izgara`
+yanıtlarında `X-Vercel-Cache: HIT`; sayfalar hâlâ önbellekten geliyor.
+
+**robots.txt ve sitemap.xml:**
+- `robots.txt` 200: `Allow: /`, `Disallow: /panel`, sitemap adresi.
+- `sitemap.xml` 200: **40 adres**, her biri tek tek istendi, **40'ı da
+  200**.
+- Paylaşım görseli `/og/huzur-pide.jpg` 200, `image/jpeg`, 122.406 B.
+
+**Etiketler** (tr, ar, en/menu, ru/menu/izgara ham HTML'den):
+- Her sayfada canonical kendi adresi.
+- 5 hreflang bağlantısı var (4 dil + `x-default` → Türkçe karşılık).
+- `og:title`, `og:url`, `og:locale` (`tr_TR`, `ar_AR`, `en_US`, `ru_RU`)
+  ve `og:image` tam adresle; `twitter:card` = `summary`.
+- Tarayıcıda gezilen 40 sayfanın **40'ında canonical doğru**.
+- Panel ham HTML'de `noindex, nofollow`.
+
+**JavaScript kapalı** (`/…/menu/izgara`, dört dil × 320 ve 390): görünen
+ok **0**, görünen sayaç **0**, not şeridin içinde ve görünür (dört dilde
+onaylı metin), şerit **46 px**, yatay taşma 0. Ham HTML'de oklar sunucudan
+geliyor:
+
+| Rota | Geri | İleri | `<noscript>` notu |
+|---|---|---|---|
+| `corbalar` (1/8) | yok | var | var |
+| `izgara` (5/8) | var | var | var |
+| `icecekler` (8/8) | var | yok | var |
+
+**JavaScript açık** (tr ve ar): açılışta iki ok ve "5 / 8"; ileri → "6 / 8",
+adres `/…/menu/salatalar`; iki ileri daha → "8 / 8", ileri ok kalkıyor,
+adres `/…/menu/icecekler`. Not görünmüyor, şerit 46 px, konsol temiz.
+
+**Panel — yalnızca 3 tema kartı.** Geçici test hesabıyla girildi, **hiçbir
+şey değiştirilmedi**:
+- Kartlar: **Çini Levha, Gece Ocağı, Mürekkep**; seçili Mürekkep.
+- Önizleme `tema-murekkep` sınıfında.
+- "Zeytin" ne ekran metninde ne sayfanın HTML'inde geçiyor.
+- Çıkış sonrası giriş formu geliyor, konsol temiz.
+- Ekran görüntüsüyle de bakıldı.
+
+Test hesapları silindi, **yönetici sayısı 1**. `tohum-dogrula.ts`: 8/8
+kategori, 56/56 ürün, "fark yok".
+
+**40 sayfa** (4 dil × karşılama + menü + 8 kategori, telefon öykünmesi):
+hepsi **200**, `lang`/`dir` doğru (ar `rtl`), yatay taşma 0, kırık görsel
+0. Sekme başlıkları dile göre:
+- tr: "Huzur Pide · Fırından sofranıza"
+- en: "Huzur Pide · From our oven to your table"
+- ar: "Huzur Pide · من فرننا إلى مائدتك"
+- ru: "Huzur Pide · Из печи на ваш стол"
+
+404 sayfası: durum 404, `noindex`, "Ana ekrana dön" → `/tr`.
+
+**Sığma bozulmadı — değişiklik öncesiyle 16/16 birebir aynı:**
+
+| | 390px | 320px |
+|---|---|---|
+| tr | 0 / 32 / 516 / 16 / 488 / 0 / 0 / 580 | 92 / 308 / 792 / 292 / 764 / 0 / 0 / 856 |
+| en | 0 / 32 / 516 / 67 / 506 / 0 / 0 / 580 | 92 / 308 / 792 / 370 / 826 / 0 / 0 / 874 |
+| ar | 0 / 32 / 516 / 31 / 506 / 0 / 0 / 580 | 92 / 308 / 792 / 327 / 861 / 0 / 0 / 856 |
+| ru | 0 / 32 / 516 / 60 / 506 / 0 / 0 / 598 | 92 / 329 / 792 / 380 / 915 / 0 / 0 / 938 |
+
+**Karşılama kontrastı AA'yı geçiyor** (dört dilin en düşüğü): slogan
+5,00 (ar, 320px; eşik 4,5) · Lezzetler başlık 4,62 (en, 320px; eşik 3) ·
+Lezzetler metin 5,51 · Organizasyon başlık 6,43 · Organizasyon metin 6,18.
+Değerler yerel ölçümle aynı.
+
+**Ön yükleme — canlıda önce/sonra** (telefon öykünmesi, sayfa sonuna
+kadar):
+
+| Sayfa | Önce | Sonra |
+|---|---|---|
+| `/tr` | 20 istek · 24,2 KB | **6 istek · 6,1 KB** |
+| `/tr/menu` | 55 istek · 82,8 KB | **38 istek · 71,0 KB** |
+| `/tr/menu/izgara` | 30 istek · 46,7 KB | **9 istek · 10,4 KB** |
+
+Kalan istekler yalnızca ana akışın hedefleri (`/tr/menu`, kategoriler,
+`/tr`); dil adreslerine giden ön yükleme 0.
+
+**Konsol: 0 hata, 0 uyarı.** 40 sayfa ve panel gezildi. Kayıtlardaki tek
+satır, 404 testinde belgenin kendi 404 yanıtı (beklenen).
+
+**Açık kalan:** Next.js güvenlik güncellemesi (Bekleyenler, satır 1) için
+karar.
 
 === RAPOR SONU ===
