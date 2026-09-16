@@ -230,8 +230,8 @@ export function KarsilamaEkrani({ dil, tema }: MotifProps & { dil: DilKodu }) {
         </GorselliBolum>
 
         <GorselliBolum
-          gorsel={MEKAN_GORSELLERI.disGorunum}
-          alt={metin(GORSEL_ALT.disGorunum, dil)}
+          gorsel={MEKAN_GORSELLERI.organizasyon}
+          alt={metin(GORSEL_ALT.organizasyon, dil)}
         >
           <h2 className="kars-baslik">{ui("organizasyon", dil)}</h2>
           <BaslikAyraci tema={tema} sinif="kars-ayrac" />

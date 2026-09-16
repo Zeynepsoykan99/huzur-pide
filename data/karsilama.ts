@@ -76,6 +76,15 @@ export const ORGANIZASYON_METNI: Cevrilebilir = {
  * karşılamadan kaldırıldı ama dosya ileride gerekebileceği için duruyor.
  * Kullanılmıyor diye silmeyin.
  *
+ * `public/mekan/dis-gorunum.webp` de aynı durumda: Organizasyon bölümünde
+ * eskiden o vardı (akşam ışığında dış görünüm, otopark), Aşama 39'da
+ * `organizasyon.webp` ile değiştirildi. Dosya bilerek duruyor, silmeyin.
+ *
+ * `organizasyon.webp`'deki misafirlerin YÜZLERİ BULANIKLAŞTIRILDI (yetişkin
+ * ve çocuk). Kadraj kaynakla aynı, kırpma yok. Kaynak dosya
+ * (`yeni-gorseller/organizasyon2.jpeg`) yeniden işlenirse bulanıklaştırma
+ * da yeniden yapılmalı — ham kaynak doğrudan kullanılmamalı.
+ *
  * ÖLÇÜLER BURADA ÇÜNKÜ DÜZEN ONLARA BAĞLI. Blokların yüksekliği sabit değil,
  * görselin kendi oranından geliyor (`--kars-oran`) — böylece `object-fit:
  * cover` hiçbir şeyi kırpmıyor. Sabit yükseklik kullanıldığında masaüstünde
@@ -83,7 +92,7 @@ export const ORGANIZASYON_METNI: Cevrilebilir = {
  */
 export const MEKAN_GORSELLERI = {
   dukkan: { src: "/mekan/dukkan.webp", genislik: 1080, yukseklik: 1080 },
-  disGorunum: { src: "/mekan/dis-gorunum.webp", genislik: 1360, yukseklik: 1020 },
+  organizasyon: { src: "/mekan/organizasyon.webp", genislik: 1600, yukseklik: 1200 },
   firin: { src: "/mekan/firin.webp", genislik: 1280, yukseklik: 1024 },
 } as const;
 
@@ -95,11 +104,11 @@ export const GORSEL_ALT: Record<keyof typeof MEKAN_GORSELLERI, Cevrilebilir> = {
     ar: "لافتة حضور بيدة وشرفتها الزجاجية",
     ru: "Вывеска Huzur Pide и застеклённая терраса",
   },
-  disGorunum: {
-    tr: "Akşam ışıklarıyla Huzur Pide ve otoparkı",
-    en: "Huzur Pide and its car park in the evening light",
-    ar: "حضور بيدة وموقف سياراتها في ضوء المساء",
-    ru: "Huzur Pide и парковка в вечернем свете",
+  organizasyon: {
+    tr: "Huzur Pide'nin bahçesinde kurulmuş düğün masaları",
+    en: "Wedding tables set up in the Huzur Pide garden",
+    ar: "طاولات عرس مُعدّة في حديقة حضور بيدة",
+    ru: "Свадебные столы в саду Huzur Pide",
   },
   firin: {
     tr: "Taş fırında yanan odun ateşi",

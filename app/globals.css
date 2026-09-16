@@ -1026,7 +1026,7 @@
  * daha koyu, ortada en koyu bir gradyan kullaniliyor: metin bandinin
  * arkasi her fotografta ayni koyuluga iniyor.
  *
- * Bu ORTAK deger firin ve dis gorunum bloklari icin; hero'nunki ayri ve
+ * Bu ORTAK deger firin ve organizasyon bloklari icin; hero'nunki ayri ve
  * daha hafif (asagida, `.kars-hero .kars-perde`).
  *
  * Degerler OLCUMLE bulundu, gozle degil:
@@ -1332,7 +1332,7 @@ a.kars-satir:hover {
  * Blogun orani gorselden geldigi icin, tam genislikte birakilsaydi
  * masaustunde hero 1265x1265 olurdu — tek gorsel ekrandan tasardi. Genislik
  * sinirlaninca oran korunuyor, yukseklik makul kaliyor: hero 704x704,
- * firin 704x563, dis gorunum 704x528.
+ * firin 704x563, organizasyon 704x528.
  *
  * Yanlarda kalan alan temanin kendi zemini ve deseni; blok kenari yuvarlanip
  * bilincli bir sutun gibi duruyor, kazara dar kalmis gibi degil.

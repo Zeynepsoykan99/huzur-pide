@@ -3,8 +3,8 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 38 tamamlandı — **yedi fotoğraf işlendi**: altı yeni ürüne, biri de Kola'nın yerine (Coca-Cola → Pepsi; ürün adı sahibinin kararıyla jenerik kaldı). Fotoğraflı ürün **47 → 53**, fotoğrafsız **9 → 3** (Menemen, Karışık, Gazoz). Aşama 38 dahil tamamı **üretimde canlı**. Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Firebase Storage hâlâ kurulmadı. Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
-**Son güncelleme:** 2026-09-11
+**Güncel aşama:** Aşama 39 tamamlandı, **push onayı bekliyor**. Karşılama sayfasındaki Organizasyon görseli değişti: yeni görsel düğün için kurulmuş bahçe (`organizasyon.webp`), misafirlerin yüzleri bulanıklaştırıldı, kadraj ve 4:3 oran aynı kaldı. Eski `dis-gorunum.webp` kullanımdan kalktı ama silinmedi. Aşama 38'e kadar olan her şey **üretimde canlı**; Aşama 38'de fotoğraflı ürün **47 → 53**, fotoğrafsız **9 → 3** oldu (Menemen, Karışık, Gazoz). Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Firebase Storage hâlâ kurulmadı. Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
+**Son güncelleme:** 2026-09-16
 
 ### Genel Durum
 
@@ -51,6 +51,7 @@ Numaralandırma rapor başlıklarıyla aynı: aşağıdaki her satırın karşı
 | 36 | Panele "Şifremi unuttum" (şifre sıfırlama) | **Tamamlandı** — üretimde canlı |
 | 37 | Uçtan uca test bulguları: beş düzeltme | **Tamamlandı** — üretimde canlı |
 | 38 | İkinci parti ürün fotoğrafları + Kola görseli | **Tamamlandı** — üretimde canlı |
+| 39 | Organizasyon görselinin değişmesi (yüzler bulanıklaştırıldı) | **Tamamlandı** — push onayı bekliyor |
 
 ### Bekleyenler
 
@@ -8023,5 +8024,172 @@ davranış, bu aşamayla ilgisi yok.
 
 `tohum-dogrula.ts` doğrulama sonrası da temiz: 8/8 kategori, 56/56 ürün,
 0 teyitsiz fiyat, *"hicbir alanda fark yok"*.
+
+=== RAPOR SONU ===
+
+## Aşama 39 — Organizasyon Görselinin Değişmesi · 2026-09-16
+
+=== RAPOR BAŞLANGICI ===
+
+**Tarih:** 2026-09-16 · **Dal:** `main` · **Kaynak:** `yeni-gorseller/organizasyon2.jpeg` · **Durum:** push onayı bekliyor
+
+Karşılama sayfasındaki Organizasyon bölümünün arka plan görseli değişti.
+Önceki görsel akşam ışığında dış görünüm ve otoparktı, yenisi düğün için
+kurulmuş bahçe. Misafirlerin yüzleri bulanıklaştırıldı; kadraj, oran ve
+düzen olduğu gibi kaldı.
+
+### 39.1 Görsel ve denetim
+
+| | `organizasyon2.jpeg` |
+|---|---|
+| Ölçü | 1600×1200, JPEG, sRGB, EXIF yok, saydamlık yok |
+| Oran | **4:3 yatay (1,333)**, eski görselle (1360×1020) birebir aynı |
+| İçerik | Akşamüstü, düğün için kurulmuş bahçe: beyaz örtülü yuvarlak masalar, çiçekli iki kemer, taş yol ve yanan zemin lambaları, sağda kiremit çatılı çardak ve tül perdeli köşe, arkada kavaklar ve çocuk oyun alanı. Üst %40'ı açık mavi gökyüzü. |
+
+**Filigran denetimi temiz.** Görsel dört çeyreğe bölünüp 2× büyütülerek tarandı.
+Filigran, telif işareti, başka işletmenin logosu, tabela, yazı ve araç
+plakası yok.
+
+**Bulgu: görselde kişiler var.** ~12 kişi görünüyor: bir masada dört yaşlı
+erkek, bir masada üç genç kadın, oyun alanının önünde birkaç yetişkin ve
+**bir çocuk**. Yüzler kaynakta 15–25 piksel. Durum bildirildi. İlk tercih
+`organizasyon1.jpeg`'e bakmaktı; o da denetlendi ve **daha kötü çıktı**:
+
+| | organizasyon2 | organizasyon1 |
+|---|---|---|
+| Kişi | ~12 | 50'den fazla, çoğunun yüzü net |
+| Çocuk | 1, küçük, arka planda | 2, büyük, ön planda |
+| Filigran, logo, plaka | yok | yok |
+
+**Karar: organizasyon2 kullanılacak, yüzler bulanıklaştırılacak, kadraj
+korunacak.**
+
+### 39.2 İşleme
+
+1. **Yüzlerin bulanıklaştırılması.** On dört kişinin baş bölgesi kaynak
+   koordinatlarında işaretlendi. İşaretler kırmızı çerçeveyle büyütülerek
+   kontrol edildi. Her başa 34×40 piksellik elips konuldu ve orada görsel,
+   gauss bulanıklığı (σ=7) uygulanmış kopyasıyla birleştirildi. Maskenin
+   kenarı σ=3 ile yumuşatıldı, bu yüzden keskin bir yama görünmüyor.
+   Kapsananlar: dört yaşlı erkek, üç genç kadın, oyun alanındaki beş
+   yetişkin, çocuk ve kemerin yanındaki kadın. Sonuç 3× büyütmede
+   denetlendi, **tanınabilir yüz kalmadı**.
+2. **Dönüşüm:** `public/mekan/organizasyon.webp`, webp q75, **1600×1200**,
+   258.178 B. Kırpma yok, büyütme yok, kaynak ölçüsü korundu. Diğer mekân
+   görselleriyle aynı yöntem.
+
+Ham kaynak doğrudan kullanılmamalı. Dosya yeniden işlenirse bulanıklaştırma
+da yeniden yapılmalı. Bu not `data/karsilama.ts`'e de yazıldı.
+
+### 39.3 Kod
+
+| Dosya | Değişiklik |
+|---|---|
+| `data/karsilama.ts` | `MEKAN_GORSELLERI.disGorunum` → `organizasyon` (`/mekan/organizasyon.webp`, 1600×1200). Alt metin dört dilde yenilendi. `dis-gorunum.webp` ve bulanıklaştırma için "silmeyin / ham kaynağı kullanmayın" notu eklendi. |
+| `components/ekranlar.tsx` | Organizasyon bloğu yeni anahtara bağlandı |
+| `app/globals.css` | İki yorumda "dis gorunum" → "organizasyon". Kural değişmedi, **perde değerlerine dokunulmadı.** |
+| `public/mekan/organizasyon.webp` | yeni |
+| `ILERLEME.md` | özet, aşama tablosu ve bu rapor |
+
+Yeni alt metinler (onaylı):
+
+| Dil | Alt metin |
+|---|---|
+| tr | Huzur Pide'nin bahçesinde kurulmuş düğün masaları |
+| en | Wedding tables set up in the Huzur Pide garden |
+| ar | طاولات عرس مُعدّة في حديقة حضور بيدة |
+| ru | Свадебные столы в саду Huzur Pide |
+
+**Eski görsel silinmedi:** `public/mekan/dis-gorunum.webp` ve
+`yeni-gorseller/huzur pide2.webp` yerinde duruyor. Yalnızca koddaki
+kullanımı kalktı.
+
+### 39.4 Blok ölçüleri — değişmedi
+
+Oran aynı (4:3) olduğu için `--kars-oran` da aynı. Ölçüm üretim derlemesi
+üzerinde yapıldı.
+
+**Telefon öykünmesi** (`isMobile`, 3× piksel yoğunluğu), dört dilde aynı:
+
+| Genişlik | Hero / Lezzetler / Organizasyon | Organizasyon görünen | İnen dosya | Taşma |
+|---|---|---|---|---|
+| 390 | 390×390 / 390×312 / **390×293** | **%100** | 1200w | 0 |
+| 320 | 320×320 / 320×256 / **320×244** | **%98,5** | 1080w | 0 |
+
+**Masaüstü 1280px**, dört dilde aynı: 704×704 / 704×563 / **704×528**,
+görünen **%99,8** (kutu 528'e yuvarlanıyor), inen dosya 750w, taşma 0.
+
+**Masaüstü Chromium'da dar pencere** (15 piksellik kaydırma çubuğu içerik
+alanını 305 piksele indiriyor): 390px'te 375×281, %99,8. 320px'te tr ve ar
+305×244 (%93,8), en ve ru 305×269 (%84,6). Bu, metnin kutuya sığmayıp
+bloğu uzattığı bilinen uç durum (Aşama 25). Görselden bağımsız: oran
+aynı olduğu için eski görselde de aynıydı.
+
+Lezzetler ve hero ile denge bozulmadı, çünkü üç bloğun ölçüsü de
+değişiklik öncesiyle aynı.
+
+### 39.5 Kontrast — gerçek sayfada ölçüldü
+
+Yöntem Aşama 25 ile aynı: başlık, ayraç ve metin `visibility: hidden` ile
+gizlendi, tam sayfa ekran görüntüsü alındı ve **metnin satır kutularının**
+arkasındaki en açık piksel bulundu. Metinlerin hepsi tam beyaz (`#fff`).
+
+**Organizasyon** (en açık piksel, yani en kötü durum):
+
+| Dil | Genişlik | Başlık (eşik 3:1) | Metin (eşik 4,5:1) |
+|---|---|---|---|
+| tr | 320 / 390 / 1280 | 6,87 / 6,72 / 6,51 | 5,99 / 6,70 / 6,51 |
+| en | 320 / 390 / 1280 | 7,07 / 7,10 / 6,51 | 5,99 / 6,70 / 6,23 |
+| ar | 320 / 390 / 1280 | **5,55** / 6,82 / 6,51 | 5,99 / 6,70 / 6,50 |
+| ru | 320 / 390 / 1280 | 6,98 / 7,01 / 6,51 | 5,99 / 6,70 / 6,23 |
+
+**Hepsi AA'yı geçiyor.** En dar nokta başlıkta 5,55:1 (ar, 320px), gövde
+metninde 5,99:1. Eski görselle 390px'te başlık 6,39, metin 6,16 idi;
+metin tarafında durum iyileşti. Parlak gökyüzü perdenin koyu bandının
+altında kalıyor, **perdeye dokunmaya gerek olmadı.** Uygulamadan önce
+yapılan model hesabı da (telefon 5,75, masaüstü 5,39) bununla uyumlu.
+
+Karşılaştırma için Lezzetler de ölçüldü (bu aşamada dokunulmadı). En dar
+nokta en/320px başlıkta 4,07:1. Başlık 24px olduğu için iri metin sayılıyor
+ve eşiği 3:1; geçiyor.
+
+### 39.6 Dört dil ve RTL
+
+Blok ekran görüntüleriyle bakıldı (tr ve ar'da 390 ve 1280, ru'da 390).
+**Yeni görsel ekranda görünüyor ve tam:** sol üstte çatı saçağı, altta zemin
+lambaları, sağda çardak var. Bulanıklaştırılan yüzler perdenin altında
+dikkat çekmiyor.
+
+| Dil | `dir` | Başlık | Alt metin | Hizalama |
+|---|---|---|---|---|
+| tr | ltr | Organizasyon | tr | ortalı, ayraç tam ortada |
+| en | ltr | Events | en | aynı |
+| ar | **rtl** | المناسبات | ar | ortalı, satırlar sağdan başlıyor, ayraç tam ortada |
+| ru | ltr | Банкеты | ru | aynı |
+
+Görsel arka plan olduğu için yöne bağlı değil. Arapça sayfada aynalanması
+gereken tek şey metin, o da doğru.
+
+### 39.7 Doğrulama
+
+```
+npx tsc --noEmit   → temiz (çıkış 0)
+npm run lint       → temiz (çıktı yok)
+npm run build      → başarılı
+tarayıcı konsolu   → 0 hata, 0 uyarı (dört dil × 390 ve 1280, temiz sekmelerde)
+ağ                 → başarısız istek yok
+```
+
+*Ölçüm notu:* Kontrast betiği çalışırken konsolda uyarılar görüldü. Bunlar
+betiğin kendi canvas okumalarından ve sayfanın hızlı yeniden yüklenmesinden
+kaynaklanan bir ön yükleme uyarısıydı. Betiksiz, temiz sekmelerle yapılan
+turda hiçbiri çıkmadı.
+
+Firestore'a, menüye, panele, hero ve Lezzetler görsellerine, sayfada görünen
+metinlere, iletişim bilgilerine ve akışa **dokunulmadı.**
+
+### 39.8 Sıradaki adım
+
+Push için onay bekleniyor. Push sonrası canlı doğrulama 39.9'a eklenecek.
 
 === RAPOR SONU ===
