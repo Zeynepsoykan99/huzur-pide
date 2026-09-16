@@ -3,7 +3,7 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 39 tamamlandı, **push onayı bekliyor**. Karşılama sayfasındaki Organizasyon görseli değişti: yeni görsel düğün için kurulmuş bahçe (`organizasyon.webp`), misafirlerin yüzleri bulanıklaştırıldı, kadraj ve 4:3 oran aynı kaldı. Eski `dis-gorunum.webp` kullanımdan kalktı ama silinmedi. Aşama 38'e kadar olan her şey **üretimde canlı**; Aşama 38'de fotoğraflı ürün **47 → 53**, fotoğrafsız **9 → 3** oldu (Menemen, Karışık, Gazoz). Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Firebase Storage hâlâ kurulmadı. Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
+**Güncel aşama:** Aşama 39 tamamlandı ve **üretimde canlı**. Karşılama sayfasındaki Organizasyon görseli değişti: yeni görsel düğün için kurulmuş bahçe (`organizasyon.webp`), misafirlerin yüzleri bulanıklaştırıldı, kadraj ve 4:3 oran aynı kaldı. Eski `dis-gorunum.webp` kullanımdan kalktı ama silinmedi. Aşama 38'de fotoğraflı ürün **47 → 53**, fotoğrafsız **9 → 3** oldu (Menemen, Karışık, Gazoz). Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Firebase Storage hâlâ kurulmadı. Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
 **Son güncelleme:** 2026-09-16
 
 ### Genel Durum
@@ -51,7 +51,7 @@ Numaralandırma rapor başlıklarıyla aynı: aşağıdaki her satırın karşı
 | 36 | Panele "Şifremi unuttum" (şifre sıfırlama) | **Tamamlandı** — üretimde canlı |
 | 37 | Uçtan uca test bulguları: beş düzeltme | **Tamamlandı** — üretimde canlı |
 | 38 | İkinci parti ürün fotoğrafları + Kola görseli | **Tamamlandı** — üretimde canlı |
-| 39 | Organizasyon görselinin değişmesi (yüzler bulanıklaştırıldı) | **Tamamlandı** — push onayı bekliyor |
+| 39 | Organizasyon görselinin değişmesi (yüzler bulanıklaştırıldı) | **Tamamlandı** — üretimde canlı |
 
 ### Bekleyenler
 
@@ -8190,6 +8190,62 @@ metinlere, iletişim bilgilerine ve akışa **dokunulmadı.**
 
 ### 39.8 Sıradaki adım
 
-Push için onay bekleniyor. Push sonrası canlı doğrulama 39.9'a eklenecek.
+Push edildi ve üretime çıktı; canlı doğrulama 39.9'da.
+
+### 39.9 Canlı doğrulama · 2026-09-16
+
+`d716c98` push edildi ve yaklaşık 60 saniyede üretime çıktı. Doğrulama
+**https://huzur-pide.vercel.app** üzerinde yapıldı.
+
+**Yeni görsel canlıda ve doğru.**
+- Canlıdaki `/mekan/organizasyon.webp` depodaki dosyayla **bayt bayt aynı**.
+- `/tr` sayfası yalnızca `dukkan`, `firin` ve `organizasyon` görsellerini
+  kullanıyor; `dis-gorunum` sayfada geçmiyor.
+- `dis-gorunum.webp` dosyası sunucuda duruyor ve 200 dönüyor (silinmedi).
+
+| Ekran | İnen dosya | Yüklendi |
+|---|---|---|
+| Telefon 320 (3×) | organizasyon 1080w | ✓ |
+| Telefon 390 (3×) | organizasyon 1200w | ✓ |
+| Masaüstü 1280 | organizasyon 750w | ✓ |
+
+**Yüzler gerçekten bulanık.** İki dosya büyütülerek kontrol edildi: canlıdaki
+ham dosya (1600) ve `next/image`'ın telefona sunduğu 1200w sürüm. On dört
+başın hepsi bulanık, tanınabilir yüz yok. Çocuk da buna dahil. Yeniden
+sıkıştırma bulanıklığı bozmamış. Blok ekran görüntülerinde (tr/390,
+ar/1280) görsel tam görünüyor: çatı saçağı, masalar, çardak, zemin
+lambaları yerinde. Bulanık alanlar perdenin altında dikkat çekmiyor.
+
+**Kontrast dört dilde AA geçiyor.** Başlık, ayraç ve metin gizlendi,
+metnin satır kutularının arkasındaki en açık piksel ölçüldü:
+
+| Dil | Başlık 320 / 390 / 1280 (eşik 3:1) | Metin 320 / 390 / 1280 (eşik 4,5:1) |
+|---|---|---|
+| tr | 6,47 / 6,53 / 6,50 | 6,25 / 6,18 / 6,59 |
+| en | 7,01 / 6,82 / 6,51 | 6,25 / 6,18 / 6,23 |
+| ar | 6,45 / 6,54 / 6,51 | 6,25 / 6,18 / 6,50 |
+| ru | 6,89 / 6,68 / 6,51 | 6,18 / 6,18 / 6,23 |
+
+En dar nokta gövde metninde **6,18:1**, başlıkta **6,45:1**. Canlıdaki
+telefon ölçümü gerçek telefon öykünmesiyle yapıldı, yerel masaüstü
+Chromium'daki kaydırma çubuğu burada yok. Bu yüzden değerler 39.5'tekinden
+biraz yüksek.
+
+**Sayfa yapısı bozulmadı**, dört dilde birebir aynı:
+
+| Ekran | Hero / Lezzetler / Organizasyon | Organizasyon görünen | Taşma |
+|---|---|---|---|
+| Telefon 320 | 320×320 / 320×256 / 320×244 | %98,5 | 0 |
+| Telefon 390 | 390×390 / 390×312 / 390×293 | **%100** | 0 |
+| Masaüstü 1280 | 704×704 / 704×563 / 704×528 | **%100** | yok |
+
+- Başlık sırası dört dilde doğru: `Huzur Pide` (h1) → Lezzetler →
+  Organizasyon → İletişim. Organizasyon başlıkları: Organizasyon / Events /
+  المناسبات / Банкеты.
+- Her dilde 4 iletişim bağlantısı ve 2 Menü butonu yerinde.
+- Alt metinler dile göre doğru. `/ar` sayfası `dir="rtl"`, diğerleri `ltr`.
+
+**Konsol: 0 hata, 0 uyarı.** Dört dil, üç ekran (12 temiz sekme). Başarısız
+ağ isteği yok.
 
 === RAPOR SONU ===
