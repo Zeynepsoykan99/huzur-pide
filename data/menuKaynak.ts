@@ -2,7 +2,7 @@ import "server-only";
 import { cache } from "react";
 import { db } from "@/lib/firebase-sunucu";
 import type { Kategori, MenuSayfasi, Urun } from "@/data/menu";
-import { TEMA_KODLARI, secilebilirTema, type TemaKodu } from "@/data/tema";
+import { VARSAYILAN_TEMA, gecerliTema, type TemaKodu } from "@/data/tema";
 import { renkleriCoz, type CozulmusRenkler, type TemaRenkSecimi } from "@/data/renkler";
 
 /**
@@ -29,13 +29,8 @@ type MenuAnliki = {
   kategoriler: Kategori[];
   sayfalar: MenuSayfasi[];
   tema: TemaKodu;
-  /**
-   * Aktif temanın renkleri — panelden seçilen ya da temanın varsayılanı.
-   *
-   * `null` yalnızca aktif tema panelde seçilebilir olmadığında (Zeytin):
-   * onun bir paleti yok, temanın kendi renkleri geçerli kalıyor.
-   */
-  renkler: CozulmusRenkler | null;
+  /** Aktif temanın renkleri — panelden seçilen ya da temanın varsayılanı. */
+  renkler: CozulmusRenkler;
 };
 
 /**
@@ -95,9 +90,8 @@ export const menuyuOku = cache(async (): Promise<MenuAnliki> => {
   }));
 
   const hamTema = ayarAnlik.exists ? ayarAnlik.data()?.tema : undefined;
-  const tema: TemaKodu = (TEMA_KODLARI as readonly string[]).includes(hamTema)
-    ? (hamTema as TemaKodu)
-    : "cini";
+  const tema: TemaKodu =
+    typeof hamTema === "string" && gecerliTema(hamTema) ? hamTema : VARSAYILAN_TEMA;
 
   /**
    * Renk seçimi TEMAYA GÖRE saklanıyor: `renkler[tema]`.
@@ -112,7 +106,7 @@ export const menuyuOku = cache(async (): Promise<MenuAnliki> => {
    */
   const hamRenkler = ayarAnlik.exists ? ayarAnlik.data()?.renkler : undefined;
   const secim: TemaRenkSecimi | undefined = hamRenkler?.[tema];
-  const renkler = secilebilirTema(tema) ? renkleriCoz(tema, secim) : null;
+  const renkler = renkleriCoz(tema, secim);
 
   return { kategoriler, sayfalar, tema, renkler };
 });
@@ -145,8 +139,8 @@ export async function aktifTema(): Promise<TemaKodu> {
   return (await menuyuOku()).tema;
 }
 
-/** Aktif temanın renkleri. Seçilebilir olmayan temada `null`. */
-export async function aktifRenkler(): Promise<CozulmusRenkler | null> {
+/** Aktif temanın renkleri. */
+export async function aktifRenkler(): Promise<CozulmusRenkler> {
   return (await menuyuOku()).renkler;
 }
 

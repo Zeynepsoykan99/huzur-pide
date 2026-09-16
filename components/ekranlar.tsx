@@ -171,12 +171,14 @@ export function KarsilamaEkrani({ dil, tema }: MotifProps & { dil: DilKodu }) {
   return (
     <div className="karsilama">
       {/* Dil şeridi: sayfanın EN üstünde, marka adından da önce. Türkçe
-          bilmeyen müşterinin ilk gördüğü şey kendi bayrağı olsun diye. */}
+          bilmeyen müşterinin ilk gördüğü şey kendi bayrağı olsun diye.
+          Ön yükleme kapalı — gerekçe `DilKontrolu`nda. */}
       <nav className="kars-bayraklar" aria-label={ui("dilDegistir", dil)}>
         {DILLER.map((hedef) => (
           <Link
             key={hedef}
             href={`/${hedef}`}
+            prefetch={false}
             hrefLang={hedef}
             lang={hedef}
             aria-current={hedef === dil ? "true" : undefined}
@@ -628,6 +630,21 @@ export function MenuKitabiEkrani({
         <Link href={`/${dil}${yolOneki}/menu`} className="alt-serit-baglanti odak">
           {ui("menuyeDon", dil)}
         </Link>
+
+        {/* JAVASCRIPT KAPALIYSA: oklar ve sayaç gizleniyor, yerine not çıkıyor.
+
+            Sayaç sunucuda açılış sayfasını basıyor, ama kitabı o sayfaya
+            getiren satır içi script de JavaScript'le birlikte kapalı: kitap
+            1. sayfada açılırken sayaç "5 / 8" diyordu. Ölçüldü (Aşama 40).
+            Yanlış sayı göstermektense sayaç gizleniyor; her yaprağın kendi
+            büyük sayfa numarası zaten görünüyor.
+
+            Oklar da düğme olduğu için JavaScript'siz çalışmıyor. Kaydırma
+            saf CSS, o çalışıyor — not bunu söylüyor. */}
+        <noscript>
+          <style>{".kitap-ok,.sayfa-numarasi{display:none}"}</style>
+          <p className="alt-serit-not">{ui("kaydirarakGezin", dil)}</p>
+        </noscript>
 
         <AsagiOk
           kabId={KAP_ID}

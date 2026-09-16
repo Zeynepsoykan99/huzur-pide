@@ -11,6 +11,13 @@ import { DILLER, DIL_ADI, DIL_BAYRAGI, DIL_KISA_AD, metin, type DilKodu } from "
  *
  * Aktif dil `aria-current="true"` ile işaretli; görsel olarak da dolu zemin
  * ve ters renkle ayrılıyor — yalnızca renkle değil, şekille de.
+ *
+ * ÖN YÜKLEME KAPALI (`prefetch={false}`). Açıkken her menü sayfası dört
+ * dilin adresini arka planda indiriyordu: kitap sayfasında 30 isteğin 18'i
+ * buradan geliyordu, aktif dilin kendi adresi dahil. Dil değiştirmek nadir
+ * bir iş; kapatmanın bedeli ölçüldü — yavaş 4G'de geçiş ~160 ms yerine
+ * ~345 ms sürüyor. Ana akıştaki bağlantılar (kategoriler, Menüye dön)
+ * ön yüklemeli kaldı, orada fark iki kat (Aşama 40).
  */
 export function DilKontrolu({
   aktifDil,
@@ -30,6 +37,7 @@ export function DilKontrolu({
             <li key={dil}>
               <Link
                 href={`/${dil}${yol}`}
+                prefetch={false}
                 hrefLang={dil}
                 lang={dil}
                 aria-current={aktif ? "true" : undefined}

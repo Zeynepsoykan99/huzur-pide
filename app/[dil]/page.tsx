@@ -1,7 +1,10 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { KarsilamaEkrani } from "@/components/ekranlar";
-import { DILLER, gecerliDil } from "@/data/menu";
+import { ui } from "@/data/arayuz";
+import { DILLER, MEKAN_ADI, gecerliDil } from "@/data/menu";
 import { aktifTema } from "@/data/menuKaynak";
+import { sayfaEtiketleri } from "@/data/site";
 
 /**
  * Ekran: Karsilama — QR okutulunca gelen ILK ekran.
@@ -17,6 +20,21 @@ import { aktifTema } from "@/data/menuKaynak";
  */
 export function generateStaticParams() {
   return DILLER.map((dil) => ({ dil }));
+}
+
+/**
+ * Sekme başlığı DİLE GÖRE: önceden dört kopyanın hepsi yalnızca "Huzur Pide"
+ * taşıyordu, arama sonucunda ve sekmede ayırt edilemiyordu. Kuyruk onaylı
+ * slogan — yeni metin yazılmadı.
+ */
+export async function generateMetadata({ params }: PageProps<"/[dil]">): Promise<Metadata> {
+  const { dil } = await params;
+  if (!gecerliDil(dil)) return { title: MEKAN_ADI };
+  return sayfaEtiketleri({
+    dil,
+    yol: "",
+    baslik: `${MEKAN_ADI} · ${ui("slogan", dil)}`,
+  });
 }
 
 export default async function KarsilamaSayfasi({ params }: PageProps<"/[dil]">) {

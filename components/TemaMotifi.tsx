@@ -62,36 +62,10 @@ function MurekkepMotifi() {
   );
 }
 
-/** Zeytin: dalda iki yaprak ve bir tane. */
-function ZeytinMotifi() {
-  return (
-    <>
-      <path
-        d="M12 21.5V7.2"
-        stroke="currentColor"
-        strokeWidth="1.4"
-        strokeLinecap="round"
-      />
-      <path
-        d="M12 12.4c-3.4 0-5.6-1.8-5.6-4.6 3.4 0 5.6 1.8 5.6 4.6Z"
-        fill="currentColor"
-        opacity="0.85"
-      />
-      <path
-        d="M12 9.2c0-2.8 2.2-4.6 5.6-4.6 0 2.8-2.2 4.6-5.6 4.6Z"
-        fill="currentColor"
-        opacity="0.85"
-      />
-      <circle cx="12" cy="4.4" r="2.1" stroke="currentColor" strokeWidth="1.3" />
-    </>
-  );
-}
-
 const MOTIFLER: Record<TemaKodu, () => React.ReactElement> = {
   cini: CiniMotifi,
   gece: GeceMotifi,
   murekkep: MurekkepMotifi,
-  zeytin: ZeytinMotifi,
 };
 
 export function TemaMotifi({

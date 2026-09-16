@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { MenuKitabiEkrani } from "@/components/ekranlar";
 import { DILLER, gecerliDil, MEKAN_ADI, metin, sayfaBasligi } from "@/data/menu";
 import { aktifTema, sayfaBul, sayfalar } from "@/data/menuKaynak";
+import { sayfaEtiketleri } from "@/data/site";
 
 /**
  * Ekran: Menu kitabi. Bes sayfanin tamami her rotada basiliyor; hangi
@@ -23,7 +24,14 @@ export async function generateMetadata({
   const { dil, sayfa } = await params;
   const s = await sayfaBul(sayfa);
   if (!gecerliDil(dil) || !s) return { title: MEKAN_ADI };
-  return { title: sayfaBasligi(metin(s.kategori.ad, dil)) };
+  // canonical rotanın kendi adresi. Kitapta kaydırıldıkça adres çubuğu
+  // `replaceState` ile değişiyor, ama her adres kendi sayfasını açtığı
+  // için canonical'ın açılış rotasına bakması doğru.
+  return sayfaEtiketleri({
+    dil,
+    yol: `/menu/${s.slug}`,
+    baslik: sayfaBasligi(metin(s.kategori.ad, dil)),
+  });
 }
 
 export default async function MenuKitabiSayfasi({

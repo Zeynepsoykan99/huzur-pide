@@ -15,8 +15,8 @@ import {
  * rengin birlesimini gosteriyor, ikisinin durumu ayri tutulsaydi tema
  * tiklamasi onizlemeye bir gidis donus gecikmesiyle yansirdi.
  *
- * Uc secenek: Cini Levha, Gece Ocagi, Murekkep. Zeytin kodda duruyor ama
- * secenek degil (bkz. data/tema.ts, SECILEBILIR_TEMALAR).
+ * Uc secenek: Cini Levha, Gece Ocagi, Murekkep — koddaki temalarin tamami
+ * (bkz. data/tema.ts).
  *
  * Her kartta o temanin gercek zemin rengi ve motifi var — mekan sahibi
  * ismine degil, gorunusune bakarak secebilsin.

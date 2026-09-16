@@ -2,12 +2,7 @@ import { redirect } from "next/navigation";
 import { Yaprak } from "@/components/ekranlar";
 import { temaFontlari } from "@/app/temalar/aktif";
 import { aktifTema, sayfalar, tumRenkSecimleri } from "@/data/menuKaynak";
-import {
-  SECILEBILIR_TEMALAR,
-  VARSAYILAN_TEMA,
-  secilebilirTema,
-  type SecilebilirTema,
-} from "@/data/tema";
+import { SECILEBILIR_TEMALAR, type SecilebilirTema } from "@/data/tema";
 import { mevcutYonetici } from "@/lib/oturum";
 import { PanelUst } from "../PanelUst";
 import { GorunumSecici, type Onizleme } from "./GorunumSecici";
@@ -64,12 +59,6 @@ export default async function TemaSayfasi() {
     ]),
   ) as Record<SecilebilirTema, Onizleme>;
 
-  // Seçilebilir olmayan bir tema kayıtlıysa (Zeytin) panel onu gösteremez;
-  // varsayılana düşülüyor ki ekran boş kalmasın.
-  const baslangicTema: SecilebilirTema = secilebilirTema(tema)
-    ? tema
-    : (VARSAYILAN_TEMA as SecilebilirTema);
-
   return (
     <>
       <PanelUst tema={tema} />
@@ -79,7 +68,7 @@ export default async function TemaSayfasi() {
           Müşterinin gördüğü menünün görünümünü seçin. Seçtiğiniz anda değişir.
         </p>
         <GorunumSecici
-          baslangicTema={baslangicTema}
+          baslangicTema={tema}
           baslangicSecimler={secimler}
           onizlemeler={onizlemeler}
         />

@@ -3,7 +3,7 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 39 tamamlandı ve **üretimde canlı**. Karşılama sayfasındaki Organizasyon görseli değişti: yeni görsel düğün için kurulmuş bahçe (`organizasyon.webp`), misafirlerin yüzleri bulanıklaştırıldı, kadraj ve 4:3 oran aynı kaldı. Eski `dis-gorunum.webp` kullanımdan kalktı ama silinmedi. Aşama 38'de fotoğraflı ürün **47 → 53**, fotoğrafsız **9 → 3** oldu (Menemen, Karışık, Gazoz). Çini Levha teması, admin paneli ve Firestore'dan beslenen menü Aşama 17'den beri **üretimde canlı** (`main`). Firebase Storage hâlâ kurulmadı. Bekleyen işlerin tamamı aşağıdaki **Bekleyenler** bölümünde.
+**Güncel aşama:** Aşama 40 tamamlandı, **push onayı bekliyor**. Sonraya bırakılan dört iyileştirme yapıldı (Zeytin teması kaldırıldı; büyük harfli adres yönlendirmesi, canonical, hreflang, robots.txt, sitemap.xml, Open Graph, dile göre başlık; dil bağlantılarında ön yükleme kapatıldı; JavaScript kapalıyken oklar ve sayaç düzgün davranıyor) ve teslim hazırlığı yapıldı (`KULLANIM.md`, güncel yedek, dosya temizliği, güvenlik ve bağımlılık denetimi). **Teslimden önce karar bekleyen bir güvenlik güncellemesi var:** Bekleyenler, satır 1. Aşama 39'a kadar olan her şey **üretimde canlı**.
 **Son güncelleme:** 2026-09-16
 
 ### Genel Durum
@@ -52,6 +52,7 @@ Numaralandırma rapor başlıklarıyla aynı: aşağıdaki her satırın karşı
 | 37 | Uçtan uca test bulguları: beş düzeltme | **Tamamlandı** — üretimde canlı |
 | 38 | İkinci parti ürün fotoğrafları + Kola görseli | **Tamamlandı** — üretimde canlı |
 | 39 | Organizasyon görselinin değişmesi (yüzler bulanıklaştırıldı) | **Tamamlandı** — üretimde canlı |
+| 40 | Dört iyileştirme (İ1, İ4, İ5, İ6) + teslim hazırlığı | **Tamamlandı** — push onayı bekliyor |
 
 ### Bekleyenler
 
@@ -60,16 +61,20 @@ satırları o günün kaydı olarak duruyor, güncel liste burası.
 
 | # | Bekleyen iş | Ne bekliyor | Ayrıntı |
 |---|---|---|---|
-| 1 | Firebase Storage / Blaze planı | **Hesap** — Firebase projesinin Blaze'e (kredi kartı bağlı, kullandıkça öde) geçirilmesi senin hesabından yapılacak bir işlem | Fotoğraf yükleme buna bağlı; veri yapısındaki `gorsel` alanı ve panel akışı hazır bekliyor (Aşama 16) |
-| 2 | Organizasyon sayfasının içeriği | **Bilgi** — sayfada ne yazacağı (metin, varsa görsel, iletişim bilgisi) senden gelecek | Rota `/[dil]/organizasyon` ayakta, içerik boş (Aşama 4) |
-| 3 | QR kodunun bakacağı adres | **Karar** — senin kararın: kök `https://huzur-pide.vercel.app` mi, doğrudan `.../tr` mi | Önerim `/tr`: yönlendirme atlanır, sayfa daha hızlı açılır. Kök adres her iki durumda da çalışmaya devam eder (Aşama 5) |
-| 4 | Vercel Hobby planının ticari kullanıma kapalı olması | **Karar + hesap** — Pro'ya geçmek ya da bilerek Hobby'de kalmak; kapsamın hangi plana girdiği ancak Vercel panelinden görülür | "Devam et, sorumluluk bende" demiştin ve öyle yapıldı. Site canlı ve çalışıyor; bu bir plan/şart sorunu, teknik bir arıza değil (Aşama 5) |
-| 5 | 5 ürünün fotoğrafı | **Bilgi** — 31 üründen 5'inin görseli yok | Kalanlar: **Künefe**, Kola, Soda, Komposto, Meyveli Soda. Kapalı Pide (6/6), Izgara (14/14) ve Salatalar (1/1) **tamamlandı**; İçecekler 7'de 3, Tatlılar 3'te 2. Künefe için gelen dosyada başka bir işletmenin logosu vardı, kullanılmadı (Aşama 22) — temiz bir dosya gerekiyor. Dört içeceğin dosyası hiç gelmedi. Panelden yüklemek için 1 numaralı satır gerekiyor |
+| 1 | **Next.js güvenlik güncellemesi** | **Karar** — 16.2.12 → 16.3.5 yükseltmesine onay | `npm audit` (Aşama 40, T8): Next için **kritik** uyarı (GHSA-2xp9-vwfh-vxw4, AVIF ile görsel optimizasyonunda uzaktan kod çalıştırma; GHSA-p293-qw3h-jr36 yalnızca Windows sunucu), ayrıca Next'e bağlı `sharp` ve `postcss` için yüksek. Sitede AVIF dosyası ve uzak görsel kaynağı yok, yani doğrudan açık düşük; yine de öncelikli. Yükseltme sonrası tam regresyon gerekiyor |
+| 2 | Firebase Storage / Blaze planı | **Hesap** — Firebase projesinin Blaze'e (kredi kartı bağlı, kullandıkça öde) geçirilmesi senin hesabından yapılacak bir işlem | Panelden fotoğraf yükleme buna bağlı; veri yapısındaki `gorsel` alanı ve panel akışı hazır bekliyor (Aşama 16) |
+| 3 | QR kodunun bakacağı adres | **Karar** — kök `https://huzur-pide.vercel.app` mi, doğrudan `.../tr` mi | Önerim `/tr`: yönlendirme atlanır, sayfa daha hızlı açılır. Kök adres her iki durumda da çalışır (Aşama 5). Alan adı kararıyla (4) birlikte ele alınmalı |
+| 4 | Vercel Hobby planı ve alan adı | **Karar + hesap** — Pro'ya geçmek ya da bilerek Hobby'de kalmak; özel alan adı | Ayrı ele alınacak. Site adresi kodda tek yerde (`data/site.ts` → `SITE_ADRESI`); alan adı değişince o satır güncellenir (Aşama 40) |
+| 5 | 3 ürünün fotoğrafı | **Dosya** — 56 üründen 3'ünün görseli yok | **Menemen**, **Açık Pide · Karışık**, **Gazoz**. Gelen `menemen.avif` / `menemenn.avif` bozuk (Aşama 34, 38) |
 | 6 | Arapça çevirilerin kontrolü | **Kişi** — ana dili Arapça olan birinin gözden geçirmesi | Özellikle Türkçe adın harf çevirisiyle yazıldığı kalemler: كاشارلي, كاريشيك, ساتش كافورما (Aşama 3) |
-| 7 | 4 teyit edilmemiş fiyat | **Bilgi** — dört hücrenin doğru fiyatı senden gelecek | Kıymalı / 1 Hamur · Kaşarlı / 1 Hamur · Kaşarlı / Duble · Kabak Tatlısı. Şu an menüde bir değer görünüyor, ama teyitli değil (Aşama 2) |
+| 7 | README | **Zaman** — bu sefer atlandı (Aşama 40, T2) | Şu an `create-next-app` şablonu. Yapı, ortam değişkeni adları, betikler, dağıtım ve yedek alma yazılacak. Mekân sahibi için kullanım notu ayrıca var: `KULLANIM.md` |
 
-1, 2, 3 ve 5 bittiğinde menü tamamlanmış olur; 4 ve 6 teknik olarak engel değil,
-biri hukuki/ticari, diğeri dil kalitesi.
+**Kapananlar** (tarihçe için): Organizasyon içeriği karşılama sayfasına
+taşındı (Aşama 23); teyit edilmemiş fiyat kalmadı — `tohum-dogrula.ts`
+"0 / 0", Aşama 40'ta teyit edildi; Zeytin teması kaldırıldı (Aşama 40).
+
+1 teslimden önce ele alınmalı; 2 ve 5 menünün tamamlanması, 3 ve 4 hesap
+ve karar, 6 dil kalitesi, 7 bakım belgesi.
 
 ### İleride Kaldırılacak
 
@@ -94,6 +99,9 @@ Geçici olduğunu bilerek koyduğumuz, koşulu gerçekleştiğinde silinmesi ger
   (`/panel` 200 dönmeli). Dönmüyorsa satır geri konur.
 - **İşareti:** `package.json` içinde `overrides`'ın hemen üstündeki `"//"`
   yorum satırı.
+- **Son kontrol (Aşama 40, 2026-09-16):** hâlâ gerekli. `jwks-rsa`'nın en
+  güncel sürümü (4.1.0) yine `jose@^6.1.3` istiyor; `firebase-admin` 14.4.0
+  da `jwks-rsa@^4.0.1` kullanıyor. Zincir çözülmedi.
 
 ### Aşama 1 Adımları
 
@@ -8247,5 +8255,298 @@ biraz yüksek.
 
 **Konsol: 0 hata, 0 uyarı.** Dört dil, üç ekran (12 temiz sekme). Başarısız
 ağ isteği yok.
+
+=== RAPOR SONU ===
+
+## Aşama 40 — Dört İyileştirme ve Teslim Hazırlığı · 2026-09-16
+
+=== RAPOR BAŞLANGICI ===
+
+**Tarih:** 2026-09-16 · **Dal:** `main` · **Durum:** push onayı bekliyor
+
+Aşama 37'de sonraya bırakılan dört iyileştirme (İ1, İ4, İ5, İ6) yapıldı ve
+proje teslime hazırlandı. Kapsam dışı bırakılanlar: eksik üç ürün
+fotoğrafı, Vercel planı ve alan adı, README (T2, bu sefer atlandı).
+
+Kararlar: İ1 → (a) kaldır · İ4 → önerilen başlık biçimi ve kare önizleme
+görseli · İ5 → yalnızca dil bağlantılarında ön yükleme kapalı · İ6 → dört
+dildeki not onaylı · teslim listesi → T1, T3–T9.
+
+### 40.1 İ1 — Zeytin teması kaldırıldı
+
+Zeytin kodda tanımlıydı (`TEMA_KODLARI`, CSS bloğu, motif, yazı tipi
+modülü) ama panelde seçilemiyordu; renk paleti yoktu ve kontrast betiği onu
+ölçmüyordu. Tamamen çıkarıldı:
+
+| Dosya | Değişiklik |
+|---|---|
+| `data/tema.ts` | Tema listesi üç tema; `SECILEBILIR_TEMALAR` artık `TEMA_KODLARI`nın kendisi — "kodda olup panelde olmayan tema" durumu yapısal olarak kalktı |
+| `app/temalar/temalar.css` | `.tema-zeytin` ve Arapça bloğu silindi (−72 satır) |
+| `app/temalar/fontlar-zeytin.ts` | silindi (hiçbir yerden kullanılmıyordu) |
+| `app/temalar/aktif.ts` | Eşleme `Record<TemaKodu, …>`: yeni tema eklenip yazı tipi satırı unutulursa derleme hata verir |
+| `components/TemaMotifi.tsx` | Zeytin motifi silindi |
+| `data/menuKaynak.ts`, `app/[dil]/layout.tsx` | "Paletsiz tema → renk `null`" dalı kalktı; renkler her zaman çözülüyor (davranış aynı: seçilebilir temalarda zaten hep çözülüyordu) |
+| `app/panel/tema/page.tsx` | "Seçilemeyen tema kayıtlıysa varsayılana düş" dalı kalktı |
+| `onizleme-gorselleri/zeytin/` | T7 ile birlikte kaldırıldı |
+
+Firestore'da bir gün `zeytin` yazarsa sayfa, var olan savunmayla Çini'ye
+düşer. Git geçmişinden geri getirilebilir. Kontrast betiği:
+**27 renk ölçüldü, 0 kaldı.** Canlıdaki aktif tema (Mürekkep) değişmedi.
+
+### 40.2 İ4 — Adres ve SEO
+
+**Büyük/küçük harf.** Canlıda ölçüldü: `/tr/MENU`, `/tr/Menu`,
+`/tr/MENU/corbalar` **200** dönüyordu (`/TR`, `/tr/menu/CORBALAR`,
+`/PANEL` zaten 404'tü; sorun sabit `menu` parçasındaydı). `proxy.ts`
+eklendi: adreste büyük harf varsa küçük harfliye **308**. Uygulamadaki tüm
+adresler küçük harf olduğu için kural gerçek bir adresi bozmuyor.
+
+| Adres (yerel) | Sonuç |
+|---|---|
+| `/tr/MENU` | 308 → `/tr/menu` |
+| `/tr/Menu/corbalar` | 308 → `/tr/menu/corbalar` |
+| `/TR` · `/Tr/menu/IZGARA` | 308 → `/tr` · `/tr/menu/izgara` |
+| `/PANEL` | 308 → `/panel` |
+| `/tr/MENU?x=1` | 308 → `/tr/menu?x=1` (sorgu korunuyor) |
+| `/tr/menu`, `/panel` | 200, yönlendirme yok |
+
+Maliyeti daraltmak için eşleyici statik dosyaları, görselleri, `_next`'i,
+metadata dosyalarını ve istemcinin kendi RSC isteklerini (`rsc`,
+`next-router-prefetch` başlıkları) dışarıda bırakıyor: yalnızca **tam sayfa
+istekleri** proxy'den geçiyor.
+
+**Site adresi tek yerde:** `data/site.ts` → `SITE_ADRESI`. `metadataBase`,
+canonical, hreflang, Open Graph, robots ve sitemap buradan besleniyor.
+
+**canonical + hreflang:** her sayfada kendi adresi, dört dilin karşılığı
+ve `x-default` → `/tr…`. 40 sayfanın 40'ında canonical doğru.
+
+**robots.txt:** `Allow: /`, `Disallow: /panel`, sitemap adresi. Panel
+sayfaları zaten `noindex`.
+
+**sitemap.xml:** 4 dil × (karşılama + menü + 8 kategori) = **40 adres**,
+her biri hreflang karşılıklarıyla. Kategoriler Firestore'dan okunuyor;
+kategori rotalarıyla aynı kaynak. `lastModified` bilerek yok (derleme
+tarihi, fiyat değişikliğinin tarihi değil).
+
+**Open Graph:** başlık, açıklama, adres, site adı, dil (`tr_TR`, `en_US`,
+`ar_AR`, `ru_RU`) + diğer diller, görsel ve Twitter kartı (`summary`).
+Görsel: `public/og/huzur-pide.jpg` — hero'nun kaynağından (ortalama piksel
+farkı 2,09/255, yani aynı fotoğraf), **1080×1080, JPEG q82, 122 KB, kırpma
+yok**, EXIF yok. Görsel alt metni hero'nunkiyle aynı, dile göre.
+
+**Dile göre başlık ve açıklama** (yeni metin yok; onaylı slogan ve
+Lezzetler metni):
+
+| Dil | `<title>` |
+|---|---|
+| tr | Huzur Pide · Fırından sofranıza |
+| en | Huzur Pide · From our oven to your table |
+| ar | Huzur Pide · من فرننا إلى مائدتك |
+| ru | Huzur Pide · Из печи на ваш стол |
+
+Açıklama önceden dört dilde de Türkçe "Huzur Pide dijital menü" idi; artık
+her dilde o dilin Lezzetler metni. Menü ve kategori başlıkları değişmedi.
+
+### 40.3 İ5 — Dil bağlantılarında ön yükleme kapatıldı
+
+`DilKontrolu` ve karşılama sayfasındaki bayrak şeridi: `prefetch={false}`.
+Ana akış (Menü butonu, kategoriler, Menüye dön) ön yüklemeli kaldı.
+
+**Neden bu sınırda** — yavaş 4G'de (150 ms gecikme, 1,6 Mbps), tıklamadan
+içerik gelene kadar, canlıda, 3 deneme:
+
+| Geçiş | Ön yüklemeli | Ön yüklemesiz |
+|---|---|---|
+| Menü → Izgara | ~185 ms | ~370 ms |
+| Karşılama → Menü | ~120 ms | ~280 ms |
+| Dil değiştirme | ~160 ms | ~345 ms |
+| Menüye dön | ~115 ms | ~280 ms |
+
+**Sonuç** (telefon öykünmesi, sayfa sonuna kadar kaydırılarak):
+
+| Sayfa | Önce (canlı) | Sonra (yerel) |
+|---|---|---|
+| `/tr` | 20 istek | **6** |
+| `/tr/menu` | 55 istek | **38** |
+| `/tr/menu/izgara` | 30 istek | **9** |
+
+Kalan istekler ana akışın bağlantıları. Kilobayt karşılaştırması
+sıkıştırma farkı yüzünden yerelde anlamlı değil; canlıda ölçülecek.
+
+### 40.4 İ6 — JavaScript kapalıyken
+
+**Hata canlıda doğrulandı:** JS kapalıyken `/tr/menu/izgara` açılınca
+kitap **1. sayfayı** gösteriyor ama sayaç **"5 / 8"** diyordu. Kitabı
+doğru sayfaya getiren satır içi script de JS'le birlikte kapalı.
+
+1. **Oklar sunucuda basılıyor.** `SayfaOklari`'ndaki "JS yüklenene kadar
+   çizme" koşulu kalktı; açılış sayfası sunucuda bilindiği için ilk
+   HTML'de doğru oklar var:
+
+   | Rota (ham HTML) | Geri | İleri |
+   |---|---|---|
+   | `corbalar` (1/8) | yok | var |
+   | `izgara` (5/8) | var | var |
+   | `icecekler` (8/8) | var | yok |
+
+   JS açıkken okların sonradan belirmesi de kalktı.
+2. **JS yoksa oklar ve sayaç gizli** (`<noscript><style>`). Yanlış sayı
+   gösterilmiyor; her yaprağın kendi büyük sayfa numarası zaten görünüyor.
+3. **Alt şeritte not** (`ui("kaydirarakGezin")`, dört dilde onaylı).
+   Rengi `--t-solgun`, yüzey zemini üstünde: Çini 5,97 · Gece 7,67 ·
+   Mürekkep 7,46 (eşik 4,5).
+
+**JS kapalı** (dört dil × 320 ve 390): görünen ok **0**, görünen sayaç
+**0**, not şeridin içinde ve görünür, şerit yüksekliği **46 px** (JS
+açıkken de 46, değişmedi), yatay taşma 0. Arapça'da not solda (satır
+sonu), doğru.
+
+**JS açık** (tr, ar): oklar ilk yüklemede doğru; "5 / 8" → ileri → "6 / 8"
+ve adres `/…/menu/salatalar`; son sayfada ileri ok kalkıyor; not
+görünmüyor; konsol temiz.
+
+**Kalan sınır:** JS kapalıyken kitap her zaman 1. sayfada açılır (kapsam
+dışında bırakıldı, gerekçesi planda).
+
+### 40.5 Teslim hazırlığı
+
+| # | İş | Sonuç |
+|---|---|---|
+| T1 | Kullanım notu | `KULLANIM.md`: giriş ve şifre sıfırlama, fiyat değiştirme, ürün silme ve ekleme, tema ve renk, yapılmaması gerekenler, sorun tablosu. Ekrandaki düğme adlarıyla birebir; iddialar koddan doğrulandı. Koddan çıkan bir tuzak da yazıldı: **`1.250` yazılırsa fiyat 1 ₺ okunur** (nokta ondalık sayılıyor; özet ekranı kırmızıyla uyarıyor) |
+| T3 | `yeni-gorseller/` temizliği | 13 proje dosyası kopyası silindi; hepsi git'teki dosyaların ya aynısı (satır sonu dışında) ya eski sürümü ya da derleme çıktısı. `su - Kopya.jpg` da silindi (`su.jpg` ile bayt bayt aynı). Uzantısız iki JPEG'e `.jpg` eklendi. `betikler/gorsel-isle.ts` yeni adlara güncellendi; 27 eşleşmenin 27'si diskte. Klasörde 61 görsel kaldı, görsel olmayan dosya 0 |
+| T4 | Firestore yedeği | `yedek/firestore-2026-09-16.json`: 8 kategori, 56 ürün, 94 fiyat hücresi, teyitsiz 0, fotoğraflı 53. `tohum-dogrula.ts`: "hicbir alanda fark yok". Önceki yedek 2026-09-11'di (fotoğraflı 47, Aşama 38 öncesi) |
+| T5 | Tam regresyon (yerel) | 40.6. Canlıda push sonrası tekrarlanacak |
+| T6 | Bekleyenler tablosu | Güncellendi: kapanan iki satır (organizasyon içeriği, teyitsiz fiyatlar) tarihçeye alındı; fotoğraf sayısı 5 → 3; güvenlik güncellemesi ve README eklendi; `jose` sabitlemesine son kontrol notu yazıldı |
+| T7 | `onizleme-gorselleri/` | 42 PNG depodan kaldırıldı (artık var olmayan ekranları gösteriyordu; git geçmişinde duruyor) |
+| T8 | Bağımlılık denetimi | 40.7 — **karar gerekiyor** |
+| T9 | Güvenlik teyidi (salt okuma) | 40.8 — temiz |
+
+### 40.6 T5 — Regresyon (yerel üretim derlemesi)
+
+**40 sayfa** (4 dil × karşılama + menü + 8 kategori), telefon öykünmesi:
+hepsi **200**, `lang`/`dir` doğru (ar'da `rtl`), yatay taşma 0, kırık
+görsel 0, canonical 40/40, sekme başlıkları dile göre.
+
+**404:** durum 404, `noindex`, canonical yok, "Ana ekrana dön" → `/tr`.
+
+**Kitap sığması — değişiklik öncesiyle (canlı) birebir aynı, 16/16:**
+
+| | 390px | 320px |
+|---|---|---|
+| tr | 0 / 32 / 516 / 16 / 488 / 0 / 0 / 580 | 92 / 308 / 792 / 292 / 764 / 0 / 0 / 856 |
+| en | 0 / 32 / 516 / 67 / 506 / 0 / 0 / 580 | 92 / 308 / 792 / 370 / 826 / 0 / 0 / 874 |
+| ar | 0 / 32 / 516 / 31 / 506 / 0 / 0 / 580 | 92 / 308 / 792 / 327 / 861 / 0 / 0 / 856 |
+| ru | 0 / 32 / 516 / 60 / 506 / 0 / 0 / 598 | 92 / 329 / 792 / 380 / 915 / 0 / 0 / 938 |
+
+**Karşılama kontrastı** (metin gizlendi, arkasındaki en açık piksel; dört
+dilin en düşüğü):
+
+| Genişlik | Slogan (eşik 4,5) | Lezzetler başlık (3) / metin (4,5) | Organizasyon başlık (3) / metin (4,5) |
+|---|---|---|---|
+| 320 | 5,00 (ar) | 4,62 (en) / 5,51 | 6,45 / 6,18 |
+| 390 | 5,28 (ar) | 5,50 / 5,55 | 6,53 / 6,18 |
+| 1280 | 8,89 | 7,18 / 5,73 | 6,43 / 7,78 |
+
+Hepsi AA'yı geçiyor. Karşılamanın CSS'ine bu aşamada dokunulmadı.
+
+**Panel** (geçici iki hesapla, sahibin hesabına dokunulmadan):
+
+| Kontrol | Sonuç |
+|---|---|
+| Yetkisiz hesap | "erişim yetkisi yok", panel açılmadı |
+| Yetkili hesap | 3 bölüm, "Şu an: Mürekkep"; oturum çerezi JS'e görünmüyor |
+| Menü görünümü | **3 kart** (Çini Levha, Gece Ocağı, Mürekkep), seçili Mürekkep, 9 renk seçeneği, "Zeytin" hiçbir yerde yok. **Tema değiştirilmedi** (canlıyı etkilerdi) |
+| Yeni ürün ekle | 8 bölüm listeleniyor; ürün eklenmedi |
+| Fiyat | Çoban Salata 100 → 105: özet "100 ₺ → 105 ₺", "1 fiyat güncellendi.", menüde 105 ₺. **100'e geri alındı**, menüde 100 ₺ |
+| Çıkış | `/panel/fiyatlar` → giriş formu |
+| Konsol | 0 hata |
+
+Temizlik: iki geçici hesap silindi, **yönetici sayısı 1**. Test sonrası
+alınan yedekte Çoban Salata `100, teyitli`; `tohum-dogrula.ts` "fark yok".
+
+*Not:* `betikler/test-temizle.ts` bu sefer **kullanılmadı**: Firestore'u
+`data/menu.ts`'teki eski içeriğe döndürüyor, bugünkü menüyü bozardı.
+Fiyat panelden elle geri alındı.
+
+*Ölçüm notları:*
+- Test sırasında ağ iki kez kısa süre koptu. Bir derleme Google Fonts'a
+  erişemediği için düştü (tekrarında temiz geçti), 404 sayfası da bir kez
+  500 döndü (Firestore'a o an erişilemedi; tekrarında 404). İkisi de ağ
+  kaynaklı, kodla ilgisi yok.
+- Önceki bir yerel sunucu süreci arka planda açık kalmıştı; kapatıldı ve
+  regresyon yeni derlemeyle yeniden yapıldı.
+- Günün yedeği panel testinden sonra yeniden alındı (ilk kopyanın üzerine
+  yazıldı). Testten önce ve sonra `tohum-dogrula.ts` "fark yok" dedi.
+
+### 40.7 T8 — Bağımlılık denetimi (yalnızca rapor, güncelleme yapılmadı)
+
+`npm audit --omit=dev`: **9 uyarı** (1 kritik, 2 yüksek, 6 orta).
+
+| Önem | Paket | Konu | Çözüm |
+|---|---|---|---|
+| **Kritik** | `next` 16.2.12 | GHSA-2xp9-vwfh-vxw4: AVIF dosyalarıyla görsel optimizasyon API'sinde uzaktan kod çalıştırma · GHSA-p293-qw3h-jr36: yalnızca **Windows'ta barınan** sunucular | `next@16.3.5` |
+| Yüksek | `sharp`, `postcss` (Next üzerinden) | libvips / libheif açıkları; source map ile dosya okuma | aynı yükseltme |
+| Orta | `firebase-admin` → `@google-cloud/storage` → `teeny-request` / `gaxios` → `uuid` | `uuid` sınır denetimi | `firebase-admin@14.4.0` |
+
+**Değerlendirme:** Site Vercel'de (Linux) çalışıyor, yani Windows açığı
+geçerli değil. Görsel optimizasyonu açık ama sitede AVIF dosyası yok ve
+`remotePatterns` tanımlı değil (yalnızca kendi `public/` dosyaları optimize
+ediliyor); doğrudan istismar yolu dar. **Yine de kritik bir uyarı;
+teslimden önce `next` 16.3.5'e yükseltmeyi öneriyorum.** Yükseltme küçük
+sürüm ama Next 16.3 değişiklikleri okunmalı, ardından tam regresyon (sığma,
+kontrast, panel) yapılmalı. Onayla ayrı bir aşamada.
+
+**`jose` sabitlemesi hâlâ gerekli:** `jwks-rsa`'nın son sürümü (4.1.0)
+yine `jose@^6` istiyor (bkz. "İleride Kaldırılacak").
+
+### 40.8 T9 — Güvenlik teyidi (salt okuma)
+
+| Kontrol | Sonuç |
+|---|---|
+| `yoneticiler` koleksiyonu | **1 belge**: sahibin hesabı, etkin |
+| Firebase Auth hesap sayısı | **1** (test hesapları silindi) |
+| Canlıdaki Firestore kuralları | depodaki `firestore.rules` ile **birebir aynı** (yayın 2026-09-01) |
+| `.env.local` | `.gitignore` kapsamında; **git geçmişinde hiç yok** |
+| Depoda gizli anahtar dosyası | yok (`env`, `serviceAccount`, `adminsdk` adlı izlenen dosya 0) |
+
+Storage kuralları: Storage henüz kurulmadığı için kontrol edilmedi.
+
+### 40.9 Doğrulama
+
+```
+npx tsc --noEmit           → temiz
+npm run lint               → temiz
+npm run build              → başarılı, 44 statik sayfa + robots + sitemap + Proxy
+tarayıcı konsolu           → 0 hata (40 sayfa + panel)
+betikler/renk-kontrast.ts  → 27 renk, 0 kaldı
+betikler/tohum-dogrula.ts  → 8/8 kategori, 56/56 ürün, "fark yok"
+```
+
+**Değişmeyenler:** menü içeriği, fiyatlar (test değişikliği geri alındı),
+mevcut çeviriler, sitedeki görseller, kitabın yatay akışı ve sayfa yapısı,
+panelin güvenlik mimarisi, Vercel planı ve alan adı.
+
+### 40.10 Değişen dosyalar
+
+| Dosya | Madde |
+|---|---|
+| `data/tema.ts`, `app/temalar/aktif.ts`, `app/temalar/temalar.css`, `app/temalar/fontlar-*.ts` (yorum), `components/TemaMotifi.tsx`, `data/menuKaynak.ts`, `app/panel/tema/page.tsx`, `app/panel/tema/TemaSecici.tsx` | İ1 |
+| `app/temalar/fontlar-zeytin.ts` | İ1, silindi |
+| `data/site.ts`, `proxy.ts`, `app/robots.ts`, `app/sitemap.ts`, `public/og/huzur-pide.jpg` (yeni); `app/[dil]/layout.tsx`, `app/[dil]/page.tsx`, `app/[dil]/menu/page.tsx`, `app/[dil]/menu/[sayfa]/page.tsx` | İ4 |
+| `components/DilKontrolu.tsx`, `components/ekranlar.tsx` (bayrak şeridi) | İ5 |
+| `components/SayfaOklari.tsx`, `components/ekranlar.tsx` (alt şerit), `data/arayuz.ts`, `app/globals.css` | İ6 |
+| `KULLANIM.md` (yeni) | T1 |
+| `betikler/gorsel-isle.ts` | T3 |
+| `yedek/firestore-2026-09-16.json` (yeni) | T4 |
+| `onizleme-gorselleri/` (42 dosya silindi) | T7 |
+| `ILERLEME.md` | T6, özet, aşama tablosu ve bu rapor |
+
+### 40.11 Sıradaki adım
+
+Push için onay bekleniyor. Push sonrası canlı doğrulama (yönlendirmeler,
+etiketler, robots ve sitemap, ön yükleme sayısı ve boyutu, JS kapalı
+davranış, 40 sayfa, sığma, kontrast, konsol) 40.12'ye eklenecek. Ardından
+Next güvenlik güncellemesi için karar.
 
 === RAPOR SONU ===

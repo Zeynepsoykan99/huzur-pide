@@ -14,7 +14,7 @@ const playfair = Playfair_Display({
   subsets: ["latin", "latin-ext", "cyrillic"],
   weight: ["400", "600", "700", "900"],
   display: "swap",
-  // preload KAPALI: dort temanin da modulu derlemeye giriyor; acik
+  // preload KAPALI: uc temanin da modulu derlemeye giriyor; acik
   // birakilsaydi Next dordunun de dosyalarini <link rel=preload> ile
   // cagirirdi (olculdu: 46 on yukleme). Kapatilinca tarayici yalnizca
   // eslesen CSS kuralinin istedigi aileyi indiriyor.
@@ -26,7 +26,7 @@ const playfair = Playfair_Display({
 const inter = Inter({
   subsets: ["latin", "latin-ext", "cyrillic"],
   display: "swap",
-  // preload KAPALI: dort temanin da modulu derlemeye giriyor; acik
+  // preload KAPALI: uc temanin da modulu derlemeye giriyor; acik
   // birakilsaydi Next dordunun de dosyalarini <link rel=preload> ile
   // cagirirdi (olculdu: 46 on yukleme). Kapatilinca tarayici yalnizca
   // eslesen CSS kuralinin istedigi aileyi indiriyor.
@@ -39,7 +39,7 @@ const amiri = Amiri({
   subsets: ["arabic", "latin"],
   weight: ["400", "700"],
   display: "swap",
-  // preload KAPALI: dort temanin da modulu derlemeye giriyor; acik
+  // preload KAPALI: uc temanin da modulu derlemeye giriyor; acik
   // birakilsaydi Next dordunun de dosyalarini <link rel=preload> ile
   // cagirirdi (olculdu: 46 on yukleme). Kapatilinca tarayici yalnizca
   // eslesen CSS kuralinin istedigi aileyi indiriyor.
@@ -51,7 +51,7 @@ const amiri = Amiri({
 const notoArabic = Noto_Sans_Arabic({
   subsets: ["arabic", "latin"],
   display: "swap",
-  // preload KAPALI: dort temanin da modulu derlemeye giriyor; acik
+  // preload KAPALI: uc temanin da modulu derlemeye giriyor; acik
   // birakilsaydi Next dordunun de dosyalarini <link rel=preload> ile
   // cagirirdi (olculdu: 46 on yukleme). Kapatilinca tarayici yalnizca
   // eslesen CSS kuralinin istedigi aileyi indiriyor.

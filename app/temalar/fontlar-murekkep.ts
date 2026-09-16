@@ -14,7 +14,7 @@ const oswald = Oswald({
   subsets: ["latin", "latin-ext", "cyrillic"],
   weight: ["400", "500", "600", "700"],
   display: "swap",
-  // preload KAPALI: dort temanin da modulu derlemeye giriyor; acik
+  // preload KAPALI: uc temanin da modulu derlemeye giriyor; acik
   // birakilsaydi Next dordunun de dosyalarini <link rel=preload> ile
   // cagirirdi (olculdu: 46 on yukleme). Kapatilinca tarayici yalnizca
   // eslesen CSS kuralinin istedigi aileyi indiriyor.
@@ -27,7 +27,7 @@ const sourceSans = Source_Sans_3({
   subsets: ["latin", "latin-ext", "cyrillic"],
   weight: ["400", "600", "700"],
   display: "swap",
-  // preload KAPALI: dort temanin da modulu derlemeye giriyor; acik
+  // preload KAPALI: uc temanin da modulu derlemeye giriyor; acik
   // birakilsaydi Next dordunun de dosyalarini <link rel=preload> ile
   // cagirirdi (olculdu: 46 on yukleme). Kapatilinca tarayici yalnizca
   // eslesen CSS kuralinin istedigi aileyi indiriyor.
@@ -40,7 +40,7 @@ const cairo = Cairo({
   subsets: ["arabic", "latin"],
   weight: ["400", "600", "700"],
   display: "swap",
-  // preload KAPALI: dort temanin da modulu derlemeye giriyor; acik
+  // preload KAPALI: uc temanin da modulu derlemeye giriyor; acik
   // birakilsaydi Next dordunun de dosyalarini <link rel=preload> ile
   // cagirirdi (olculdu: 46 on yukleme). Kapatilinca tarayici yalnizca
   // eslesen CSS kuralinin istedigi aileyi indiriyor.
@@ -53,7 +53,7 @@ const notoKufi = Noto_Kufi_Arabic({
   subsets: ["arabic", "latin"],
   weight: ["400", "600", "700"],
   display: "swap",
-  // preload KAPALI: dort temanin da modulu derlemeye giriyor; acik
+  // preload KAPALI: uc temanin da modulu derlemeye giriyor; acik
   // birakilsaydi Next dordunun de dosyalarini <link rel=preload> ile
   // cagirirdi (olculdu: 46 on yukleme). Kapatilinca tarayici yalnizca
   // eslesen CSS kuralinin istedigi aileyi indiriyor.

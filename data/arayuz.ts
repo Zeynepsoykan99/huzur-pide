@@ -96,6 +96,18 @@ export const ARAYUZ = {
     ru: "Прокрутить вниз",
   },
   gorsel: { tr: "Görsel", en: "Image", ar: "صورة", ru: "Изображение" },
+
+  /* --- JavaScript kapaliyken --- */
+  // Menu kitabinin alt seridinde, <noscript> icinde. Oklar ve sayac o
+  // durumda gizli; kaydirma calisiyor. "JavaScript" kelimesi bilerek yok —
+  // musteri ne oldugunu bilmez, ne yapacagini bilsin yeter. Onaylandi
+  // (Asama 40).
+  kaydirarakGezin: {
+    tr: "Sayfalar arasında yana kaydırarak gezinebilirsiniz.",
+    en: "Swipe sideways to move between pages.",
+    ar: "اسحب إلى الجانب للتنقل بين الصفحات.",
+    ru: "Листайте в сторону, чтобы переходить между страницами.",
+  },
   menuKategorileri: {
     tr: "Menü kategorileri",
     en: "Menu categories",

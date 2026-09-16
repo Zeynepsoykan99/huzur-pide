@@ -18,7 +18,7 @@ const cormorant = Cormorant({
   subsets: ["latin", "latin-ext", "cyrillic"],
   weight: ["400", "500", "600", "700"],
   display: "swap",
-  // preload KAPALI: dort temanin da modulu derlemeye giriyor; acik
+  // preload KAPALI: uc temanin da modulu derlemeye giriyor; acik
   // birakilsaydi Next dordunun de dosyalarini <link rel=preload> ile
   // cagirirdi (olculdu: 46 on yukleme). Kapatilinca tarayici yalnizca
   // eslesen CSS kuralinin istedigi aileyi indiriyor.
@@ -31,7 +31,7 @@ const plexSans = IBM_Plex_Sans({
   subsets: ["latin", "latin-ext", "cyrillic"],
   weight: ["400", "500", "600", "700"],
   display: "swap",
-  // preload KAPALI: dort temanin da modulu derlemeye giriyor; acik
+  // preload KAPALI: uc temanin da modulu derlemeye giriyor; acik
   // birakilsaydi Next dordunun de dosyalarini <link rel=preload> ile
   // cagirirdi (olculdu: 46 on yukleme). Kapatilinca tarayici yalnizca
   // eslesen CSS kuralinin istedigi aileyi indiriyor.
@@ -44,7 +44,7 @@ const reemKufi = Reem_Kufi({
   subsets: ["arabic", "latin"],
   weight: ["400", "500", "600", "700"],
   display: "swap",
-  // preload KAPALI: dort temanin da modulu derlemeye giriyor; acik
+  // preload KAPALI: uc temanin da modulu derlemeye giriyor; acik
   // birakilsaydi Next dordunun de dosyalarini <link rel=preload> ile
   // cagirirdi (olculdu: 46 on yukleme). Kapatilinca tarayici yalnizca
   // eslesen CSS kuralinin istedigi aileyi indiriyor.
@@ -57,7 +57,7 @@ const plexArabic = IBM_Plex_Sans_Arabic({
   subsets: ["arabic", "latin"],
   weight: ["400", "500", "600", "700"],
   display: "swap",
-  // preload KAPALI: dort temanin da modulu derlemeye giriyor; acik
+  // preload KAPALI: uc temanin da modulu derlemeye giriyor; acik
   // birakilsaydi Next dordunun de dosyalarini <link rel=preload> ile
   // cagirirdi (olculdu: 46 on yukleme). Kapatilinca tarayici yalnizca
   // eslesen CSS kuralinin istedigi aileyi indiriyor.

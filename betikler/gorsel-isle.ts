@@ -43,8 +43,8 @@ const ESLESME: [string, string][] = [
   ["kıyma kaşar.jpg", "acik-kiyma-kasar"],
   ["kaşarlı açık pide.jpg", "acik-kasarli"],
   ["pastırmalı açık pide.jpg", "acik-pastirmali"],
-  // Uzantısız dosya; sharp içeriğinden biçimi kendisi anlıyor.
-  ["kaşar sucuk açık pide", "acik-kasar-sucuk"],
+  // Dosya uzantısız gelmişti (içeriği JPEG); Aşama 40'ta `.jpg` eklendi.
+  ["kaşar sucuk açık pide.jpg", "acik-kasar-sucuk"],
   ["yağlı yumurtalı açık pide.webp", "acik-yagli-yumurtali"],
 
   // --- Tatlı
@@ -57,7 +57,9 @@ const ESLESME: [string, string][] = [
   ["ayrann.avif", "kucuk-ayran"],
   // Bu ikisi MEVCUT fotoğrafın yerine geçiyor (sahibi öyle istedi).
   ["büyük ayran.jpg", "buyuk-ayran"],
-  ["su - Kopya.jpg", "su"],
+  // Gelen dosyanın adı "su - Kopya.jpg" idi; `su.jpg` ile bayt bayt aynı
+  // olduğu için Aşama 40'ta kopya silindi.
+  ["su.jpg", "su"],
   ["küçük çay.jpg", "kucuk-cay"],
   ["büyük çay.jpg", "buyuk-cay"],
   ["türk kahvesi.webp", "turk-kahvesi"],

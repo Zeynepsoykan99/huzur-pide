@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { KategoriListesiEkrani } from "@/components/ekranlar";
 import { ui } from "@/data/arayuz";
-import { DILLER, gecerliDil } from "@/data/menu";
+import { DILLER, MEKAN_ADI, gecerliDil } from "@/data/menu";
 import { aktifTema, sayfalar } from "@/data/menuKaynak";
+import { sayfaEtiketleri } from "@/data/site";
 
 /**
  * Ekran: Kategori listesi — basili menulerdeki "icindekiler" sayfasi.
@@ -20,8 +21,8 @@ export async function generateMetadata({
   params,
 }: PageProps<"/[dil]/menu">): Promise<Metadata> {
   const { dil } = await params;
-  if (!gecerliDil(dil)) return { title: "Huzur Pide" };
-  return { title: `${ui("menu", dil)} · Huzur Pide` };
+  if (!gecerliDil(dil)) return { title: MEKAN_ADI };
+  return sayfaEtiketleri({ dil, yol: "/menu", baslik: `${ui("menu", dil)} · ${MEKAN_ADI}` });
 }
 
 export default async function MenuSayfasi({ params }: PageProps<"/[dil]/menu">) {

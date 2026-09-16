@@ -1,8 +1,10 @@
 import type { Metadata, Viewport } from "next";
 import { notFound } from "next/navigation";
 import { temaFontlari } from "@/app/temalar/aktif";
-import { DILLER, DIL_YONU, gecerliDil } from "@/data/menu";
+import { LEZZETLER_METNI } from "@/data/karsilama";
+import { DILLER, DIL_YONU, MEKAN_ADI, gecerliDil, metin } from "@/data/menu";
 import { aktifRenkler, aktifTema } from "@/data/menuKaynak";
+import { SITE_ADRESI } from "@/data/site";
 import "../globals.css";
 
 /**
@@ -22,14 +24,15 @@ import "../globals.css";
  * üretilirken oluyor; tema değişince panel `revalidatePath` ile bütün
  * ekranları yeniden ürettiriyor.
  *
- * Yazı tipleri: dört tema modülü de derlemeye giriyor ama `<html>` üzerine
+ * Yazı tipleri: üç tema modülü de derlemeye giriyor ama `<html>` üzerine
  * yalnızca aktif temanın değişkenleri konuyor, bu yüzden yalnızca onun
  * dosyaları iniyor.
  *
  * RENKLER de panelden geliyor ama tema sınıfının yerine geçmiyor: yalnızca
  * iki değişken (`--t-vurgu`, `--t-fiyat`) satır içi stille eziliyor, geri
  * kalan her şey temadan. Satır içi stil sınıf kuralını yendiği için ayrı
- * bir CSS sınıfı ya da tema kopyası gerekmiyor. Seçim yoksa stil de yok.
+ * bir CSS sınıfı ya da tema kopyası gerekmiyor. Seçim yoksa temanın
+ * varsayılan renkleri yazılıyor — `temalar.css`teki değerlerin aynısı.
  *
  * Renkler yalnızca `data/renkler.ts` paletinden gelebiliyor; o paletin
  * tamamı `betikler/renk-kontrast.ts` ile ölçülü, yani buradan sayfaya
@@ -38,11 +41,26 @@ import "../globals.css";
  * `/` adresi next.config.ts içinde `/tr`'ye yönlendiriliyor.
  */
 
-export const metadata: Metadata = {
-  title: "Huzur Pide",
-  description: "Huzur Pide dijital menü",
-  icons: { icon: "/favicon.svg" },
-};
+/**
+ * Varsayılan etiketler. Sayfalar kendi başlığını, canonical adresini ve
+ * paylaşım etiketlerini `sayfaEtiketleri()` ile ekliyor; burada kalanlar
+ * her sayfada ortak olanlar.
+ *
+ * `metadataBase`: canonical, hreflang ve Open Graph adresleri sayfalarda
+ * GÖRELİ yazılıyor, tam adrese burada tamamlanıyor (bkz. `data/site.ts`).
+ *
+ * Açıklama dile göre: önceden dört dilde de Türkçe "Huzur Pide dijital
+ * menü" yazıyordu. Onaylı Lezzetler metni kullanılıyor, yeni metin yok.
+ */
+export async function generateMetadata({ params }: LayoutProps<"/[dil]">): Promise<Metadata> {
+  const { dil } = await params;
+  return {
+    metadataBase: new URL(SITE_ADRESI),
+    title: MEKAN_ADI,
+    description: gecerliDil(dil) ? metin(LEZZETLER_METNI, dil) : undefined,
+    icons: { icon: "/favicon.svg" },
+  };
+}
 
 export const viewport: Viewport = {
   /* Adres çubuğunun rengi de temadan: Çini Levha'nın porselen zemini. */
@@ -71,12 +89,10 @@ export default async function KokLayout({
       dir={DIL_YONU[dil]}
       className={`tema-${tema} ${temaFontlari(tema)}`}
       style={
-        renkler
-          ? ({
-              "--t-vurgu": renkler.vurgu,
-              "--t-fiyat": renkler.fiyat,
-            } as React.CSSProperties)
-          : undefined
+        {
+          "--t-vurgu": renkler.vurgu,
+          "--t-fiyat": renkler.fiyat,
+        } as React.CSSProperties
       }
     >
       <body className="min-h-dvh">{children}</body>

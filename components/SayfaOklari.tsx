@@ -1,6 +1,6 @@
 "use client";
 
-import { useAktifSayfa, useBagli } from "@/components/aktifSayfa";
+import { useAktifSayfa } from "@/components/aktifSayfa";
 import { sayfayaKaydir } from "@/components/kitapKaydirma";
 import { ui } from "@/data/arayuz";
 import type { DilKodu } from "@/data/menu";
@@ -33,8 +33,16 @@ function Chevron() {
  * düğme müşteriye menü bozuk hissi veriyor. Okun yokluğu "bu yönde sayfa yok"
  * bilgisini zaten veriyor, alt şeritteki sayaç da destekliyor.
  *
- * JavaScript yüklenmeden hiç render edilmiyorlar — çalışmayan bir kontrol
- * gösterilmiyor. Kaydırma o durumda da çalışmaya devam ediyor.
+ * SUNUCUDA DA BASILIYORLAR. Açılış sayfası sunucuda biliniyor, bu yüzden
+ * ilk HTML'de doğru oklar geliyor (ilk sayfada yalnızca "ileri"). Önceden
+ * JavaScript yüklenene kadar hiç çizilmiyor, sonradan beliriyorlardı.
+ * Hydration sırasında `useAktifSayfa` da açılış sayfasıyla başladığı için
+ * sunucu ve istemci aynı şeyi çiziyor.
+ *
+ * JAVASCRIPT KAPALIYSA GİZLİ: düğmeler o durumda çalışmaz, çalışmayan bir
+ * kontrol gösterilmiyor. Gizleyen kural `MenuKitabiEkrani` içindeki
+ * `<noscript>` stili; kaydırma o durumda da çalışıyor ve alt şeritte
+ * "yana kaydırın" notu çıkıyor.
  */
 export function SayfaOklari({
   kabId,
@@ -48,12 +56,6 @@ export function SayfaOklari({
   baslangicNo: number;
 }) {
   const aktifNo = useAktifSayfa(kabId, sayfalar, baslangicNo);
-
-  // Oklar ancak JavaScript devredeyken beliriyor: calismayan bir kontrol
-  // gosterilmiyor. Kaydirma o durumda da calismaya devam ediyor.
-  const bagli = useBagli();
-
-  if (!bagli) return null;
 
   const cevir = (hedef: number) => {
     const kap = document.getElementById(kabId);
