@@ -3,7 +3,7 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 41 tamamlandı, **push onayı bekliyor**. Menemen ve Gazoz fotoğrafları eklendi: fotoğraflı ürün **53 → 55 / 56**. Menü henüz tamamlanmadı; tek eksik **Açık Pide · Karışık** (gelen dosya Kuşbaşılı Kaşarlı'nın kopyasıydı, kullanılmadı). Aşama 40'a kadar olan her şey **üretimde canlı**. Teslimden önce karar bekleyen bir güvenlik güncellemesi var: Bekleyenler, satır 1.
+**Güncel aşama:** Aşama 41 tamamlandı ve **üretimde canlı**. Menemen ve Gazoz fotoğrafları eklendi: fotoğraflı ürün **53 → 55 / 56**. Menü henüz tamamlanmadı; tek eksik **Açık Pide · Karışık** (gelen dosya Kuşbaşılı Kaşarlı'nın kopyasıydı, kullanılmadı). Teslimden önce karar bekleyen bir güvenlik güncellemesi var: Bekleyenler, satır 1.
 **Son güncelleme:** 2026-09-16
 
 ### Genel Durum
@@ -53,7 +53,7 @@ Numaralandırma rapor başlıklarıyla aynı: aşağıdaki her satırın karşı
 | 38 | İkinci parti ürün fotoğrafları + Kola görseli | **Tamamlandı** — üretimde canlı |
 | 39 | Organizasyon görselinin değişmesi (yüzler bulanıklaştırıldı) | **Tamamlandı** — üretimde canlı |
 | 40 | Dört iyileştirme (İ1, İ4, İ5, İ6) + teslim hazırlığı | **Tamamlandı** — üretimde canlı |
-| 41 | Menemen ve Gazoz fotoğrafları (55/56) | **Tamamlandı** — push onayı bekliyor |
+| 41 | Menemen ve Gazoz fotoğrafları (55/56) | **Tamamlandı** — üretimde canlı |
 
 ### Bekleyenler
 
@@ -8658,7 +8658,7 @@ karar.
 
 === RAPOR BAŞLANGICI ===
 
-**Tarih:** 2026-09-16 · **Dal:** `main` · **Durum:** push onayı bekliyor
+**Tarih:** 2026-09-16 · **Dal:** `main` · **Durum:** üretimde canlı (41.9)
 
 Son üç eksik fotoğraf için dosya geldi. **İkisi işlendi (Menemen, Gazoz)**,
 Karışık Pide'nin dosyası başka bir ürünün fotoğrafının kopyası çıktı ve
@@ -8809,8 +8809,53 @@ değişmedi.
 
 ### 41.8 Sıradaki adım
 
-Push için onay bekleniyor. Push sonrası canlı doğrulama 41.9'a eklenecek.
+Push edildi ve üretime çıktı; canlı doğrulama 41.9'da.
 Açık kalanlar: Karışık Pide fotoğrafı (yeni dosya), Next.js güvenlik
 güncellemesi (Bekleyenler, satır 1).
+
+### 41.9 Canlı doğrulama · 2026-09-16
+
+`9543632` push edildi ve yaklaşık 60 saniyede üretime çıktı. Doğrulama
+**https://huzur-pide.vercel.app** üzerinde yapıldı.
+
+**Dosyalar canlıda:** `/urunler/menemen.webp` ve `/urunler/gazoz.webp`
+depodakilerle **bayt bayt aynı**.
+
+**İki fotoğraf dört dilde doğru üründe** (telefon öykünmesi, 390px; her
+satırın ekran görüntüsüne bakıldı):
+
+| Dil | Menemen (Kahvaltı, sayfa 2) | Gazoz (İçecekler, sayfa 8) |
+|---|---|---|
+| tr | Menemen · 200 ₺ · "Bakır sahanda menemen" | Gazoz · 60 ₺ · "Cam şişede gazoz" |
+| en | Menemen (Eggs with Tomato & Pepper) · "Menemen in a copper pan" | Gazoz (Turkish Soda) · "Gazoz in a glass bottle" |
+| ar | منمن (بيض بالطماطم والفلفل) · "منمن في مقلاة نحاسية" | غازوز (مشروب غازي) · "غازوز في زجاجة زجاجية" |
+| ru | Менемен (яичница с томатами и перцем) · "Менемен в медной сковороде" | Газоз (лимонад) · "Газоз в стеклянной бутылке" |
+
+Sekiz görselin sekizi yüklendi. `sizes="80px"`, kalite q=82, ekranda
+66×66, DPR 2'de 256w seçiliyor. Rusça'da iki satırlık uzun ad görselin
+yanında düzgün duruyor. Gazozda şişenin tamamı görünüyor.
+
+**Sayım, dört dilde aynı:** 56 ürün, **55 fotoğraflı**, eksik yalnızca
+**Karışık** (Açık Pide). Boş alt metin 0; bütün ürün görsellerinde `sizes`
+`80px`; Arapça `rtl`.
+
+**Sığma bozulmadı — değişiklik öncesiyle 16/16 birebir aynı:**
+
+| | 390px | 320px |
+|---|---|---|
+| tr | 0 / 32 / 516 / 16 / 488 / 0 / 0 / 580 | 92 / 308 / 792 / 292 / 764 / 0 / 0 / 856 |
+| en | 0 / 32 / 516 / 67 / 506 / 0 / 0 / 580 | 92 / 308 / 792 / 370 / 826 / 0 / 0 / 874 |
+| ar | 0 / 32 / 516 / 31 / 506 / 0 / 0 / 580 | 92 / 308 / 792 / 327 / 861 / 0 / 0 / 856 |
+| ru | 0 / 32 / 516 / 60 / 506 / 0 / 0 / 598 | 92 / 329 / 792 / 380 / 915 / 0 / 0 / 938 |
+
+Yatay taşma her ölçüde 0; tema Mürekkep, değişmedi.
+
+**Konsol: 0 hata, 0 uyarı.** 12 sayfa gezildi (dört dil × Kahvaltı,
+İçecekler, Çorbalar); başarısız istek yok.
+
+41.5'teki "push öncesi kırık görsel" aralığı kapandı.
+
+**Açık kalanlar:** Karışık Pide için farklı bir fotoğraf (Bekleyenler,
+satır 5) ve Next.js güvenlik güncellemesi kararı (satır 1).
 
 === RAPOR SONU ===
