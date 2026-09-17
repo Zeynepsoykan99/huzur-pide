@@ -3,7 +3,7 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 45 tamamlandı, **push onayı bekliyor** (`firebase-admin` 14.4.0; `npm audit` **0 uyarı**). Aşama 44 (README) push edildi. Proje teslime hazır (Aşama 43): kritik ve önemli bulgu yok. Menü 56/56 fotoğraflı, site **www.huzurpidedikbiyik.com**'da, Next.js 16.3.5. Kalanlar yalnızca iyileştirme önerisi ya da sahibin kararı (Bekleyenler).
+**Güncel aşama:** Aşama 45 tamamlandı, **üretimde canlı ve doğrulandı** (`firebase-admin` 14.4.0; `npm audit` **0 uyarı**; panel canlıda gerçek kayıtla çalışıyor). Proje teslime hazır (Aşama 43): kritik ve önemli bulgu yok. Menü 56/56 fotoğraflı, site **www.huzurpidedikbiyik.com**'da, Next.js 16.3.5. Kalanlar yalnızca iyileştirme önerisi ya da sahibin kararı (Bekleyenler).
 **Son güncelleme:** 2026-09-17
 
 ### Genel Durum
@@ -57,7 +57,7 @@ Numaralandırma rapor başlıklarıyla aynı: aşağıdaki her satırın karşı
 | 42 | Karışık Pide fotoğrafı (**56/56**), yeni alan adı, teslim öncesi tam test | **Tamamlandı** — üretimde canlı |
 | 43 | Dil değiştirme sayfayı koruyor + Next.js 16.3.5 | **Tamamlandı** — üretimde canlı; **teslime hazır** |
 | 44 | README'nin yeniden yazılması | **Tamamlandı** — push edildi |
-| 45 | `firebase-admin` 14.4.0 + `uuid` sabitlemesi (güvenlik uyarıları 6 → 0) | **Tamamlandı** — push onayı bekliyor |
+| 45 | `firebase-admin` 14.4.0 + `uuid` sabitlemesi (güvenlik uyarıları 6 → 0) | **Tamamlandı** — üretimde canlı |
 
 ### Bekleyenler
 
@@ -9393,7 +9393,7 @@ Bekleyenler tablosunun 7. satırı (README) kapatıldı.
 
 === RAPOR BAŞLANGICI ===
 
-**Tarih:** 2026-09-17 · **Dal:** `main` · **Durum:** push onayı bekliyor
+**Tarih:** 2026-09-17 · **Dal:** `main` · **Durum:** üretimde canlı, doğrulandı
 
 Aşama 43'ten kalan 6 orta güvenlik uyarısı kapatıldı.
 
@@ -9457,7 +9457,62 @@ Kod, menü içeriği, fiyatlar ve Firestore değişmedi (test kaydı geri alınd
 
 ### 45.4 Sıradaki adım
 
-Onayla push; Vercel derlemesinden sonra canlıda panel kısa testi
-(giriş + bir fiyatın kaydedilip geri alınması).
+Push edildi ve üretime çıktı; canlı doğrulama 45.5'te.
+
+### 45.5 Canlı doğrulama · 2026-09-17
+
+`d15eb13` push edildi (12:11 UTC); Vercel dağıtımı yaklaşık bir dakikada
+tamamlandı (GitHub durum: "Deployment has completed"). Doğrulama
+**https://www.huzurpidedikbiyik.com** üzerinde yapıldı.
+
+**Panel rotaları — `ERR_REQUIRE_ESM` yok** (Aşama 17'de panel tam bu
+noktada 500'e düşmüştü):
+
+| Rota | Oturumsuz | Oturumla (tarayıcıdan) | Ekranda |
+|---|---|---|---|
+| `/panel` | **200** | **200** | "Yönetim", 3 bölüm, "Şu an: Mürekkep" |
+| `/panel/fiyatlar` | 307 → `/panel` | **200** | "Fiyatları düzenle", 56 ürün |
+| `/panel/tema` | 307 → `/panel` | **200** | "Menü görünümü", 3 tema kartı, Mürekkep seçili |
+| `/panel/urun-ekle` | 307 → `/panel` | **200** | "Yeni ürün ekle", 8 bölüm |
+
+Oturumsuz 307 beklenen davranış (giriş sayfasına yönlendirme). Hiçbir
+sayfanın gövdesinde `ERR_REQUIRE_ESM`, "Application error" ya da
+"Internal Server Error" yok. Panelin sunucu eylemi istekleri
+(`POST /panel/fiyatlar`) ve sayfa yenilemeleri de 200 döndü.
+
+**Panel, geçici hesaplarla:**
+- Yetkisiz hesap: "Bu hesabın panele erişim yetkisi yok." ✓
+- Yönetici girişi ✓ · arama "çoban" → 56 üründen 1 ✓
+- **Çoban Salata 100 → 105:** özet "100 ₺ → 105 ₺", "1 fiyat
+  güncellendi.". Firestore'da 105 (`tohum-dogrula.ts` farkı yakaladı),
+  canlı menüde tr/en/ar/ru **105 ₺** ✓
+- **Geri alındı, 105 → 100:** özet "105 ₺ → 100 ₺", "1 fiyat
+  güncellendi.". Dört dilin sayfası yeniden üretildi
+  (`X-Vercel-Cache: REVALIDATED`) ve **ilk okumada, yaklaşık 2 sn'de**
+  100 ₺ ✓. Tarayıcıda `/tr/menu/salatalar` ekranında "Çoban Salata
+  100 ₺" görünüyor ✓
+- Çıkış: giriş ekranına döndü; ardından alt sayfalar yeniden 307 veriyor
+  (oturum gerçekten kapandı) ✓
+- Test hesapları silindi, yönetici 1. `tohum-dogrula.ts` "fark yok".
+
+**Konsol: 0 hata.**
+- Panel: her yüklemede aynı 5 ön yükleme uyarısı (bayrak SVG'leri + bir
+  CSS), yereldeki ile aynı (45.2). Tarayıcı tarafında; bu değişiklikle
+  ilgisi yok.
+- Müşteri menüsü (`/tr/menu/salatalar`, 5 sn beklendi): 0 hata, 0 uyarı.
+- Ağ listesindeki üç `ERR_ABORTED`, çıkıştan sonra yönlendirmeyi
+  izlemeden yaptığım ölçüm isteklerinden geliyor; sitenin hatası değil.
+
+*Ölçüm notu:* 105'e geçişin ilk kontrolünde sayfadaki ilk "₺" değerini
+okumuştum; menü kitabı sekiz kategorinin hepsini aynı sayfada taşıdığı
+için bu başka bir ürünün (100 ₺) fiyatıydı ve yanlışlıkla "yansımadı"
+gibi göründü. Doğrudan Çoban Salata satırı okununca değer 105'ti. Bu
+yüzden 105'e geçişin süresi ölçülemedi; geri alma, satırı doğrudan okuyan
+bir betikle ölçüldü.
+
+**Sonuç:** `firebase-admin` 14.4.0 ve `uuid` sabitlemesi üretimde
+sorunsuz. Güvenlik uyarısı 0; KRİTİK ve ÖNEMLİ bulgu yok. Kalanlar
+Bekleyenler'deki kararlar ve iyileştirme önerileri (buna panel
+sayfalarındaki gereksiz bayrak ön yüklemesi eklendi).
 
 === RAPOR SONU ===
