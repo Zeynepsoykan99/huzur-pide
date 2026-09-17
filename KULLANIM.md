@@ -7,7 +7,7 @@ anlatır. Teknik bilgi gerekmez.
 
 ## 1. Panele giriş
 
-1. Tarayıcıda şu adresi açın: **https://huzur-pide.vercel.app/panel**
+1. Tarayıcıda şu adresi açın: **https://www.huzurpidedikbiyik.com/panel**
 2. **E-posta** ve **Şifre** kutularını doldurun, **Giriş yap**'a basın.
 3. Karşınıza üç büyük düğme çıkar:
    - **Fiyatları düzenle**
@@ -143,7 +143,7 @@ gönderin; sorunu çok daha hızlı çözeriz.
 
 ---
 
-**Müşteri menüsü:** https://huzur-pide.vercel.app/tr
+**Müşteri menüsü:** https://www.huzurpidedikbiyik.com/tr
 
 Menü dört dilde açılır (Türkçe, İngilizce, Arapça, Rusça); müşteri
 sayfanın üstündeki bayraklardan dilini seçer.

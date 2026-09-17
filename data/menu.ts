@@ -642,7 +642,17 @@ export const MENU: Kategori[] = [
           { sutun: "hamur15", tutar: 600, dogrulandi: true },
           { sutun: "duble", tutar: 800, dogrulandi: true },
         ],
-        gorsel: null,
+        gorsel: {
+          src: "/urunler/acik-karisik.webp",
+          alt: {
+            tr: "Tahtada dilimlenmiş karışık açık pide",
+            en: "Sliced mixed open pide on a wooden board",
+            ar: "بيدة مفتوحة مشكلة مقطعة على لوح خشبي",
+            ru: "Нарезанная открытая пиде ассорти на деревянной доске",
+          },
+          genislik: 384,
+          yukseklik: 384,
+        },
       },
       {
         id: "acik-spesiyal",

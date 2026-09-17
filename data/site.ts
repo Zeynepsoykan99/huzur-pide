@@ -1,16 +1,17 @@
 import type { Metadata } from "next";
+import { SITE_ADRESI } from "./adres";
 import { GORSEL_ALT, LEZZETLER_METNI } from "./karsilama";
 import { DILLER, MEKAN_ADI, metin, type DilKodu } from "./menu";
 
 /**
- * Sitenin adresi ve arama motoru / paylaşım etiketleri.
+ * Arama motoru ve paylaşım etiketleri.
  *
- * ADRES TEK YERDE. canonical, hreflang, Open Graph, robots.txt ve
- * sitemap.xml hepsi buradan besleniyor. Alan adı değişirse yalnızca bu
- * satır güncellenir; eski adres bir yerde kopya kalıp arama motoruna yanlış
- * adres söylemez.
+ * ADRES TEK YERDE: `data/adres.ts`. canonical, hreflang, Open Graph,
+ * robots.txt ve sitemap.xml hepsi oradan besleniyor; eski adres bir yerde
+ * kopya kalıp arama motoruna yanlış adres söylemiyor. Aşama 42'de
+ * `huzur-pide.vercel.app` → `www.huzurpidedikbiyik.com` oldu.
  */
-export const SITE_ADRESI = "https://huzur-pide.vercel.app";
+export { SITE_ADRESI };
 
 /**
  * Paylaşım önizlemesi görseli — hero fotoğrafının JPEG kopyası.
