@@ -582,7 +582,16 @@ export function MenuKitabiEkrani({
 
   return (
     <div className="kitap-cercevesi">
-      <UstBaslik dil={dil} yol={dilYolu} sikisik tema={tema} yolOneki={yolOneki} />
+      {/* Dil bağlantıları ekrandaki sayfayı izliyor (`kitapAcilis`); önizlemede
+          `menu/<slug>` rotası olmadığı için izlemiyor. */}
+      <UstBaslik
+        dil={dil}
+        yol={dilYolu}
+        sikisik
+        tema={tema}
+        yolOneki={yolOneki}
+        kitapAcilis={onizleme ? undefined : acilis.slug}
+      />
 
       {/* Kitabın tamamı her rotada basılıyor; hangi sayfada açılacağını
           aşağıdaki senkron script belirliyor. Böylece beş sayfanın hepsi tek

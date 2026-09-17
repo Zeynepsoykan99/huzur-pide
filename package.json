@@ -11,7 +11,7 @@
   "dependencies": {
     "firebase": "^12.18.0",
     "firebase-admin": "^14.3.0",
-    "next": "16.2.12",
+    "next": "16.3.5",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "server-only": "^0.0.1"
@@ -23,14 +23,13 @@
     "@types/react-dom": "^19",
     "dotenv": "^17.4.2",
     "eslint": "^9",
-    "eslint-config-next": "16.2.12",
+    "eslint-config-next": "16.3.5",
     "tailwindcss": "^4",
     "tsx": "^4.23.13",
     "typescript": "^5"
   },
   "description": "Huzur Pide dijital QR menu",
   "allowScripts": {
-    "sharp@0.34.5": true,
     "unrs-resolver@1.12.2": true
   },
   "//": "GEÇİCİ ÇÖZÜM — aşağıdaki jose 5 sabitlemesi kalıcı değil. firebase-admin 14.3.0 → jwks-rsa 4.1.0 → jose 6 (saf ESM) zinciri Vercel'in çalışma ortamında ERR_REQUIRE_ESM veriyordu; jwks-rsa jose'dan yalnızca importJWK ve exportSPKI kullanıyor, ikisi de jose 5'te var. firebase-admin bunu kendi tarafında çözdüğünde bu satır ve overrides bloğu kaldırılmalı. Ayrıntı: ILERLEME.md → 17.2 ve 'İleride Kaldırılacak'.",

@@ -3,7 +3,7 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 42 tamamlandı ve **üretimde canlı**. **Menünün fotoğrafları tamamlandı: 56/56.** Site yeni alan adında (**www.huzurpidedikbiyik.com**); canonical, hreflang, Open Graph, robots ve sitemap yeni adresi gösteriyor, `huzur-pide.vercel.app` yeni adrese yönleniyor. Teslim öncesi tam test yapıldı: kritik bulgu yok, **iki önemli bulgu onay bekliyor** (dil değiştirme sayfayı korumuyor; Next.js güvenlik güncellemesi). Bkz. 42.9 ve Bekleyenler.
+**Güncel aşama:** Aşama 43 tamamlandı, **push onayı bekliyor**. Aşama 42'nin iki önemli bulgusu düzeltildi: menü kitabında dil değiştirme artık ekrandaki sayfada kalıyor; Next.js 16.3.5'e yükseltildi (kritik ve yüksek güvenlik uyarısı 0). Menü 56/56 fotoğraflı, site **www.huzurpidedikbiyik.com**'da. Push ve canlı doğrulamadan sonra proje teslime hazır.
 **Son güncelleme:** 2026-09-17
 
 ### Genel Durum
@@ -54,7 +54,8 @@ Numaralandırma rapor başlıklarıyla aynı: aşağıdaki her satırın karşı
 | 39 | Organizasyon görselinin değişmesi (yüzler bulanıklaştırıldı) | **Tamamlandı** — üretimde canlı |
 | 40 | Dört iyileştirme (İ1, İ4, İ5, İ6) + teslim hazırlığı | **Tamamlandı** — üretimde canlı |
 | 41 | Menemen ve Gazoz fotoğrafları (55/56) | **Tamamlandı** — üretimde canlı |
-| 42 | Karışık Pide fotoğrafı (**56/56**), yeni alan adı, teslim öncesi tam test | **Tamamlandı** — üretimde canlı; 2 önemli bulgu onay bekliyor |
+| 42 | Karışık Pide fotoğrafı (**56/56**), yeni alan adı, teslim öncesi tam test | **Tamamlandı** — üretimde canlı |
+| 43 | Dil değiştirme sayfayı koruyor + Next.js 16.3.5 | **Tamamlandı** — push onayı bekliyor |
 
 ### Bekleyenler
 
@@ -63,8 +64,8 @@ satırları o günün kaydı olarak duruyor, güncel liste burası.
 
 | # | Bekleyen iş | Ne bekliyor | Ayrıntı |
 |---|---|---|---|
-| 0 | **Dil değiştirme kitapta sayfayı korumuyor** | **Karar** — düzeltmeye onay | Kaydırdıktan sonra üst şeritteki bayraklar açılış sayfasına gidiyor; müşteri 1. sayfaya düşüyor. Dört dilde tekrarlandı, eskiden beri var. Önerilen düzeltme küçük (Aşama 42, 42.9 Ö1) |
-| 1 | **Next.js güvenlik güncellemesi** | **Karar** — 16.2.12 → 16.3.5 yükseltmesine onay | `npm audit` (Aşama 40, T8): Next için **kritik** uyarı (GHSA-2xp9-vwfh-vxw4, AVIF ile görsel optimizasyonunda uzaktan kod çalıştırma; GHSA-p293-qw3h-jr36 yalnızca Windows sunucu), ayrıca Next'e bağlı `sharp` ve `postcss` için yüksek. Sitede AVIF dosyası ve uzak görsel kaynağı yok, yani doğrudan açık düşük; yine de öncelikli. Yükseltme sonrası tam regresyon gerekiyor |
+| 0 | ~~Dil değiştirme kitapta sayfayı korumuyor~~ | **Kapandı (Aşama 43)** | Bayraklar ekrandaki sayfayı izliyor |
+| 1 | ~~Next.js güvenlik güncellemesi~~ | **Kapandı (Aşama 43)** | 16.3.5; kritik ve yüksek uyarı 0. Kalan 6 orta uyarı `firebase-admin` zincirinde (çözüm: 14.4.0'a geçiş, ayrıca ele alınabilir) |
 | 2 | Firebase Storage / Blaze planı | **Hesap** — Firebase projesinin Blaze'e (kredi kartı bağlı, kullandıkça öde) geçirilmesi senin hesabından yapılacak bir işlem | Panelden fotoğraf yükleme buna bağlı; veri yapısındaki `gorsel` alanı ve panel akışı hazır bekliyor (Aşama 16) |
 | 3 | QR kodunun bakacağı adres | **Karar** — kök `https://www.huzurpidedikbiyik.com` mi, doğrudan `https://www.huzurpidedikbiyik.com/tr` mi | Önerim `/tr`: yönlendirme atlanır, sayfa daha hızlı açılır. Kök adres de çalışıyor (307 → `/tr`). QR yeni alan adıyla basılmalı; eski `huzur-pide.vercel.app` adresi de yönleniyor ama bir adım fazla (Aşama 42) |
 | 4 | Vercel Hobby planı | **Karar + hesap** — Pro'ya geçmek ya da bilerek Hobby'de kalmak | Alan adı kısmı kapandı: site **www.huzurpidedikbiyik.com**'da, adres kodda tek yerde (`data/adres.ts`), eski adres yönleniyor (Aşama 42) |
@@ -9146,5 +9147,118 @@ kapatılıp kısa bir regresyon yapıldıktan sonra proje teslime hazır olur.
 | Firestore `urunler/acik-karisik` | yalnızca `gorsel` alanı |
 
 `yeni-gorseller/` git dışında: `karışık pide son karar.jpg` eklendi.
+
+=== RAPOR SONU ===
+
+## Aşama 43 — İki Önemli Bulgunun Düzeltilmesi · 2026-09-17
+
+=== RAPOR BAŞLANGICI ===
+
+**Tarih:** 2026-09-17 · **Dal:** `main` · **Durum:** push onayı bekliyor
+
+Aşama 42'deki iki ÖNEMLİ bulgu düzeltildi ve kısa tekrar testi yerel
+üretim derlemesinde yapıldı.
+
+### 43.1 Ö1 — Dil değiştirme artık ekrandaki sayfada kalıyor
+
+**Sorun:** Menü kitabında kaydırınca adres çubuğu güncelleniyordu, ama üst
+şeritteki bayraklar sunucuda basılan açılış sayfasına gidiyordu. Tatlılar'a
+kaydırıp dil değiştiren müşteri yeni dilde Çorbalar'a düşüyordu. Aşama 24
+raporundaki "bulunulan sayfayı koruyor" tespiti yalnızca açılış sayfası
+için doğruymuş.
+
+**Çözüm:**
+
+| Dosya | Değişiklik |
+|---|---|
+| `components/aktifSayfa.ts` | Kitabın ekrandaki sayfası için küçük ortak kayıt (`kitapKonumunuYayinla` / `useKitapSlug`). Kayıt **açılış rotasıyla anahtarlı**: istemci tarafı gezinmede önceki kitabın sayfası yeni kitaba taşınmıyor. Sunucuda ve hydration'da boş, yani sunucu HTML'iyle birebir aynı |
+| `components/SayfaSayaci.tsx` | Adresi güncellediği anda ekrandaki sayfayı kayda da yazıyor; kitap kapanınca kaydı boşaltıyor. Önizlemede (`adresiGuncelle=false`) yazmıyor |
+| `components/KitapDilBaglantisi.tsx` (yeni) | Yalnızca **bağlantının kendisi** istemcide: hedef `/<dil>/menu/<ekrandaki sayfa>`. Bayrak ve metinler sunucudan `children` olarak geliyor; menü verisi istemci paketine girmiyor. Ön yükleme kapalı (Aşama 40 kararı korunuyor) |
+| `components/DilKontrolu.tsx`, `components/UstBaslik.tsx`, `components/ekranlar.tsx` | `kitapAcilis` kitaptan bağlantılara iletiliyor; içindekiler ve önizleme etkilenmiyor |
+
+JavaScript kapalıyken bağlantılar önceki gibi açılış sayfasına gidiyor
+(kaydırmayı izleyecek bir şey yok).
+
+### 43.2 Ö2 — Next.js 16.2.12 → 16.3.5
+
+| | Önce | Sonra |
+|---|---|---|
+| `next` | 16.2.12 | **16.3.5** |
+| `eslint-config-next` | 16.2.12 | **16.3.5** |
+| `sharp` (Next üzerinden) | 0.34.5 | **0.35.4** |
+| `postcss` (Next üzerinden) | açıklı sürüm | 8.5.23 |
+| `npm audit --omit=dev` | 9 uyarı: **1 kritik**, 2 yüksek, 6 orta | **6 orta**, kritik ve yüksek **0** |
+
+- Sürümler önceki düzene uygun olarak **tam sabitlendi** (`^` yok).
+- `allowScripts` içindeki `sharp@0.34.5` izni kaldırıldı: 0.35.4'ün
+  kurulum betiği yok, izin hiçbir pakete karşılık gelmiyordu.
+- Kalan 6 orta uyarı `firebase-admin` → `@google-cloud/storage` →
+  `uuid` zincirinden geliyor; çözümü `firebase-admin` 14.4.0'a geçmek (bu
+  aşamanın kapsamı dışında).
+- `jose` sabitlemesi hâlâ gerekli (değişmedi).
+- Next'in 16.3 belgeleri okundu. Tek codemod Cache Components içindi; bu
+  projede o özellik açık değil, uygulanacak bir değişiklik yok.
+- `tsc`, `lint`, `build` (44 statik sayfa + Proxy) temiz, derleme
+  uyarısı yok.
+- Görsel optimizasyonu yeni `sharp` ile çalışıyor: webp isteyene webp
+  (`image/webp`), istemeyene JPEG.
+
+### 43.3 Kısa tekrar testi (yerel üretim derlemesi, Next 16.3.5)
+
+**Dil değiştirme, dört dilde uçtan uca akış:** karşılama → bayrak →
+Menü → içindekiler → 8 sayfa oklarla → geri ×2 → kaydırma → **dil
+değiştirme** → Menüye dön → Izgara → marka → geri tuşu. **Hata 0,
+konsol 0.**
+
+| Senaryo | Önce (Aşama 42) | Şimdi |
+|---|---|---|
+| tr: Tatlılar'a (7/8) kaydır → EN | `/en/menu/corbalar`, 1/8 | **`/en/menu/tatlilar`, 7/8** |
+| en / ar / ru: Tatlılar → TR | `/tr/menu/corbalar`, 1/8 | **`/tr/menu/tatlilar`, 7/8** |
+| İçindekiler → Izgara, 3 ileri (İçecekler) → EN | — | `/en/menu/icecekler`, 8/8 |
+| EN'de 2 ileri (Kapalı Pide) → AR | — | `/ar/menu/kapali-pide`, 4/8, `rtl` |
+| AR'da (RTL) kaydır (Izgara) → RU | — | `/ru/menu/izgara`, 5/8 |
+| **Eski kayıt taşınmıyor mu:** Çorbalar'da Tatlılar'a kaydır → Menüye dön → Izgara (kaydırmadan) → EN | — | `/en/menu/izgara`, 5/8 (Tatlılar'a **gitmiyor**) |
+| İçindekilerde dil bağlantısı | `/en/menu` | `/en/menu` (değişmedi) |
+| Tarayıcı geri tuşu → kitap | — | `/tr/menu/izgara`, bağlantı `/en/menu/izgara` |
+| JS kapalı: bağlantı | açılış sayfası | açılış sayfası (`/en/menu/izgara`), oklar ve sayaç gizli, not görünür |
+
+**Değişmeyenler, yeniden ölçüldü:**
+
+| Kontrol | Sonuç |
+|---|---|
+| Sığma 390 / 320 / 1280 × 4 dil × 8 kategori | Aşama 42 ile **birebir aynı**, yatay taşma 0 |
+| Fotoğraflar | dört dilde **56/56** yüklü |
+| Eski adres → yeni alan adı | 308 |
+| Büyük harfli adres | 308 |
+| Paylaşım görseli | 200 |
+| Panel (geçici hesaplarla) | Yetkisiz hesap giremedi. Giriş, fiyatlar (arama "kıymalı" → 2 ürün, kaydetme özeti), tema sayfası (3 kart, önizleme `tema-murekkep`, 4 ürün), ürün ekleme (8 bölüm) ve çıkış çalışıyor. **Gerçek bir kayıt:** Çoban Salata 100 → 105 → 100; sunucu eylemleri 16.3.5'te yazıyor. Konsol 0 |
+| Veri | `tohum-dogrula.ts` "fark yok"; test hesapları silindi, yönetici 1 |
+
+*Not:* Rusça karşılamaya istemci tarafı geçişte sekme başlığı ilk anda
+boş okundu, 1,5 sn sonra doğru ("Huzur Pide · Из печи на ваш стол").
+Başlık geçişten hemen sonra yazılıyor; ölçüm erken alınmıştı, hata değil.
+
+### 43.4 Teslim durumu
+
+Aşama 42'deki iki ÖNEMLİ bulgu **yerelde kapandı**; KRİTİK bulgu yok.
+Push ve canlı doğrulamadan sonra **proje teslime hazır**. Kalan maddeler
+yalnızca iyileştirme önerisi ya da sahibin kararı (Bekleyenler).
+
+### 43.5 Değişen dosyalar
+
+| Dosya | Madde |
+|---|---|
+| `components/aktifSayfa.ts`, `components/SayfaSayaci.tsx`, `components/KitapDilBaglantisi.tsx` (yeni), `components/DilKontrolu.tsx`, `components/UstBaslik.tsx`, `components/ekranlar.tsx` | Ö1 |
+| `package.json`, `package-lock.json` | Ö2 |
+| `ILERLEME.md` | özet, aşama tablosu, Bekleyenler, bu rapor |
+
+Menü içeriği, fiyatlar, çeviriler, görseller ve Firestore değişmedi (test
+kaydı geri alındı).
+
+### 43.6 Sıradaki adım
+
+Push için onay bekleniyor. Push sonrası canlıda kısa doğrulama (dil
+değiştirme, 56 fotoğraf, sığma, yönlendirmeler, panel, konsol) 43.7'ye
+eklenecek.
 
 === RAPOR SONU ===

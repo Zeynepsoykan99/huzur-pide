@@ -1,13 +1,19 @@
-import Link from "next/link";
+import { KitapDilBaglantisi } from "@/components/KitapDilBaglantisi";
 import { ui } from "@/data/arayuz";
 import { DILLER, DIL_ADI, DIL_BAYRAGI, DIL_KISA_AD, metin, type DilKodu } from "@/data/menu";
 
 /**
  * Menü sayfalarındaki dil değiştirme kontrolü.
  *
- * Her seçenek bir bağlantı — JavaScript yok. Aynı sayfanın başka dildeki
- * adresine gidiyor (`/tr/menu/izgara` → `/ar/menu/izgara`), yani dil
- * değiştirince müşteri baktığı sayfayı kaybetmiyor.
+ * Her seçenek bir bağlantı. Aynı sayfanın başka dildeki adresine gidiyor
+ * (`/tr/menu/izgara` → `/ar/menu/izgara`), yani dil değiştirince müşteri
+ * baktığı sayfayı kaybetmiyor.
+ *
+ * MENÜ KİTABINDA hedef EKRANDAKİ sayfa, açılış sayfası değil
+ * (`kitapAcilis`, bkz. `KitapDilBaglantisi`). Önceden bağlantılar yalnızca
+ * açılış sayfasına göre basılıyordu; kaydırıp dil değiştiren müşteri başa
+ * düşüyordu (Aşama 42, Ö1). JavaScript kapalıyken bağlantılar açılış
+ * sayfasına gidiyor — kaydırmayı izleyecek bir şey yok.
  *
  * Aktif dil `aria-current="true"` ile işaretli; görsel olarak da dolu zemin
  * ve ters renkle ayrılıyor — yalnızca renkle değil, şekille de.
@@ -23,9 +29,12 @@ export function DilKontrolu({
   aktifDil,
   /** Dil önekinden SONRAKİ yol, başında eğik çizgiyle. Örn. "/menu/izgara". */
   yol,
+  /** Menü kitabının açılış slug'ı. Verilirse bağlantılar ekrandaki sayfayı izler. */
+  kitapAcilis,
 }: {
   aktifDil: DilKodu;
   yol: string;
+  kitapAcilis?: string;
 }) {
   return (
     <nav aria-label={ui("dilDegistir", aktifDil)} className="dil-kontrolu">
@@ -35,9 +44,10 @@ export function DilKontrolu({
           const bayrak = DIL_BAYRAGI[dil];
           return (
             <li key={dil}>
-              <Link
+              <KitapDilBaglantisi
+                dil={dil}
                 href={`/${dil}${yol}`}
-                prefetch={false}
+                kitapAcilis={kitapAcilis}
                 hrefLang={dil}
                 lang={dil}
                 aria-current={aktif ? "true" : undefined}
@@ -56,7 +66,7 @@ export function DilKontrolu({
                 <span className="sr-only">
                   {DIL_ADI[dil]} — {metin(bayrak.ulke, aktifDil)}
                 </span>
-              </Link>
+              </KitapDilBaglantisi>
             </li>
           );
         })}

@@ -58,6 +58,60 @@ export function useAktifSayfa(
   return aktifNo;
 }
 
+/* ---------------------------------------------------------------------------
+   Kitabın ekrandaki sayfası — dil bağlantıları için ortak kayıt.
+
+   NEDEN: Üst şeritteki bayraklar sunucuda AÇILIŞ sayfasına göre basılıyordu
+   (`/en/menu/corbalar`). Müşteri kitapta Tatlılar'a kaydırdıktan sonra dil
+   değiştirince yeni dilde Çorbalar'a, yani başa düşüyordu. Dört dilde
+   ölçüldü (Aşama 42, Ö1). Adres çubuğu doğru sayfayı gösteriyordu, çünkü
+   onu `SayfaSayaci` güncelliyordu; bağlantılar ise hiç güncellenmiyordu.
+
+   Çözüm: `SayfaSayaci` ekrandaki sayfanın slug'ını burada yayınlıyor,
+   bayrak bağlantıları (`KitapDilBaglantisi`) buradan okuyor. Böylece
+   "hangi sayfadayız" bilgisi tek yerde hesaplanıyor.
+
+   `acilis` ANAHTAR: kayıt hangi kitaba (hangi açılış rotasına) ait olduğunu
+   taşıyor. İstemci tarafı gezinmede önceki kitabın slug'ı bir kare boyunca
+   kayıtta kalsa bile, açılışı eşleşmeyen bağlantı onu yok sayıp kendi
+   açılış sayfasını kullanıyor — yanlış sayfaya giden bir bağlantı hiç
+   oluşmuyor.
+
+   Sunucuda ve hydration sırasında kayıt boş (`null`), bağlantı açılış
+   sayfasına gidiyor; bu, sunucunun bastığı HTML ile birebir aynı. JavaScript
+   kapalıyken de bağlantılar açılış sayfasına gidiyor (önceki davranış).
+   --------------------------------------------------------------------------- */
+
+type KitapKonumu = { acilis: string; slug: string } | null;
+
+let kitapKonumu: KitapKonumu = null;
+const kitapDinleyicileri = new Set<() => void>();
+
+/** `SayfaSayaci` çağırıyor: ekrandaki sayfa değiştiğinde ya da kitap kapanınca. */
+export function kitapKonumunuYayinla(yeni: KitapKonumu): void {
+  if (yeni?.acilis === kitapKonumu?.acilis && yeni?.slug === kitapKonumu?.slug) return;
+  kitapKonumu = yeni;
+  kitapDinleyicileri.forEach((dinle) => dinle());
+}
+
+function kitapKonumunaAboneOl(dinle: () => void): () => void {
+  kitapDinleyicileri.add(dinle);
+  return () => kitapDinleyicileri.delete(dinle);
+}
+
+/**
+ * Kitapta ekranda duran sayfanın slug'ı. Kayıt başka bir kitaba aitse ya da
+ * boşsa açılış sayfası döner.
+ */
+export function useKitapSlug(acilis: string): string {
+  const konum = useSyncExternalStore(
+    kitapKonumunaAboneOl,
+    () => kitapKonumu,
+    () => null,
+  );
+  return konum && konum.acilis === acilis ? konum.slug : acilis;
+}
+
 /**
  * JavaScript devrede mi?
  *

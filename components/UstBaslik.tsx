@@ -28,12 +28,15 @@ export function UstBaslik({
   tema,
   /** Onizlemede baglantilari onizlemenin icinde tutar. */
   yolOneki = "",
+  /** Menu kitabinin acilis slug'i: dil baglantilari ekrandaki sayfayi izlesin. */
+  kitapAcilis,
 }: {
   dil: DilKodu;
   yol: string;
   sikisik?: boolean;
   tema?: TemaKodu;
   yolOneki?: string;
+  kitapAcilis?: string;
 }) {
   return (
     <header className={`ust-serit ${sikisik ? "ust-serit-sikisik" : ""}`}>
@@ -46,7 +49,7 @@ export function UstBaslik({
         <TemaMotifi className="ust-marka-motif" tema={tema} />
         <span className="ust-marka-adi">Huzur Pide</span>
       </Link>
-      <DilKontrolu aktifDil={dil} yol={yol} />
+      <DilKontrolu aktifDil={dil} yol={yol} kitapAcilis={kitapAcilis} />
     </header>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { kitapKonumunuYayinla } from "@/components/aktifSayfa";
 import { sayfayaKaydir } from "@/components/kitapKaydirma";
 import { sayfaBasligi } from "@/data/menu";
 
@@ -89,7 +90,15 @@ export function SayfaSayaci({
     if (kap) sayfayaKaydir(kap, baslangicNo);
     // Gözlemci açılış sayfasını görüp adresi gereksiz yere yeniden yazmasın.
     sonYazilanRef.current = `/${dil}${yolOneki}/menu/${baslangicSlug}`;
-  }, [kabId, baslangicNo, dil, baslangicSlug, yolOneki]);
+    // Dil bağlantıları için: kitap açılış sayfasında (bkz. aktifSayfa.ts).
+    if (adresiGuncelle) kitapKonumunuYayinla({ acilis: baslangicSlug, slug: baslangicSlug });
+  }, [kabId, baslangicNo, dil, baslangicSlug, yolOneki, adresiGuncelle]);
+
+  // Kitap kapanınca (başka ekrana geçilince) kayıt boşalsın.
+  useEffect(() => {
+    if (!adresiGuncelle) return;
+    return () => kitapKonumunuYayinla(null);
+  }, [adresiGuncelle]);
 
   useEffect(() => {
     const kap = document.getElementById(kabId);
@@ -115,6 +124,10 @@ export function SayfaSayaci({
         if (!sayfa) return;
 
         setAktifNo(no);
+
+        // Dil bağlantıları ekrandaki sayfaya gitsin (Aşama 42, Ö1). Adresle
+        // aynı koşula bağlı: önizlemede kitap kaydı tutulmuyor.
+        if (adresiGuncelle) kitapKonumunuYayinla({ acilis: baslangicSlug, slug: sayfa.slug });
 
         // replaceState kullanılıyor, pushState değil: geri tuşu 7 sayfalık
         // bir yığınla dolmasın, müşteri geri deyince menüden çıkabilsin.
@@ -146,7 +159,7 @@ export function SayfaSayaci({
 
     bolumler.forEach((b) => gozlemci.observe(b));
     return () => gozlemci.disconnect();
-  }, [kabId, sayfalar, dil, yolOneki, adresiGuncelle]);
+  }, [kabId, sayfalar, dil, yolOneki, adresiGuncelle, baslangicSlug]);
 
   return <>{aktifNo}</>;
 }
