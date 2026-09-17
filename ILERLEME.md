@@ -3,8 +3,8 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 41 tamamlandı ve **üretimde canlı**. Menemen ve Gazoz fotoğrafları eklendi: fotoğraflı ürün **53 → 55 / 56**. Menü henüz tamamlanmadı; tek eksik **Açık Pide · Karışık** (gelen dosya Kuşbaşılı Kaşarlı'nın kopyasıydı, kullanılmadı). Teslimden önce karar bekleyen bir güvenlik güncellemesi var: Bekleyenler, satır 1.
-**Son güncelleme:** 2026-09-16
+**Güncel aşama:** Aşama 42 tamamlandı ve **üretimde canlı**. **Menünün fotoğrafları tamamlandı: 56/56.** Site yeni alan adında (**www.huzurpidedikbiyik.com**); canonical, hreflang, Open Graph, robots ve sitemap yeni adresi gösteriyor, `huzur-pide.vercel.app` yeni adrese yönleniyor. Teslim öncesi tam test yapıldı: kritik bulgu yok, **iki önemli bulgu onay bekliyor** (dil değiştirme sayfayı korumuyor; Next.js güvenlik güncellemesi). Bkz. 42.9 ve Bekleyenler.
+**Son güncelleme:** 2026-09-17
 
 ### Genel Durum
 
@@ -54,6 +54,7 @@ Numaralandırma rapor başlıklarıyla aynı: aşağıdaki her satırın karşı
 | 39 | Organizasyon görselinin değişmesi (yüzler bulanıklaştırıldı) | **Tamamlandı** — üretimde canlı |
 | 40 | Dört iyileştirme (İ1, İ4, İ5, İ6) + teslim hazırlığı | **Tamamlandı** — üretimde canlı |
 | 41 | Menemen ve Gazoz fotoğrafları (55/56) | **Tamamlandı** — üretimde canlı |
+| 42 | Karışık Pide fotoğrafı (**56/56**), yeni alan adı, teslim öncesi tam test | **Tamamlandı** — üretimde canlı; 2 önemli bulgu onay bekliyor |
 
 ### Bekleyenler
 
@@ -62,11 +63,12 @@ satırları o günün kaydı olarak duruyor, güncel liste burası.
 
 | # | Bekleyen iş | Ne bekliyor | Ayrıntı |
 |---|---|---|---|
+| 0 | **Dil değiştirme kitapta sayfayı korumuyor** | **Karar** — düzeltmeye onay | Kaydırdıktan sonra üst şeritteki bayraklar açılış sayfasına gidiyor; müşteri 1. sayfaya düşüyor. Dört dilde tekrarlandı, eskiden beri var. Önerilen düzeltme küçük (Aşama 42, 42.9 Ö1) |
 | 1 | **Next.js güvenlik güncellemesi** | **Karar** — 16.2.12 → 16.3.5 yükseltmesine onay | `npm audit` (Aşama 40, T8): Next için **kritik** uyarı (GHSA-2xp9-vwfh-vxw4, AVIF ile görsel optimizasyonunda uzaktan kod çalıştırma; GHSA-p293-qw3h-jr36 yalnızca Windows sunucu), ayrıca Next'e bağlı `sharp` ve `postcss` için yüksek. Sitede AVIF dosyası ve uzak görsel kaynağı yok, yani doğrudan açık düşük; yine de öncelikli. Yükseltme sonrası tam regresyon gerekiyor |
 | 2 | Firebase Storage / Blaze planı | **Hesap** — Firebase projesinin Blaze'e (kredi kartı bağlı, kullandıkça öde) geçirilmesi senin hesabından yapılacak bir işlem | Panelden fotoğraf yükleme buna bağlı; veri yapısındaki `gorsel` alanı ve panel akışı hazır bekliyor (Aşama 16) |
 | 3 | QR kodunun bakacağı adres | **Karar** — kök `https://huzur-pide.vercel.app` mi, doğrudan `.../tr` mi | Önerim `/tr`: yönlendirme atlanır, sayfa daha hızlı açılır. Kök adres her iki durumda da çalışır (Aşama 5). Alan adı kararıyla (4) birlikte ele alınmalı |
-| 4 | Vercel Hobby planı ve alan adı | **Karar + hesap** — Pro'ya geçmek ya da bilerek Hobby'de kalmak; özel alan adı | Ayrı ele alınacak. Site adresi kodda tek yerde (`data/site.ts` → `SITE_ADRESI`); alan adı değişince o satır güncellenir (Aşama 40) |
-| 5 | 1 ürünün fotoğrafı | **Dosya** — 56 üründen yalnızca 1'inin görseli yok | **Açık Pide · Karışık**. Aşama 41'de gelen `karısıkpideson.jpg`, Kuşbaşılı Kaşarlı'nın mevcut fotoğrafının küçük kopyası çıktı; sahibinin kararıyla kullanılmadı. Farklı bir Karışık fotoğrafı gelince menü tamamlanır. (Menemen ve Gazoz Aşama 41'de eklendi.) |
+| 4 | Vercel Hobby planı | **Karar + hesap** — Pro'ya geçmek ya da bilerek Hobby'de kalmak | Alan adı kısmı kapandı: site **www.huzurpidedikbiyik.com**'da, adres kodda tek yerde (`data/adres.ts`), eski adres yönleniyor (Aşama 42) |
+| 5 | ~~Ürün fotoğrafları~~ | **Kapandı (Aşama 42)** | **56/56 ürün fotoğraflı.** Son eksik Açık Pide · Karışık eklendi |
 | 6 | Arapça çevirilerin kontrolü | **Kişi** — ana dili Arapça olan birinin gözden geçirmesi | Özellikle Türkçe adın harf çevirisiyle yazıldığı kalemler: كاشارلي, كاريشيك, ساتش كافورما (Aşama 3) |
 | 7 | README | **Zaman** — bu sefer atlandı (Aşama 40, T2) | Şu an `create-next-app` şablonu. Yapı, ortam değişkeni adları, betikler, dağıtım ve yedek alma yazılacak. Mekân sahibi için kullanım notu ayrıca var: `KULLANIM.md` |
 
@@ -8857,5 +8859,292 @@ Yatay taşma her ölçüde 0; tema Mürekkep, değişmedi.
 
 **Açık kalanlar:** Karışık Pide için farklı bir fotoğraf (Bekleyenler,
 satır 5) ve Next.js güvenlik güncellemesi kararı (satır 1).
+
+=== RAPOR SONU ===
+
+## Aşama 42 — Son Fotoğraf (56/56), Yeni Alan Adı ve Teslim Öncesi Tam Test · 2026-09-17
+
+=== RAPOR BAŞLANGICI ===
+
+**Tarih:** 2026-09-17 · **Dal:** `main` · **Durum:** üretimde canlı (`6b676eb`)
+
+**MENÜNÜN FOTOĞRAFLARI TAMAMLANDI: 56 ürünün 56'sı fotoğraflı.** Son eksik
+Açık Pide · Karışık'tı. Ardından alan adı düzeltmesi yapıldı ve teslim
+öncesi son tam test canlıda, **www.huzurpidedikbiyik.com** üzerinde
+yapıldı.
+
+**Sonuç: KRİTİK bulgu yok, iki ÖNEMLİ bulgu var** (42.9). İkisi
+kapanmadan "teslime hazır" denmiyor.
+
+### 42.1 Karışık Pide fotoğrafı
+
+**Dosya.** İstenen "karışık pide son karar" `yeni-gorseller/` içinde
+yoktu; sahibin **İndirilenler** klasöründe `karısıkpidesonkarar.jpg`
+bulundu ve onayla kullanıldı. Asıl dosyaya dokunulmadı;
+`yeni-gorseller/karışık pide son karar.jpg` olarak kopyalandı (MD5
+birebir: `50b8f1a0…`).
+
+| Kontrol | Sonuç |
+|---|---|
+| Biçim | JPEG, 750×752, 95.754 B |
+| Sağlık | Katı modda eksiksiz çözüldü, `FF D9` yerinde, 1,36 bit/piksel |
+| Filigran / logo / telif | yok (çeyrekler kontrastı artırılıp büyütüldü) |
+| Menüdeki 60 fotoğrafla karşılaştırma | **kopya ya da çok benzer yok**: en yakın ayran 37,1, tavuk şiş 41,0, Kuşbaşılı Kaşarlı 41,2 (Aşama 41'de reddedilen kopyada 5,3 idi) |
+| İçerik | Tahtada dilimlenmiş açık pide: kıyma ve küp doğranmış sebze, kaşarsız |
+
+*Not:* Reddedilen dosyayla **aynı çekim düzeninden** (aynı tahta, ıspanak,
+limon) ama farklı fotoğraf. Sahibi içeriği onayladı.
+
+**İşleme** (`betikler/gorsel-ekle-4.ts`):
+- Merkezden kare, 384×384, webp q82 → `public/urunler/acik-karisik.webp`
+  (32.364 B).
+- Betik, bilinen kötü dosyaların MD5'ini (bozuk Menemen, reddedilen Karışık
+  kopyası) ve katı çözmeyi işlemeden önce denetliyor.
+
+**Alt metin** (onaylı): tr "Tahtada dilimlenmiş karışık açık pide" · en
+"Sliced mixed open pide on a wooden board" · ar "بيدة مفتوحة مشكلة
+مقطعة على لوح خشبي" · ru "Нарезанная открытая пиде ассорти на
+деревянной доске".
+
+**Sıra:**
+1. Test öncesi Firestore yedeği alındı.
+2. `data/menu.ts`'te yalnızca `acik-karisik.gorsel` dolduruldu.
+3. **Derlemeden önce** `gorsel-guncelle.ts` çalıştırıldı: yalnızca 1 ürün
+   yazıldı ("yok" → `/urunler/acik-karisik.webp`).
+4. `tohum-dogrula.ts` → "fark yok".
+
+### 42.2 Alan adı düzeltmesi
+
+Ön kontrolde görüldü: `www.huzurpidedikbiyik.com` çalışıyordu ama
+canonical, hreflang, Open Graph, `robots.txt` ve `sitemap.xml`
+`huzur-pide.vercel.app`'i gösteriyordu. `huzur-pide.vercel.app` de hâlâ
+200 dönüyordu, yani aynı site iki adresten açılıyordu. Sahibin kararıyla
+bu aşamada düzeltildi:
+
+| Dosya | Değişiklik |
+|---|---|
+| `data/adres.ts` (yeni) | `SITE_ADRESI = "https://www.huzurpidedikbiyik.com"` ve `ESKI_URETIM_ADI`. Ayrı ve bağımlılıksız, çünkü proxy de okuyor; menü verisi proxy paketine girmiyor |
+| `data/site.ts` | adresi `data/adres.ts`'ten alıyor |
+| `proxy.ts` | `huzur-pide.vercel.app` → `SITE_ADRESI`, **308**, yol ve sorgu korunuyor. Büyük harf yönlendirmesiyle tek adımda birleşiyor. Önizleme dağıtımlarının adları etkilenmiyor |
+| `KULLANIM.md` | iki adres yeni alan adına güncellendi |
+
+Yerelde sahte `Host` başlığıyla denendi (eski ad → 308, önizleme adı →
+200, localhost → 200), sonra canlıda doğrulandı (42.3).
+
+### 42.3 Tam test — alan adı, HTTPS, yönlendirmeler, SEO (canlı)
+
+| Kontrol | Sonuç |
+|---|---|
+| Sertifika `www` / `huzurpidedikbiyik.com` | Let's Encrypt, ikisi de geçerli, bitiş 15.12.2026 |
+| HSTS | `max-age=63072000` |
+| `http://www…` → `https://www…` | 308 |
+| `http://` ve `https://huzurpidedikbiyik.com` → `www` | 308 (yol korunuyor) |
+| `/` → `/tr` | 307 |
+| `/tr/` → `/tr` · `/TR/MENU` → `/tr/menu` | 308 · 308 |
+| Eski adresler (`/tr/dil`, `/tr/secim`, `/tr/organizasyon`, `/tr/menu/izgara-2`) | 307, doğru yere |
+| `huzur-pide.vercel.app/tr`, `/panel`, `/en/menu/izgara?x=1` | **308 → www**, yol ve sorgu korunuyor |
+| `/tr/menu/yok`, `/xx` | 404 (`noindex`, canonical yok, "Ana ekrana dön" → `/tr`) |
+| `robots.txt` | `Disallow: /panel`, `Sitemap: https://www.huzurpidedikbiyik.com/sitemap.xml` |
+| `sitemap.xml` | **40 adres, 40'ı www, 40'ı 200**; 40 `x-default` |
+| canonical | **40 sayfanın 40'ında** `https://www.huzurpidedikbiyik.com/…` |
+| hreflang | her sayfada 4 dil + `x-default`, hepsi www |
+| Open Graph | `og:url` / `og:image` www, `og:locale` dile göre, başlık dile göre |
+| Panel | `noindex, nofollow` |
+| `/og/huzur-pide.jpg`, `/favicon.svg` | 200, doğru içerik türü |
+
+### 42.4 Tam test — dört dilde akış (canlı, ekranda görünen içerikle)
+
+Telefon öykünmesi (390×844, DPR 2), her dilde aynı senaryo; karşılama,
+içindekiler ve Izgara ekran görüntüleriyle bakıldı:
+
+1. `/` → `/tr`; bayrakla dile geçiş: `lang` ve `dir` doğru (ar `rtl`),
+   sekme başlığı dile göre, slogan ekranda. Bölümler: Lezzetlerimiz /
+   Organizasyon / İletişim (ve karşılıkları), telefon `(0362) 854 18 54`.
+2. Menü butonu → içindekiler: **8 kategori, dilin adlarıyla, hepsi ekranda**.
+3. Çorbalar'dan girip **oklarla 8 sayfa**: her sayfada başlık ekranda ve
+   doğru, sayaç `n / 8`, adres ilgili kategori. Son sayfada ileri ok yok.
+   Sayfa başına ürün sayısı 4 / 7 / 11 / 6 / 12 / 1 / 2 / 13 = **56**.
+   Örnek: tr "Et Izgara 1 KG 1.650 ₺", ar "لحم بقري مشوي 1 كغ 1.650 ₺".
+4. Geri ok ×2 → `6 / 8`; parmakla kaydırma → `7 / 8`.
+5. **Menüdeyken dil değiştirme → BULGU (42.9, Ö1).**
+6. Tatlılar adresi tam sayfa açılınca 7. sayfa ekranda; oradan dil
+   değiştirme sayfayı koruyor (`/en/menu/tatlilar`, `7 / 8`).
+7. Menüye dön → içindekiler → 5. kategori: kitap 5. sayfada açılıyor.
+8. Marka → karşılama; tarayıcı geri tuşu → önceki sayfa.
+
+Konsol ve ağ: **0 hata, 0 uyarı, başarısız istek yok.**
+
+### 42.5 Tam test — 56/56 fotoğraf (canlı)
+
+Dört dilde, bütün görseller zorla yüklenerek:
+
+| Dil | Ürün | Yüklendi | Yer tutucu | Boş alt | `sizes` | Kalite | Kare olmayan | Farklı dosya |
+|---|---|---|---|---|---|---|---|---|
+| tr · en · ar · ru | 56 | **56** | 0 | 0 | `80px` | q=82 | 0 | **56** |
+
+Karışık, Açık Pide sayfasında (s3) üç fiyatla (430 / 600 / 800 ₺) ve dört
+dilde doğru alt metinle görünüyor. 56 ürünün 56'sı ayrı bir fotoğraf
+kullanıyor; iki üründe aynı fotoğraf yok.
+
+### 42.6 Tam test — sığma ve taşma (canlı)
+
+| | 390px | 320px | 1280px |
+|---|---|---|---|
+| tr | 0 / 32 / 516 / 16 / 488 / 0 / 0 / 580 | 92 / 308 / 792 / 292 / 764 / 0 / 0 / 856 | 0 / 0 / 468 / 0 / 432 / 0 / 0 / 524 |
+| en | 0 / 32 / 516 / 67 / 506 / 0 / 0 / 580 | 92 / 308 / 792 / 370 / 826 / 0 / 0 / 874 | aynı |
+| ar | 0 / 32 / 516 / 31 / 506 / 0 / 0 / 580 | 92 / 308 / 792 / 327 / 861 / 0 / 0 / 856 | aynı |
+| ru | 0 / 32 / 516 / 60 / 506 / 0 / 0 / 598 | 92 / 329 / 792 / 380 / 915 / 0 / 0 / 938 | aynı |
+
+390 ve 320 px önceki aşamalarla **birebir aynı**. Değerler sayfa içi dikey
+kaydırma payı; aşağı ok bunun için var. Belge yatay taşması her ölçüde
+**0**, sayfa kutusunun dışına taşan metin ya da görsel **0**
+(3 genişlik × 4 dil × 8 kategori).
+
+### 42.7 Tam test — kontrast (canlı)
+
+**Karşılama** (metin gizlendi, arkasındaki en açık piksel; dört dilin en
+düşüğü):
+
+| | Slogan (4,5) | Lezzetler b. (3) / m. (4,5) | Organizasyon b. (3) / m. (4,5) |
+|---|---|---|---|
+| 320 | 5,00 | 4,62 / 5,51 | 6,45 / 6,18 |
+| 390 | 5,28 | 5,50 / 5,55 | 6,53 / 6,18 |
+| 1280 | 8,89 | 7,18 / 5,73 | 6,43 / 7,78 |
+
+**Tema ve renk kombinasyonları.** Kodda artık **üç tema** var; Zeytin
+Aşama 40'ta kaldırıldı. Her kombinasyon canlı menüde gerçek pikselle
+ölçüldü: metin gizlendi, metin rengiyle arkasındaki her piksel arasındaki
+en kötü oran alındı. Sayfa `/tr/menu/izgara`:
+
+| Kombinasyon | Başlık 28px | Ürün adı 17px | Fiyat 15px | Sayaç 13px | Menüye dön 13px |
+|---|---|---|---|---|---|
+| Mürekkep · kahve / lacivert (mevcut) | 15,64 | 15,64 | 9,61 | 8,00 | 7,46 |
+| Gece Ocağı · bakır / amber | 12,66 | 14,47 | 7,64 | 6,26 | 7,67 |
+| Çini Levha · kobalt / mercan | 11,61 | 15,19 | 5,72 | 8,58 | 5,97 |
+| Mürekkep · yeşil / kırmızı | 15,64 | 15,64 | **4,76** | 7,21 | 7,46 |
+
+Dil düğmeleri (Mürekkep, yalnızca yazı): pasif 7,46, aktif 8,00.
+`renk-kontrast.ts`: **27 renk, 0 kaldı** (paletin tamamı, aktif dil
+zemini dahil). **Hepsi AA'yı geçiyor**; en dar nokta 4,76 (Mürekkep,
+kırmızı fiyat; eşik 4,5).
+
+*Ölçüm notu:* İlk ölçümde dil düğmeleri 1,00–1,07 çıktı; metin kutusunun
+içine bayrak görseli girmişti. Yalnızca yazı kısmı yeniden ölçüldü.
+
+### 42.8 Tam test — panel, JavaScript kapalı, veri (canlı)
+
+**Panel** (iki geçici hesapla; sahibin hesabına dokunulmadı; her işlem
+geri alındı):
+
+| Kontrol | Sonuç |
+|---|---|
+| Yetkisiz hesap | "Bu hesabın panele erişim yetkisi yok." Panel açılmadı; `/panel/fiyatlar`'da form sızmadı |
+| Şifremi unuttum (yalnızca test hesabına) | "Bu adres kayıtlıysa, şifre sıfırlama bağlantısı e-postanıza gönderildi…" |
+| Giriş | 3 bölüm, "Şu an: Mürekkep"; oturum çerezi JS'e görünmüyor |
+| Arama | çoban 1 · corba 4 · icecek 13 · kunefe 1 (56 üründen) |
+| Fiyat | Çoban Salata 100 → 105: özet doğru, menüde **3,5 sn**'de 105 ₺. **100'e geri alındı**, menüde 7,1 sn'de 100 ₺ |
+| Tema | 3 kart (Çini Levha, Gece Ocağı, Mürekkep). Gece → önizleme `tema-gece`, menüde 3,7 sn. Çini → 3,2 sn. **Mürekkep'e geri alındı**, 3,3 sn |
+| Renk | Mürekkep'te fiyat Lacivert → Kırmızı, vurgu Kahve → Yeşil: panel, önizleme ve menü aynı değerde (her biri ~3 sn). **Kahve / Lacivert'e geri alındı** |
+| Yeni ürün | Salatalar'a "Test Ürünü Silinecek" (1 ₺) eklendi; tr ve en menüde görüldü (çeviri boş → Türkçe ad). Panelden silindi ("…silindi."); dört dilde menüden kalktı (Salatalar 1 ürün, toplam 56) |
+| Çıkış | `/panel/fiyatlar` → giriş formu, fiyat formu 0 |
+| Konsol | 0 hata |
+
+*Notlar:*
+- İlk iki deneme betik hatasıyla durdu (betik ortamında `setTimeout` yok;
+  panelin silme mesajı betiğin beklediğinden farklı). Her durmadan sonra
+  Firestore kontrol edildi, iz yoktu. Şifre sıfırlama e-postası test
+  adresine (`@huzurpide.test`, teslim edilemez) birkaç kez gönderildi.
+- Test öncesi renk durumu **Mürekkep: vurgu kahve, fiyat lacivert** idi.
+  16 Eylül yedeğinde fiyat kırmızıydı; arada panelden değiştirilmiş. Geri
+  alma bu güncel duruma göre yapıldı.
+
+**JavaScript kapalı** (dört dil × 320 ve 390): görünen ok 0, sayaç 0,
+"yana kaydırın" notu şeridin içinde, şerit 46 px, yatay taşma 0. Kitap 1.
+sayfada açılıyor (bilinen sınır); kaydırma çalışıyor (1 → 3). Bağlantılarla
+tam sayfa gezinme çalışıyor: `/tr` → bayrak → `/ar` → Menü → İçecekler.
+
+**Veri ve güvenlik:**
+
+| Kontrol | Sonuç |
+|---|---|
+| `tohum-dogrula.ts` | 8/8 kategori, 56/56 ürün, teyitsiz 0, "fark yok" |
+| Test öncesi / sonrası yedek (alan alan) | **2 fark, ikisi de beklenen:** `acik-karisik.gorsel` ve `gorselliUrunSayisi` 55 → 56. Fiyat, tema, renk, ürün sayısı birebir aynı |
+| Yönetici / Auth hesabı | 1 / 1 (test hesapları silindi) |
+| Canlı Firestore kuralları | depodakiyle aynı |
+| `tsc` · `lint` · `build` | temiz · temiz · 44 statik sayfa + robots + sitemap + Proxy |
+
+### 42.9 Bulgular
+
+#### KRİTİK
+Yok.
+
+#### ÖNEMLİ
+
+**Ö1 — Kitapta ilerledikten sonra dil değiştirmek başa atıyor (dört
+dilde).**
+- **Belirti:** Çorbalar'dan girip Tatlılar'a (7. sayfa) kaydırılınca adres
+  `/tr/menu/tatlilar` oluyor, ama üst şeritteki bayraklar hâlâ
+  `/…/menu/corbalar`'a gidiyor. Dil değiştiren müşteri Çorbalar'a (1.
+  sayfa) düşüyor; baktığı sayfayı kaybediyor. Dört dilde tekrarlandı.
+- **Sebep:** `DilKontrolu` bağlantıları sunucuda açılış sayfasına göre
+  basılıyor, kaydırınca güncellenmiyor (`MenuKitabiEkrani` → `dilYolu`).
+  Sayfa tam yüklenince (paylaşılan link) doğru çalışıyor.
+- **Ne zamandan beri:** Eskiden beri. Git geçmişine göre bu yapı Aşama 7 ve
+  24'ten bu yana aynı, son aşamalardaki değişikliklerle ilgisi yok.
+  Aşama 24'teki "bulunulan sayfayı koruyor" tespiti yalnızca açılış sayfası
+  için doğruymuş.
+- **Önerilen düzeltme (onay bekliyor, yapılmadı):** Bağlantılar
+  kaydırıldıkça görünen sayfaya göre güncellensin; aktif sayfa bilgisi
+  (`useAktifSayfa`) zaten var. Küçük bir değişiklik, JS kapalıyken
+  davranış değişmez.
+
+**Ö2 — Next.js güvenlik güncellemesi hâlâ bekliyor** (Bekleyenler, satır
+1). `next` 16.2.12 için kritik uyarı (GHSA-2xp9-vwfh-vxw4), ayrıca `sharp`
+ve `postcss` için yüksek. Doğrudan açık düşük (AVIF dosyası ve uzak görsel
+kaynağı yok, sunucu Linux), ama teslimden önce 16.3.5'e yükseltme
+öneriliyor.
+
+#### İYİLEŞTİRME ÖNERİSİ
+
+1. **Kullanılmayan 5 görsel:** `public/urunler/` içinde `ayran`, `fanta`,
+   `kabak-tatlisi`, `kuzu-izgara-kg`, `kuzu-izgara-porsiyon`. Aşama 33'te
+   menüden çıkan ürünlerden kalmış; silinebilir ya da not düşülebilir.
+2. **Eski adresin kökü iki adımda yönleniyor:**
+   `huzur-pide.vercel.app/` → 307 `/tr` → 308 `www…/tr`. Sonuç doğru, bir
+   adım fazla. Ayrıca `huzur-pide.vercel.app/robots.txt` 200 dönüyor
+   (içinde yeni sitemap adresi var; zararsız).
+3. **JS kapalıyken kitap her zaman 1. sayfada açılıyor** (Aşama 40'ta
+   bilerek bırakılan sınır).
+4. **Karışık ve Kuşbaşılı Kaşarlı fotoğrafları aynı çekim düzeninden**
+   (bilgi; sahibi onayladı).
+5. **README hâlâ şablon** (Bekleyenler, satır 7).
+
+### 42.10 Teslim durumu
+
+**Kritik bulgu yok.** Menü dört dilde eksiksiz: 56/56 fotoğraf, yeni alan
+adı, HTTPS ve SEO doğru; sığma, kontrast, JS kapalı davranış, panel ve
+veri bütünlüğü temiz.
+
+**"Teslime hazır" denmiyor, çünkü iki ÖNEMLİ bulgu açık:** Ö1 (dil
+değiştirme sayfayı korumuyor) ve Ö2 (Next.js güvenlik güncellemesi).
+Kurala uygun olarak ikisi de düzeltilmedi; onay bekleniyor. İkisi
+kapatılıp kısa bir regresyon yapıldıktan sonra proje teslime hazır olur.
+
+### 42.11 Değişen dosyalar
+
+| Dosya | Değişiklik |
+|---|---|
+| `public/urunler/acik-karisik.webp` | yeni (384×384, 32.364 B) |
+| `data/menu.ts` | yalnızca `acik-karisik.gorsel` + dört dilde alt metin |
+| `betikler/gorsel-ekle-4.ts` | yeni: işleme ve denetim |
+| `data/adres.ts` | yeni: site adresi ve eski üretim adı |
+| `data/site.ts` | adresi `data/adres.ts`'ten alıyor |
+| `proxy.ts` | eski üretim adresi → yeni alan adı (308) |
+| `KULLANIM.md` | adresler yeni alan adına |
+| `yedek/firestore-2026-09-17.json` | test sonrası yedek (56 fotoğraflı) |
+| `ILERLEME.md` | özet, aşama tablosu, Bekleyenler, bu rapor |
+| Firestore `urunler/acik-karisik` | yalnızca `gorsel` alanı |
+
+`yeni-gorseller/` git dışında: `karışık pide son karar.jpg` eklendi.
 
 === RAPOR SONU ===
