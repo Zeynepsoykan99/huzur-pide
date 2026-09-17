@@ -3,7 +3,7 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 43 tamamlandı ve **üretimde canlı**. **Proje teslime hazır:** kritik ve önemli bulgu yok. Menü 56/56 fotoğraflı, site **www.huzurpidedikbiyik.com**'da, Next.js 16.3.5; menü kitabında dil değiştirme ekrandaki sayfada kalıyor. Kalanlar yalnızca iyileştirme önerisi ya da sahibin kararı (Bekleyenler).
+**Güncel aşama:** Aşama 44 tamamlandı, **push onayı bekliyor** (yalnızca `README.md`). Proje teslime hazır (Aşama 43): kritik ve önemli bulgu yok. Menü 56/56 fotoğraflı, site **www.huzurpidedikbiyik.com**'da, Next.js 16.3.5. Kalanlar yalnızca iyileştirme önerisi ya da sahibin kararı (Bekleyenler).
 **Son güncelleme:** 2026-09-17
 
 ### Genel Durum
@@ -56,6 +56,7 @@ Numaralandırma rapor başlıklarıyla aynı: aşağıdaki her satırın karşı
 | 41 | Menemen ve Gazoz fotoğrafları (55/56) | **Tamamlandı** — üretimde canlı |
 | 42 | Karışık Pide fotoğrafı (**56/56**), yeni alan adı, teslim öncesi tam test | **Tamamlandı** — üretimde canlı |
 | 43 | Dil değiştirme sayfayı koruyor + Next.js 16.3.5 | **Tamamlandı** — üretimde canlı; **teslime hazır** |
+| 44 | README'nin yeniden yazılması | **Tamamlandı** — push onayı bekliyor |
 
 ### Bekleyenler
 
@@ -71,7 +72,7 @@ satırları o günün kaydı olarak duruyor, güncel liste burası.
 | 4 | Vercel Hobby planı | **Karar + hesap** — Pro'ya geçmek ya da bilerek Hobby'de kalmak | Alan adı kısmı kapandı: site **www.huzurpidedikbiyik.com**'da, adres kodda tek yerde (`data/adres.ts`), eski adres yönleniyor (Aşama 42) |
 | 5 | ~~Ürün fotoğrafları~~ | **Kapandı (Aşama 42)** | **56/56 ürün fotoğraflı.** Son eksik Açık Pide · Karışık eklendi |
 | 6 | Arapça çevirilerin kontrolü | **Kişi** — ana dili Arapça olan birinin gözden geçirmesi | Özellikle Türkçe adın harf çevirisiyle yazıldığı kalemler: كاشارلي, كاريشيك, ساتش كافورما (Aşama 3) |
-| 7 | README | **Zaman** — bu sefer atlandı (Aşama 40, T2) | Şu an `create-next-app` şablonu. Yapı, ortam değişkeni adları, betikler, dağıtım ve yedek alma yazılacak. Mekân sahibi için kullanım notu ayrıca var: `KULLANIM.md` |
+| 7 | ~~README~~ | **Kapandı (Aşama 44)** | `README.md` yeniden yazıldı: İngilizce özet + Türkçe ayrıntılı bölümler |
 
 **Kapananlar** (tarihçe için): Organizasyon içeriği karşılama sayfasına
 taşındı (Aşama 23); teyit edilmemiş fiyat kalmadı — `tohum-dogrula.ts`
@@ -9317,5 +9318,53 @@ Kalanlar yalnızca iyileştirme önerisi ya da sahibin kararı (Bekleyenler):
 QR adresi, Vercel planı, Firebase Storage, Arapça çeviri kontrolü,
 README, `firebase-admin` 14.4.0 (6 orta güvenlik uyarısı), kullanılmayan
 5 görsel, yukarıdaki menü verisi parçası.
+
+=== RAPOR SONU ===
+
+## Aşama 44 — README · 2026-09-17
+
+=== RAPOR BAŞLANGICI ===
+
+**Tarih:** 2026-09-17 · **Dal:** `main` · **Durum:** push onayı bekliyor
+
+`README.md`'de `create-next-app` şablonu duruyordu; projeyi anlatacak
+şekilde yeniden yazıldı (340 satır). Kod değişmedi.
+
+**Yapı** (sahibin kararıyla): başta kısa bir **İngilizce özet** (proje ne,
+nasıl çalıştırılır, temel yapı, dağıtım), ardından **Türkçe** ayrıntılı
+bölümler:
+
+1. Proje: akış, diller, temalar, panel
+2. Teknoloji yığını
+3. Mimari notlar: statik sayfa + `revalidatePath`, tarayıcıdan yazma
+   olmaması, oturum, `[dil]` rotası, menü kitabı, temalar, adres ve SEO
+4. Proje yapısı: klasör ve dosya tablosu
+5. Yerel geliştirme: ortam değişkenlerinin **yalnızca adları**, komutlar,
+   "yerel sunucu canlı Firestore'a bağlanır" uyarısı
+6. Firebase: koleksiyonlar, panel hesabı açma (`yonetici-ekle.ts`),
+   kuralların yayını ve testi, Storage durumu
+7. Betikler: yedek, doğrulama, görsel, veri yazma, yönetim ve test;
+   yeni fotoğraf ekleme sırası; **dikkatli kullanılacaklar** (`tohum.ts`
+   ayarları ezer, `test-temizle.ts` temayı Çini'ye çevirir)
+8. Dağıtım: `main`'e push → Vercel, push öncesi kontroller, alan adı,
+   geri alma, "içerik değişikliği için dağıtım gerekmez"
+9. Belgeler: `KULLANIM.md`, `ILERLEME.md`, `AGENTS.md`
+10. Bilinen sınırlar ve geçici çözümler: `jose` sabitlemesi, panelden
+    fotoğraf yükleme yok, panelden değişmeyen içerik, JS kapalıyken
+    davranış, `firebase-admin` uyarıları, açık kararlar
+
+**Doğrulama:**
+- README'de anılan 37 dosya ve klasör yolunun hepsi diskte var (şablon
+  yollar hariç).
+- Betik açıklamaları her betiğin kendi başlığıyla karşılaştırıldı.
+  `httpOnly` oturum çerezi, `menu-yaz.ts --yaz`, `tohum.ts`'in ayarları
+  ezmesi ve `test-temizle.ts`'in temayı değiştirmesi koddan teyit edildi.
+- **Gizli bilgi taraması temiz:** API anahtarı biçimi, özel anahtar,
+  e-posta adresi, Firebase proje kimliği, uygulama kimliği yok. Ortam
+  değişkenlerinin yalnızca adları var; `.env.local` okunurken değerlere
+  bakılmadı.
+- `lint` temiz.
+
+Bekleyenler tablosunun 7. satırı (README) kapatıldı.
 
 === RAPOR SONU ===
