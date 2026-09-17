@@ -325,6 +325,10 @@ betiğin başında ayrıntılı açıklaması var.
   → `jwks-rsa` → `jose@6` zinciri Vercel'de `ERR_REQUIRE_ESM` hatası
   veriyordu; `jose` 5'e sabitlendi. Geçici. Neden ve ne zaman
   kaldırılacağı: `ILERLEME.md` → *İleride Kaldırılacak*.
+- **`uuid` sabitlemesi (`package.json` → `overrides` → `gaxios@^6`).**
+  `firebase-admin` → `@google-cloud/storage` → `gaxios` 6 → `uuid` 9
+  zinciri orta düzey bir güvenlik uyarısı veriyordu; o daldaki `uuid` 11'e
+  sabitlendi. Geçici; ayrıntı aynı yerde.
 - **Panelden fotoğraf yükleme yok.** Firebase Storage kurulumunu bekliyor.
   Yeni ürün, fotoğrafı eklenene kadar bölümünün simgesiyle görünür.
 - **Kategoriler ve mevcut ürünlerin ad ve çevirileri panelden
@@ -334,7 +338,5 @@ betiğin başında ayrıntılı açıklaması var.
   Firestore'a yazılıyor.
 - **JavaScript kapalıyken** menü kitabı her zaman ilk sayfada açılıyor;
   yana kaydırarak gezinilebiliyor, oklar ve sayaç gizli.
-- **`firebase-admin` bağımlılık zincirinde 6 orta düzey güvenlik uyarısı**
-  var; çözümü `firebase-admin` 14.4.0'a geçiş.
 - **Açık kararlar** (QR kodunun bakacağı adres, Vercel planı, Arapça
   çevirilerin kontrolü vb.) `ILERLEME.md` → *Bekleyenler* tablosunda.

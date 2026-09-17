@@ -3,7 +3,7 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 44 tamamlandı, **push onayı bekliyor** (yalnızca `README.md`). Proje teslime hazır (Aşama 43): kritik ve önemli bulgu yok. Menü 56/56 fotoğraflı, site **www.huzurpidedikbiyik.com**'da, Next.js 16.3.5. Kalanlar yalnızca iyileştirme önerisi ya da sahibin kararı (Bekleyenler).
+**Güncel aşama:** Aşama 45 tamamlandı, **push onayı bekliyor** (`firebase-admin` 14.4.0; `npm audit` **0 uyarı**). Aşama 44 (README) push edildi. Proje teslime hazır (Aşama 43): kritik ve önemli bulgu yok. Menü 56/56 fotoğraflı, site **www.huzurpidedikbiyik.com**'da, Next.js 16.3.5. Kalanlar yalnızca iyileştirme önerisi ya da sahibin kararı (Bekleyenler).
 **Son güncelleme:** 2026-09-17
 
 ### Genel Durum
@@ -56,7 +56,8 @@ Numaralandırma rapor başlıklarıyla aynı: aşağıdaki her satırın karşı
 | 41 | Menemen ve Gazoz fotoğrafları (55/56) | **Tamamlandı** — üretimde canlı |
 | 42 | Karışık Pide fotoğrafı (**56/56**), yeni alan adı, teslim öncesi tam test | **Tamamlandı** — üretimde canlı |
 | 43 | Dil değiştirme sayfayı koruyor + Next.js 16.3.5 | **Tamamlandı** — üretimde canlı; **teslime hazır** |
-| 44 | README'nin yeniden yazılması | **Tamamlandı** — push onayı bekliyor |
+| 44 | README'nin yeniden yazılması | **Tamamlandı** — push edildi |
+| 45 | `firebase-admin` 14.4.0 + `uuid` sabitlemesi (güvenlik uyarıları 6 → 0) | **Tamamlandı** — push onayı bekliyor |
 
 ### Bekleyenler
 
@@ -66,7 +67,7 @@ satırları o günün kaydı olarak duruyor, güncel liste burası.
 | # | Bekleyen iş | Ne bekliyor | Ayrıntı |
 |---|---|---|---|
 | 0 | ~~Dil değiştirme kitapta sayfayı korumuyor~~ | **Kapandı (Aşama 43)** | Bayraklar ekrandaki sayfayı izliyor |
-| 1 | ~~Next.js güvenlik güncellemesi~~ | **Kapandı (Aşama 43)** | 16.3.5; kritik ve yüksek uyarı 0. Kalan 6 orta uyarı `firebase-admin` zincirinde (çözüm: 14.4.0'a geçiş, ayrıca ele alınabilir) |
+| 1 | ~~Next.js güvenlik güncellemesi~~ | **Kapandı (Aşama 43)** | 16.3.5; kritik ve yüksek uyarı 0. Kalan 6 orta uyarı da **Aşama 45**'te kapandı (`firebase-admin` 14.4.0 + `uuid` sabitlemesi): `npm audit` **0** |
 | 2 | Firebase Storage / Blaze planı | **Hesap** — Firebase projesinin Blaze'e (kredi kartı bağlı, kullandıkça öde) geçirilmesi senin hesabından yapılacak bir işlem | Panelden fotoğraf yükleme buna bağlı; veri yapısındaki `gorsel` alanı ve panel akışı hazır bekliyor (Aşama 16) |
 | 3 | QR kodunun bakacağı adres | **Karar** — kök `https://www.huzurpidedikbiyik.com` mi, doğrudan `https://www.huzurpidedikbiyik.com/tr` mi | Önerim `/tr`: yönlendirme atlanır, sayfa daha hızlı açılır. Kök adres de çalışıyor (307 → `/tr`). QR yeni alan adıyla basılmalı; eski `huzur-pide.vercel.app` adresi de yönleniyor ama bir adım fazla (Aşama 42) |
 | 4 | Vercel Hobby planı | **Karar + hesap** — Pro'ya geçmek ya da bilerek Hobby'de kalmak | Alan adı kısmı kapandı: site **www.huzurpidedikbiyik.com**'da, adres kodda tek yerde (`data/adres.ts`), eski adres yönleniyor (Aşama 42) |
@@ -107,6 +108,25 @@ Geçici olduğunu bilerek koyduğumuz, koşulu gerçekleştiğinde silinmesi ger
 - **Son kontrol (Aşama 40, 2026-09-16):** hâlâ gerekli. `jwks-rsa`'nın en
   güncel sürümü (4.1.0) yine `jose@^6.1.3` istiyor; `firebase-admin` 14.4.0
   da `jwks-rsa@^4.0.1` kullanıyor. Zincir çözülmedi.
+- **Son kontrol (Aşama 45, 2026-09-17):** hâlâ gerekli. `firebase-admin`
+  14.4.0'a geçildi; zincir yine `jwks-rsa@4.1.0` → `jose@^6`.
+
+**`package.json` → `overrides: { "gaxios@^6": { "uuid": "^11.1.1" } }`**
+
+- **Neden var:** `firebase-admin@14.4.0` → `@google-cloud/storage@8.1.0` →
+  `gaxios@6.7.1` → `uuid@9.0.1` zinciri GHSA-w5hq-g745-h8pq (orta, `uuid`
+  sınır denetimi) uyarısı veriyordu; `firebase-admin` 14.4.0'a geçmek tek
+  başına yetmedi. `uuid` 11.1.1 hem CJS hem ESM yayınlıyor; gaxios yalnızca
+  `v4` kullanıyor (`require("uuid")`), o da aynı.
+- **Sınırı:** sabitleme yalnızca `gaxios` 6 altındaki `uuid`'e dokunuyor;
+  Firestore'un kullandığı `gaxios` 7 etkilenmiyor. Projede Storage henüz
+  kullanılmıyor (Bekleyenler 2) ama paket `firebase-admin` ile yükleniyor.
+- **Ne zaman kalkacak:** `@google-cloud/storage` `gaxios` 7'ye (ya da
+  güncel `uuid`'e) geçtiğinde.
+- **Nasıl kontrol edilir:** satır silinir, `npm install` ve
+  `npm audit --omit=dev` çalıştırılır; uyarı yoksa satır kalkar. Ardından
+  panelde bir fiyat kaydedilip geri alınır.
+- **İşareti:** aynı `"//"` yorum satırının "İKİNCİ GEÇİCİ ÇÖZÜM" kısmı.
 
 ### Aşama 1 Adımları
 
@@ -9366,5 +9386,78 @@ bölümler:
 - `lint` temiz.
 
 Bekleyenler tablosunun 7. satırı (README) kapatıldı.
+
+=== RAPOR SONU ===
+
+## Aşama 45 — `firebase-admin` 14.4.0 · 2026-09-17
+
+=== RAPOR BAŞLANGICI ===
+
+**Tarih:** 2026-09-17 · **Dal:** `main` · **Durum:** push onayı bekliyor
+
+Aşama 43'ten kalan 6 orta güvenlik uyarısı kapatıldı.
+
+### 45.1 Değişiklik
+
+| | Önce | Sonra |
+|---|---|---|
+| `firebase-admin` | 14.3.0 | **14.4.0** |
+| `@google-cloud/storage` | eski sürüm (`teeny-request` + `gaxios`) | 8.1.0 (`gaxios` 6.7.1) |
+| `gaxios` 6 altındaki `uuid` | 9.0.1 | **11.1.1** (sabitleme) |
+| `npm audit` (tümü ve `--omit=dev`) | 6 orta | **0** |
+
+- `firebase-admin` 14.4.0 tek başına yetmedi: `@google-cloud/storage`
+  hâlâ `gaxios` 6 → `uuid` 9 kullanıyor. `overrides` içine
+  `"gaxios@^6": { "uuid": "^11.1.1" }` eklendi; kapsamı yalnızca o dal.
+  Neden, sınırı ve kaldırma koşulu "İleride Kaldırılacak"ta.
+- `uuid` 11 CJS olarak yükleniyor; `gaxios` 6 (`require("uuid")`) ve
+  `@google-cloud/storage` Node'da sorunsuz açıldı.
+- `jose` sabitlemesi **hâlâ gerekli** (`jwks-rsa@4.1.0` → `jose@^6`).
+- `package.json`'daki `"//"` açıklaması iki geçici çözümü de anlatacak
+  şekilde güncellendi.
+
+### 45.2 Doğrulama (yerel üretim derlemesi)
+
+- `tsc`, `lint`, `build` temiz; derleme uyarısı yok.
+- Günün yedeği değişiklikten önce yenilendi (`yedek/firestore-2026-09-17.json`).
+- **Panel, geçici hesaplarla** (`firebase-admin` yalnızca sunucuda
+  çalıştığı için asıl test bu):
+  - Yetkisiz hesap: "Bu hesabın panele erişim yetkisi yok." ✓ (token
+    doğrulama ve yönetici kaydı okuma çalışıyor)
+  - Yönetici girişi: 3 bölüm, "Şu an: Mürekkep" ✓
+  - Fiyatlar: arama "çoban" → 56 üründen 1 ✓
+  - **Çoban Salata 100 → 105:** özet "100 ₺ → 105 ₺", "1 fiyat
+    güncellendi.", menü sayfasında 105 ₺, `tohum-dogrula.ts` bu farkı
+    yakaladı ✓ (Firestore'a yazma + `revalidatePath` çalışıyor)
+  - **Geri alındı, 105 → 100:** özet "105 ₺ → 100 ₺"; tr/en/ar/ru menü
+    sayfalarında 100 ₺ ✓
+  - Çıkış: giriş ekranına döndü ✓
+- Betikler (`tohum-dogrula.ts`, `test-hesaplari.ts`) de `firebase-admin`
+  14.4.0 ile çalıştı. Son durumda `tohum-dogrula.ts` "fark yok"; test
+  hesapları silindi, yönetici 1.
+- **Konsol: 0 hata.** Tarayıcı her panel sayfasında 5 uyarı verdi:
+  bayrak SVG'leri ve bir CSS dosyası ön yüklenmiş ama birkaç saniye içinde
+  kullanılmamış (panel bayrak göstermiyor). Bu uyarılar tarayıcı tarafında,
+  `firebase-admin` ise yalnızca sunucuda çalıştığı için bu değişiklikle
+  ilgileri yok. Önceki ölçümlerde görünmemeleri, sayfada birkaç saniye
+  beklenmemiş olmasından kaynaklanıyor olabilir; bu, doğrulanmadı.
+  İyileştirme önerisi: bayrak ön yüklemesi yalnızca menü rotalarına
+  taşınabilir.
+
+### 45.3 Değişen dosyalar
+
+| Dosya | Neden |
+|---|---|
+| `package.json`, `package-lock.json` | `firebase-admin` 14.4.0, `uuid` sabitlemesi, açıklama |
+| `yedek/firestore-2026-09-17.json` | günün yedeği yenilendi |
+| `README.md` | Bilinen sınırlar: eski "6 uyarı" maddesi kaldırıldı, `uuid` sabitlemesi eklendi |
+| `ILERLEME.md` | özet, aşama tablosu, Bekleyenler 1, İleride Kaldırılacak, bu rapor |
+
+Kod, menü içeriği, fiyatlar ve Firestore değişmedi (test kaydı geri alındı).
+
+### 45.4 Sıradaki adım
+
+Onayla push; Vercel derlemesinden sonra canlıda panel kısa testi
+(giriş + bir fiyatın kaydedilip geri alınması).
 
 === RAPOR SONU ===
