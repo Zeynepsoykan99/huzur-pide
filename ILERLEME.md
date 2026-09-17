@@ -3,7 +3,7 @@
 ## Proje Özeti
 
 **Proje:** Huzur Pide dijital menü uygulaması
-**Güncel aşama:** Aşama 43 tamamlandı, **push onayı bekliyor**. Aşama 42'nin iki önemli bulgusu düzeltildi: menü kitabında dil değiştirme artık ekrandaki sayfada kalıyor; Next.js 16.3.5'e yükseltildi (kritik ve yüksek güvenlik uyarısı 0). Menü 56/56 fotoğraflı, site **www.huzurpidedikbiyik.com**'da. Push ve canlı doğrulamadan sonra proje teslime hazır.
+**Güncel aşama:** Aşama 43 tamamlandı ve **üretimde canlı**. **Proje teslime hazır:** kritik ve önemli bulgu yok. Menü 56/56 fotoğraflı, site **www.huzurpidedikbiyik.com**'da, Next.js 16.3.5; menü kitabında dil değiştirme ekrandaki sayfada kalıyor. Kalanlar yalnızca iyileştirme önerisi ya da sahibin kararı (Bekleyenler).
 **Son güncelleme:** 2026-09-17
 
 ### Genel Durum
@@ -55,7 +55,7 @@ Numaralandırma rapor başlıklarıyla aynı: aşağıdaki her satırın karşı
 | 40 | Dört iyileştirme (İ1, İ4, İ5, İ6) + teslim hazırlığı | **Tamamlandı** — üretimde canlı |
 | 41 | Menemen ve Gazoz fotoğrafları (55/56) | **Tamamlandı** — üretimde canlı |
 | 42 | Karışık Pide fotoğrafı (**56/56**), yeni alan adı, teslim öncesi tam test | **Tamamlandı** — üretimde canlı |
-| 43 | Dil değiştirme sayfayı koruyor + Next.js 16.3.5 | **Tamamlandı** — push onayı bekliyor |
+| 43 | Dil değiştirme sayfayı koruyor + Next.js 16.3.5 | **Tamamlandı** — üretimde canlı; **teslime hazır** |
 
 ### Bekleyenler
 
@@ -9154,7 +9154,7 @@ kapatılıp kısa bir regresyon yapıldıktan sonra proje teslime hazır olur.
 
 === RAPOR BAŞLANGICI ===
 
-**Tarih:** 2026-09-17 · **Dal:** `main` · **Durum:** push onayı bekliyor
+**Tarih:** 2026-09-17 · **Dal:** `main` · **Durum:** üretimde canlı (43.7)
 
 Aşama 42'deki iki ÖNEMLİ bulgu düzeltildi ve kısa tekrar testi yerel
 üretim derlemesinde yapıldı.
@@ -9257,8 +9257,65 @@ kaydı geri alındı).
 
 ### 43.6 Sıradaki adım
 
-Push için onay bekleniyor. Push sonrası canlıda kısa doğrulama (dil
-değiştirme, 56 fotoğraf, sığma, yönlendirmeler, panel, konsol) 43.7'ye
-eklenecek.
+Push edildi ve üretime çıktı; canlı doğrulama 43.7'de.
+
+### 43.7 Canlı doğrulama · 2026-09-17
+
+`8322e11` push edildi ve yaklaşık bir dakikada üretime çıktı. Doğrulama
+**https://www.huzurpidedikbiyik.com** üzerinde yapıldı.
+
+**Dil değiştirme ekrandaki sayfada kalıyor.** Dört dilde uçtan uca akışta
+hata 0. Ek olarak farklı kategorilerden, farklı hareketlerle denendi:
+
+| Senaryo | Sonuç |
+|---|---|
+| tr Tatlılar'a kaydır → EN (dört dilde, akış testi) | `/en/menu/tatlilar`, 7/8 ✓ (en/ar/ru → TR de 7/8) |
+| tr Açık Pide → ileri ok → AR | `/ar/menu/kapali-pide`, 4/8, `rtl` ✓ |
+| ar Kapalı Pide → ileri ok (RTL) → RU | `/ru/menu/izgara`, 5/8 ✓ |
+| ru Izgara → 3 geri ok → EN | `/en/menu/kahvalti`, 2/8 ✓ |
+| en Kahvaltı → son sayfaya kaydır → TR | `/tr/menu/icecekler`, 8/8 ✓ |
+| tr İçecekler → ilk sayfaya kaydır → AR | `/ar/menu/corbalar`, 1/8 ✓ |
+| ar Menüye dön → Salatalar (kaydırmadan) → RU | `/ru/menu/salatalar`, 6/8 ✓ (eski kayıt taşınmadı) |
+| Masaüstü 1280: tr Izgara → 2 ileri → EN | `/en/menu/tatlilar`, 7/8 ✓ |
+| JS kapalı (tr, ar) | bağlantı açılış sayfasına (`/en/menu/izgara`), oklar ve sayaç gizli, not görünür ✓ |
+
+**Next.js 16.3.5 sorunsuz çalışıyor:**
+- Sayfalar 200 dönüyor ve önbellekten geliyor (`X-Vercel-Cache: HIT`);
+  `X-Powered-By` başlığı yok.
+- Görsel optimizasyonu webp veriyor (`image/webp`).
+- Yönlendirmeler çalışıyor: büyük harf 308, eski adres 308, `www`'suz
+  adres 308. 404 doğru; canonical yeni alan adında; `robots.txt` ve
+  `sitemap.xml` 200.
+- Sığma 390 / 320 / 1280 × 4 dil, Aşama 42 ile **birebir aynı**; yatay
+  taşma 0.
+- Fotoğraflar dört dilde **56/56** yüklü.
+
+**Panel gerçek işlemle çalışıyor** (geçici hesaplarla):
+- Yetkisiz hesap panele giremedi.
+- Giriş: 3 bölüm, "Şu an: Mürekkep".
+- **Çoban Salata 100 → 105:** özet "100 ₺ → 105 ₺", "1 fiyat
+  güncellendi.", canlı menüde **3,9 sn**'de 105 ₺.
+- **Geri alındı, 105 → 100:** menüde 2,9 sn'de 100 ₺; en, ar ve ru
+  sayfalarında da 100 ₺.
+- Çıkış çalışıyor.
+- Test hesapları silindi, yönetici 1. `tohum-dogrula.ts` "fark yok".
+
+**Konsol: 0 hata, 0 uyarı; başarısız istek yok** (akış, senaryolar,
+panel, sığma ve fotoğraf turları).
+
+**Yeni iyileştirme önerisi (bu aşamadan değil):** Menü kitabı sayfaları,
+`data/menu.ts`'teki eski statik menünün tamamını tarayıcıya gönderiyor
+(`/_next/static/…/3w9-gakkr68ry.js`, 47 KB; sıkıştırılmış 17 KB, kalıcı
+önbellekli). Sebebi, `SayfaSayaci`'nın `sayfaBasligi` yardımcısını
+`data/menu.ts`'ten içe aktarması (Aşama 37, `a7aa3e0`); derleyici
+kullanılmayan `MENU` sabitini ayıklamıyor. Menü zaten herkese açık,
+güvenlik sorunu değil. Yardımcı küçük ayrı bir dosyaya taşınırsa bu
+parça tarayıcıya gitmez. Onay olursa ayrıca ele alınabilir.
+
+**Teslim durumu: KRİTİK ve ÖNEMLİ bulgu yok. Proje teslime hazır.**
+Kalanlar yalnızca iyileştirme önerisi ya da sahibin kararı (Bekleyenler):
+QR adresi, Vercel planı, Firebase Storage, Arapça çeviri kontrolü,
+README, `firebase-admin` 14.4.0 (6 orta güvenlik uyarısı), kullanılmayan
+5 görsel, yukarıdaki menü verisi parçası.
 
 === RAPOR SONU ===
